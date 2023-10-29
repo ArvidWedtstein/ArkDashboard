@@ -22,6 +22,7 @@ export const QUERY = gql`
         estimated_for_players
         Map {
           name
+          icon
         }
       }
       hasNextPage

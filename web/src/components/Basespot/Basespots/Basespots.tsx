@@ -9,6 +9,12 @@ import { random, truncate } from "src/lib/formatters";
 
 import type { FindBasespots } from "types/graphql";
 import { useLazyQuery } from "@apollo/client";
+import {
+  Card,
+  CardActions,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
 
 const QUERY = gql`
   query FindBasespots($take: Int, $lastCursor: String) {
@@ -188,28 +194,58 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
       </div>
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespot.map((basespot, i) => (
-          <ArkCard
-            className=""
-            key={`${basespot.id}-${i}`}
-            title={basespot.name}
-            subtitle={
-              <span className="text-zinc-300">
-                {basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
-              </span>
-            }
-            content={truncate(basespot.description, 150)}
-            image={{
-              src: mapImages[
-                basespot.Map.name.toLowerCase().replaceAll(" ", "")
-              ],
-              alt: basespot.Map.name,
-              position: `${random(0, 100)}% ${random(25, 75)}%`,
-            }}
-            button={{
-              text: "Learn More",
-              link: routes.basespot({ id: basespot.id.toString() }),
-            }}
-          />
+          <>
+            <Card>
+              <CardHeader
+                title={basespot.name}
+                subheader={basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
+                avatar={
+                  <img
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${basespot.Map.icon}`}
+                    alt={basespot.Map.name}
+                    title={basespot.Map.name}
+                    loading="lazy"
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                }
+              />
+              <CardMedia
+                image={
+                  mapImages[basespot.Map.name.toLowerCase().replaceAll(" ", "")]
+                }
+              />
+              <CardActions>
+                <Link
+                  to={routes.basespot({ id: basespot.id.toString() })}
+                  className="rw-button transition-colors duration-100 ease-in-out hover:bg-black/10 dark:hover:bg-white/10"
+                >
+                  Learn More
+                </Link>
+              </CardActions>
+            </Card>
+            {/* <ArkCard
+              className=""
+              key={`${basespot.id}-${i}`}
+              title={basespot.name}
+              subtitle={
+                <span className="text-zinc-300">
+                  {basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
+                </span>
+              }
+              content={truncate(basespot.description, 150)}
+              image={{
+                src: mapImages[
+                  basespot.Map.name.toLowerCase().replaceAll(" ", "")
+                ],
+                alt: basespot.Map.name,
+                position: `${random(0, 100)}% ${random(25, 75)}%`,
+              }}
+              button={{
+                text: "Learn More",
+                link: routes.basespot({ id: basespot.id.toString() }),
+              }}
+            /> */}
+          </>
         ))}
       </div>
     </div>

@@ -16,6 +16,14 @@ import {
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
 import { InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
@@ -148,14 +156,14 @@ const ItemsList = ({
               name="category"
               margin="none"
               options={[
-                { value: 'resource', label: 'Resources' },
-                { value: 'structure', label: 'Structures' },
-                { value: 'armor', label: 'Armor' },
-                { value: 'weapon', label: 'Weapons' },
-                { value: 'consumable', label: 'Consumable' },
-                { value: 'tool', label: 'Tools' },
-                { value: 'fertilizer', label: 'Fertilizer' },
-                { value: 'other', label: 'Other' },
+                { value: "resource", label: "Resources" },
+                { value: "structure", label: "Structures" },
+                { value: "armor", label: "Armor" },
+                { value: "weapon", label: "Weapons" },
+                { value: "consumable", label: "Consumable" },
+                { value: "tool", label: "Tools" },
+                { value: "fertilizer", label: "Fertilizer" },
+                { value: "other", label: "Other" },
               ]}
               defaultValue={[category]}
               disabled={loading}
@@ -263,9 +271,8 @@ const ItemsList = ({
                   value: type.toLowerCase().toString(),
                   label: type,
                 }))}
-
                 onSelect={(e) => {
-                  console.log(e[0].value.toString())
+                  console.log(e[0].value.toString());
                   selectType(e[0].value.toString());
                 }}
                 disabled={loading}
@@ -308,7 +315,7 @@ const ItemsList = ({
                     </svg>
                     <span className="hidden md:block">Search</span>
                   </Submit>
-                )
+                ),
               }}
             />
           </div>
@@ -380,31 +387,51 @@ const ItemsList = ({
       <div
         className={clsx("grid gap-3", {
           "grid-cols-1": view === "list",
-          "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6":
+          "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4":
             view === "grid",
         })}
       >
         {itemsPage.items.map((item, i) => (
-          <Link
-            to={routes.item({ id: item.id })}
-            key={`item-${i}`}
-            className="hover:border-pea-500 rounded-lg border border-transparent transition"
-          >
-            <ArkCard
-              className="h-full border border-zinc-800 dark:border-zinc-500" // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
-              title={item.name}
-              subtitle={item.type}
-              content={view === "list" ? item.description : ""}
-              icon={{
-                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
-                alt: `${item.name}`,
-              }}
-            />
-          </Link>
+          <>
+            <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+              <CardActionArea
+                onClick={() => navigate(routes.item({ id: item.id }))}
+                className="flex w-full justify-start text-left"
+              >
+                <CardHeader
+                  sx={{
+                    flexGrow: 1,
+                  }}
+                  title={item.name}
+                  subheader={item.type}
+                />
+                <CardMedia
+                  className="max-h-32 max-w-[128px] shrink p-4 pl-0"
+                  image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                />
+              </CardActionArea>
+            </Card>
+            {/* <Link
+              to={routes.item({ id: item.id })}
+              key={`item-${i}`}
+              className="hover:border-pea-500 rounded-lg border border-transparent transition"
+            >
+              <ArkCard
+                className="h-full border border-zinc-800 dark:border-zinc-500" // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
+                title={item.name}
+                subtitle={item.type}
+                content={view === "list" ? item.description : ""}
+                icon={{
+                  src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
+                  alt: `${item.name}`,
+                }}
+              />
+            </Link> */}
+          </>
         ))}
       </div>
       {!loading && itemsPage.items.length === 0 && itemsPage.count === 0 && (
-        <div className="text-center text-black dark:text-white w-full">
+        <div className="w-full text-center text-black dark:text-white">
           {"No items yet. "}
           <Link to={routes.newItem()} className="rw-link">
             {"Create one?"}

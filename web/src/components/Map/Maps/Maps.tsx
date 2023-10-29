@@ -1,40 +1,16 @@
-import { Link, routes } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
+import { Link, Redirect, navigate, routes } from "@redwoodjs/router";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
 
-import { QUERY } from "src/components/Map/MapsCell";
-
-import type { DeleteMapMutationVariables, FindMaps } from "types/graphql";
-
-const DELETE_MAP_MUTATION = gql`
-  mutation DeleteMapMutation($id: BigInt!) {
-    deleteMap(id: $id) {
-      id
-    }
-  }
-`;
+import type { FindMaps } from "types/graphql";
 
 const MapsList = ({ maps }: FindMaps) => {
-  const [deleteMap] = useMutation(DELETE_MAP_MUTATION, {
-    onCompleted: () => {
-      toast.success("Map deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  });
-
-  const onDeleteClick = (id: DeleteMapMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete map " + id + "?")) {
-      deleteMap({ variables: { id } });
-    }
-  };
   const mapImages = {
     TheIsland:
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -268,46 +244,90 @@ const MapsList = ({ maps }: FindMaps) => {
       </p>
       <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {maps.map((map) => (
-          <Link
-            key={map.id}
-            to={routes.map({ id: map.id })}
-            className="hover:ring-pea-500 rounded-lg hover:no-underline hover:ring-1"
-          >
-            <ArkCard
-              className="!dark:text-white animate-fade-in text-white"
-              title={map.name}
-              image={{
-                src: mapImages[map.name.replace(" ", "")],
-                alt: map.name,
-                position: `center`,
+          <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+            <CardActionArea
+              onClick={() => navigate(routes.map({ id: map.id }))}
+              sx={{
+                height: "100%",
+                minHeight: "200px",
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                width: "100%",
               }}
-              subtitle={
-                <div className="flex flex-row gap-1">
-                  {Object.entries(map).map(([key, value]) => {
-                    if (!value || !mapData[key]) return;
+            >
+              <CardHeader
+                title={map.name}
+                sx={{
+                  position: "relative",
+                  width: "100%",
+                  zIndex: 10,
+                  textAlign: "left",
+                  backgroundImage:
+                    "linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.8) 100%)",
+                }}
+                avatar={
+                  <img
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`}
+                    alt={map.name}
+                    className="h-10 w-10 object-cover object-center"
+                  />
+                }
+              />
 
-                    return (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 576 512"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        className="h-4 w-4 fill-current"
-                      >
-                        <title>{key}</title>
-                        <g width={100}>{mapData[key].icon}</g>
-                      </svg>
-                    );
-                  })}
-                </div>
-              }
-              icon={{
-                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/small-${map.img}`,
-                // src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-              }}
-            />
-          </Link>
+              <CardMedia
+                sx={{
+                  objectFit: "fill",
+                  background: `url(${mapImages[map.name.replace(" ", "")]})`,
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 0,
+                }}
+                component="div"
+                image={mapImages[map.name.replace(" ", "")]}
+              />
+            </CardActionArea>
+          </Card>
         ))}
+        {/* <Link
+              key={map.id}
+              to={routes.map({ id: map.id })}
+              className="hover:ring-pea-500 rounded-lg hover:no-underline hover:ring-1"
+            >
+              <ArkCard
+                className="!dark:text-white animate-fade-in text-white"
+                title={map.name}
+                image={{
+                  src: mapImages[map.name.replace(" ", "")],
+                  alt: map.name,
+                  position: `center`,
+                }}
+                subtitle={
+                  <div className="flex flex-row gap-1">
+                    {Object.entries(map).map(([key, value]) => {
+                      if (!value || !mapData[key]) return;
+                      return (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 576 512"
+                          aria-hidden="true"
+                          fill="currentColor"
+                          className="h-4 w-4 fill-current"
+                        >
+                          <title>{key}</title>
+                          <g width={100}>{mapData[key].icon}</g>
+                        </svg>
+                      );
+                    })}
+                  </div>
+                }
+                icon={{
+                  src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/small-${map.img}`,
+                  // src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
+                }}
+              />
+            </Link> */}
       </div>
     </div>
   );

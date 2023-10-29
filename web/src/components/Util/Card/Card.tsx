@@ -1,0 +1,150 @@
+import clsx from "clsx";
+import { CSSProperties, HTMLAttributes, ReactNode } from "react";
+
+type CardProps = {
+  sx?: CSSProperties;
+  children?: ReactNode | ReactNode[];
+  className?: HTMLAttributes<HTMLDivElement>["className"];
+};
+export const Card = ({ sx, children, className }: CardProps) => {
+  return (
+    <div
+      className={clsx(
+        "relative overflow-hidden rounded bg-zinc-300 text-black dark:bg-zinc-800 dark:text-white",
+        className
+      )}
+      style={{
+        ...sx,
+        backgroundImage: !!sx?.backgroundImage
+          ? sx?.backgroundImage
+          : `linear-gradient(#ffffff0d, #ffffff0d)`,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+type CardHeaderProps = {
+  sx?: CSSProperties;
+  avatar?: React.ReactNode;
+  action?: React.ReactNode;
+  title?: string;
+  subheader?: string;
+};
+export const CardHeader = ({
+  sx,
+  avatar,
+  title,
+  subheader,
+  action,
+}: CardHeaderProps) => {
+  return (
+    <div className="relative flex items-center justify-start p-4" style={sx}>
+      {avatar && <div className="mr-4 flex flex-[0_0_auto]">{avatar}</div>}
+      {(title || subheader) && (
+        <div className="flex-[1_1_auto]">
+          {title && (
+            <span className="font-montserrat m-0 block text-sm font-normal leading-[1.43]">
+              {title}
+            </span>
+          )}
+          {subheader && (
+            <span className="font-montserrat m-0 block text-sm font-normal leading-[1.43] text-black/70 dark:text-white/70">
+              {subheader}
+            </span>
+          )}
+        </div>
+      )}
+      {action && (
+        <div className="-my-1 -mr-2 flex-[0_0_auto] self-start">{action}</div>
+      )}
+    </div>
+  );
+};
+
+type CardMediaImgProps = {
+  alt: string;
+  height: number | string;
+};
+
+type CardMediaBaseProps = {
+  component?: "div" | "img";
+  image: string;
+  title?: string;
+  sx?: CSSProperties;
+  className?: HTMLAttributes<HTMLDivElement>["className"];
+};
+
+type CardMediaImg = CardMediaBaseProps & CardMediaImgProps;
+
+type CardMediaProps = CardMediaBaseProps | CardMediaImg;
+export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
+  if (component === "img") {
+    const { alt, height, className } = props as CardMediaImg;
+    return (
+      <img
+        className={className}
+        src={props.image}
+        style={props.sx}
+        title={props.title}
+        alt={alt}
+        height={height}
+      />
+    );
+  } else {
+    const { sx, image, title, className } = props;
+    return (
+      <div
+        className={clsx("block !bg-cover bg-center bg-no-repeat", className)}
+        role="img"
+        style={{
+          ...sx,
+          backgroundImage: `url(${image})`,
+        }}
+        title={title}
+      />
+    );
+  }
+};
+
+type CardContentProps = {
+  children?: React.ReactNode | React.ReactNode[];
+  sx?: CSSProperties;
+};
+export const CardContent = ({ children, sx }: CardContentProps) => {
+  return (
+    <div className="p-4" style={sx}>
+      {children}
+    </div>
+  );
+};
+
+type CardActionAreaProps = {
+  children?: React.ReactNode | React.ReactNode[];
+  sx?: CSSProperties;
+} & HTMLAttributes<HTMLButtonElement>;
+export const CardActionArea = ({
+  children,
+  sx,
+  ...props
+}: CardActionAreaProps) => {
+  return (
+    <button
+      className={clsx(
+        "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
+        props?.className
+      )}
+      tabIndex={0}
+      type="button"
+      style={sx}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+export const CardActions = ({ children }) => {
+  return <div className="flex items-center p-2">{children}</div>;
+};

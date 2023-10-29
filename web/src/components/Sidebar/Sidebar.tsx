@@ -158,7 +158,7 @@ const Sidebar = memo(({}) => {
   return (
     <aside className="group z-10 overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4 md:min-w-[12rem]">
       <nav className="sticky top-0 flex w-full flex-row items-start justify-between space-y-1.5 sm:flex-col sm:justify-start">
-        <div className="flex items-center justify-center border-zinc-300 text-black text-[#ffffffcc] transition-all sm:my-3 sm:w-full sm:flex-col sm:border-b">
+        <div className="flex items-center justify-center border-zinc-300 text-black text-[#ffffffcc] transition-all sm:mt-3 sm:w-full sm:flex-col sm:border-b sm:pb-3">
           <Avatar
             url={
               isAuthenticated && currentUser && currentUser?.avatar_url
@@ -192,21 +192,6 @@ const Sidebar = memo(({}) => {
             </p>
             <span className="sr-only">Your Profile</span>
           </Link>
-          {isAuthenticated ? (
-            <button
-              className="rw-button rw-button-gray-outline rw-button-medium mx-3 text-white sm:my-3 sm:w-full"
-              onClick={logOut}
-            >
-              Sign out
-            </button>
-          ) : (
-            <Link
-              className="rw-button rw-button-gray-outline rw-button-medium text-white sm:my-3 sm:w-full"
-              to={routes.signin()}
-            >
-              <span>Sign In</span>
-            </Link>
-          )}
         </div>
         {navigation.map((item, index) => (
           <NavLink

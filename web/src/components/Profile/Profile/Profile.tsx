@@ -1,14 +1,19 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
-import { CheckmarkIcon, toast } from "@redwoodjs/web/toast";
+import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import { Lookup } from "src/components/Util/Lookup/Lookup";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
 import Table from "src/components/Util/Table/Table";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
-import { combineBySummingKeys, groupBy } from "src/lib/formatters";
+import { combineBySummingKeys } from "src/lib/formatters";
 
 import type {
   DeleteProfileMutationVariables,
