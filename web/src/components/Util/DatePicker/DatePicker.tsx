@@ -1,8 +1,6 @@
 import { FieldError } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { CSSProperties, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import useComponentVisible from "src/components/useComponentVisible";
 
 import DateCalendar from "../DateCalendar/DateCalendar";
 import Popper from "../Popper/Popper";

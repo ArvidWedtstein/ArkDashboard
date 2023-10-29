@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 
 type ClickAwayListenerProps = {
   children: React.ReactNode | React.ReactNode[];
-  onClickAway: () => void;
+  onClickAway: (event: MouseEvent<Document>) => void;
 };
 const ClickAwayListener = ({
   children,
@@ -12,7 +12,7 @@ const ClickAwayListener = ({
 
   const handleClick = (e) => {
     if (containerRef.current && !containerRef.current.contains(e.target)) {
-      onClickAway();
+      onClickAway(e);
     }
   };
 

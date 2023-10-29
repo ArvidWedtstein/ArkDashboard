@@ -26,8 +26,10 @@ const Popper = ({
       const anchorRect = anchorEl.getBoundingClientRect();
       const menuBounds = containerRef.current.getBoundingClientRect();
 
-      let top = anchorRect.bottom;
-      let left = anchorRect.left;
+      let top = disablePortal
+        ? anchorRect.height + paddingToAnchor
+        : anchorRect.bottom + paddingToAnchor;
+      let left = disablePortal ? 0 : anchorRect.left;
 
       // Flip dropdown to right if it goes off screen
       if (left + menuBounds.width > window.innerWidth) {
@@ -50,6 +52,7 @@ const Popper = ({
         {disablePortal ? (
           <div
             style={{
+              zIndex: 100,
               position: "absolute",
               transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
               inset: "0px auto auto 0px",
@@ -63,6 +66,7 @@ const Popper = ({
           createPortal(
             <div
               style={{
+                zIndex: 100,
                 position: "absolute",
                 transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
                 inset: "0px auto auto 0px",

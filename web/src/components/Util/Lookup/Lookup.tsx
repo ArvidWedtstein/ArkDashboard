@@ -1,15 +1,9 @@
 import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
-import {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import useComponentVisible from "../../useComponentVisible";
-import { ArrayElement, debounce } from "src/lib/formatters";
+import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+import { ArrayElement } from "src/lib/formatters";
 import clsx from "clsx";
-import ReactDOM from "react-dom";
+import Popper from "../Popper/Popper";
+import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 
 type value = string | object | number | null | undefined;
 
@@ -86,8 +80,8 @@ export const Lookup = ({
   onInputChange,
   filterFn,
 }: ILookup) => {
-  const { ref, setIsComponentVisible, isComponentVisible } =
-    useComponentVisible(false);
+  const anchorEl = useRef(null);
+  const [open, setOpen] = useState(false);
   // Convert this to store all options instead and set selected to the ones that are selected
   interface ILookupOptions extends ArrayElement<ILookup["options"]> {
     selected: boolean;
@@ -104,36 +98,6 @@ export const Lookup = ({
     });
   const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
   const [internalValue, setInternalValue] = useState<string>("");
-
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-
-  // Init
-  const updateLayout = () => {
-    if (!ref?.current) return;
-
-    const spaceingToButton = 4;
-    const btn = (ref.current.firstChild as HTMLDivElement)
-      .children[1] as HTMLDivElement;
-    const menu = ref.current.lastChild as HTMLDivElement;
-
-    const btnBounds = btn.getBoundingClientRect();
-    const menuBounds = menu.getBoundingClientRect();
-
-    let dropdownLeft = btnBounds.left;
-    let dropdownTop = btnBounds.top + btnBounds.height + spaceingToButton;
-
-    // Flip dropdown to right if it goes off screen
-    if (dropdownLeft + menuBounds.width > window.innerWidth) {
-      dropdownLeft = btnBounds.right - menuBounds.width;
-    }
-
-    // Flip dropdown to top if it goes off screen bottom. Account for scroll
-    if (dropdownTop + menuBounds.height > window.innerHeight + window.scrollY) {
-      dropdownTop = btn.offsetTop - menuBounds.height - spaceingToButton;
-    }
-
-    setMenuPosition({ top: dropdownTop, left: dropdownLeft });
-  };
 
   useEffect(() => {
     setLookupOptions((prev) =>
@@ -183,7 +147,6 @@ export const Lookup = ({
         ? ""
         : options?.find((e) => e.value === valuesToSelect[0])?.label ?? ""
     );
-    updateLayout();
   }, [defaultValue, value]);
 
   const handleOptionSelect = useCallback(
@@ -225,7 +188,7 @@ export const Lookup = ({
       onSelect?.(multiple ? updateOptions : [option]);
 
       if (closeOnSelect && !isSelected) {
-        setIsComponentVisible(false);
+        setOpen(false);
       }
 
       setSearchTerm("");
@@ -249,30 +212,35 @@ export const Lookup = ({
     name && field.onChange([]);
   };
 
-  let lastFocusType = "";
+  const handleClose = (event: Event | React.SyntheticEvent) => {
+    if (
+      anchorEl.current &&
+      anchorEl.current.contains(event.target as HTMLElement)
+    ) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const toggleLookup = (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLInputElement>
   ) => {
-    e.stopPropagation();
+    e.preventDefault();
 
     if (!disabled) {
-      if (lastFocusType == "button" && e.currentTarget.type == "text") return;
+      setOpen(!open);
 
-      setIsComponentVisible(!isComponentVisible);
-      const input = (ref.current.firstChild as HTMLDivElement).querySelector(
-        "input"
-      );
+      const input = anchorEl.current.querySelector("input");
       if (e.currentTarget.type == "button") input?.focus();
 
-      lastFocusType = e.currentTarget.type;
-      if (!isComponentVisible) {
+      if (!open) {
         if (selectOnFocus) {
           input?.select();
         }
 
-        // TODO: fix this / check up if it really is needed
+        // TODO: fix this / check if it really is needed
         setSearchTerm("");
-        updateLayout();
       }
     }
   };
@@ -324,7 +292,6 @@ export const Lookup = ({
         "relative flex w-fit min-w-[10rem] items-center text-black dark:text-white",
         className
       )}
-      ref={ref}
     >
       <div
         className={clsx(
@@ -336,13 +303,14 @@ export const Lookup = ({
             "mt-0 mb-0": margin == "none",
           }
         )}
+        ref={anchorEl}
       >
         <label
           className={clsx(
             "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis text-base font-normal leading-6 transition duration-200",
             {
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-                isComponentVisible ||
+                open ||
                 lookupOptions.filter((o) => o != null && o.selected).length >
                   0 ||
                 searchTerm.length > 0 ||
@@ -443,8 +411,8 @@ export const Lookup = ({
                 className={clsx(
                   "h-4 w-4 transition-transform duration-75 will-change-transform",
                   {
-                    "shrink-0": !isComponentVisible,
-                    "shrink-0 rotate-180": isComponentVisible,
+                    "shrink-0": !open,
+                    "shrink-0 rotate-180": open,
                   }
                 )}
                 fill="none"
@@ -471,7 +439,7 @@ export const Lookup = ({
               "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
               {
                 "top-0":
-                  isComponentVisible ||
+                  open ||
                   lookupOptions.filter((o) => o != null && o.selected).length >
                     0 ||
                   searchTerm.length > 0 ||
@@ -485,7 +453,7 @@ export const Lookup = ({
                 "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap !p-0 !text-xs transition-all duration-75",
                 {
                   "!max-w-full":
-                    isComponentVisible ||
+                    open ||
                     lookupOptions.filter((o) => o != null && o.selected)
                       .length > 0 ||
                     searchTerm.length > 0 ||
@@ -493,9 +461,11 @@ export const Lookup = ({
                 }
               )}
             >
-              <span className="visible inline-block px-1 opacity-0">
-                {label ?? name} {required && " *"}
-              </span>
+              {(label ?? name) && (
+                <span className="visible inline-block px-1 opacity-0">
+                  {label ?? name} {required && " *"}
+                </span>
+              )}
             </legend>
           </fieldset>
         </div>
@@ -512,45 +482,69 @@ export const Lookup = ({
       </div>
 
       {/* Dropdown Menu */}
-      {ReactDOM.createPortal(
-        <div
-          role="menu"
-          style={{
-            top: `${menuPosition.top}px`,
-            left: `${menuPosition.left}px`,
-            position: "absolute",
-            // transform: `translate(${0 || menuPosition.left}px, ${menuPosition.top}px)`, TODO: gain absolute position here, so dropdown does not go with scroll
-            // inset: '0px auto auto 0px'
-          }}
-          className={clsx(
-            "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800",
-            {
-              invisible: !isComponentVisible,
-              visible: isComponentVisible,
+      <Popper anchorEl={anchorEl.current} open={open} paddingToAnchor={4}>
+        <ClickAwayListener onClickAway={handleClose}>
+          <div
+            role="menu"
+            className={
+              "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800"
             }
-          )}
-        >
-          <ul
-            className="relative z-10 max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
-            aria-labelledby="dropdownButton"
-            role="listbox"
           >
-            {!options ||
-              (lookupOptions.filter((option) => {
-                if (filterlookupOptions) {
-                  return !option?.selected && option?.inSearch;
-                }
+            <ul
+              className="relative max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
+              aria-labelledby="dropdownButton"
+              role="listbox"
+            >
+              {!options ||
+                (lookupOptions.filter((option) => {
+                  if (filterlookupOptions) {
+                    return !option?.selected && option?.inSearch;
+                  }
 
-                return option.inSearch;
-              }).length == 0 && (
-                <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
-                  No options
-                </li>
-              ))}
+                  return option.inSearch;
+                }).length == 0 && (
+                  <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
+                    No options
+                  </li>
+                ))}
 
-            {groupBy
-              ? Object.entries(
-                  lookupOptions
+              {groupBy
+                ? Object.entries(
+                    lookupOptions
+                      .filter((option) => {
+                        if (filterlookupOptions) {
+                          return !option?.selected && option?.inSearch;
+                        }
+
+                        return option.inSearch;
+                      })
+                      .reduce((acc, obj) => {
+                        let groupKey: any = obj; // Use 'any' type for indexing
+
+                        groupKey = groupBy(obj);
+
+                        if (!acc.hasOwnProperty(groupKey)) {
+                          acc[groupKey] = [];
+                        }
+
+                        acc[groupKey].push(obj);
+                        return acc;
+                      }, {})
+                  ).map(
+                    ([groupTitle, groupedItems]: [
+                      groupedTitle: string,
+                      groupedItems: ILookupOptions[]
+                    ]) => (
+                      <li
+                        className="overflow-hidden"
+                        key={`group-${groupTitle}`}
+                      >
+                        <div className="px-2 py-1">{groupTitle}</div>
+                        <ul>{groupedItems.map(renderOption)}</ul>
+                      </li>
+                    )
+                  )
+                : lookupOptions
                     .filter((option) => {
                       if (filterlookupOptions) {
                         return !option?.selected && option?.inSearch;
@@ -558,42 +552,11 @@ export const Lookup = ({
 
                       return option.inSearch;
                     })
-                    .reduce((acc, obj) => {
-                      let groupKey: any = obj; // Use 'any' type for indexing
-
-                      groupKey = groupBy(obj);
-
-                      if (!acc.hasOwnProperty(groupKey)) {
-                        acc[groupKey] = [];
-                      }
-
-                      acc[groupKey].push(obj);
-                      return acc;
-                    }, {})
-                ).map(
-                  ([groupTitle, groupedItems]: [
-                    groupedTitle: string,
-                    groupedItems: ILookupOptions[]
-                  ]) => (
-                    <li className="overflow-hidden" key={`group-${groupTitle}`}>
-                      <div className="px-2 py-1">{groupTitle}</div>
-                      <ul>{groupedItems.map(renderOption)}</ul>
-                    </li>
-                  )
-                )
-              : lookupOptions
-                  .filter((option) => {
-                    if (filterlookupOptions) {
-                      return !option?.selected && option?.inSearch;
-                    }
-
-                    return option.inSearch;
-                  })
-                  .map(renderOption)}
-          </ul>
-        </div>,
-        document.body
-      )}
+                    .map(renderOption)}
+            </ul>
+          </div>
+        </ClickAwayListener>
+      </Popper>
     </div>
   );
 };

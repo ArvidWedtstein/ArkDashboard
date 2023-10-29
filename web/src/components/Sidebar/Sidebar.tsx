@@ -2,8 +2,8 @@ import { Link, NavLink, routes } from "@redwoodjs/router";
 import clsx from "clsx";
 import { memo } from "react";
 import { useAuth } from "src/auth";
+import Avatar from "../Util/Avatar/Avatar";
 const Icon = (icon: string) => {
-
   // Solid Icons for sidebar
   const icons = {
     home: (
@@ -88,7 +88,11 @@ const Icon = (icon: string) => {
       </svg>
     ),
     lootcrates: (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="h-4 w-4 fill-current stroke-current">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 576 512"
+        className="h-4 w-4 fill-current stroke-current"
+      >
         <path d="M352 336c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336V288H128v192h320V288h-96V336zM0 128v128h96V32C43 32 0 75 0 128zM0 448c0 17.62 14.38 32 32 32h64V288H0V448zM480 32v224h96V128C576 75 533 32 480 32zM304 304v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320S304 312.9 304 304zM480 480h64c17.62 0 32-14.38 32-32V288h-96V480zM128 256h96V208C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208V256h96V32H128V256z" />
       </svg>
     ),
@@ -96,8 +100,7 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-
-const Sidebar = memo(({ }) => {
+const Sidebar = memo(({}) => {
   const { currentUser, isAuthenticated, logOut } = useAuth();
   const navigation = [
     {
@@ -153,45 +156,33 @@ const Sidebar = memo(({ }) => {
   ];
 
   return (
-    <aside className="group z-10 md:min-w-[12rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4">
+    <aside className="group z-10 overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4 md:min-w-[12rem]">
       <nav className="sticky top-0 flex w-full flex-row items-start justify-between space-y-1.5 sm:flex-col sm:justify-start">
         <div className="flex items-center justify-center border-zinc-300 text-black text-[#ffffffcc] transition-all sm:my-3 sm:w-full sm:flex-col sm:border-b">
+          <Avatar
+            url={
+              isAuthenticated && currentUser && currentUser?.avatar_url
+                ? currentUser.avatar_url
+                : `https://ui-avatars.com/api/?name=${
+                    isAuthenticated ? currentUser?.full_name : "Guest"
+                  }`
+            }
+            storage={
+              isAuthenticated && currentUser && currentUser?.avatar_url
+                ? "avatars"
+                : ""
+            }
+            size={80}
+            profileMenu
+          />
           <Link
             to={routes.profile({
               id: currentUser?.id || currentUser?.sub || "",
             })}
-            className={clsx("text-center hover:underline", {
+            className={clsx("mt-3 text-center hover:underline", {
               "pointer-events-none cursor-not-allowed": !isAuthenticated,
             })}
           >
-            <div className="relative">
-              {isAuthenticated && currentUser ? (
-                <img
-                  src={
-                    currentUser?.avatar_url
-                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${currentUser.avatar_url}`
-                      : `https://ui-avatars.com/api/?name=${currentUser?.full_name}`
-                  }
-                  className="animate-fade-in mx-1 aspect-square w-12 max-w-xs rounded-full object-cover object-center shadow md:m-2 md:w-20"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="animate-fade-in relative mx-1 aspect-square w-6 md:w-12 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
-                  <svg
-                    className="absolute -left-1 md:h-14 w-8 h-8 md:w-14 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
             <p className="hidden text-sm sm:block sm:text-xl">
               {currentUser?.full_name?.toString() || "Guest"}
             </p>
