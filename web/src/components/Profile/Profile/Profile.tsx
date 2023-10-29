@@ -1,11 +1,9 @@
-import { DateField, Form } from "@redwoodjs/forms";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import DatePicker from "src/components/Util/DatePicker/DatePicker";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import { combineBySummingKeys, groupBy } from "src/lib/formatters";
@@ -126,8 +124,6 @@ const Profile = ({ profile }: Props) => {
               </div>
             </div>
 
-            <DatePicker displayWeekNumber />
-
             <div className="my-6 flex w-full flex-col flex-wrap text-center text-gray-800 dark:text-stone-100">
               <div>
                 <p className="text-xl font-medium tracking-wide">
@@ -152,6 +148,7 @@ const Profile = ({ profile }: Props) => {
                 <span className="">{profile.website}</span>
               </div>
             </div>
+
             <Tabs>
               <Tab label="Permissions">
                 <div className="my-3 w-full overflow-x-auto rounded-lg border border-zinc-500 bg-zinc-400 text-left shadow-md dark:bg-zinc-700">
