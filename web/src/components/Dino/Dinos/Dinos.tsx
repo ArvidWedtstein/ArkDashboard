@@ -16,12 +16,14 @@ import {
 } from "@redwoodjs/forms";
 
 import type { FindDinos } from "types/graphql";
-import { useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import clsx from "clsx";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
-import { Modal, ModalContext } from "src/components/Util/Modal/Modal";
+import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import { InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
+import Dino from "../Dino/Dino";
 
 const DinosList = ({ dinosPage, loading }: FindDinos & {
   loading: boolean;
@@ -34,6 +36,7 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
     temperament: string;
     type: string;
   }>;
+  const { openModal } = useModal();
   const [view, setView] = useState<"grid" | "list">("grid");
   const [sort, setSort] = useState<{
     column: string;
@@ -68,7 +71,7 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png",
     boss: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
   };
-  const { openModal } = useContext(ModalContext);
+
   const Filters = useMemo(
     () => (
       <>
@@ -322,52 +325,85 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
             </div>
           )}
           {dinosPage.dinos.map(
-            ({ id, name, type, image, description, tamable, temperament }) => (
-              <Link
-                to={routes.dino({ id: id })}
-                className="animate-fade-in relative flex h-96 max-h-min flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500"
-                key={`dino-${id}`}
-              >
-                <div
-                  className="relative mb-10 h-52 rounded-t-lg"
-                  style={{
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "100%",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    backgroundImage: `url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg')`,
-                  }}
+            ({ id, name, type, image, icon, description, tamable, temperament }) => (
+              <>
+                <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out cursor-pointer">
+                  <CardActionArea
+                    onClick={() => navigate(routes.dino({ id }))}
+                    className="w-full text-left"
+                  >
+                    <CardHeader
+                      title={name}
+                      className="border-b border-zinc-500"
+                      avatar={
+                        <div className="rounded-full p-1 ring-1 ring-zinc-500 overflow-hidden">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon/${icon}`}
+                            className="w-8 h-8 invert"
+                            loading="lazy"
+                            alt={name}
+                          />
+                        </div>
+                      } />
+                    {/* <div className="flex w-full justify-start text-left"> */}
+                    <CardContent className="">
+                      <p className="text-sm truncate">{description}</p>
+                    </CardContent>
+                    <CardMedia
+                      className="mx-auto p-4 min-w-[200px] h-auto aspect-square max-h-[200px] overflow-hidden"
+                      component="img"
+                      loading="lazy"
+                      image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+                    />
+                    {/* </div> */}
+                  </CardActionArea>
+                </Card>
+                <Link
+                  to={routes.dino({ id: id })}
+                  className="animate-fade-in relative flex h-96 max-h-min flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500"
+                  key={`dino-${id}`}
                 >
-                  <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
-                    className="absolute top-1 max-h-64 w-auto p-3"
-                    loading="lazy"
-                    alt={name}
-                  />
-                </div>
-                <div className="mb-0.5 text-xs font-bold uppercase text-neutral-600">
-                  {temperament}
-                </div>
-                <div className="mb-1 text-2xl font-black text-black">{name}</div>
-                <div
-                  className="mb-2 flex-grow truncate p-5 text-stone-500"
-                  title={description}
-                >
-                  {description}
-                </div>
+                  <div
+                    className="relative mb-10 h-52 rounded-t-lg"
+                    style={{
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                      backgroundImage: `url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg')`,
+                    }}
+                  >
+                    <img
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+                      className="absolute top-1 max-h-64 w-auto p-3"
+                      loading="lazy"
+                      alt={name}
+                    />
+                  </div>
+                  <div className="mb-0.5 text-xs font-bold uppercase text-neutral-600">
+                    {temperament}
+                  </div>
+                  <div className="mb-1 text-2xl font-black text-black">{name}</div>
+                  <div
+                    className="mb-2 flex-grow truncate p-5 text-stone-500"
+                    title={description}
+                  >
+                    {description}
+                  </div>
 
-                <div className="flex flex-row justify-center rounded-b-lg border-t border-neutral-600 bg-stone-200 font-bold text-white">
-                  {type &&
-                    type.map((type) => (
-                      <img
-                        key={`dino-${id}-${type}`}
-                        className="m-4 w-8"
-                        title={type}
-                        src={dinoTypes[type]}
-                      />
-                    ))}
-                </div>
-              </Link>
+                  <div className="flex flex-row justify-center rounded-b-lg border-t border-neutral-600 bg-stone-200 font-bold text-white">
+                    {type &&
+                      type.map((type) => (
+                        <img
+                          key={`dino-${id}-${type}`}
+                          className="m-4 w-8"
+                          title={type}
+                          src={dinoTypes[type]}
+                        />
+                      ))}
+                  </div>
+                </Link>
+              </>
             )
           )}
         </div>

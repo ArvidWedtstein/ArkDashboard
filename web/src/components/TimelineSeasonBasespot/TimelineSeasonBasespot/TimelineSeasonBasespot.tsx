@@ -2,12 +2,12 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useContext, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
-import { ModalContext, Modal } from "src/components/Util/Modal/Modal";
+import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
 import Toast from "src/components/Util/Toast/Toast";
 
@@ -102,7 +102,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
     return new Date(year, month, day, hour, minute, second);
   };
 
-  const { openModal } = useContext(ModalContext);
+  const { openModal } = useModal();
   return (
     <article className="rw-segment">
       <Modal image={currentModalImage} />

@@ -12,8 +12,18 @@ type iModal = {
   formSubmit?: (formData) => void;
   onClose?: () => void;
 };
+
+/**
+ * @description A modal is a self-contained UI component that typically appears as a pop-up or overlay on top of the main content.
+ *
+ * WHEN TO USE:
+ * - For user interactions that require the user's immediate attention or input, such as alert messages, confirmations, or forms.
+ * - For shorter, focused interactions that temporarily interrupt the main workflow.
+ *
+ * @returns a modal
+ */
 export const Modal = ({ image, title, content }: iModal) => {
-  const { modalOpen, closeModal } = useContext(ModalContext);
+  const { modalOpen, closeModal } = useModal();
 
   return ReactDOM.createPortal(
     <div
@@ -86,13 +96,13 @@ export const Modal = ({ image, title, content }: iModal) => {
   );
 };
 
-interface iModalForm {
+type FormModalProps = {
   title?: string;
   isOpen: boolean;
   onClose?: () => void;
   children?: React.ReactNode;
 }
-export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
+export const FormModal = ({ title, isOpen, children, onClose }: FormModalProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -178,17 +188,24 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   );
 };
 
-const ModalContext = createContext<{
+type ModalContextValue = {
   openModal: () => void;
   closeModal: () => void;
   modalOpen: boolean;
-}>({
+}
+
+const ModalContext = createContext<ModalContextValue>({
   openModal: () => { },
   closeModal: () => { },
   modalOpen: false,
 });
 
-const ModalProvider = ({ children }: { children: React.ReactNode }) => {
+type ModalProviderProps = {
+  children: JSX.Element;
+}
+
+// TODO: https://stackoverflow.com/questions/4770025/how-to-disable-scrolling-temporarily
+export const ModalProvider = ({ children }: ModalProviderProps) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -206,4 +223,12 @@ const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export { ModalContext, ModalProvider };
+export const useModal = () => {
+  const context = useContext(ModalContext);
+
+  if (context === undefined) {
+    throw new Error("useModal must be used within a ModalProvider");
+  }
+
+  return context;
+}

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { CSSProperties, HTMLAttributes, ReactNode } from "react";
+import { CSSProperties, HTMLAttributes, ImgHTMLAttributes, ReactNode } from "react";
 
 type CardProps = {
   sx?: CSSProperties;
@@ -31,6 +31,7 @@ type CardHeaderProps = {
   action?: React.ReactNode;
   title?: string;
   subheader?: string;
+  className?: HTMLAttributes<HTMLDivElement>["className"];
 };
 export const CardHeader = ({
   sx,
@@ -38,9 +39,10 @@ export const CardHeader = ({
   title,
   subheader,
   action,
+  className,
 }: CardHeaderProps) => {
   return (
-    <div className="relative flex items-center justify-start p-4" style={sx}>
+    <div className={clsx("relative flex items-center justify-start p-4", className)} style={sx}>
       {avatar && <div className="mr-4 flex flex-[0_0_auto]">{avatar}</div>}
       {(title || subheader) && (
         <div className="flex-[1_1_auto]">
@@ -66,7 +68,7 @@ export const CardHeader = ({
 type CardMediaImgProps = {
   alt: string;
   height: number | string;
-};
+}
 
 type CardMediaBaseProps = {
   component?: "div" | "img";
@@ -76,12 +78,12 @@ type CardMediaBaseProps = {
   className?: HTMLAttributes<HTMLDivElement>["className"];
 };
 
-type CardMediaImg = CardMediaBaseProps & CardMediaImgProps;
+type CardMediaImg = CardMediaBaseProps & CardMediaImgProps & ImgHTMLAttributes<HTMLImageElement>;
 
 type CardMediaProps = CardMediaBaseProps | CardMediaImg;
 export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
   if (component === "img") {
-    const { alt, height, className } = props as CardMediaImg;
+    const { alt, height, className, ...imgprops } = props as CardMediaImg;
     return (
       <img
         className={className}
@@ -90,6 +92,7 @@ export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
         title={props.title}
         alt={alt}
         height={height}
+        {...imgprops}
       />
     );
   } else {
@@ -111,10 +114,11 @@ export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
 type CardContentProps = {
   children?: React.ReactNode | React.ReactNode[];
   sx?: CSSProperties;
+  className?: HTMLAttributes<HTMLDivElement>["className"];
 };
-export const CardContent = ({ children, sx }: CardContentProps) => {
+export const CardContent = ({ children, sx, className }: CardContentProps) => {
   return (
-    <div className="p-4" style={sx}>
+    <div className={clsx("p-4", className)} style={sx}>
       {children}
     </div>
   );

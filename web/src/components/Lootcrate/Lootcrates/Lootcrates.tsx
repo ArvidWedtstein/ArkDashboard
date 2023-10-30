@@ -1,10 +1,7 @@
 import {
   CheckboxField,
-  FieldError,
   Form,
   Label,
-  SearchField,
-  SelectField,
   Submit,
 } from "@redwoodjs/forms";
 import {
@@ -15,13 +12,13 @@ import {
   parseSearch,
 } from "@redwoodjs/router";
 import clsx from "clsx";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useAuth } from "src/auth";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import { Modal, ModalContext } from "src/components/Util/Modal/Modal";
-import { capitalize, capitalizeSentence, dynamicSort, removeDuplicates } from "src/lib/formatters";
+import { Modal, useModal } from "src/components/Util/Modal/Modal";
+import { dynamicSort, removeDuplicates } from "src/lib/formatters";
 
 import type { FindLootcrates, permission } from "types/graphql";
 
@@ -59,7 +56,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
     );
   }, []);
 
-  const { openModal } = useContext(ModalContext);
+  const { openModal } = useModal();
 
   const Filters = useMemo(
     () => (
