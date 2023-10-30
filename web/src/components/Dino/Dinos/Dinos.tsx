@@ -22,7 +22,7 @@ import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import { InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
+import { Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import Dino from "../Dino/Dino";
 
 const DinosList = ({ dinosPage, loading }: FindDinos & {
@@ -277,7 +277,7 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
             />
             <label
               htmlFor="list"
-              className="rw-button !py-4 rw-button-gray-outline peer-checked/list:!border-pea-500 h-full !rounded-r-none !rounded-l-lg border peer-checked/grid:border-r-0"
+              className="rw-button !py-4 rw-button-gray-outline peer-checked/list:!border-pea-500 peer-checked/list:bg-black/10 dark:peer-checked/list:bg-white/10 h-full !rounded-r-none !rounded-l-lg border peer-checked/grid:border-r-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +289,7 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
             </label>
             <label
               htmlFor="grid"
-              className="rw-button !py-4 rw-button-gray-outline peer-checked/grid:!border-pea-500 border peer-checked/list:!border-l-0"
+              className="rw-button !py-4 rw-button-gray-outline peer-checked/grid:!border-pea-500 peer-checked/grid:bg-black/10 dark:peer-checked/grid:bg-white/10 border peer-checked/list:!border-l-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -326,73 +326,27 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
           )}
           {dinosPage.dinos.map(
             ({ id, name, type, image, icon, description, tamable, temperament }) => (
-              <>
-                <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out cursor-pointer">
-                  <CardActionArea
-                    onClick={() => navigate(routes.dino({ id }))}
-                    className="w-full text-left"
-                  >
-                    <CardHeader
-                      title={name}
-                      className="border-b border-zinc-500"
-                      avatar={
-                        <div className="rounded-full p-1 ring-1 ring-zinc-500 overflow-hidden">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon/${icon}`}
-                            className="w-8 h-8 invert"
-                            loading="lazy"
-                            alt={name}
-                          />
-                        </div>
-                      } />
-                    {/* <div className="flex w-full justify-start text-left"> */}
-                    <CardContent className="">
-                      <p className="text-sm truncate">{description}</p>
-                    </CardContent>
-                    <CardMedia
-                      className="mx-auto p-4 min-w-[200px] h-auto aspect-square max-h-[200px] overflow-hidden"
-                      component="img"
-                      loading="lazy"
-                      image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
-                    />
-                    {/* </div> */}
-                  </CardActionArea>
-                </Card>
-                <Link
-                  to={routes.dino({ id: id })}
-                  className="animate-fade-in relative flex h-96 max-h-min flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500"
-                  key={`dino-${id}`}
+              <Card key={`dino-${id}`} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out cursor-pointer">
+                <CardActionArea
+                  onClick={() => navigate(routes.dino({ id }))}
+                  className="w-full text-left"
                 >
-                  <div
-                    className="relative mb-10 h-52 rounded-t-lg"
-                    style={{
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "100%",
-                      objectFit: "cover",
-                      objectPosition: "center",
-                      backgroundImage: `url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg')`,
-                    }}
-                  >
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
-                      className="absolute top-1 max-h-64 w-auto p-3"
-                      loading="lazy"
-                      alt={name}
-                    />
-                  </div>
-                  <div className="mb-0.5 text-xs font-bold uppercase text-neutral-600">
-                    {temperament}
-                  </div>
-                  <div className="mb-1 text-2xl font-black text-black">{name}</div>
-                  <div
-                    className="mb-2 flex-grow truncate p-5 text-stone-500"
-                    title={description}
-                  >
-                    {description}
-                  </div>
-
-                  <div className="flex flex-row justify-center rounded-b-lg border-t border-neutral-600 bg-stone-200 font-bold text-white">
-                    {type &&
+                  <CardHeader
+                    title={name}
+                    subheader={temperament}
+                    className="border-b border-zinc-500"
+                    avatar={
+                      <div className="rounded-full p-1 ring-1 ring-zinc-500 overflow-hidden">
+                        <img
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon/${icon}`}
+                          className="w-8 h-8 invert"
+                          loading="lazy"
+                          alt={name}
+                        />
+                      </div>
+                    }
+                    action={
+                      type &&
                       type.map((type) => (
                         <img
                           key={`dino-${id}-${type}`}
@@ -400,10 +354,26 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
                           title={type}
                           src={dinoTypes[type]}
                         />
-                      ))}
-                  </div>
-                </Link>
-              </>
+                      ))
+                    }
+                  />
+
+                  <CardMedia
+                    className="mx-auto p-4 min-w-[200px] h-auto aspect-square max-h-[200px] overflow-hidden"
+                    component="img"
+                    loading="lazy"
+                    image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+                  />
+                  <CardContent>
+                    <p className="text-sm truncate" title={description}>{description}</p>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions>
+                  <Link to={routes.dino({ id })} className="rw-button transition-colors duration-100 ease-in-out hover:bg-black/10 dark:hover:bg-white/10">
+                    View Dino
+                  </Link>
+                </CardActions>
+              </Card>
             )
           )}
         </div>

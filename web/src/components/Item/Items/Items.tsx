@@ -411,22 +411,6 @@ const ItemsList = ({
                 />
               </CardActionArea>
             </Card>
-            {/* <Link
-              to={routes.item({ id: item.id })}
-              key={`item-${i}`}
-              className="hover:border-pea-500 rounded-lg border border-transparent transition"
-            >
-              <ArkCard
-                className="h-full border border-zinc-800 dark:border-zinc-500" // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
-                title={item.name}
-                subtitle={item.type}
-                content={view === "list" ? item.description : ""}
-                icon={{
-                  src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
-                  alt: `${item.name}`,
-                }}
-              />
-            </Link> */}
           </>
         ))}
       </div>
