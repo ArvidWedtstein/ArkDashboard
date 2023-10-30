@@ -14,6 +14,7 @@ import {
 import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import { useAuth } from "src/auth";
+import { Card, CardActionArea, CardActions, CardContent, CardHeader } from "src/components/Util/Card/Card";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
@@ -293,7 +294,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             />
             <label
               htmlFor="list"
-              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/list:border-pea-500 !rounded-r-none !rounded-l-lg border !py-4"
+              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/list:border-pea-500 peer-checked/list:bg-black/10 dark:peer-checked/list:bg-white/10 !rounded-r-none !rounded-l-lg border !py-4"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -314,7 +315,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             />
             <label
               htmlFor="grid"
-              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/grid:border-pea-500 border !py-4"
+              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/grid:border-pea-500 peer-checked/grid:bg-black/10 dark:peer-checked/grid:bg-white/10 border !py-4"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -348,38 +349,40 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             sort.column,
             sort.direction === "asc"
           ).map(({ id, name, required_level, image, color }) => (
-            <Link
-              to={routes.lootcrate({ id })}
-              className="rounded-lg bg-zinc-300 py-5 px-4 shadow-lg dark:bg-zinc-800"
-              key={id}
-            >
-              <div className="flex items-start">
-                <img
-                  style={{ backgroundColor: color || "#444444" }}
-                  className="h-12 w-12 rounded-lg object-contain p-2.5"
-                  src={
-                    image && image.length > 0
-                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
-                      : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
+            <Card key={`lootcrate-${id}`} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out flex flex-col justify-between">
+              <CardActionArea
+                component="link"
+                to={routes.lootcrate({ id })}
+                className="w-full text-left cursor-pointer"
+              >
+                <CardHeader
+                  title={name}
+                  className="border-b border-zinc-500"
+                  avatar={
+                    <img
+                      src={image && image.length > 0
+                        ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
+                        : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"}
+                      className="h-12 w-12 rounded-lg object-contain p-2.5 bg-neutral-700 border border-zinc-500"
+                      loading="lazy"
+                      alt={name}
+                    />
                   }
                 />
-                <div className="ml-auto mr-2 h-1 w-1 rounded-full bg-[#9b9ba5] p-0 shadow-[-6px_0_0_0_rgb(155,155,165),6px_0_0_0_rgb(155,155,165)]"></div>
-              </div>
-              <div className="mt-4 text-sm font-semibold">{name}</div>
-              <div className="mt-3.5 text-xs text-gray-300"></div>
-              <div className="my-2 flex items-start space-x-1">
-                {required_level > 0 && required_level != null && (
-                  <button className="rw-badge rw-badge-gray-outline">
-                    Lvl {required_level}
-                  </button>
-                )}
-              </div>
-              <div className="mt-1 flex w-full items-center justify-between space-x-3">
-                <button className="rw-button rw-button-green-outline f">
-                  Learn more
-                </button>
-              </div>
-            </Link>
+                <CardContent>
+                  {required_level > 0 && required_level != null && (
+                    <span className="rw-badge rw-badge-gray-outline">
+                      Lvl {required_level}
+                    </span>
+                  )}
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                <Link to={routes.lootcrate({ id })} className="rw-button rw-button-green-outline">
+                  View Lootcrate
+                </Link>
+              </CardActions>
+            </Card>
           ))}
         </div>
       </section>

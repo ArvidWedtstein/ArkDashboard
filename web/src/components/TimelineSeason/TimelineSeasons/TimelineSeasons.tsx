@@ -1,43 +1,12 @@
 import { Link, routes } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
-import { useEffect } from "react";
-import { QUERY } from "src/components/TimelineSeason/TimelineSeasonsCell";
 import Calendar from "src/components/Util/Calendar/Calendar";
+import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
 
 import type {
-  DeleteTimelineSeasonMutationVariables,
   FindTimelineSeasons,
 } from "types/graphql";
 
-const DELETE_TIMELINE_SEASON_MUTATION = gql`
-  mutation DeleteTimelineSeasonMutation($id: String!) {
-    deleteTimelineSeason(id: $id) {
-      id
-    }
-  }
-`;
-
 const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
-  const [deleteTimelineSeason] = useMutation(DELETE_TIMELINE_SEASON_MUTATION, {
-    onCompleted: () => {
-      toast.success("TimelineSeason deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  });
-
-  const onDeleteClick = (id: DeleteTimelineSeasonMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete timelineSeason " + id + "?")) {
-      deleteTimelineSeason({ variables: { id } });
-    }
-  };
 
   const dateformatter = new Intl.DateTimeFormat("en-GB", {
     timeZone: "utc",
@@ -89,7 +58,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         dateStartKey="season_start_date"
         dateEndKey="season_end_date"
       />
-
+      <DateCalendar />
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(
           ({

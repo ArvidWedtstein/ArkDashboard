@@ -1,5 +1,6 @@
+import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
-import { CSSProperties, HTMLAttributes, ImgHTMLAttributes, ReactNode } from "react";
+import { CSSProperties, HTMLAttributes, ImgHTMLAttributes, LinkHTMLAttributes, ReactNode } from "react";
 
 type CardProps = {
   sx?: CSSProperties;
@@ -124,31 +125,75 @@ export const CardContent = ({ children, sx, className }: CardContentProps) => {
   );
 };
 
-type CardActionAreaProps = {
+
+// type CommonProps = {
+//   component?: "a" | "button";
+// };
+
+// type ButtonProps = CommonProps & HTMLAttributes<HTMLButtonElement>;
+// type LinkProps = CommonProps & LinkHTMLAttributes<HTMLAnchorElement>;
+
+// type Props = ButtonProps | LinkProps;
+
+// const UniversalButton: React.FC<Props> = ({ component = 'button', ...props }) => {
+//   if (component = 'a') {
+//     const { href, ...linkProps } = props as LinkProps;
+//     return <a href={href} {...linkProps} />;
+//   } else {
+//     const buttonProps = props as ButtonProps;
+//     return <button {...buttonProps} />;
+//   }
+// };
+type CardActionsProps = {
   children?: React.ReactNode | React.ReactNode[];
+  className?: HTMLAttributes<HTMLDivElement>["className"];
   sx?: CSSProperties;
-} & HTMLAttributes<HTMLButtonElement>;
+};
+
+export const CardActions = ({ children, className, sx }: CardActionsProps) => {
+  return <div style={sx} className={clsx("flex items-center p-2", className)}>{children}</div>;
+};
+
+type CardActionAreaBaseProps = CardActionsProps & {
+  component?: "link" | "button";
+};
+
+type ButtonProps = CardActionAreaBaseProps & HTMLAttributes<HTMLButtonElement>;
+type LinkProps = CardActionAreaBaseProps & LinkHTMLAttributes<HTMLAnchorElement> & {
+  to: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+};
+
+type CardActionAreaProps = ButtonProps | LinkProps;
 export const CardActionArea = ({
   children,
   sx,
+  className,
+  component = "button",
   ...props
 }: CardActionAreaProps) => {
-  return (
-    <button
-      className={clsx(
-        "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
-        props?.className
-      )}
-      tabIndex={0}
-      type="button"
-      style={sx}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
-
-export const CardActions = ({ children }) => {
-  return <div className="flex items-center p-2">{children}</div>;
+  if (component === 'button') {
+    const btnProps = props as ButtonProps
+    return (
+      <button
+        className={clsx(
+          "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
+          className
+        )}
+        tabIndex={0}
+        type="button"
+        style={sx}
+        {...btnProps}
+      >
+        {children}
+      </button>
+    )
+  } else {
+    const linkProps = props as LinkProps
+    return (
+      <Link {...linkProps} className="relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit">
+        {children}
+      </Link>
+    );
+  }
 };

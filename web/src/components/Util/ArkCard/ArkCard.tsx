@@ -12,12 +12,12 @@ interface IArkCard {
     link: string;
   };
   image?:
-    | {
-        src: string;
-        alt?: string;
-        position?: string | number | (string & {});
-      }
-    | string;
+  | {
+    src: string;
+    alt?: string;
+    position?: string | number | (string & {});
+  }
+  | string;
   icon?: {
     src: string;
     alt?: string;
@@ -25,6 +25,10 @@ interface IArkCard {
   className?: string;
   style?: React.CSSProperties;
 }
+
+/**
+ * @deprecated Use Card component instead.
+ */
 const ArkCard = memo<IArkCard>(
   ({
     title = "",
@@ -48,12 +52,11 @@ const ArkCard = memo<IArkCard>(
             typeof image === "string"
               ? `${image}`
               : image
-              ? `url('${image.src}')`
-              : "",
+                ? `url('${image.src}')`
+                : "",
           backgroundSize: "cover",
-          backgroundPosition: `${
-            typeof image !== "string" ? image?.position ?? "center" : "center"
-          }`,
+          backgroundPosition: `${typeof image !== "string" ? image?.position ?? "center" : "center"
+            }`,
         }}
       >
         <div

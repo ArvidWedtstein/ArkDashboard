@@ -27,6 +27,7 @@ interface ILookup {
   inputValue?: string;
   validation?: RegisterOptions;
   margin?: "none" | "dense" | "normal";
+  size?: "small" | "medium";
   options: {
     label: string;
     value: string | object | number;
@@ -65,6 +66,7 @@ export const Lookup = ({
   helperText,
   validation,
   margin = "normal",
+  size = "medium",
   selectOnFocus = false,
   disabled = false,
   readOnly = false,
@@ -179,8 +181,8 @@ export const Lookup = ({
         field.onChange(
           multiple
             ? updateOptions
-                .filter((f) => f != null && f.selected)
-                .map((o) => o?.value)
+              .filter((f) => f != null && f.selected)
+              .map((o) => o?.value)
             : option.value
         );
       }
@@ -212,7 +214,7 @@ export const Lookup = ({
     name && field.onChange([]);
   };
 
-  const handleClose = (event: Event | React.SyntheticEvent) => {
+  const handleClose = (event: React.MouseEvent<Document, MouseEvent> | React.SyntheticEvent) => {
     if (
       anchorEl.current &&
       anchorEl.current.contains(event.target as HTMLElement)
@@ -307,14 +309,16 @@ export const Lookup = ({
       >
         <label
           className={clsx(
-            "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis text-base font-normal leading-6 transition duration-200",
+            "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200",
             {
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 open ||
                 lookupOptions.filter((o) => o != null && o.selected).length >
-                  0 ||
+                0 ||
                 searchTerm.length > 0 ||
                 internalValue.length > 0,
+              "text-sm": size == "small",
+              "text-base": size == "medium",
             }
           )}
           htmlFor={`input-${name}`}
@@ -323,16 +327,18 @@ export const Lookup = ({
         </label>
         <div
           className={clsx(
-            "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded text-base font-normal leading-6",
+            "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded font-normal leading-6",
             btnClassName,
             {
               "pr-10":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.selected).length ==
-                  0,
+                0,
               "pr-12":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.selected).length > 0,
+              "text-sm": size == "small",
+              "text-base": size == "medium",
             }
           )}
         >
@@ -340,38 +346,41 @@ export const Lookup = ({
           {renderTags != null
             ? renderTags(lookupOptions.filter((o) => o != null && o.selected))
             : multiple &&
-              lookupOptions.filter((o) => o != null && o.selected).length > 0 &&
-              lookupOptions
-                .filter((o) => o != null && o.selected)
-                .map((option) => (
-                  <div
-                    role="button"
-                    className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-                  >
-                    <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-                      {option.label}
-                    </span>
-                    {!readOnly && (
-                      <svg
-                        onClick={(e) => handleOptionSelect(e, option)}
-                        className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-                        viewBox="0 0 24 24"
-                        focusable="false"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                      </svg>
-                    )}
-                  </div>
-                ))}
+            lookupOptions.filter((o) => o != null && o.selected).length > 0 &&
+            lookupOptions
+              .filter((o) => o != null && o.selected)
+              .map((option) => (
+                <div
+                  role="button"
+                  className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+                >
+                  <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+                    {option.label}
+                  </span>
+                  {!readOnly && (
+                    <svg
+                      onClick={(e) => handleOptionSelect(e, option)}
+                      className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                      viewBox="0 0 24 24"
+                      focusable="false"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                    </svg>
+                  )}
+                </div>
+              ))}
 
           <input
             aria-invalid="false"
             id={`input-${name}`}
             type="text"
             className={
-              "peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded border-0 bg-transparent py-4 px-3 font-[inherit] text-base focus:outline-none disabled:pointer-events-none"
+              clsx("peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded-[inherit] border-0 bg-transparent font-[inherit] focus:outline-none disabled:pointer-events-none", {
+                "pl-2 py-1 pr-1 text-sm": size == "small",
+                "py-4 px-3 text-base": size === "medium",
+              })
             }
             disabled={disabled}
             value={internalValue}
@@ -386,7 +395,7 @@ export const Lookup = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               lookupOptions.filter((d) => d != null && d.selected).length >
-                0 && (
+              0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}
@@ -436,12 +445,12 @@ export const Lookup = ({
               inset: "-5px 0px 0px",
             }}
             className={clsx(
-              "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+              "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
               {
                 "top-0":
                   open ||
                   lookupOptions.filter((o) => o != null && o.selected).length >
-                    0 ||
+                  0 ||
                   searchTerm.length > 0 ||
                   internalValue.length > 0,
               }
@@ -503,48 +512,14 @@ export const Lookup = ({
 
                   return option.inSearch;
                 }).length == 0 && (
-                  <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
-                    No options
-                  </li>
-                ))}
+                    <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
+                      No options
+                    </li>
+                  ))}
 
               {groupBy
                 ? Object.entries(
-                    lookupOptions
-                      .filter((option) => {
-                        if (filterlookupOptions) {
-                          return !option?.selected && option?.inSearch;
-                        }
-
-                        return option.inSearch;
-                      })
-                      .reduce((acc, obj) => {
-                        let groupKey: any = obj; // Use 'any' type for indexing
-
-                        groupKey = groupBy(obj);
-
-                        if (!acc.hasOwnProperty(groupKey)) {
-                          acc[groupKey] = [];
-                        }
-
-                        acc[groupKey].push(obj);
-                        return acc;
-                      }, {})
-                  ).map(
-                    ([groupTitle, groupedItems]: [
-                      groupedTitle: string,
-                      groupedItems: ILookupOptions[]
-                    ]) => (
-                      <li
-                        className="overflow-hidden"
-                        key={`group-${groupTitle}`}
-                      >
-                        <div className="px-2 py-1">{groupTitle}</div>
-                        <ul>{groupedItems.map(renderOption)}</ul>
-                      </li>
-                    )
-                  )
-                : lookupOptions
+                  lookupOptions
                     .filter((option) => {
                       if (filterlookupOptions) {
                         return !option?.selected && option?.inSearch;
@@ -552,7 +527,41 @@ export const Lookup = ({
 
                       return option.inSearch;
                     })
-                    .map(renderOption)}
+                    .reduce((acc, obj) => {
+                      let groupKey: any = obj; // Use 'any' type for indexing
+
+                      groupKey = groupBy(obj);
+
+                      if (!acc.hasOwnProperty(groupKey)) {
+                        acc[groupKey] = [];
+                      }
+
+                      acc[groupKey].push(obj);
+                      return acc;
+                    }, {})
+                ).map(
+                  ([groupTitle, groupedItems]: [
+                    groupedTitle: string,
+                    groupedItems: ILookupOptions[]
+                  ]) => (
+                    <li
+                      className="overflow-hidden"
+                      key={`group-${groupTitle}`}
+                    >
+                      <div className="px-2 py-1">{groupTitle}</div>
+                      <ul>{groupedItems.map(renderOption)}</ul>
+                    </li>
+                  )
+                )
+                : lookupOptions
+                  .filter((option) => {
+                    if (filterlookupOptions) {
+                      return !option?.selected && option?.inSearch;
+                    }
+
+                    return option.inSearch;
+                  })
+                  .map(renderOption)}
             </ul>
           </div>
         </ClickAwayListener>

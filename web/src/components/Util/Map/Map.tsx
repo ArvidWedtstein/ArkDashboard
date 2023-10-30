@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
+import { Lookup } from "../Lookup/Lookup";
 
 const MAPQUERY = gql`
   query FindMapsForMapComp {
@@ -119,6 +120,8 @@ const Map = ({
     }
     setMap(map_id);
     setSubMap(submap_id);
+
+    if (data) console.log(data.maps.filter((m) => m.parent_map_id == null && (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)))
   }, [called, loading, submap_id, map_id]);
 
   const handleKeyUp = useCallback((event) => {
@@ -272,56 +275,48 @@ const Map = ({
           </svg>
           <span className="sr-only">Zoom Out</span>
         </button>
-        <select
-          value={map}
+        <Lookup margin="none" disableClearable className="flex-grow" btnClassName="!rounded-none" size="small"
+          defaultValue={[map.toString()]}
           disabled={disable_map}
-          className="rw-button rw-button-small rw-button-gray flex-grow first:!rounded-bl-none last:!rounded-br-none !border-l-transparent"
-          onChange={(e) => {
-            onMapChange?.(parseInt(e.target.value));
-            setMap(parseInt(e.target.value));
-          }}
-        >
-          {data &&
-            data.maps
-              .filter((m) => m.parent_map_id == null && (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true))
-              .map((map: { id: number; name: string }) => (
-                <option key={map.id} value={map.id}>
-                  {map.name}
-                </option>
-              ))}
-        </select>
+          options={data?.maps
+            .filter((m) => m.parent_map_id == null && (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true))
+            .map((map: { id: number; name: string }) => ({
+              label: map.name,
+              value: map.id.toString(),
+            })) ?? []}
+          onSelect={(e) => {
+            if (e.length == 0) return;
+            onMapChange?.(parseInt(e[0].value.toString()));
+            setMap(parseInt(e[0].value.toString()));
+          }} />
         {data &&
           data.maps.some((m) => m.other_Map && m.other_Map.length > 0 && m.id === map) && (
-            <select
-              value={subMap}
+            <Lookup margin="none" disableClearable btnClassName="!rounded-none" size="small"
+              defaultValue={[subMap.toString()]}
               disabled={disable_sub_map}
-              className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-              onChange={({ target: { value } }) => {
-                onSubMapChange?.(parseInt(value));
-                setSubMap(parseInt(value));
-              }}
-            >
-              {data &&
-                data.maps
-                  ?.find((m) => m.id === map || m.id === map_id)
-                  .other_Map.map((map: { id: number; name: string }) => (
-                    <option key={map.id} value={map.id}>
-                      {map.name}
-                    </option>
-                  ))}
-            </select>
+              options={data.maps
+                ?.find((m) => m.id === map || m.id === map_id)
+                .other_Map.map((map: { id: number; name: string }) => ({
+                  label: map.name,
+                  value: map.id.toString(),
+                }))}
+              onSelect={(e) => {
+                if (e.length == 0) return;
+                onSubMapChange?.(parseInt(e[0].value.toString()));
+                setSubMap(parseInt(e[0].value.toString()));
+              }} />
           )}
-        <select
-          value={mapType}
+        <Lookup margin="none" disableClearable btnClassName="!rounded-none" size="small"
+          defaultValue={[mapType.toString()]}
           disabled={disable_map_type}
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-          onChange={({ target: { value } }) =>
-            (value == "img" || value == "topographic_img") && setMapType(value)
-          }
-        >
-          <option value={"img"}>Drawn</option>
-          <option value={"topographic_img"}>Topographic</option>
-        </select>
+          options={[
+            { label: "Drawn", value: "img" },
+            { label: "Topographic", value: "topographic_img" },
+          ]}
+          onSelect={(e) => {
+            if (e.length == 0) return;
+            setMapType(e[0].value.toString() as "img" | "topographic_img");
+          }} />
         <button
           className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => {

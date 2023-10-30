@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { groupBy, timeTag } from "src/lib/formatters";
+import { getISOWeek, groupBy, timeTag, toLocalPeriod } from "src/lib/formatters";
 
 interface CalendarProps {
   data: any[];
@@ -167,17 +167,22 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
           },100px)]`
         )}
       >
-        <div className="sticky top-0 z-10 col-start-[1] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200"></div>
+        <div className="sticky top-0 z-10 col-start-[1] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-neutral-600 dark:to-neutral-700 dark:text-slate-200">
+          {days && days.length > 0 ? `Week ${getISOWeek(days[0])}` : ''}
+        </div>
         {days.map((date, i) => (
           <div
             key={`day-${i}`}
-            id={`week-${getCurrentWeekNumber(date)}-day-${(i % 7) + 1}`}
+            id={`week-${getISOWeek(date)}-day-${(i % 7) + 1}`}
             className={clsx(
-              "sticky top-0 z-10 row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200",
+              "sticky top-0 z-10 row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-neutral-600 dark:to-neutral-700 dark:text-slate-200",
               `col-start-[${i + 2}]`
             )}
           >
-            {date.toDateString()}
+            {date.toLocaleDateString(
+              navigator && navigator.language,
+              { month: "long", day: "2-digit" }
+            )}
           </div>
         ))}
         {Object.entries(
@@ -189,52 +194,18 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
           <React.Fragment key={key}>
             <div
               className={`sticky left-0 col-start-[1] row-start-[${i + 2
-                }] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800`}
+                }] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-zinc-400 dark:border-slate-200/5 dark:bg-neutral-800`}
             >
               {key}
             </div>
-            <div
-              className={clsx(
-                `border-b border-r border-slate-100 dark:border-slate-200/5`,
-                `row-start-[${i + 2}] col-start-[2]`
-              )}
-            ></div>
-            <div
-              className={clsx(
-                `border-b border-r border-slate-100 dark:border-slate-200/5`,
-                `row-start-[${i + 2}] col-start-[3]`
-              )}
-            ></div>
-            <div
-              className={clsx(
-                `border-b border-r border-slate-100 dark:border-slate-200/5`,
-                `row-start-[${i + 2}] col-start-[4]`
-              )}
-            ></div>
-            <div
-              className={clsx(
-                `border-b border-r border-slate-100 dark:border-slate-200/5`,
-                `row-start-[${i + 2}] col-start-[5]`
-              )}
-            ></div>
-            <div
-              className={clsx(
-                `border-b border-r border-slate-100 dark:border-slate-200/5`,
-                `row-start-[${i + 2}] col-start-[6]`
-              )}
-            ></div>
-            <div
-              className={clsx(
-                `border-b border-r border-slate-100 dark:border-slate-200/5`,
-                `row-start-[${i + 2}] col-start-[7]`
-              )}
-            ></div>
-            <div
-              className={clsx(
-                `border-b border-r border-slate-100 dark:border-slate-200/5`,
-                `row-start-[${i + 2}] col-start-[8]`
-              )}
-            ></div>
+            {Array.from({ length: 7 }, (_, index) => index + 1).map((_, j) => (
+              <CalendarDay
+                id={`server-${i}-day-${j + 1}`}
+                key={`day-${j}`}
+                className={`row-start-[${i + 2}] col-start-[${j + 2}]`}
+              />
+            ))}
+
             {/* TODO: subgrid/filter for cluster? */}
             {/* TODO: fix bug event not showing on new year */}
             {groupedValues
@@ -249,13 +220,13 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
                 );
                 const weekDays = getDaysArray(startCurrWeek, endCurrWeek);
 
-                if (item.season == "3" && item.cluster == '6man') console.log(dayFromDate(startCurrWeek), dayFromDate(endCurrWeek), seasonDays.some(
-                  (d: Date) =>
-                    (dayFromDate(d) >= dayFromDate(startCurrWeek) &&
-                      dayFromDate(d) <= dayFromDate(endCurrWeek)) &&
-                    new Date(item[dateStartKey]).getFullYear() === currentYear &&
-                    new Date(item[dateEndKey]).getFullYear() === currentYear
-                ))
+                // if (item.season == "3" && item.cluster == '6man') console.log(dayFromDate(startCurrWeek), dayFromDate(endCurrWeek), seasonDays.some(
+                //   (d: Date) =>
+                //     (dayFromDate(d) >= dayFromDate(startCurrWeek) &&
+                //       dayFromDate(d) <= dayFromDate(endCurrWeek)) &&
+                //     new Date(item[dateStartKey]).getFullYear() === currentYear &&
+                //     new Date(item[dateEndKey]).getFullYear() === currentYear
+                // ))
 
                 // return seasonDays.some(
                 //   (d: Date) =>
@@ -308,76 +279,75 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
                 >
                   {(getCurrentWeekNumber(new Date(event[dateStartKey])) ==
                     currentWeek || getCurrentWeekNumber(new Date(event[dateEndKey])) ==
-                    currentWeek) && (<>
-                      <span className={`text-xs text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
-                        currentWeek ? 'text-left' : 'text-right'}`}>
-                        {timeTag(event[dateStartKey])} -{" "}
-                        {timeTag(event[dateEndKey])}
-                      </span>
-                      <span className={`text-xs font-medium text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
-                        currentWeek ? 'text-left' : 'text-right'}`}>
-                        {event.season} {event.cluster}
-                      </span>
-                      <span className={`text-xs text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
-                        currentWeek ? 'text-left' : 'text-right'}`}>
-                        Ragnarok, NA
-                      </span>
-                    </>)}
+                    currentWeek) && (
+                      <>
+                        <span className={`text-xs text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                          currentWeek ? 'text-left' : 'text-right'}`}>
+                          {timeTag(event[dateStartKey])} -{" "}
+                          {timeTag(event[dateEndKey])}
+                        </span>
+                        <span className={`text-xs font-medium text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                          currentWeek ? 'text-left' : 'text-right'}`}>
+                          {event.season} {event.cluster}
+                        </span>
+                        <span className={`text-xs text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                          currentWeek ? 'text-left' : 'text-right'}`}>
+                          Ragnarok, NA
+                        </span>
+                      </>)}
                 </div>
               ))}
           </React.Fragment>
         ))}
-        {/* {data && data.map((event, i) => (
-        ))} */}
-        {/* <div className="col-start-[3] row-span-2 row-start-[2] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50">
-          <span className="text-xs text-blue-600 dark:text-sky-100">5 AM</span>
-          <span className="text-xs font-medium text-blue-600 dark:text-sky-100">
-            Base raid
-          </span>
-          <span className="text-xs text-blue-600 dark:text-sky-100">
-            Ragnarok, NA
-          </span>
-        </div> */}
-        {/* <div className="col-start-[4] row-span-4 row-start-[3] m-1 flex flex-col rounded-lg border border-purple-700/10 bg-purple-400/20 p-1 dark:border-fuchsia-500 dark:bg-fuchsia-600/50">
-          <span className="text-xs text-purple-600 dark:text-fuchsia-100">
-            6 AM
-          </span>
-          <span className="text-xs font-medium text-purple-600 dark:text-fuchsia-100">
-            Breakfast
-          </span>
-          <span className="text-xs text-purple-600 dark:text-fuchsia-100">
-            Mel's Diner
-          </span>
-        </div> */}
-        {/* <div className="col-span-6 col-start-[7] row-span-3 row-start-[14] m-1 flex flex-col rounded-lg border border-pink-700/10 bg-pink-400/20 p-1 dark:border-indigo-500 dark:bg-indigo-600/50">
-          <span className="text-xs text-pink-600 dark:text-indigo-100">
-            5 PM
-          </span>
-          <span className="text-xs font-medium text-pink-600 dark:text-indigo-100">
-            🎉 Party party 🎉
-          </span>
-          <span className="text-xs text-pink-600 dark:text-indigo-100">
-            We like to party!
-          </span>
-        </div> */}
       </div>
-      <div className="rw-button-group rw-button-group-border">
+      <div className="flex opacity-100 transition-opacity duration-200 dark:text-white text-black mt-3">
         <button
-          className="rw-button rw-button-green"
+          className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center hover:bg-black/10 dark:hover:bg-white/10 justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
+          aria-label="Previous month"
           onClick={() => changeWeek("prev")}
         >
-          {"<"}
+          <svg
+            className="inline-block h-5 w-5 shrink-0 select-none fill-current transition-colors"
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            data-testid="ArrowLeftIcon"
+          >
+            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+          </svg>
         </button>
+        <div className="w-6" />
         <button
-          className="rw-button rw-button-green"
+          className="relative -ml-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none hover:bg-black/10 dark:hover:bg-white/10 appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
+          aria-label="Next month"
           onClick={() => changeWeek("next")}
         >
-          {">"}
+          <svg
+            className="inline-block h-5 w-5 shrink-0 select-none fill-current transition-colors"
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            data-testid="ArrowRightIcon"
+          >
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+          </svg>
         </button>
       </div>
     </div>
   );
 };
+
+const CalendarDay = ({ className, id }) => {
+  return (
+    <div
+      id={id}
+      className={clsx(
+        `border-b border-r border-slate-100 dark:border-slate-200/5`,
+        className
+      )}
+    ></div>
+  )
+}
 
 export default Calendar;
 

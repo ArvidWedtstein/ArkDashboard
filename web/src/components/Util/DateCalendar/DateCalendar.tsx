@@ -6,14 +6,11 @@ import {
   getDaysBetweenDates,
   getISOWeek,
   getWeekdays,
+  toLocalPeriod,
   toLocaleISODate,
 } from "src/lib/formatters";
 
-function toLocalPeriod(date: Date): string {
-  return `${date.getFullYear()}-${(date.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}`;
-}
+
 type ViewType = "year" | "month" | "day";
 type DateCalendarProps = {
   displayWeekNumber?: boolean;
@@ -40,6 +37,7 @@ const DateCalendar = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     defaultValue ? new Date(defaultValue) : null
   );
+  const [selectedRange, setSelectedRange] = useState<Date[] | null>([new Date('2023-10-30'), new Date('2023-10-30')]); // [new Date('2023-10-10'), new Date()]
   const [period, setPeriod] = useState<string>(() =>
     toLocalPeriod(defaultValue)
   );
@@ -161,8 +159,8 @@ const DateCalendar = ({
             currentView === "year" || currentView === "month"
               ? selectView("day")
               : views.includes("year") || views.includes("month")
-              ? selectView(views.includes("year") ? "year" : "month")
-              : selectView("day")
+                ? selectView(views.includes("year") ? "year" : "month")
+                : selectView("day")
           }
         >
           <div className="relative block">
@@ -182,8 +180,8 @@ const DateCalendar = ({
                 currentView === "year" || currentView === "month"
                   ? selectView("day")
                   : views.includes("year") || views.includes("month")
-                  ? selectView(views.includes("year") ? "year" : "month")
-                  : selectView("day")
+                    ? selectView(views.includes("year") ? "year" : "month")
+                    : selectView("day")
               }
               className="relative mr-auto box-border inline-flex cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-1 text-center align-middle text-lg"
               aria-label={
@@ -212,7 +210,7 @@ const DateCalendar = ({
         </div>
         <div className="flex opacity-100 transition-opacity duration-200">
           <button
-            className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
+            className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center hover:bg-black/10 dark:hover:bg-white/10 justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
             aria-label="Previous month"
             onClick={() => navigateMonth(-1)}
             disabled={disabled}
@@ -229,7 +227,7 @@ const DateCalendar = ({
           </button>
           <div className="w-6" />
           <button
-            className="relative -ml-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
+            className="relative -ml-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none hover:bg-black/10 dark:hover:bg-white/10 appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
             aria-label="Next month"
             onClick={() => navigateMonth(1)}
             disabled={disabled}
@@ -262,7 +260,7 @@ const DateCalendar = ({
                   role="radio"
                   type="button"
                   className={clsx(
-                    "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black dark:text-white",
+                    "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10",
                     {
                       "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
                         year === Number(period.substring(0, 4)),
@@ -293,7 +291,7 @@ const DateCalendar = ({
                   role="radio"
                   type="button"
                   className={clsx(
-                    "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black dark:text-white",
+                    "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10",
                     {
                       "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
                         month.getMonth() === Number(period.substring(5)) - 1,
@@ -359,7 +357,7 @@ const DateCalendar = ({
                 {daysOfMonth.map((week, index) => {
                   return (
                     <div
-                      className="my-0.5 mx-0 flex justify-center"
+                      className="my-0.5 mx-0 flex justify-center" // bg-black gap-px for lines
                       role="row"
                       aria-rowindex={index + 1}
                     >
@@ -374,48 +372,57 @@ const DateCalendar = ({
                       )}
                       {week.map((day, j) => {
                         return (
-                          <button
-                            className={clsx(
-                              "font-montserrat hover:bg-pea-300/10 relative mx-0.5 box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
-                              {
-                                "text-white/70":
-                                  day.getMonth() !==
-                                  Number(period.substring(5)) - 1,
-                                invisible:
-                                  !showDaysOutsideCurrentMonth &&
-                                  day.getMonth() !==
+                          <div className={clsx("relative inline-flex shrink-0", {
+                            "rounded-l-full": toLocaleISODate(selectedRange[0]) === toLocaleISODate(day),
+                            "rounded-r-full": toLocaleISODate(selectedRange[1]) === toLocaleISODate(day),
+                            "bg-pea-300/10": toLocaleISODate(selectedRange[0]) <= toLocaleISODate(day) && toLocaleISODate(selectedRange[1]) >= toLocaleISODate(day),
+                          })} title={`${toLocaleISODate(selectedRange[0])}-${toLocaleISODate(selectedRange[1])}`}>
+                            <button
+                              className={clsx(
+                                "font-montserrat hover:bg-pea-300/10 relative mx-0.5 box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
+                                {
+                                  "text-white/70":
+                                    day.getMonth() !==
                                     Number(period.substring(5)) - 1,
-                                "border border-white/70":
-                                  toLocaleISODate(new Date()) ===
+                                  invisible:
+                                    !showDaysOutsideCurrentMonth &&
+                                    day.getMonth() !==
+                                    Number(period.substring(5)) - 1,
+                                  "border border-white/70":
+                                    toLocaleISODate(new Date()) ===
                                     toLocaleISODate(day) &&
-                                  toLocaleISODate(day) !=
+                                    toLocaleISODate(day) !=
                                     toLocaleISODate(selectedDate),
-                                "bg-pea-400 hover:bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
-                                  toLocaleISODate(day) ===
-                                  toLocaleISODate(selectedDate),
+                                  "bg-pea-400 hover:!bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
+                                    toLocaleISODate(day) ===
+                                    toLocaleISODate(selectedDate),
+                                }
+                              )}
+                              type="button"
+                              role="gridcell"
+                              aria-disabled="false"
+                              tabIndex={-1}
+                              aria-colindex={j + 1}
+                              disabled={disabled}
+                              aria-selected={
+                                toLocaleISODate(selectedDate) ===
+                                toLocaleISODate(day)
                               }
-                            )}
-                            type="button"
-                            role="gridcell"
-                            aria-disabled="false"
-                            tabIndex={-1}
-                            aria-colindex={j + 1}
-                            disabled={disabled}
-                            aria-selected={
-                              toLocaleISODate(selectedDate) ===
-                              toLocaleISODate(day)
-                            }
-                            data-timestamp={day.getTime()}
-                            onClick={(e) => onSelectDate(e, day)}
-                            aria-current={
-                              toLocaleISODate(new Date()) ===
-                              toLocaleISODate(day)
-                                ? "date"
-                                : undefined
-                            }
-                          >
-                            {day.getDate()}
-                          </button>
+                              data-timestamp={day.getTime()}
+                              onClick={(e) => onSelectDate(e, day)}
+                              aria-current={
+                                toLocaleISODate(new Date()) ===
+                                  toLocaleISODate(day)
+                                  ? "date"
+                                  : undefined
+                              }
+                            >
+                              {day.getDate()}
+                            </button>
+                            {/* <span className="absolute rw-badge rw-badge-small transform translate-x-1/2 -translate-y-1/2 top-[14%] right-[14%]">
+                              🌚
+                            </span> */}
+                          </div>
                         );
                       })}
                     </div>
