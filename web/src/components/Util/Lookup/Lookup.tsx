@@ -16,7 +16,6 @@ interface ILookup {
   btnClassName?: string;
   disabled?: boolean;
   helperText?: string;
-  search?: boolean;
   disableClearable?: boolean;
   readOnly?: boolean;
   filterlookupOptions?: boolean;
@@ -30,6 +29,7 @@ interface ILookup {
   size?: "small" | "medium";
   options: {
     label: string;
+    // TODO: fix return type
     value: string | object | number;
     image?: string;
     disabled?: boolean;
@@ -258,8 +258,10 @@ export const Lookup = ({
         aria-checked={option.selected}
         aria-disabled={option.disabled}
         // TODO: add check if group is over or under
-        className={clsx("flex items-center py-2 px-4 last:rounded-b-lg", {
+        className={clsx("flex items-center last:rounded-b-lg", {
           "cursor-not-allowed text-zinc-500/50": option.disabled,
+          "px-2 py-1": size === 'small',
+          "py-2 px-4": size === 'medium',
           "first:rounded-t-lg": index == 0 && !groupBy,
           "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
             !option.disabled,
@@ -496,7 +498,10 @@ export const Lookup = ({
           <div
             role="menu"
             className={
-              "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800"
+              clsx("z-30 w-fit max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800", {
+                "min-w-[10rem]": size === 'small',
+                "min-w-[15rem]": size === 'medium',
+              })
             }
           >
             <ul

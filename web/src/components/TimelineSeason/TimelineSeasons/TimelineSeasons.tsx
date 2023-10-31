@@ -1,10 +1,199 @@
 import { Link, routes } from "@redwoodjs/router";
+import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
 import Calendar from "src/components/Util/Calendar/Calendar";
 import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { addToDate, adjustCalendarDate, getDaysBetweenDates, getWeekdays, toLocalPeriod, toLocaleISODate } from "src/lib/formatters";
 
 import type {
   FindTimelineSeasons,
 } from "types/graphql";
+
+const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; start: Date; end: Date }[] }) => {
+  const [ganttTasks, setGanttTasks] = useState(tasks);
+  const [viewType, setViewType] = useState("week");
+  const [period, setPeriod] = useState<string>(() =>
+    toLocalPeriod(new Date())
+  );
+  const chartRef = useRef(null);
+  const dragInfo = useRef(null);
+  const firstDayOfWeek = 1;
+
+  const days = getWeekdays(firstDayOfWeek);
+  const chartStartDate = new Date('2023-10-30T00:00:00'); // Define your chart's start date
+  const chartEndDate = new Date('2023-10-30T23:59:59'); // Define your chart's end date
+
+  const calculatePosition = (start: Date) => {
+    const timeDiff = +start - +chartStartDate;
+    const totalDuration = +chartEndDate - +chartStartDate;
+    const position = (timeDiff / totalDuration) * 100;
+    return position + '%';
+  };
+
+  const calculateWidth = (start: Date, end: Date) => {
+    const totalDuration = (+chartEndDate) - (+chartStartDate);
+    const taskDuration = +end - +start;
+    const width = (taskDuration / totalDuration) * 100;
+    return width + '%';
+  };
+
+  const handleTaskDragStart = (e: React.DragEvent<HTMLLIElement>, taskId) => {
+    e.dataTransfer.setData('taskId', taskId);
+
+    console.log(e, taskId)
+    dragInfo.current = { taskId, initialX: e.clientX };
+  };
+
+  const handleTaskDrag = (e) => {
+    e.preventDefault();
+    if (!dragInfo.current) return;
+    const { taskId, initialX } = dragInfo.current;
+    const deltaX = e.clientX - initialX;
+
+    console.log(e, taskId)
+    // Calculate the new start and end dates based on deltaX
+    // Update ganttTasks and re-render
+  };
+
+  const handleTaskDragEnd = (e) => {
+    console.log(dragInfo.current)
+    dragInfo.current = null;
+    // Handle the end of the drag operation (e.g., update data on server)
+  };
+  const useCalendarDateRange = (
+    period: string | Date,
+    weekStartsOn: number = 0
+  ) => {
+    const [first, setFirst] = useState(() =>
+      adjustCalendarDate(
+        adjustCalendarDate(new Date(period), "start", "month"),
+        "start",
+        "week",
+        weekStartsOn
+      )
+    );
+    const [last, setLast] = useState(() =>
+      adjustCalendarDate(new Date(period), "end", "month")
+    );
+
+    useEffect(() => {
+      setFirst(
+        adjustCalendarDate(
+          adjustCalendarDate(new Date(period), "start", "month"),
+          "start",
+          "week",
+          weekStartsOn
+        )
+      );
+      setLast(adjustCalendarDate(new Date(period), "end", "month"));
+    }, [period, weekStartsOn]);
+
+    return [first, last];
+  };
+
+  const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek);
+
+  const weeks = Array.from(
+    {
+      length: getDaysBetweenDates(firstDay, lastDay).length / 7 + 1,
+    },
+    (_, weekIndex) => {
+      return Array.from({ length: 7 }, (_day, index) => {
+        return addToDate(firstDay, weekIndex * 7 + index, "day");
+      });
+    }
+  );
+  return (
+    <div
+      className="gantt-chart relative p-4"
+      ref={chartRef}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => handleTaskDrag(e)}
+    >
+      <div role="menubar" className="mb-2">
+        <Lookup size="small" margin="none" disableClearable readOnly defaultValue={["week"]} options={[
+          { label: 'Day View', value: 'day' },
+          { label: 'Week View', value: 'week' },
+          { label: 'Month View', value: 'month' },
+          { label: 'Year View', value: 'year' },
+        ]}
+          onSelect={(val) => {
+            if (val.length > 0) {
+              setViewType(val[0].value.toString());
+            }
+          }}
+        />
+      </div>
+      <div className="flex flex-col flex-none">
+        <div className="pr-8 flex-none z-30 sticky top-0 dark:bg-neutral-800 bg-zinc-300 shadow-lg dark:text-white">
+          <div className="grid text-sm leading-6 border-r dark:border-white/20 grid-cols-7 -mr-px divide-x dark:divide-white/20">
+            <div className="w-14 col-end-1" />
+            {days.map((day) => (
+              <div className="py-3 flex justify-center items-center" key={day.toISOString()}>
+                <span className="flex items-baseline">
+                  {day.toLocaleDateString(navigator && navigator.language, { weekday: 'short' })}
+                  <span className={clsx("font-semibold ml-1.5 flex items-center justify-center", {
+                    'text-red-500': day.getDay() === 0 || day.getDay() === 6,
+                    'bg-pea-500 text-white rounded-full w-8 h-8': toLocaleISODate(day) === toLocaleISODate(new Date()),
+                  })}>
+                    {day.toLocaleDateString(navigator && navigator.language, { day: 'numeric' })}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-auto">
+          <div className="dark:bg-neutral-800 bg-zinc-300 flex-none z-10 w-14 sticky left-0" />
+          <div className="flex-auto grid grid-cols-1 grid-rows-1">
+            <div className="grid col-start-1 col-end-2 row-start-1 divide-y dark:divide-white/20 dark:text-white" style={{
+              gridTemplateRows: `repeat(${tasks.length}, minmax(3.5rem, 1fr))`,
+            }} role="rowgroup">
+              <div className="h-7 row-end-1" role="row" />
+              {tasks.map((task, index) => (
+                <div className="flex items-center" key={`row-${index}`} role="row">
+                  <div className="text-right text-xs w-14 -ml-14 pr-2 z-20 left-0 sticky">{task.name}</div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 grid-rows-1 row-start-1 col-end-2 col-start-1 divide-x dark:divide-white/20">
+              <div className="row-[1/-1] col-start-1" />
+              <div className="row-[1/-1] col-start-2" />
+              <div className="row-[1/-1] col-start-3" />
+              <div className="row-[1/-1] col-start-4" />
+              <div className="row-[1/-1] col-start-5" />
+              <div className="row-[1/-1] col-start-6" />
+              <div className="row-[1/-1] col-start-7" />
+              <div className="row-[1/-1] col-start-8 w-8" />
+            </div>
+            <ol className="pr-8 grid grid-cols-7 row-start-1 col-end-2 col-start-1 dark:text-white border-l border-b dark:border-white/20" style={{
+              gridTemplateRows: `1.75rem repeat(${tasks.length}, minmax(0px, 1fr)) auto`,
+            }}>
+              {
+                ganttTasks.map((task, i) => (
+                  <li
+                    key={task.id}
+                    className="relative mt-px flex"
+                    style={{
+                      gridRow: `${i + 2} / ${i + 3}`,
+                      gridColumnStart: task.start.getDay(),
+                    }}
+                    draggable
+                    onDragStart={(e) => handleTaskDragStart(e, task.id)}
+                    onDragEnd={handleTaskDragEnd}
+                  >
+                    <p className="p-2 flex flex-col rounded-lg overflow-y-auto bg-pea-400/80 absolute inset-1">{task.name}</p>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
 
@@ -58,6 +247,33 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         dateStartKey="season_start_date"
         dateEndKey="season_end_date"
       />
+
+      <GanttChart tasks={[{
+        id: 1,
+        name: 'test1',
+        start: new Date("2023-10-30"),
+        end: new Date("2023-11-30"),
+      }, {
+        id: 2,
+        name: 'test2',
+        start: new Date("2023-12-15"),
+        end: new Date("2024-02-30"),
+      }, {
+        id: 3,
+        name: 'test3',
+        start: new Date("2023-11-23"),
+        end: new Date("2023-11-23"),
+      }, {
+        id: 4,
+        name: 'test4',
+        start: new Date(),
+        end: new Date("2023-11-30"),
+      }, {
+        id: 5,
+        name: 'test5',
+        start: new Date(),
+        end: new Date("2023-11-30"),
+      }]} />
       <DateCalendar />
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(

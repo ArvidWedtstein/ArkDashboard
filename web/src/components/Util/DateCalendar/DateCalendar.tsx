@@ -147,7 +147,7 @@ const DateCalendar = ({
   };
   return (
     <div
-      className="flex h-fit max-h-[334px] w-80 flex-col overflow-hidden"
+      className="flex h-fit max-h-[360px] w-80 flex-col overflow-hidden"
       aria-labelledby="dropdownButton"
     >
       <div className="mb-2 mt-4 flex max-h-8 min-h-[2rem] items-center justify-center pr-3 pl-6 text-white">
@@ -345,16 +345,70 @@ const DateCalendar = ({
               ))}
             </div>
             <div
-              className="relative block min-h-[240px] overflow-x-hidden "
+              className="relative block min-h-[240px] overflow-x-hidden"
               role="presentation"
             >
               <div
                 className={clsx(
-                  "absolute top-0 right-0 left-0 overflow-hidden"
+                  "absolute top-0 right-0 left-0 overflow-hidden grid gap-px grid-cols-7 isolate"
                 )}
                 role="rowgroup"
               >
                 {daysOfMonth.map((week, index) => {
+                  return week.map((day, j) => {
+                    return (
+                      <button
+                        className={clsx(
+                          "py-1.5 bg-zinc-200 cursor-pointer",
+                          {
+                            "text-white/70":
+                              day.getMonth() !==
+                              Number(period.substring(5)) - 1,
+                            invisible:
+                              !showDaysOutsideCurrentMonth &&
+                              day.getMonth() !==
+                              Number(period.substring(5)) - 1,
+                            "border border-white/70":
+                              toLocaleISODate(new Date()) ===
+                              toLocaleISODate(day) &&
+                              toLocaleISODate(day) !=
+                              toLocaleISODate(selectedDate),
+                            "bg-pea-400 hover:!bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
+                              toLocaleISODate(day) ===
+                              toLocaleISODate(selectedDate),
+                            "rounded-tl-lg": j === 0 && index === 0,
+                            "rounded-tr-lg": j === 6 && index === 0,
+                            "rounded-bl-lg": j === 0 && index === daysOfMonth.length - 1,
+                            "rounded-br-lg": j === 6 && index === daysOfMonth.length - 1,
+                          }
+                        )}
+                        type="button"
+                        role="gridcell"
+                        aria-disabled="false"
+                        tabIndex={-1}
+                        aria-colindex={j + 1}
+                        disabled={disabled}
+                        aria-selected={
+                          toLocaleISODate(selectedDate) ===
+                          toLocaleISODate(day)
+                        }
+                        data-timestamp={day.getTime()}
+                        onClick={(e) => onSelectDate(e, day)}
+                        aria-current={
+                          toLocaleISODate(new Date()) ===
+                            toLocaleISODate(day)
+                            ? "date"
+                            : undefined
+                        }
+                      >
+                        <time className="mx-auto flex h-7 w-7 items-center justify-center rounded-full">
+                          {day.getDate()}
+                        </time>
+                      </button>
+                    );
+                  });
+                })}
+                {/* {daysOfMonth.map((week, index) => {
                   return (
                     <div
                       className="my-0.5 mx-0 flex justify-center" // bg-black gap-px for lines
@@ -419,15 +473,15 @@ const DateCalendar = ({
                             >
                               {day.getDate()}
                             </button>
-                            {/* <span className="absolute rw-badge rw-badge-small transform translate-x-1/2 -translate-y-1/2 top-[14%] right-[14%]">
+                            /* <span className="absolute rw-badge rw-badge-small transform translate-x-1/2 -translate-y-1/2 top-[14%] right-[14%]">
                               🌚
-                            </span> */}
+                            </span> *
                           </div>
                         );
                       })}
                     </div>
                   );
-                })}
+                })} */}
               </div>
             </div>
           </div>
