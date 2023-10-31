@@ -32,54 +32,48 @@ const Popper = ({
       let left = disablePortal ? 0 : anchorRect.left;
 
       // Flip dropdown to right if it goes off screen
-      if (left + menuBounds.width > window.innerWidth) {
+      if (anchorRect.left + (menuBounds.width + 20) >= window.innerWidth) {
         left = anchorRect.right - menuBounds.width;
       }
 
       // Flip dropdown to top if it goes off screen bottom. Account for scroll
-      if (top + menuBounds.height > window.innerHeight + window.scrollY) {
+      if (top > window.innerHeight + window.scrollY) {
         top = anchorEl.scrollTop - menuBounds.height - paddingToAnchor; // scrollTop = offsetTop?
       }
 
       setPopperPosition({ top, left });
     }
   }, [open, anchorEl]);
-
-  return (
-    (open || keepMounted) && (
-      <>
-        {/* TODO: implement */}
-        {disablePortal ? (
-          <div
-            style={{
-              zIndex: 100,
-              position: "absolute",
-              transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
-              inset: "0px auto auto 0px",
-              margin: 0,
-            }}
-            ref={containerRef}
-          >
-            {children}
-          </div>
-        ) : (
-          createPortal(
-            <div
-              style={{
-                zIndex: 100,
-                position: "absolute",
-                transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
-                inset: "0px auto auto 0px",
-                margin: 0,
-              }}
-              ref={containerRef}
-            >
-              {children}
-            </div>,
-            document.body
-          )
-        )}
-      </>
+  if (!(open || keepMounted)) return null;
+  return disablePortal ? (
+    <div
+      style={{
+        zIndex: 100,
+        position: "absolute",
+        transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
+        inset: "0px auto auto 0px",
+        margin: 0,
+      }}
+      ref={containerRef}
+    >
+      {children}
+    </div>
+  ) : (
+    createPortal(
+      <div
+        style={{
+          zIndex: 100,
+          position: "absolute",
+          transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
+          inset: "0px auto auto 0px",
+          overflow: "hidden",
+          margin: 0,
+        }}
+        ref={containerRef}
+      >
+        {children}
+      </div>,
+      document.body
     )
   );
 };

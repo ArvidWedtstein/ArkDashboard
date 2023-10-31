@@ -1,30 +1,48 @@
-import { navigate, routes } from "@redwoodjs/router";
+import { Link, routes } from "@redwoodjs/router";
 import { toast } from "@redwoodjs/web/toast";
 import { useState } from "react";
 import { useAuth } from "src/auth";
 
-import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import { FormModal } from "src/components/Util/Modal/Modal";
 import Table from "src/components/Util/Table/Table";
 import { getISOWeek, pluralize, timeTag } from "src/lib/formatters";
 
 import type { FindTribes, permission } from "types/graphql";
 import NewTribe from "../NewTribe/NewTribe";
-import Tooltip from "src/components/Util/Tooltip/Tooltip";
+import Popper from "src/components/Util/Popper/Popper";
+import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
 
 const TribesList = ({ tribes }: FindTribes) => {
+  const [anchorRef, setAnchorRef] = useState<{
+    element: HTMLButtonElement | null;
+    link: string;
+    open: boolean;
+  }>({ element: null, link: null, open: false });
   const { currentUser } = useAuth();
-  const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const filterDatesByCurrentWeek = (dates: FindTribes["tribes"]) => {
-    return dates.filter((d) => getISOWeek(new Date()) === getISOWeek(new Date(d.created_at)));
+    return dates.filter(
+      (d) => getISOWeek(new Date()) === getISOWeek(new Date(d.created_at))
+    );
+  };
+
+  const handleClose = (event: React.MouseEvent<Document>) => {
+    if (
+      anchorRef?.element &&
+      anchorRef.element.contains(event.target as HTMLElement)
+    ) {
+      return;
+    }
+
+    setAnchorRef({ element: null, open: false, link: null });
   };
 
   return (
     <div className="relative">
       <FormModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
         title="Add new tribe"
       >
         <NewTribe />
@@ -32,7 +50,7 @@ const TribesList = ({ tribes }: FindTribes) => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <button
           className="hover:ring-pea-400 focus:ring-pea-400 dark:ring-pea-600 flex cursor-pointer items-start space-x-4 rounded-lg bg-zinc-200 p-4 shadow-lg ring-1 ring-zinc-500 transition-shadow hover:shadow-sm disabled:cursor-not-allowed disabled:ring-transparent dark:bg-zinc-700"
-          onClick={() => setOpen(true)}
+          onClick={() => setOpenModal(true)}
           disabled={
             !currentUser ||
             !currentUser?.permissions?.some(
@@ -151,55 +169,78 @@ const TribesList = ({ tribes }: FindTribes) => {
               field: "created_at",
               header: "",
               render: ({ row }) => (
-                <ContextMenu
-                  type="click"
-                  items={[
-                    {
-                      label: "View",
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 576 512"
-                        >
-                          <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
-                        </svg>
-                      ),
-                      onClick: () => {
-                        navigate(routes.tribe({ id: row["id"] }));
-                      },
-                    },
-                    {
-                      label: "Edit",
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 512 512"
-                        >
-                          <path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z" />
-                        </svg>
-                      ),
-                      onClick: () => {
-                        currentUser?.permissions?.some(
-                          (p: permission) => p === "tribe_update"
-                        ) && navigate(routes.editTribe({ id: row["id"] }));
-                      },
-                    },
-                  ]}
+                <button
+                  className="rw-button rounded-full p-2 hover:bg-black/10 dark:hover:bg-white/10"
+                  type="button"
+                  onClick={(e) => {
+                    setAnchorRef({
+                      open: anchorRef?.element ? !anchorRef?.open : true,
+                      element: e.currentTarget,
+                      link: row["id"],
+                    });
+                  }}
                 >
                   <svg
-                    className="w-4 fill-black text-black dark:fill-stone-200 dark:text-white"
+                    className="h-4 w-4 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 448 512"
                   >
                     <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
                   </svg>
-                </ContextMenu>
+                </button>
               ),
             },
           ]}
           rows={tribes}
         />
       </div>
+      <Popper anchorEl={anchorRef?.element} open={anchorRef.open}>
+        <ClickAwayListener onClickAway={handleClose}>
+          <div
+            className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
+            onClick={() => setAnchorRef(null)}
+          >
+            <ul className="relative m-0 list-none py-2">
+              <Link
+                to={routes.tribe({ id: anchorRef?.link })}
+                className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+              >
+                <div className="inline-flex min-w-[36px] shrink-0">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 576 512"
+                    className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                    focusable="false"
+                  >
+                    <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                  </svg>
+                </div>
+                View
+              </Link>
+              {currentUser?.permissions?.some(
+                (p: permission) => p === "tribe_update"
+              ) && (
+                <Link
+                  to={routes.editTribe({ id: anchorRef?.link })}
+                  className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                >
+                  <div className="inline-flex min-w-[36px] shrink-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                      focusable="false"
+                    >
+                      <path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z" />
+                    </svg>
+                  </div>
+                  Edit
+                </Link>
+              )}
+            </ul>
+          </div>
+        </ClickAwayListener>
+      </Popper>
     </div>
   );
 };

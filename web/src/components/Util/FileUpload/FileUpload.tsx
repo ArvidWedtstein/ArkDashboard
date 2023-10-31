@@ -6,6 +6,8 @@ import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Toast from "../Toast/Toast";
 import { useController } from "@redwoodjs/forms";
+import Popper from "../Popper/Popper";
+import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 
 interface IFileUploadProps {
   onUpload?: (url: string) => void;
@@ -68,6 +70,11 @@ const FileUpload = ({
   const { client: supabase } = useAuth();
   const [files, setFiles] = useState<iFile[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [anchorRef, setAnchorRef] = useState<{
+    element: HTMLButtonElement | null;
+    file: iFile;
+    open: boolean;
+  }>({ element: null, file: null, open: false });
   // TODO: add support for mulitple file uploads
   const { field } = !!name && useController({ name: name });
 
@@ -280,6 +287,17 @@ const FileUpload = ({
       );
   };
 
+  const handleClose = (event: React.MouseEvent<Document>) => {
+    if (
+      anchorRef?.element &&
+      anchorRef.element.contains(event.target as HTMLElement)
+    ) {
+      return;
+    }
+
+    setAnchorRef({ element: null, open: false, file: null });
+  };
+
   return (
     <div
       className={`group relative flex w-[calc(100%-3rem)] max-w-2xl flex-col gap-2 overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 p-3 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 ${className}`}
@@ -417,77 +435,15 @@ const FileUpload = ({
                 {new Date(file.file.lastModified).toDateString()}
               </div>
               <div className="table-cell p-2">
-                <ContextMenu
-                  type="click"
-                  items={[
-                    thumbnail
-                      ? {
-                          label: "Set as thumbnail",
-                          icon: (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 576 512"
-                              fill="currentColor"
-                            >
-                              <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
-                            </svg>
-                          ),
-                          onClick: () => {
-                            setFiles((prev) =>
-                              prev.map((f) => ({
-                                ...f,
-                                thumbnail: f.file.name === file.file.name,
-                              }))
-                            );
-                          },
-                        }
-                      : null,
-                    {
-                      label: "Preview",
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 576 512"
-                          fill="currentColor"
-                        >
-                          <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
-                        </svg>
-                      ),
-                      onClick: () => {
-                        setFiles((prev) =>
-                          prev.map((f) => ({
-                            ...f,
-                            preview: f.file.name === file.file.name,
-                          }))
-                        );
-                      },
-                    },
-                    {
-                      label: "Delete",
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                        >
-                          <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
-                        </svg>
-                      ),
-                      onClick: () => {
-                        toast.custom(
-                          (t) => (
-                            <Toast
-                              t={t}
-                              variant="error"
-                              title={`You're about to delete ${file.file.name}`}
-                              message="Are you sure you want to delete this file? This action cannot be undone."
-                              primaryAction={() => handleFileDelete(file)}
-                            />
-                          ),
-                          { position: "top-center" }
-                        );
-                      },
-                    },
-                  ]}
+                <button
+                  type="button"
+                  onClick={(e) =>
+                    setAnchorRef((prev) => ({
+                      element: e.currentTarget,
+                      open: !prev.open,
+                      file: file,
+                    }))
+                  }
                 >
                   <svg
                     className="w-4"
@@ -497,7 +453,7 @@ const FileUpload = ({
                   >
                     <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
                   </svg>
-                </ContextMenu>
+                </button>
               </div>
               {thumbnail && (
                 <input
@@ -554,6 +510,104 @@ const FileUpload = ({
       >
         Upload
       </button>
+
+      <Popper anchorEl={anchorRef?.element} open={anchorRef.open}>
+        <ClickAwayListener onClickAway={handleClose}>
+          <div
+            className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
+            onClick={() => setAnchorRef(null)}
+          >
+            <ul className="relative m-0 list-none py-2">
+              {thumbnail && (
+                <li>
+                  <button
+                    type="button"
+                    className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                    onClick={() => {
+                      setFiles((prev) =>
+                        prev.map((f) => ({
+                          ...f,
+                          thumbnail: f.file.name === anchorRef.file.file.name,
+                        }))
+                      );
+                    }}
+                  >
+                    <div className="inline-flex min-w-[36px] shrink-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                        className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                        focusable="false"
+                      >
+                        <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                      </svg>
+                    </div>
+                    Set as thumbnail
+                  </button>
+                </li>
+              )}
+              <li>
+                <button
+                  className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                  type="button"
+                  onClick={() => {
+                    setFiles((prev) =>
+                      prev.map((f) => ({
+                        ...f,
+                        preview: f.file.name === anchorRef.file.file.name,
+                      }))
+                    );
+                  }}
+                >
+                  <div className="inline-flex min-w-[36px] shrink-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 576 512"
+                      className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                      focusable="false"
+                    >
+                      <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                    </svg>
+                  </div>
+                  Preview
+                </button>
+              </li>
+              <li>
+                <button
+                  className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                  type="button"
+                  onClick={() => {
+                    toast.custom(
+                      (t) => (
+                        <Toast
+                          t={t}
+                          variant="error"
+                          title={`You're about to delete ${anchorRef.file.file.name}`}
+                          message="Are you sure you want to delete this file? This action cannot be undone."
+                          primaryAction={() => handleFileDelete(anchorRef.file)}
+                        />
+                      ),
+                      { position: "top-center" }
+                    );
+                  }}
+                >
+                  <div className="inline-flex min-w-[36px] shrink-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                      focusable="false"
+                    >
+                      <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
+                    </svg>
+                  </div>
+                  Delete
+                </button>
+              </li>
+            </ul>
+          </div>
+        </ClickAwayListener>
+      </Popper>
     </div>
   );
 };

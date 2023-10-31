@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { IntRange, debounce, formatNumber } from "src/lib/formatters";
 import clsx from "clsx";
-import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Popper from "../Popper/Popper";
