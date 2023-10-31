@@ -119,6 +119,7 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
           { label: 'Year View', value: 'year' },
         ]}
           onSelect={(val) => {
+            console.log(val)
             if (val.length > 0) {
               setViewType(val[0].value.toString());
             }
@@ -133,12 +134,14 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
               <div className="py-3 flex justify-center items-center" key={day.toISOString()}>
                 <span className="flex items-baseline">
                   {day.toLocaleDateString(navigator && navigator.language, { weekday: 'short' })}
-                  <span className={clsx("font-semibold ml-1.5 flex items-center justify-center", {
-                    'text-red-500': day.getDay() === 0 || day.getDay() === 6,
-                    'bg-pea-500 text-white rounded-full w-8 h-8': toLocaleISODate(day) === toLocaleISODate(new Date()),
-                  })}>
-                    {day.toLocaleDateString(navigator && navigator.language, { day: 'numeric' })}
-                  </span>
+                  {viewType === 'week' && (
+                    <span className={clsx("font-semibold ml-1.5 flex items-center justify-center", {
+                      'text-red-500': day.getDay() === 0 || day.getDay() === 6,
+                      'bg-pea-500 text-white rounded-full w-8 h-8': toLocaleISODate(day) === toLocaleISODate(new Date()),
+                    })}>
+                      {day.toLocaleDateString(navigator && navigator.language, { day: 'numeric' })}
+                    </span>
+                  )}
                 </span>
               </div>
             ))}

@@ -17,6 +17,7 @@ interface ILookup {
   disabled?: boolean;
   helperText?: string;
   disableClearable?: boolean;
+  enforceOption?: boolean;
   readOnly?: boolean;
   filterlookupOptions?: boolean;
   multiple?: boolean;
@@ -67,6 +68,7 @@ export const Lookup = ({
   validation,
   margin = "normal",
   size = "medium",
+  enforceOption = false,
   selectOnFocus = false,
   disabled = false,
   readOnly = false,
@@ -125,6 +127,7 @@ export const Lookup = ({
   useEffect(() => {
     setSearchTerm("");
     setInternalValue("");
+
     const valuesToSelect: string[] =
       (value ?? defaultValue)
         ?.map((s) => s?.trim())
@@ -228,7 +231,8 @@ export const Lookup = ({
   const toggleLookup = (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLInputElement>
   ) => {
-    e.preventDefault();
+    // e.preventDefault();
+    // e.stopPropagation();
 
     if (!disabled) {
       setOpen(!open);
@@ -493,7 +497,7 @@ export const Lookup = ({
       </div>
 
       {/* Dropdown Menu */}
-      <Popper anchorEl={anchorEl.current} open={open} paddingToAnchor={4}>
+      {/* <Popper anchorEl={anchorEl.current} open={open} paddingToAnchor={4}>
         <ClickAwayListener onClickAway={handleClose}>
           <div
             role="menu"
@@ -570,7 +574,7 @@ export const Lookup = ({
             </ul>
           </div>
         </ClickAwayListener>
-      </Popper>
+      </Popper> */}
     </div>
   );
 };
