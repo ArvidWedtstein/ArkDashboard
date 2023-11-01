@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Calendar from "src/components/Util/Calendar/Calendar";
 import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import { addToDate, adjustCalendarDate, getDaysBetweenDates, getWeekdays, toLocalPeriod, toLocaleISODate } from "src/lib/formatters";
+import { addToDate, adjustCalendarDate, getDaysBetweenDates, getDateUnit, toLocalPeriod, toLocaleISODate, getISOWeek } from "src/lib/formatters";
 
 import type {
   FindTimelineSeasons,
@@ -12,7 +12,7 @@ import type {
 
 const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; start: Date; end: Date }[] }) => {
   const [ganttTasks, setGanttTasks] = useState(tasks);
-  const [viewType, setViewType] = useState("week");
+  const [viewType, setViewType] = useState<'day' | 'week' | 'year' | 'month'>("week");
   const [period, setPeriod] = useState<string>(() =>
     toLocalPeriod(new Date())
   );
@@ -20,7 +20,8 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
   const dragInfo = useRef(null);
   const firstDayOfWeek = 1;
 
-  const days = getWeekdays(firstDayOfWeek);
+  const calendarHeader = getDateUnit(viewType === 'year' ? 'month' : 'weekday', firstDayOfWeek);
+
   const chartStartDate = new Date('2023-10-30T00:00:00'); // Define your chart's start date
   const chartEndDate = new Date('2023-10-30T23:59:59'); // Define your chart's end date
 
@@ -63,40 +64,41 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
   };
   const useCalendarDateRange = (
     period: string | Date,
-    weekStartsOn: number = 0
+    weekStartsOn: number = 0,
+    type: 'month' | 'year' | 'week' | 'day' = "month"
   ) => {
-    const [first, setFirst] = useState(() =>
-      adjustCalendarDate(
-        adjustCalendarDate(new Date(period), "start", "month"),
-        "start",
-        "week",
-        weekStartsOn
-      )
+    const [first, setFirst] = useState(() => adjustCalendarDate(
+      adjustCalendarDate(new Date(period), "start", type),
+      "start",
+      "week",
+      weekStartsOn
+    )
     );
     const [last, setLast] = useState(() =>
-      adjustCalendarDate(new Date(period), "end", "month")
+      adjustCalendarDate(new Date(period), "end", type)
     );
 
     useEffect(() => {
       setFirst(
         adjustCalendarDate(
-          adjustCalendarDate(new Date(period), "start", "month"),
+          adjustCalendarDate(new Date(period), "start", type),
           "start",
           "week",
           weekStartsOn
         )
       );
-      setLast(adjustCalendarDate(new Date(period), "end", "month"));
-    }, [period, weekStartsOn]);
 
+      setLast(adjustCalendarDate(new Date(period), "end", type));
+    }, [period, weekStartsOn, type]);
+    if (type === 'year') console.log("USERANGE", first, last, type)
     return [first, last];
   };
 
-  const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek);
+  const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek, viewType === 'day' || viewType === 'week' || viewType === 'month' ? 'month' : 'year');
 
   const weeks = Array.from(
     {
-      length: getDaysBetweenDates(firstDay, lastDay).length / 7 + 1,
+      length: Math.ceil(getDaysBetweenDates(firstDay, lastDay).length / 7),
     },
     (_, weekIndex) => {
       return Array.from({ length: 7 }, (_day, index) => {
@@ -104,6 +106,34 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
       });
     }
   );
+
+  const calendar = Array.from({ length: 12 }, (_, monthIndex) => {
+    const firstDayOfMonth = new Date(new Date(period).getFullYear(), monthIndex, 1);
+    const lastDayOfMonth = new Date(new Date(period).getFullYear(), monthIndex + 1, 0);
+    let currentDate = adjustCalendarDate(firstDayOfMonth, "start", "week");
+
+
+    return {
+      month: monthIndex,
+      year: new Date(period).getFullYear(),
+      weeks: Array.from(
+        {
+          length: Math.ceil(getDaysBetweenDates(firstDayOfMonth, lastDayOfMonth).length / 7),
+        }, (_, weekIndex) => {
+          return {
+            week: getISOWeek(addToDate(currentDate, weekIndex * 7, "day")),
+            dates: Array.from({ length: 7 }, (_day, index) => {
+              let date = addToDate(currentDate, weekIndex * 7 + index, "day");
+              return { date, isOutsideCurrentMonth: date.getMonth() !== monthIndex }
+            }),
+          };
+        }
+      )
+    };
+  });
+
+  console.log("CALENDAR", calendar, viewType)
+  // console.log(weeks2, getDaysBetweenDates(firstDay, lastDay).length, Math.ceil(getDaysBetweenDates(firstDay, lastDay).length / 31), (getDaysBetweenDates(firstDay, lastDay).length / 7 + 1) / 12)
   return (
     <div
       className="gantt-chart relative p-4"
@@ -112,7 +142,7 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
       onDrop={(e) => handleTaskDrag(e)}
     >
       <div role="menubar" className="mb-2">
-        <Lookup size="small" margin="none" disableClearable readOnly defaultValue={["week"]} options={[
+        <Lookup size="small" margin="none" disableClearable readOnly enforceOption defaultValue={["week"]} options={[
           { label: 'Day View', value: 'day' },
           { label: 'Week View', value: 'week' },
           { label: 'Month View', value: 'month' },
@@ -121,22 +151,25 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
           onSelect={(val) => {
             console.log(val)
             if (val.length > 0) {
-              setViewType(val[0].value.toString());
+              setViewType(val[0].value.toString() as 'week' | 'month' | 'year');
             }
           }}
         />
       </div>
       <div className="flex flex-col flex-none">
-        <div className="pr-8 flex-none z-30 sticky top-0 dark:bg-neutral-800 bg-zinc-300 shadow-lg dark:text-white">
-          <div className="grid text-sm leading-6 border-r dark:border-white/20 grid-cols-7 -mr-px divide-x dark:divide-white/20">
-            <div className="w-14 col-end-1" />
-            {days.map((day) => (
+        <div className={"flex-none z-30 sticky top-0 dark:bg-neutral-800 bg-zinc-300 shadow-lg dark:text-white"}>
+          <div className={clsx("grid text-sm leading-6 border-r dark:border-white/20 -mr-px divide-x dark:divide-white/20", {
+            "grid-cols-7": viewType === 'day' || viewType === 'week' || viewType === 'month',
+            "grid-cols-12 border-l": viewType === 'year',
+          })}>
+            {(viewType === 'day' || viewType === 'week') && (<div className="w-14 col-end-1" />)}
+            {calendarHeader.map((day) => (
               <div className="py-3 flex justify-center items-center" key={day.toISOString()}>
                 <span className="flex items-baseline">
-                  {day.toLocaleDateString(navigator && navigator.language, { weekday: 'short' })}
+                  {viewType === 'year' ? day.toLocaleDateString(navigator && navigator.language, { month: 'short' }) : day.toLocaleDateString(navigator && navigator.language, { weekday: 'short' })}
                   {viewType === 'week' && (
                     <span className={clsx("font-semibold ml-1.5 flex items-center justify-center", {
-                      'text-red-500': day.getDay() === 0 || day.getDay() === 6,
+                      // 'text-red-500': day.getDay() === 0 || day.getDay() === 6,
                       'bg-pea-500 text-white rounded-full w-8 h-8': toLocaleISODate(day) === toLocaleISODate(new Date()),
                     })}>
                       {day.toLocaleDateString(navigator && navigator.language, { day: 'numeric' })}
@@ -147,51 +180,124 @@ const GanttChart = ({ tasks }: { tasks: { id: number | string; name?: string; st
             ))}
           </div>
         </div>
-        <div className="flex flex-auto">
-          <div className="dark:bg-neutral-800 bg-zinc-300 flex-none z-10 w-14 sticky left-0" />
-          <div className="flex-auto grid grid-cols-1 grid-rows-1">
-            <div className="grid col-start-1 col-end-2 row-start-1 divide-y dark:divide-white/20 dark:text-white" style={{
-              gridTemplateRows: `repeat(${tasks.length}, minmax(3.5rem, 1fr))`,
-            }} role="rowgroup">
-              <div className="h-7 row-end-1" role="row" />
-              {tasks.map((task, index) => (
-                <div className="flex items-center" key={`row-${index}`} role="row">
-                  <div className="text-right text-xs w-14 -ml-14 pr-2 z-20 left-0 sticky">{task.name}</div>
+
+        <div className="flex flex-auto text-xs leading-6">
+          {(viewType === 'day' || viewType === 'week') && (
+            <>
+              <div className="dark:bg-neutral-800 bg-zinc-300 flex-none z-10 w-14 sticky left-0" />
+              <div className="flex-auto grid grid-cols-1 grid-rows-1">
+                <div className="grid col-start-1 col-end-2 row-start-1 divide-y dark:divide-white/20 dark:text-white" style={{
+                  gridTemplateRows: `repeat(${tasks.length}, minmax(3.5rem, 1fr))`,
+                }} role="rowgroup">
+                  <div className="h-7 row-end-1" role="row" />
+                  {tasks.map((task, index) => (
+                    <div className="flex items-center" key={`row-${index}`} role="row">
+                      <div className="text-right text-xs w-14 -ml-14 pr-2 z-20 left-0 sticky">{task.name}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 grid-rows-1 row-start-1 col-end-2 col-start-1 divide-x dark:divide-white/20">
-              <div className="row-[1/-1] col-start-1" />
-              <div className="row-[1/-1] col-start-2" />
-              <div className="row-[1/-1] col-start-3" />
-              <div className="row-[1/-1] col-start-4" />
-              <div className="row-[1/-1] col-start-5" />
-              <div className="row-[1/-1] col-start-6" />
-              <div className="row-[1/-1] col-start-7" />
-              <div className="row-[1/-1] col-start-8 w-8" />
-            </div>
-            <ol className="pr-8 grid grid-cols-7 row-start-1 col-end-2 col-start-1 dark:text-white border-l border-b dark:border-white/20" style={{
-              gridTemplateRows: `1.75rem repeat(${tasks.length}, minmax(0px, 1fr)) auto`,
+                <div className="grid grid-cols-7 grid-rows-1 row-start-1 col-end-2 col-start-1 divide-x dark:divide-white/20">
+                  <div className="row-[1/-1] col-start-1" />
+                  <div className="row-[1/-1] col-start-2" />
+                  <div className="row-[1/-1] col-start-3" />
+                  <div className="row-[1/-1] col-start-4" />
+                  <div className="row-[1/-1] col-start-5" />
+                  <div className="row-[1/-1] col-start-6" />
+                  <div className="row-[1/-1] col-start-7" />
+                </div>
+                <ol className="grid grid-cols-7 row-start-1 col-end-2 col-start-1 dark:text-white border-l border-b dark:border-white/20" style={{
+                  gridTemplateRows: `1.75rem repeat(${tasks.length}, minmax(0px, 1fr)) auto`,
+                }}>
+                  {
+                    ganttTasks.map((task, i) => (
+                      <li
+                        key={task.id}
+                        className="relative mt-px flex"
+                        style={{
+                          gridRow: `${i + 2} / ${i + 3}`,
+                          gridColumnStart: task.start.getDay(),
+                        }}
+                        draggable
+                        onDragStart={(e) => handleTaskDragStart(e, task.id)}
+                        onDragEnd={handleTaskDragEnd}
+                      >
+                        <p className="p-2 flex flex-col rounded-lg overflow-y-auto bg-pea-400/80 absolute inset-1">{task.name}</p>
+                      </li>
+                    ))
+                  }
+                </ol>
+              </div>
+            </>
+          )}
+
+          {(viewType === 'month' || viewType === 'year') && (
+            <div className="grid gap-px w-full" style={{
+              gridTemplateColumns: `repeat(${viewType === 'month' ? 7 : 12}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${viewType === 'month' ? calendar.filter((y) => y.year === new Date(period).getFullYear() && y.month === new Date(period).getMonth())[0].weeks.length : 1}, minmax(3.5rem, 1fr))`,
             }}>
-              {
-                ganttTasks.map((task, i) => (
-                  <li
-                    key={task.id}
-                    className="relative mt-px flex"
-                    style={{
-                      gridRow: `${i + 2} / ${i + 3}`,
-                      gridColumnStart: task.start.getDay(),
-                    }}
-                    draggable
-                    onDragStart={(e) => handleTaskDragStart(e, task.id)}
-                    onDragEnd={handleTaskDragEnd}
-                  >
-                    <p className="p-2 flex flex-col rounded-lg overflow-y-auto bg-pea-400/80 absolute inset-1">{task.name}</p>
-                  </li>
-                ))
-              }
-            </ol>
-          </div>
+              {calendar.filter((y) => y.year === new Date(period).getFullYear() && (viewType === 'month' ? y.month === new Date(period).getMonth() : true)).map((month, monthIndex) => {
+                if (viewType === 'year') {
+                  return (
+                    <div className={clsx("relative py-2 px-3 bg-white")} key={`month-${monthIndex}`}>
+                      <time dateTime={new Date(month.year, month.month, 1).toDateString()} className={clsx({
+                        // "rounded-full w-6 h-6 items-center justify-center font-semibold bg-pea-500 flex text-white": toLocaleISODate(date) === toLocaleISODate(new Date()),
+                      })}>
+                        {new Date(month.year, month.month, 1).toLocaleDateString(navigator && navigator.language, { month: 'short' })}
+                      </time>
+                      {/* <ol className="mt-2 p-0 list-none">
+                      {
+                        ganttTasks.filter((tasks) => toLocaleISODate(tasks.start) === toLocaleISODate(date)).map((task, i) => (
+                          <li key={`task-${i}`}>
+                            <a className="flex text-inherit hover:text-indigo-600">
+                              <p className="overflow-hidden font-medium whitespace-nowrap flex-auto overflow-ellipsis">{task.name}</p>
+                              <time dateTime={task.start.toLocaleTimeString()} className="flex-none block ml-3">
+                                {task.start.toLocaleTimeString(navigator && navigator.language, {
+                                  timeStyle: 'short',
+                                })}
+                              </time>
+                            </a>
+                          </li>
+                        ))
+                      }
+                    </ol> */}
+                    </div>
+                  )
+                } else {
+                  return month.weeks.map((week, weekIndex) => {
+                    return week.dates.map(({ date }, dayIndex) => (
+                      <div className={clsx("relative py-2 px-3", {
+                        "bg-zinc-100 text-gray-400": date.getMonth() !== Number(period.substring(5)) - 1,
+                        "bg-white": date.getMonth() === Number(period.substring(5)) - 1
+                      })} key={`week-${weekIndex}-day-${dayIndex}`}>
+                        <time dateTime={date.toDateString()} className={clsx({
+                          "rounded-full w-6 h-6 items-center justify-center font-semibold bg-pea-500 flex text-white": toLocaleISODate(date) === toLocaleISODate(new Date()),
+                        })}>
+                          {date.toLocaleDateString(navigator && navigator.language, { day: 'numeric' })}
+                        </time>
+                        <ol className="mt-2 p-0 list-none">
+                          {
+                            ganttTasks.filter((tasks) => toLocaleISODate(tasks.start) === toLocaleISODate(date)).map((task, i) => (
+                              <li key={`task-${i}`}>
+                                <a className="flex text-inherit hover:text-indigo-600">
+                                  <p className="overflow-hidden font-medium whitespace-nowrap flex-auto overflow-ellipsis">{task.name}</p>
+                                  <time dateTime={task.start.toLocaleTimeString()} className="flex-none block ml-3">
+                                    {task.start.toLocaleTimeString(navigator && navigator.language, {
+                                      timeStyle: 'short',
+                                    })}
+                                  </time>
+                                </a>
+                              </li>
+                            ))
+                          }
+                        </ol>
+                      </div>
+                    ))
+                  })
+                }
+
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

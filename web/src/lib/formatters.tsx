@@ -158,19 +158,19 @@ export const dynamicSort = <T extends {}>(
 ): Array<T> =>
   property != "" && array
     ? [...array].sort((a: T, b: T) => {
-        const aValue = a[property];
-        const bValue = b[property];
+      const aValue = a[property];
+      const bValue = b[property];
 
-        if (ascending) {
-          if (aValue < bValue) return -1;
-          if (aValue > bValue) return 1;
-          return 0;
-        } else {
-          if (aValue > bValue) return -1;
-          if (aValue < bValue) return 1;
-          return 0;
-        }
-      })
+      if (ascending) {
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
+      } else {
+        if (aValue > bValue) return -1;
+        if (aValue < bValue) return 1;
+        return 0;
+      }
+    })
     : array;
 
 /**
@@ -183,9 +183,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -587,20 +586,29 @@ export const toLocalPeriod = (date: Date): string => {
  * @param firstDayOfWeek
  * @returns
  */
-export const getWeekdays = (firstDayOfWeek = 1): Date[] => {
-  const weekdays: Date[] = [];
+export const getDateUnit = (type: 'weekday' | 'month' = 'weekday', firstDayOfWeek = 1): Date[] => {
+  const days: Date[] = [];
   let date = new Date();
 
   // Set the date to the first day of the week (Monday)
-  date.setDate(date.getDate() - ((date.getDay() - firstDayOfWeek + 7) % 7));
 
-  // Get the weekdays (Monday to Sunday)
-  for (let i = 0; i < 7; i++) {
-    weekdays.push(new Date(date));
-    date.setDate(date.getDate() + 1);
+  if (type === 'month') {
+    date.setMonth(0);
+  } else {
+    date.setDate(date.getDate() - ((date.getDay() - firstDayOfWeek + 7) % 7));
   }
 
-  return weekdays;
+  // Get the weekdays (Monday to Sunday)
+  for (let i = 0; i < (type === 'weekday' ? 7 : 12); i++) {
+    days.push(new Date(date));
+    if (type === 'weekday') {
+      date.setDate(date.getDate() + 1);
+    } else {
+      date.setMonth(date.getMonth() + 1);
+    }
+  }
+
+  return days;
 };
 
 /**
@@ -627,28 +635,34 @@ export const toLocaleISODate = (date: Date | null) => {
 export const adjustCalendarDate = (
   date: Date,
   type: "start" | "end",
-  period: "week" | "month" | "year",
+  period: "day" | "week" | "month" | "year",
   startOn = 0
 ): Date => {
   const result = new Date(date);
 
   if (type === "start") {
-    if (period === "week") {
+    if (period === 'day') {
+      result.setUTCHours(0, 0, 0, 0);
+    } else if (period === "week") {
       const dayOfWeek = result.getUTCDay();
       const diff = (dayOfWeek - startOn + 7) % 7;
       result.setUTCDate(result.getUTCDate() - diff);
     } else if (period === "month") {
       result.setDate(1);
+    } else if (period === "year") {
+      result.setUTCMonth(0, 1);
     }
   } else if (type === "end") {
-    if (period === "month") {
+    if (period === 'day') {
+      result.setUTCHours(23, 59, 59, 999);
+    } else if (period === "month") {
       result.setMonth(result.getMonth() + 1, 0);
     } else if (period === "week") {
       const dayOfWeek = result.getUTCDay();
       const diff = (6 - dayOfWeek + 7) % 7;
       result.setUTCDate(result.getUTCDate() + diff);
     } else if (period === "year") {
-      result.setFullYear(result.getFullYear() + 1, 0, 0);
+      result.setUTCMonth(11, 31);
     }
   }
 
@@ -664,8 +678,13 @@ export const getISOWeek = (date: Date = new Date()): number => {
   const dayMs = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   const daysSinceStart = Math.floor((+date - +startOfYear) / dayMs);
-  const dayOfWeek = (date.getUTCDay() + 6) % 7; // Ensure Sunday (0) is 7 in ISO week
+  const dayOfWeek = date.getUTCDay(); // Get the day of the week, where Monday is 0 and Sunday is 6
   const weekNumber = Math.ceil((daysSinceStart + 1 - dayOfWeek) / 7);
+
+  // If it's a Sunday (dayOfWeek = 6), consider it as part of the next week
+  if (dayOfWeek === 6) {
+    return weekNumber + 1;
+  }
 
   return weekNumber;
 };
@@ -950,9 +969,8 @@ export const svgArc = (
   const endY = centerY + radiusY * Math.sin(endAngle);
 
   // Use the A command to create the arc path
-  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${
-    sweepFlag ? 1 : 0
-  } ${endX} ${endY}`;
+  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${sweepFlag ? 1 : 0
+    } ${endX} ${endY}`;
 
   // Construct the full path command
   const pathData = `M ${startX} ${startY} ${arcCommand}`;
@@ -1220,9 +1238,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-        (Object.keys(crafts[0]).length - 1) *
-          (tableSize.width / Object.keys(crafts[0]).length) +
-        columnWidths[Object.keys(crafts[0]).length - 1],
+      (Object.keys(crafts[0]).length - 1) *
+      (tableSize.width / Object.keys(crafts[0]).length) +
+      columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -1256,7 +1274,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1684,19 +1702,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;

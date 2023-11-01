@@ -163,6 +163,16 @@ export const Lookup = ({
 
       if (!option || option.disabled) return;
 
+      // if (enforceOption && !isSelected) {
+      //   updateOptions.forEach((o) => {
+      //     if (o?.value === option.value) {
+      //       o.selected = true;
+      //     } else {
+      //       o.selected = false;
+      //     }
+      //   });
+      // }
+
       const isSelected = lookupOptions.some(
         (o) => o?.value === option.value && o?.selected
       );
@@ -297,13 +307,13 @@ export const Lookup = ({
   return (
     <div
       className={clsx(
-        "relative flex w-fit min-w-[10rem] items-center text-black dark:text-white",
+        "relative flex w-fit min-w-[10rem] items-center text-black dark:text-white group",
         className
       )}
     >
       <div
         className={clsx(
-          "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top text-black dark:text-white",
+          "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top",
           {
             "pointer-events-none text-black/50 dark:text-white/50": disabled,
             "mt-2 mb-1": margin === "dense",
@@ -331,6 +341,7 @@ export const Lookup = ({
         >
           {label ?? name} {required && " *"}
         </label>
+
         <div
           className={clsx(
             "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded font-normal leading-6",
@@ -432,6 +443,7 @@ export const Lookup = ({
                 )}
                 fill="none"
                 stroke="currentColor"
+                focusable="false"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -451,7 +463,7 @@ export const Lookup = ({
               inset: "-5px 0px 0px",
             }}
             className={clsx(
-              "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+              "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 group-hover:border-2 group-hover:border-zinc-300 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
               {
                 "top-0":
                   open ||
@@ -497,7 +509,7 @@ export const Lookup = ({
       </div>
 
       {/* Dropdown Menu */}
-      {/* <Popper anchorEl={anchorEl.current} open={open} paddingToAnchor={4}>
+      <Popper anchorEl={anchorEl.current} open={open} paddingToAnchor={4}>
         <ClickAwayListener onClickAway={handleClose}>
           <div
             role="menu"
@@ -574,7 +586,7 @@ export const Lookup = ({
             </ul>
           </div>
         </ClickAwayListener>
-      </Popper> */}
+      </Popper>
     </div>
   );
 };

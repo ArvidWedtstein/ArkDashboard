@@ -5,7 +5,7 @@ import {
   adjustCalendarDate,
   getDaysBetweenDates,
   getISOWeek,
-  getWeekdays,
+  getDateUnit,
   toLocalPeriod,
   toLocaleISODate,
 } from "src/lib/formatters";
@@ -45,7 +45,7 @@ const DateCalendar = ({
     views.includes("day") ? "day" : views[0] || "day"
   );
 
-  const days = getWeekdays(firstDayOfWeek);
+  const days = getDateUnit('weekday', firstDayOfWeek);
 
   const useCalendarDateRange = (
     period: string | Date,
@@ -317,7 +317,11 @@ const DateCalendar = ({
         )}
         {currentView === "day" && (
           <div className="opacity-100">
-            <div className="flex items-center justify-center" role="row">
+            <div
+              className="flex items-center justify-center"
+              // className="grid gap-px grid-cols-7"
+              role="row"
+            >
               {displayWeekNumber && (
                 <span
                   role="columnheader"
@@ -349,20 +353,21 @@ const DateCalendar = ({
               role="presentation"
             >
               <div
-                className={clsx(
-                  "absolute top-0 right-0 left-0 overflow-hidden grid gap-px grid-cols-7 isolate"
-                )}
+                // className={"absolute top-0 right-0 left-0 overflow-hidden rounded-lg bg-gray-200 grid gap-px grid-cols-7 isolate"}
+                className={"absolute top-0 right-0 left-0 overflow-hidden "}
                 role="rowgroup"
               >
-                {daysOfMonth.map((week, index) => {
+                {/* {daysOfMonth.map((week, index) => {
                   return week.map((day, j) => {
                     return (
                       <button
                         className={clsx(
-                          "py-1.5 bg-zinc-200 cursor-pointer",
+                          "py-1.5 cursor-pointer",
                           {
-                            "text-white/70":
+                            "text-gray-400 bg-zinc-100":
                               day.getMonth() !==
+                              Number(period.substring(5)) - 1,
+                            "bg-white": day.getMonth() ===
                               Number(period.substring(5)) - 1,
                             invisible:
                               !showDaysOutsideCurrentMonth &&
@@ -407,11 +412,11 @@ const DateCalendar = ({
                       </button>
                     );
                   });
-                })}
-                {/* {daysOfMonth.map((week, index) => {
+                })} */}
+                {daysOfMonth.map((week, index) => {
                   return (
                     <div
-                      className="my-0.5 mx-0 flex justify-center" // bg-black gap-px for lines
+                      className="my-0.5 mx-0 flex justify-center"
                       role="row"
                       aria-rowindex={index + 1}
                     >
@@ -426,14 +431,14 @@ const DateCalendar = ({
                       )}
                       {week.map((day, j) => {
                         return (
-                          <div className={clsx("relative inline-flex shrink-0", {
+                          <div className={clsx("relative inline-flex shrink-0 mx-0.5", {
                             "rounded-l-full": toLocaleISODate(selectedRange[0]) === toLocaleISODate(day),
                             "rounded-r-full": toLocaleISODate(selectedRange[1]) === toLocaleISODate(day),
                             "bg-pea-300/10": toLocaleISODate(selectedRange[0]) <= toLocaleISODate(day) && toLocaleISODate(selectedRange[1]) >= toLocaleISODate(day),
                           })} title={`${toLocaleISODate(selectedRange[0])}-${toLocaleISODate(selectedRange[1])}`}>
                             <button
                               className={clsx(
-                                "font-montserrat hover:bg-pea-300/10 relative mx-0.5 box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
+                                "font-montserrat hover:bg-pea-300/10 relative box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
                                 {
                                   "text-white/70":
                                     day.getMonth() !==
@@ -473,15 +478,15 @@ const DateCalendar = ({
                             >
                               {day.getDate()}
                             </button>
-                            /* <span className="absolute rw-badge rw-badge-small transform translate-x-1/2 -translate-y-1/2 top-[14%] right-[14%]">
-                              🌚
-                            </span> *
+                            <span className="absolute rw-badge rw-badge-small transform translate-x-1/2 -translate-y-1/2 top-[14%] right-[14%]">
+
+                            </span>
                           </div>
                         );
                       })}
                     </div>
                   );
-                })} */}
+                })}
               </div>
             </div>
           </div>
