@@ -18,32 +18,42 @@ const Popper = ({
   paddingToAnchor = 0,
 }: PopperProps) => {
   const [popperPosition, setPopperPosition] = useState({ top: 0, left: 0 });
-  const containerRef = useRef(null);
+  const popperRef = useRef<HTMLDivElement>(null);
+
+  const updatePosition = () => {
+    if (!anchorEl || !popperRef?.current) return;
+    const triggerRect = anchorEl?.getBoundingClientRect();
+    const popperRect = popperRef?.current.getBoundingClientRect();
+
+    let top = disablePortal
+      ? triggerRect.height + paddingToAnchor
+      : triggerRect.bottom + window.scrollY + paddingToAnchor;
+    let left = triggerRect.left + window.scrollX;
+
+    if (triggerRect.left + (popperRect.width + 20) >= window.innerWidth) {
+      left = triggerRect.right - popperRect.width;
+    }
+
+    // Flip dropdown to top if it goes off screen bottom. Account for scroll
+    if (top > window.innerHeight + window.scrollY) {
+      top = anchorEl.scrollTop + popperRect.height - paddingToAnchor; // scrollTop = offsetTop?
+    }
+
+    setPopperPosition({ top, left });
+  };
 
   useEffect(() => {
-    if (open && anchorEl) {
-      // Calculate the position of the popper relative to the anchor element
-      const anchorRect = anchorEl.getBoundingClientRect();
-      const menuBounds = containerRef.current.getBoundingClientRect();
+    updatePosition();
 
-      let top = disablePortal
-        ? anchorRect.height + paddingToAnchor
-        : anchorRect.bottom + paddingToAnchor;
-      let left = disablePortal ? 0 : anchorRect.left;
+    window.addEventListener("scroll", updatePosition);
+    window.addEventListener("resize", updatePosition);
 
-      // Flip dropdown to right if it goes off screen
-      if (anchorRect.left + (menuBounds.width + 20) >= window.innerWidth) {
-        left = anchorRect.right - menuBounds.width;
-      }
+    return () => {
+      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [anchorEl, popperRef, open]);
 
-      // Flip dropdown to top if it goes off screen bottom. Account for scroll
-      if (top > window.innerHeight + window.scrollY) {
-        top = anchorEl.scrollTop - menuBounds.height - paddingToAnchor; // scrollTop = offsetTop?
-      }
-
-      setPopperPosition({ top, left });
-    }
-  }, [open, anchorEl]);
   if (!(open || keepMounted)) return null;
   return disablePortal ? (
     <div
@@ -54,7 +64,7 @@ const Popper = ({
         inset: "0px auto auto 0px",
         margin: 0,
       }}
-      ref={containerRef}
+      ref={popperRef}
     >
       {children}
     </div>
@@ -69,7 +79,7 @@ const Popper = ({
           overflow: "hidden",
           margin: 0,
         }}
-        ref={containerRef}
+        ref={popperRef}
       >
         {children}
       </div>,
