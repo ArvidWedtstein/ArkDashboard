@@ -5,6 +5,7 @@ import { Component, useEffect, useRef, useState } from "react";
 import Calendar from "src/components/Util/Calendar/Calendar";
 import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
+import Ripple from "src/components/Util/Ripple/Ripple";
 import {
   addToDate,
   adjustCalendarDate,
@@ -16,143 +17,6 @@ import {
 } from "src/lib/formatters";
 
 import type { FindTimelineSeasons } from "types/graphql";
-
-const Ripple = () => {
-  const [ripples, setRipples] = useState([]);
-  const [mouseDown, setMouseDown] = useState(false);
-  let duration = 600;
-
-  const createRipple = (event) => {
-    if (!node) return
-    if (!node.parentNode) return
-
-
-    let localX = 0
-    let localY = 0
-    const rippleSize = Math.max(node.clientWidth, node.clientHeight);
-    localX = event.clientX - node.getBoundingClientRect().left - rippleSize / 2;
-    localY = event.clientY - node.getBoundingClientRect().top - rippleSize / 2;
-
-    let radius = 0
-    let scale = 0.3
-    let isCenter = false
-    scale = 0.15
-    radius = node.clientWidth / 2
-    radius = isCenter ? radius : radius + Math.sqrt((localX - radius) ** 2 + (localY - radius) ** 2) / 4
-
-
-    const centerX = `${(node.clientWidth - (radius * 2)) / 2}px`
-    const centerY = `${(node.clientHeight - (radius * 2)) / 2}px`
-
-
-    const x = isCenter ? centerX : `${localX - radius}px`
-    const y = isCenter ? centerY : `${localY - radius}px`
-
-    // console.log(x, y)
-    const newRipple = {
-      radius: radius,
-      size: rippleSize,
-      x: localX,
-      y: localY,
-      id: new Date().getTime(),
-    };
-    setRipples((prev) => [...prev, { activated: performance.now(), ...newRipple }]);
-  };
-
-
-
-  const handleMouseDown = (event) => {
-    setMouseDown(true);
-    createRipple(event);
-
-
-    const interval = setInterval(() => {
-      if (mouseDown) {
-        createRipple(event);
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-  };
-  const hideRipple = (e2) => {
-    setMouseDown(false);
-
-  }
-
-  const handleMouseUp = (e) => {
-    console.log('mouseup')
-    setMouseDown(false);
-
-    const n = e.currentTarget
-
-
-    if (ripples.length === 0) return console.log('no ripples')
-    const animation = ripples[ripples.length - 1]
-
-    if (!animation) return console.log('no animation')
-    const diff = performance.now() - Number(animation.activated)
-    const delay = Math.max(250 - diff, 0)
-
-    setTimeout(() => {
-      let animationElement = document.getElementById(animation.id);
-      if (!animationElement) return console.log('no element');
-
-      animationElement.style.animationName = "ripple-animation-hide"
-      animationElement.style.animationDuration = "200ms"
-      animationElement.style.animationTimingFunction = "cubic-bezier(0.4, 0, 0.2, 1)"
-      animationElement.style.animationFillMode = "forwards"
-
-      setTimeout(() => {
-        if (animationElement?.parentNode === n) {
-          let d = document.getElementById(animation.id)
-          if (!d) return console.log('no element');
-          console.log(n, animation, animationElement)
-          // n.removeChild(animationElement);
-
-
-          // setRipples((prev) => prev.filter((r) => r.id !== animation.id));
-        }
-      }, 200)
-    }, delay)
-  };
-
-  useEffect(() => {
-    let element = node.parentNode;
-    if (!element) return;
-    element.addEventListener("mousedown", handleMouseDown);
-    element.addEventListener("mouseup", handleMouseUp);
-    element.addEventListener("mouseleave", hideRipple);
-    return () => {
-      element.removeEventListener("mousedown", handleMouseDown);
-      element.removeEventListener("mouseup", handleMouseUp);
-      element.removeEventListener("mouseleave", hideRipple);
-    };
-  }, [])
-  let node = null;
-
-
-  return (
-    <span
-      ref={(element) => (node = element)}
-      className="relative overflow-hidden"
-    >
-      {ripples.map((ripple) => {
-        const style = {
-          width: `${ripple.size}px`,
-          height: `${ripple.size}px`,
-          left: `${ripple.x}px`,
-          top: `${ripple.y}px`,
-          animationName: 'ripple-animation',
-          animationTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-          animationFillMode: "forwards",
-          animationDuration: `${duration}ms`,
-          transition: 'opacity transform 0.3s cubic-bezier(0, 0, 0.2, 1)'
-        };
-        return <span key={ripple.id} className="ripple-effect absolute inset-0 rounded-full overflow-hidden z-0" id={ripple.id} style={{ ...style }} />
-      })}
-    </span>
-  );
-}
 
 type ViewType = "day" | "week" | "month" | "year";
 const GanttChart = ({
@@ -174,11 +38,6 @@ const GanttChart = ({
   const chartRef = useRef(null);
   const dragInfo = useRef(null);
   const firstDayOfWeek = 1;
-
-  const calendarHeader = getDateUnit(
-    viewType === "year" ? "month" : "weekday",
-    firstDayOfWeek
-  );
 
   const handleTaskDragStart = (e: React.DragEvent<HTMLLIElement>, taskId) => {
     e.dataTransfer.setData("taskId", taskId);
@@ -242,17 +101,6 @@ const GanttChart = ({
     viewType === "day" || viewType === "week" || viewType === "month"
       ? "month"
       : "year"
-  );
-
-  const weeks = Array.from(
-    {
-      length: Math.ceil(getDaysBetweenDates(firstDay, lastDay).length / 7),
-    },
-    (_, weekIndex) => {
-      return Array.from({ length: 7 }, (_day, index) => {
-        return addToDate(firstDay, weekIndex * 7 + index, "day");
-      });
-    }
   );
 
   const calendar = Array.from({ length: 12 }, (_, monthIndex) => {
@@ -333,7 +181,6 @@ const GanttChart = ({
   };
 
   // console.log("CALENDAR", calendar, viewType);
-  // console.log(weeks2, getDaysBetweenDates(firstDay, lastDay).length, Math.ceil(getDaysBetweenDates(firstDay, lastDay).length / 31), (getDaysBetweenDates(firstDay, lastDay).length / 7 + 1) / 12)
   return (
     <div
       className="gantt-chart relative p-4 text-black dark:text-white"
@@ -376,22 +223,6 @@ const GanttChart = ({
           >
             <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
           </svg>
-        </button>
-        <button
-          type="button"
-          className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl hover:bg-black/10 dark:hover:bg-white/10"
-          aria-label="Previous month"
-          onClick={() => navigate(-1, viewType)}
-        >
-          <svg
-            className="inline-block h-5 w-5 shrink-0 select-none fill-current transition-colors"
-            focusable="false"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            data-testid="ArrowLeftIcon"
-          >
-            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-          </svg>
           <Ripple />
         </button>
         <button
@@ -409,6 +240,7 @@ const GanttChart = ({
           >
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
           </svg>
+          <Ripple />
         </button>
       </div>
       <div className="flex flex-none flex-col">
