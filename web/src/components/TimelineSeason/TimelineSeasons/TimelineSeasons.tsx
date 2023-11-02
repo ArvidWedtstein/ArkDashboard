@@ -1,30 +1,32 @@
-import { set } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import clsx from "clsx";
-import { Component, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Calendar from "src/components/Util/Calendar/Calendar";
-import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Ripple from "src/components/Util/Ripple/Ripple";
 import {
   addToDate,
   adjustCalendarDate,
   getDaysBetweenDates,
-  getDateUnit,
   toLocalPeriod,
   toLocaleISODate,
   getISOWeek,
+  groupBy,
 } from "src/lib/formatters";
 
 import type { FindTimelineSeasons } from "types/graphql";
 
 type ViewType = "day" | "week" | "month" | "year";
-const GanttChart = ({
+const GanttChart = <T extends {}>({
   tasks,
+  data,
+  group,
 }: {
+  data?: T[]
   tasks: { id: number | string; name?: string; start: Date; end: Date }[];
+  group?: keyof T;
 }) => {
-  const [ganttTasks, setGanttTasks] = useState(tasks);
+  const [ganttData, setGanttData] = useState(groupBy(data, group.toString()));
   const [viewType, setViewType] = useState<ViewType>(
     "week"
   );
@@ -62,46 +64,8 @@ const GanttChart = ({
     dragInfo.current = null;
     // Handle the end of the drag operation (e.g., update data on server)
   };
-  const useCalendarDateRange = (
-    period: string | Date,
-    weekStartsOn: number = 0,
-    type: ViewType = "month"
-  ) => {
-    const [first, setFirst] = useState(() =>
-      adjustCalendarDate(
-        adjustCalendarDate(new Date(period), "start", type),
-        "start",
-        "week",
-        weekStartsOn
-      )
-    );
-    const [last, setLast] = useState(() =>
-      adjustCalendarDate(new Date(period), "end", type)
-    );
 
-    useEffect(() => {
-      setFirst(
-        adjustCalendarDate(
-          adjustCalendarDate(new Date(period), "start", type),
-          "start",
-          "week",
-          weekStartsOn
-        )
-      );
-
-      setLast(adjustCalendarDate(new Date(period), "end", type));
-    }, [period, weekStartsOn, type]);
-
-    return [first, last];
-  };
-
-  const [firstDay, lastDay] = useCalendarDateRange(
-    period,
-    firstDayOfWeek,
-    viewType === "day" || viewType === "week" || viewType === "month"
-      ? "month"
-      : "year"
-  );
+  console.log(ganttData)
 
   const calendar = Array.from({ length: 12 }, (_, monthIndex) => {
     const firstDayOfMonth = new Date(
@@ -167,6 +131,7 @@ const GanttChart = ({
     change: -1 | 1,
     type: ViewType = "week"
   ) => {
+    // TODO: fix date change
     const newDate = addToDate(new Date(period), change, type);
     // const newDate = addToDate(new Date(dateInfo.year, dateInfo.month, dateInfo.day), change, type);
 
@@ -223,7 +188,7 @@ const GanttChart = ({
           >
             <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
           </svg>
-          <Ripple />
+          <Ripple center />
         </button>
         <button
           type="button"
@@ -240,7 +205,7 @@ const GanttChart = ({
           >
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
           </svg>
-          <Ripple />
+          <Ripple center />
         </button>
       </div>
       <div className="flex flex-none flex-col">
@@ -363,19 +328,19 @@ const GanttChart = ({
               aria-label="Grid Rows"
               className="col-start-1 col-end-2 row-start-1 grid divide-y text-black dark:divide-white/20 divide-black/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${ganttTasks.length}, minmax(3.5rem, 1fr))`,
+                gridTemplateRows: `repeat(${Object.keys(ganttData).length}, minmax(3.5rem, 1fr))`,
               }}
               role="rowgroup"
             >
               <div className="row-end-1 h-7" role="row" />
-              {tasks.map((task, index) => (
+              {Object.keys(ganttData).map((entry, index) => (
                 <div
                   className="flex items-center"
                   key={`row-${index}`}
                   role="row"
                 >
                   <div className="sticky left-0 -ml-20 w-20 pr-2 text-right text-xs">
-                    {task.name}
+                    {entry}
                   </div>
                 </div>
               ))}
@@ -411,7 +376,7 @@ const GanttChart = ({
                 gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
-              {ganttTasks.filter((task) => task.start >= new Date(dateInfo.year, dateInfo.month, dateInfo.day) || task.end <= new Date(dateInfo.year, dateInfo.month, dateInfo.day)).map((task, i) => (
+              {/* {ganttTasks.filter((task) => task.start >= new Date(dateInfo.year, dateInfo.month, dateInfo.day) || task.end <= new Date(dateInfo.year, dateInfo.month, dateInfo.day)).map((task, i) => (
                 <li
                   key={task.id}
                   className="relative mt-px flex"
@@ -442,7 +407,7 @@ const GanttChart = ({
                     {task.name}
                   </p>
                 </li>
-              ))}
+              ))} */}
             </ol>
           </div>
         </div>
@@ -536,6 +501,8 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
             end: new Date("2023-11-30"),
           },
         ]}
+        data={timelineSeasons}
+        group="server"
       />
 
       <ol className="relative mx-2 border-l border-zinc-500">
