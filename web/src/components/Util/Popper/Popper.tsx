@@ -72,13 +72,13 @@ const Popper = ({
     createPortal(
       <div
         style={{
-          zIndex: 100,
           position: "absolute",
           transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
           inset: "0px auto auto 0px",
           overflow: "hidden",
           margin: 0,
         }}
+        className="z-50"
         ref={popperRef}
       >
         {children}

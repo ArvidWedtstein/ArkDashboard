@@ -42,6 +42,7 @@ interface ILookup {
     event: React.ChangeEvent<HTMLInputElement>,
     newInputValue: string
   ) => void;
+  // TODO: fix
   onSelect?: (options: ILookup["options"]) => void;
   filterFn?: (
     option: { label: string; value: value; image?: string },

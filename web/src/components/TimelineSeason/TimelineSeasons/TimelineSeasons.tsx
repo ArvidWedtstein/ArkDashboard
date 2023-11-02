@@ -1,6 +1,7 @@
+import { set } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { Component, useEffect, useRef, useState } from "react";
 import Calendar from "src/components/Util/Calendar/Calendar";
 import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
@@ -16,17 +17,155 @@ import {
 
 import type { FindTimelineSeasons } from "types/graphql";
 
+const Ripple = () => {
+  const [ripples, setRipples] = useState([]);
+  const [mouseDown, setMouseDown] = useState(false);
+  let duration = 600;
+
+  const createRipple = (event) => {
+    if (!node) return
+    if (!node.parentNode) return
+
+
+    let localX = 0
+    let localY = 0
+    const rippleSize = Math.max(node.clientWidth, node.clientHeight);
+    localX = event.clientX - node.getBoundingClientRect().left - rippleSize / 2;
+    localY = event.clientY - node.getBoundingClientRect().top - rippleSize / 2;
+
+    let radius = 0
+    let scale = 0.3
+    let isCenter = false
+    scale = 0.15
+    radius = node.clientWidth / 2
+    radius = isCenter ? radius : radius + Math.sqrt((localX - radius) ** 2 + (localY - radius) ** 2) / 4
+
+
+    const centerX = `${(node.clientWidth - (radius * 2)) / 2}px`
+    const centerY = `${(node.clientHeight - (radius * 2)) / 2}px`
+
+
+    const x = isCenter ? centerX : `${localX - radius}px`
+    const y = isCenter ? centerY : `${localY - radius}px`
+
+    // console.log(x, y)
+    const newRipple = {
+      radius: radius,
+      size: rippleSize,
+      x: localX,
+      y: localY,
+      id: new Date().getTime(),
+    };
+    setRipples((prev) => [...prev, { activated: performance.now(), ...newRipple }]);
+  };
+
+
+
+  const handleMouseDown = (event) => {
+    setMouseDown(true);
+    createRipple(event);
+
+
+    const interval = setInterval(() => {
+      if (mouseDown) {
+        createRipple(event);
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+  };
+  const hideRipple = (e2) => {
+    setMouseDown(false);
+
+  }
+
+  const handleMouseUp = (e) => {
+    console.log('mouseup')
+    setMouseDown(false);
+
+    const n = e.currentTarget
+
+
+    if (ripples.length === 0) return console.log('no ripples')
+    const animation = ripples[ripples.length - 1]
+
+    if (!animation) return console.log('no animation')
+    const diff = performance.now() - Number(animation.activated)
+    const delay = Math.max(250 - diff, 0)
+
+    setTimeout(() => {
+      let animationElement = document.getElementById(animation.id);
+      if (!animationElement) return console.log('no element');
+
+      animationElement.style.animationName = "ripple-animation-hide"
+      animationElement.style.animationDuration = "200ms"
+      animationElement.style.animationTimingFunction = "cubic-bezier(0.4, 0, 0.2, 1)"
+      animationElement.style.animationFillMode = "forwards"
+
+      setTimeout(() => {
+        if (animationElement?.parentNode === n) {
+          let d = document.getElementById(animation.id)
+          if (!d) return console.log('no element');
+          console.log(n, animation, animationElement)
+          // n.removeChild(animationElement);
+
+
+          // setRipples((prev) => prev.filter((r) => r.id !== animation.id));
+        }
+      }, 200)
+    }, delay)
+  };
+
+  useEffect(() => {
+    let element = node.parentNode;
+    if (!element) return;
+    element.addEventListener("mousedown", handleMouseDown);
+    element.addEventListener("mouseup", handleMouseUp);
+    element.addEventListener("mouseleave", hideRipple);
+    return () => {
+      element.removeEventListener("mousedown", handleMouseDown);
+      element.removeEventListener("mouseup", handleMouseUp);
+      element.removeEventListener("mouseleave", hideRipple);
+    };
+  }, [])
+  let node = null;
+
+
+  return (
+    <span
+      ref={(element) => (node = element)}
+      className="relative overflow-hidden"
+    >
+      {ripples.map((ripple) => {
+        const style = {
+          width: `${ripple.size}px`,
+          height: `${ripple.size}px`,
+          left: `${ripple.x}px`,
+          top: `${ripple.y}px`,
+          animationName: 'ripple-animation',
+          animationTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+          animationFillMode: "forwards",
+          animationDuration: `${duration}ms`,
+          transition: 'opacity transform 0.3s cubic-bezier(0, 0, 0.2, 1)'
+        };
+        return <span key={ripple.id} className="ripple-effect absolute inset-0 rounded-full overflow-hidden z-0" id={ripple.id} style={{ ...style }} />
+      })}
+    </span>
+  );
+}
+
+type ViewType = "day" | "week" | "month" | "year";
 const GanttChart = ({
   tasks,
 }: {
   tasks: { id: number | string; name?: string; start: Date; end: Date }[];
 }) => {
   const [ganttTasks, setGanttTasks] = useState(tasks);
-  const [viewType, setViewType] = useState<"day" | "week" | "year" | "month">(
+  const [viewType, setViewType] = useState<ViewType>(
     "week"
   );
   const [period, setPeriod] = useState<string>(() => toLocalPeriod(new Date()));
-  const [period2, setPeriod2] = useState(() => ({
+  const [dateInfo, setDateInfo] = useState(() => ({
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
     day: new Date().getDate(),
@@ -40,23 +179,6 @@ const GanttChart = ({
     viewType === "year" ? "month" : "weekday",
     firstDayOfWeek
   );
-
-  const chartStartDate = new Date("2023-10-30T00:00:00"); // Define your chart's start date
-  const chartEndDate = new Date("2023-10-30T23:59:59"); // Define your chart's end date
-
-  const calculatePosition = (start: Date) => {
-    const timeDiff = +start - +chartStartDate;
-    const totalDuration = +chartEndDate - +chartStartDate;
-    const position = (timeDiff / totalDuration) * 100;
-    return position + "%";
-  };
-
-  const calculateWidth = (start: Date, end: Date) => {
-    const totalDuration = +chartEndDate - +chartStartDate;
-    const taskDuration = +end - +start;
-    const width = (taskDuration / totalDuration) * 100;
-    return width + "%";
-  };
 
   const handleTaskDragStart = (e: React.DragEvent<HTMLLIElement>, taskId) => {
     e.dataTransfer.setData("taskId", taskId);
@@ -84,7 +206,7 @@ const GanttChart = ({
   const useCalendarDateRange = (
     period: string | Date,
     weekStartsOn: number = 0,
-    type: "month" | "year" | "week" | "day" = "month"
+    type: ViewType = "month"
   ) => {
     const [first, setFirst] = useState(() =>
       adjustCalendarDate(
@@ -110,7 +232,7 @@ const GanttChart = ({
 
       setLast(adjustCalendarDate(new Date(period), "end", type));
     }, [period, weekStartsOn, type]);
-    if (type === "year") console.log("USERANGE", first, last, type);
+
     return [first, last];
   };
 
@@ -172,15 +294,42 @@ const GanttChart = ({
     };
   });
 
+  const getGridColumns = () => {
+    if (viewType === "year") {
+      return calendar.length; // 12 months
+    } else if (viewType === "month") {
+      const year = new Date(period).getFullYear();
+      const month = new Date(period).getMonth();
+      return calendar
+        .filter((y) => y.year === year && (viewType === 'month' ? y.month === month : true))
+        .reduce((acc, cur) => acc + cur.days, 0);
+    } else if (viewType === "week") {
+      const year = new Date(period).getFullYear();
+      const month = new Date(period).getMonth();
+      const isoWeek = getISOWeek(new Date());
+      const relevantMonth = calendar.find((y) => y.year === year && y.month === month);
+      const relevantWeek = relevantMonth.weeks.find((week) => week.week === isoWeek);
+      return viewType === 'week' ? relevantWeek.dates.length : 7;
+    } else {
+      return 7;
+    }
+  }
+
   const navigate = (
     change: -1 | 1,
-    type: "month" | "year" | "day" | "week" = "week"
+    type: ViewType = "week"
   ) => {
     const newDate = addToDate(new Date(period), change, type);
+    // const newDate = addToDate(new Date(dateInfo.year, dateInfo.month, dateInfo.day), change, type);
 
+
+    setDateInfo({
+      year: newDate.getFullYear(),
+      month: newDate.getMonth(),
+      day: newDate.getDate(),
+      week: getISOWeek(newDate),
+    });
     setPeriod(toLocalPeriod(newDate));
-
-    console.log(toLocalPeriod(newDate), type);
   };
 
   // console.log("CALENDAR", calendar, viewType);
@@ -207,9 +356,8 @@ const GanttChart = ({
             { label: "Year View", value: "year" },
           ]}
           onSelect={(val) => {
-            console.log(val);
             if (val.length > 0) {
-              setViewType(val[0].value.toString() as "week" | "month" | "year");
+              setViewType(val[0].value.toString() as ViewType);
             }
           }}
         />
@@ -231,7 +379,24 @@ const GanttChart = ({
         </button>
         <button
           type="button"
-          className="relative -ml-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl hover:bg-black/10 dark:hover:bg-white/10"
+          className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl hover:bg-black/10 dark:hover:bg-white/10"
+          aria-label="Previous month"
+          onClick={() => navigate(-1, viewType)}
+        >
+          <svg
+            className="inline-block h-5 w-5 shrink-0 select-none fill-current transition-colors"
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            data-testid="ArrowLeftIcon"
+          >
+            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+          </svg>
+          <Ripple />
+        </button>
+        <button
+          type="button"
+          className="relative -ml-3  box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl hover:bg-black/10 dark:hover:bg-white/10"
           aria-label="Next month"
           onClick={() => navigate(1, viewType)}
         >
@@ -248,43 +413,30 @@ const GanttChart = ({
       </div>
       <div className="flex flex-none flex-col">
         <div
+          aria-label="Calendar Header"
           className={
-            "sticky top-0 z-30 flex-none bg-zinc-300 shadow-lg dark:bg-neutral-800 dark:text-white"
+            "sticky top-0 z-30 flex-none bg-zinc-300 shadow-lg dark:bg-neutral-800 dark:text-white text-black"
           }
         >
           <div
             className={
-              "-mr-px grid divide-x text-sm leading-6 dark:divide-white/20 dark:border-white/20"
+              "grid divide-x text-sm -mr-px leading-6 border-r divide-black/20 dark:divide-white/20 dark:border-white/20 border-black/20"
             }
             style={{
-              gridTemplateColumns: `repeat(${
-                viewType === "year"
-                  ? calendar.length
-                  : viewType === "month"
-                  ? calendar.filter(
-                      (y) =>
-                        y.year === new Date(period).getFullYear() &&
-                        (viewType === "month"
-                          ? y.month === new Date(period).getMonth()
-                          : true)
-                    )[0].days
-                  : viewType === "week"
-                  ? calendar
-                      .filter(
-                        (y) =>
-                          y.year === new Date(period).getFullYear() &&
-                          y.month === new Date(period).getMonth()
-                      )[0]
-                      .weeks.filter((week) =>
-                        viewType === "week"
-                          ? week.week === getISOWeek(new Date())
-                          : true
-                      )[0].dates.length
-                  : 7
-              }, minmax(0, 1fr))`,
+              gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0, 1fr))`,
             }}
           >
-            <div className="col-end-1 w-14" />
+            <div className="col-end-1 w-20 flex items-center justify-center">
+              <span className="whitespace-nowrap">
+                {viewType === 'year' ? new Date(period).getFullYear() : viewType === 'month' ? new Date(period).toLocaleDateString(
+                  navigator && navigator.language,
+                  {
+                    month: "short",
+                    year: "numeric",
+                  }
+                ) : 'Week ' + getISOWeek(new Date())}
+              </span>
+            </div>
 
             {calendar
               .filter(
@@ -300,8 +452,8 @@ const GanttChart = ({
                     viewType === "week"
                       ? week.week === getISOWeek(new Date())
                       : viewType === "year"
-                      ? i === 0
-                      : true
+                        ? i === 0
+                        : true
                   )
                   .map((week, weekIndex) => {
                     return week.dates
@@ -330,13 +482,13 @@ const GanttChart = ({
                               {viewType === "month"
                                 ? ""
                                 : viewType === "year"
-                                ? date.toLocaleDateString(
+                                  ? date.toLocaleDateString(
                                     navigator && navigator.language,
                                     {
                                       month: "short",
                                     }
                                   )
-                                : date.toLocaleDateString(
+                                  : date.toLocaleDateString(
                                     navigator && navigator.language,
                                     {
                                       weekday: "short",
@@ -346,12 +498,12 @@ const GanttChart = ({
                               {(viewType === "week" || viewType == "month") && (
                                 <span
                                   className={clsx(
-                                    "ml-1.5 flex items-center justify-center font-semibold",
+                                    "flex items-center justify-center font-semibold",
                                     {
-                                      // 'text-red-500': day.getDay() === 0 || day.getDay() === 6,
                                       "bg-pea-500 h-8 w-8 rounded-full text-white":
                                         toLocaleISODate(date) ===
                                         toLocaleISODate(new Date()),
+                                      "ml-1.5": viewType === 'week'
                                     }
                                   )}
                                 >
@@ -373,12 +525,13 @@ const GanttChart = ({
         </div>
 
         <div className="flex flex-auto text-xs leading-6">
-          <div className="sticky left-0 z-10 w-14 flex-none bg-zinc-300 dark:bg-neutral-800" />
+          <div className="sticky left-0 w-20 z-10 flex-none bg-zinc-300 dark:bg-neutral-800" aria-label="Left bar" />
           <div className="grid flex-auto grid-cols-1 grid-rows-1">
             <div
-              className="col-start-1 col-end-2 row-start-1 grid divide-y dark:divide-white/20 dark:text-white"
+              aria-label="Grid Rows"
+              className="col-start-1 col-end-2 row-start-1 grid divide-y text-black dark:divide-white/20 divide-black/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${tasks.length}, minmax(3.5rem, 1fr))`,
+                gridTemplateRows: `repeat(${ganttTasks.length}, minmax(3.5rem, 1fr))`,
               }}
               role="rowgroup"
             >
@@ -389,54 +542,22 @@ const GanttChart = ({
                   key={`row-${index}`}
                   role="row"
                 >
-                  <div className="sticky left-0 z-20 -ml-14 w-14 pr-2 text-right text-xs">
+                  <div className="sticky left-0 -ml-20 w-20 pr-2 text-right text-xs">
                     {task.name}
                   </div>
                 </div>
               ))}
             </div>
             <div
-              className="col-start-1 col-end-2 row-start-1 grid grid-rows-1 divide-x dark:divide-white/20"
+              aria-label="Grid Columns"
+              className="col-start-1 col-end-2 row-start-1 grid grid-rows-1 divide-x divide-black/20 dark:divide-white/20"
               style={{
-                gridTemplateColumns: `repeat(${
-                  viewType === "year"
-                    ? calendar.length
-                    : calendar.filter(
-                        (y) =>
-                          y.year === new Date(period).getFullYear() &&
-                          (viewType === "month"
-                            ? y.month === new Date(period).getMonth()
-                            : true)
-                      )[0].days
-                })`,
+                gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0, 1fr))`,
               }}
             >
               {Array.from(
                 {
-                  length:
-                    viewType === "year"
-                      ? calendar.length
-                      : viewType === "month"
-                      ? calendar.filter(
-                          (y) =>
-                            y.year === new Date(period).getFullYear() &&
-                            (viewType === "month"
-                              ? y.month === new Date(period).getMonth()
-                              : true)
-                        )[0].days
-                      : viewType === "week"
-                      ? calendar
-                          .filter(
-                            (y) =>
-                              y.year === new Date(period).getFullYear() &&
-                              y.month === new Date(period).getMonth()
-                          )[0]
-                          .weeks.filter((week) =>
-                            viewType === "week"
-                              ? week.week === getISOWeek(new Date())
-                              : true
-                          )[0].dates.length
-                      : 7,
+                  length: getGridColumns(),
                 },
                 (_, index) => {
                   return (
@@ -451,37 +572,14 @@ const GanttChart = ({
               )}
             </div>
             <ol
-              className="col-start-1 col-end-2 row-start-1 grid grid-cols-7 border-l border-r border-b dark:border-white/20 dark:text-white"
+              aria-label="Chart elements"
+              className="col-start-1 col-end-2 row-start-1 grid border-l -mr-px border-r border-b dark:border-white/20 border-black/20 dark:text-white"
               style={{
-                gridTemplateRows: `1.75rem repeat(${tasks.length}, minmax(0px, 1fr)) auto`,
-                gridTemplateColumns: `repeat(${
-                  viewType === "year"
-                    ? calendar.length
-                    : viewType === "month"
-                    ? calendar.filter(
-                        (y) =>
-                          y.year === new Date(period).getFullYear() &&
-                          (viewType === "month"
-                            ? y.month === new Date(period).getMonth()
-                            : true)
-                      )[0].days
-                    : viewType === "week"
-                    ? calendar
-                        .filter(
-                          (y) =>
-                            y.year === new Date(period).getFullYear() &&
-                            y.month === new Date(period).getMonth()
-                        )[0]
-                        .weeks.filter((week) =>
-                          viewType === "week"
-                            ? week.week === getISOWeek(new Date())
-                            : true
-                        )[0].dates.length
-                    : 7
-                }, minmax(0px, 1fr))`,
+                gridTemplateRows: `1.75rem repeat(${tasks.length}, minmax(0px, 1fr)) auto`, // 1.75rem for the header
+                gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
-              {ganttTasks.map((task, i) => (
+              {ganttTasks.filter((task) => task.start >= new Date(dateInfo.year, dateInfo.month, dateInfo.day) || task.end <= new Date(dateInfo.year, dateInfo.month, dateInfo.day)).map((task, i) => (
                 <li
                   key={task.id}
                   className="relative mt-px flex"
@@ -491,18 +589,18 @@ const GanttChart = ({
                       viewType === "week"
                         ? task.start.getDay()
                         : viewType === "month"
-                        ? task.start.getDate()
-                        : viewType === "year"
-                        ? task.start.getMonth() + 1
-                        : 1,
+                          ? task.start.getDate()
+                          : viewType === "year"
+                            ? task.start.getMonth() + 1
+                            : 1,
                     gridColumnEnd:
                       viewType === "week"
                         ? task.end.getDay()
                         : viewType === "month"
-                        ? task.end.getDate()
-                        : viewType === "year"
-                        ? task.end.getMonth() + 1
-                        : 7,
+                          ? task.end.getDate()
+                          : viewType === "year"
+                            ? task.end.getMonth() + 1
+                            : 7,
                   }}
                   draggable
                   onDragStart={(e) => handleTaskDragStart(e, task.id)}
