@@ -76,15 +76,19 @@ const GanttChart = <T extends Record<string, unknown>>({
     cluster: string;
   }
 
-  function findGlobalMaxGroupLength(data: Record<string, TimelineSeason[]>): number {
-    let globalMaxGroupLength = 0;
+  function findMaxGroupLengthForYear(
+    data: Record<string, TimelineSeason[]>,
+    year: number
+  ): number {
+    let maxGroupLength = 0;
 
     for (const server in data) {
-      const seasons = data[server];
-      seasons.sort((a, b) => new Date(a.season_start_date).getTime() - new Date(b.season_start_date).getTime());
+      const seasons = data[server]
+        .filter(season => new Date(season.season_start_date).getFullYear() === year)
+        .sort((a, b) => new Date(a.season_start_date).getTime() - new Date(b.season_start_date).getTime());
 
       let currentGroup: TimelineSeason[] = [];
-      let maxGroupLength = 0;
+      let currentMaxGroupLength = 0;
 
       for (const season of seasons) {
         if (currentGroup.length === 0) {
@@ -98,24 +102,25 @@ const GanttChart = <T extends Record<string, unknown>>({
           if (seasonStartDate <= currentGroupEndDate && seasonEndDate >= currentGroupStartDate) {
             currentGroup.push(season);
           } else {
-            maxGroupLength = Math.max(maxGroupLength, currentGroup.length);
+            currentMaxGroupLength = Math.max(currentMaxGroupLength, currentGroup.length);
+            currentGroup = [season];
           }
         }
       }
 
       if (currentGroup.length > 0) {
-        maxGroupLength = Math.max(maxGroupLength, currentGroup.length);
+        currentMaxGroupLength = Math.max(currentMaxGroupLength, currentGroup.length);
       }
 
-      globalMaxGroupLength = Math.max(globalMaxGroupLength, maxGroupLength);
+      maxGroupLength = Math.max(maxGroupLength, currentMaxGroupLength);
     }
 
-    return globalMaxGroupLength;
+    return maxGroupLength;
   }
 
 
 
-  console.log(findGlobalMaxGroupLength(ganttData as unknown as Record<string, TimelineSeason[]>))
+  console.log(findMaxGroupLengthForYear(ganttData as unknown as Record<string, TimelineSeason[]>, 2021))
 
   const calendar = Array.from({ length: 12 }, (_, monthIndex) => {
     const firstDayOfMonth = new Date(
