@@ -1,6 +1,7 @@
 import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
 import { CSSProperties, HTMLAttributes, ImgHTMLAttributes, LinkHTMLAttributes, ReactNode } from "react";
+import Ripple from "../Ripple/Ripple";
 
 type CardProps = {
   sx?: CSSProperties;
@@ -186,6 +187,7 @@ export const CardActionArea = ({
         {...btnProps}
       >
         {children}
+        <Ripple />
       </button>
     )
   } else {
@@ -193,6 +195,7 @@ export const CardActionArea = ({
     return (
       <Link {...linkProps} className="relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit">
         {children}
+        <Ripple />
       </Link>
     );
   }

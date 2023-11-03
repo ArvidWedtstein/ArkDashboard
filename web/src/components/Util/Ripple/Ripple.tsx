@@ -9,6 +9,7 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
     id: number;
     activated: number;
     scale: number;
+    duration: number;
   }
   const [ripples, setRipples] = useState<RippleType[]>([]);
   // let ripples = [];
@@ -19,7 +20,7 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
   useEffect(() => {
     const element = node?.parentNode;//ref.current;
 
-    if (!element) return console.log('no element use');
+    if (!element) return;
 
     element.addEventListener("mousedown", handleMouseDown);
     element.addEventListener("mouseup", handleMouseUp);
@@ -34,7 +35,6 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
 
 
 
-  let duration = 600;
   let node = null;
   const createRipple = (event) => {
     node = event.originalTarget;
@@ -42,11 +42,11 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
     if (!node.parentNode) return
 
 
-    let localX = 0
-    let localY = 0
     const rippleSize = Math.max(node.clientWidth, node.clientHeight);
-    localX = event.clientX - node.getBoundingClientRect().left - rippleSize / 2;
-    localY = event.clientY - node.getBoundingClientRect().top - rippleSize / 2;
+    const duration = Math.sqrt(rippleSize) * 100;
+
+    const localX = event.clientX - node.getBoundingClientRect().left - rippleSize / 2;
+    const localY = event.clientY - node.getBoundingClientRect().top - rippleSize / 2;
 
     let radius = 0
     let scale = 0.3
@@ -64,10 +64,11 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
       radius: radius,
       scale: scale,
       size: rippleSize,
-      x: x,
-      y: y,
+      x,
+      y,
       id: new Date().getTime(),
       activated: performance.now(),
+      duration,
     };
     setRipples((prev) => [...prev, newRipple]);
 
@@ -137,7 +138,7 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
             animationTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
             borderRadius: ripple.radius ? `${ripple.radius}px` : '50%',
             animationFillMode: "forwards",
-            animationDuration: `${duration}ms`,
+            animationDuration: `${ripple.duration}ms`,
             transition: 'opacity transform 0.3s cubic-bezier(0, 0, 0.2, 1)',
           };
 

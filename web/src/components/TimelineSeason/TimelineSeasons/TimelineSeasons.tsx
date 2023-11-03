@@ -12,69 +12,119 @@ import {
   toLocaleISODate,
   getISOWeek,
   groupBy,
+  average,
 } from "src/lib/formatters";
 
 import type { FindTimelineSeasons } from "types/graphql";
 
 type ViewType = "day" | "week" | "month" | "year";
-const GanttChart = <T extends {}>({
-  tasks,
+const GanttChart = <T extends Record<string, unknown>>({
   data,
   group,
+  dateStartKey,
+  dateEndKey,
 }: {
   data?: T[]
-  tasks: { id: number | string; name?: string; start: Date; end: Date }[];
   group?: keyof T;
+  dateStartKey?: keyof T;
+  dateEndKey?: keyof T;
 }) => {
   const [ganttData, setGanttData] = useState(groupBy(data, group.toString()));
   const [viewType, setViewType] = useState<ViewType>(
     "week"
   );
-  const [period, setPeriod] = useState<string>(() => toLocalPeriod(new Date()));
+
   const [dateInfo, setDateInfo] = useState(() => ({
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
     day: new Date().getDate(),
     week: getISOWeek(new Date()),
+    dateText: viewType === 'year' ? new Date().getFullYear().toString() : viewType === 'month' ? new Date().toLocaleDateString(
+      navigator && navigator.language,
+      {
+        month: "short",
+        year: "numeric",
+      }
+    ) : viewType === 'week' ? `Week ${getISOWeek(new Date())}` : new Date().toLocaleDateString(navigator && navigator.language, {
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+    }),
   }));
-  const chartRef = useRef(null);
-  const dragInfo = useRef(null);
   const firstDayOfWeek = 1;
 
-  const handleTaskDragStart = (e: React.DragEvent<HTMLLIElement>, taskId) => {
-    e.dataTransfer.setData("taskId", taskId);
+  interface TimelineSeason {
+    __typename: string;
+    id: string;
+    server: string;
+    season: string;
+    tribe_name: string;
+    season_start_date: string;
+    season_end_date: string;
+    cluster: string;
+  }
 
-    console.log(e, taskId);
-    dragInfo.current = { taskId, initialX: e.clientX };
-  };
 
-  const handleTaskDrag = (e) => {
-    e.preventDefault();
-    if (!dragInfo.current) return;
-    const { taskId, initialX } = dragInfo.current;
-    const deltaX = e.clientX - initialX;
+  interface TimelineSeason {
+    __typename: string;
+    id: string;
+    server: string;
+    season: string;
+    tribe_name: string;
+    season_start_date: string;
+    season_end_date: string;
+    cluster: string;
+  }
 
-    console.log(e, taskId);
-    // Calculate the new start and end dates based on deltaX
-    // Update ganttTasks and re-render
-  };
+  function findGlobalMaxGroupLength(data: Record<string, TimelineSeason[]>): number {
+    let globalMaxGroupLength = 0;
 
-  const handleTaskDragEnd = (e) => {
-    console.log(dragInfo.current);
-    dragInfo.current = null;
-    // Handle the end of the drag operation (e.g., update data on server)
-  };
+    for (const server in data) {
+      const seasons = data[server];
+      seasons.sort((a, b) => new Date(a.season_start_date).getTime() - new Date(b.season_start_date).getTime());
 
-  console.log(ganttData)
+      let currentGroup: TimelineSeason[] = [];
+      let maxGroupLength = 0;
+
+      for (const season of seasons) {
+        if (currentGroup.length === 0) {
+          currentGroup.push(season);
+        } else {
+          const seasonStartDate = new Date(season.season_start_date);
+          const seasonEndDate = new Date(season.season_end_date);
+          const currentGroupStartDate = new Date(currentGroup[0].season_start_date);
+          const currentGroupEndDate = new Date(currentGroup[currentGroup.length - 1].season_end_date);
+
+          if (seasonStartDate <= currentGroupEndDate && seasonEndDate >= currentGroupStartDate) {
+            currentGroup.push(season);
+          } else {
+            maxGroupLength = Math.max(maxGroupLength, currentGroup.length);
+          }
+        }
+      }
+
+      if (currentGroup.length > 0) {
+        maxGroupLength = Math.max(maxGroupLength, currentGroup.length);
+      }
+
+      globalMaxGroupLength = Math.max(globalMaxGroupLength, maxGroupLength);
+    }
+
+    return globalMaxGroupLength;
+  }
+
+
+
+  console.log(findGlobalMaxGroupLength(ganttData as unknown as Record<string, TimelineSeason[]>))
 
   const calendar = Array.from({ length: 12 }, (_, monthIndex) => {
     const firstDayOfMonth = new Date(
-      new Date(period).getFullYear(),
+      dateInfo.year,
       monthIndex,
       1
     );
     const lastDayOfMonth = new Date(
-      new Date(period).getFullYear(),
+      dateInfo.year,
       monthIndex + 1,
       0
     );
@@ -82,7 +132,7 @@ const GanttChart = <T extends {}>({
 
     return {
       month: monthIndex,
-      year: new Date(period).getFullYear(),
+      year: dateInfo.year,
       days: getDaysBetweenDates(firstDayOfMonth, lastDayOfMonth).length,
       weeks: Array.from(
         {
@@ -97,7 +147,10 @@ const GanttChart = <T extends {}>({
               let date = addToDate(currentDate, weekIndex * 7 + index, "day");
               return {
                 date,
-                isOutsideCurrentMonth: date.getMonth() !== monthIndex,
+                hours: Array.from({ length: 24 }, (_day, hourIndex) => {
+                  return new Date(date.getTime() + hourIndex * 60 * 60 * 1000);
+                }),
+                isOutsideCurrentMonth: date.getMonth() !== monthIndex || date.getFullYear() !== dateInfo.year,
               };
             }),
           };
@@ -110,20 +163,15 @@ const GanttChart = <T extends {}>({
     if (viewType === "year") {
       return calendar.length; // 12 months
     } else if (viewType === "month") {
-      const year = new Date(period).getFullYear();
-      const month = new Date(period).getMonth();
       return calendar
-        .filter((y) => y.year === year && (viewType === 'month' ? y.month === month : true))
+        .filter((y) => y.year === dateInfo.year && (viewType === 'month' ? y.month === dateInfo.month : true))
         .reduce((acc, cur) => acc + cur.days, 0);
     } else if (viewType === "week") {
-      const year = new Date(period).getFullYear();
-      const month = new Date(period).getMonth();
-      const isoWeek = getISOWeek(new Date());
-      const relevantMonth = calendar.find((y) => y.year === year && y.month === month);
-      const relevantWeek = relevantMonth.weeks.find((week) => week.week === isoWeek);
-      return viewType === 'week' ? relevantWeek.dates.length : 7;
-    } else {
-      return 7;
+      const relevantMonth = calendar.find((y) => y.year === dateInfo.year && y.month === dateInfo.month);
+      const relevantWeek = relevantMonth.weeks.find((week) => week.week === dateInfo.week);
+      return relevantWeek ? relevantWeek.dates.length : 7;
+    } else if (viewType === "day") {
+      return 24;
     }
   }
 
@@ -131,28 +179,30 @@ const GanttChart = <T extends {}>({
     change: -1 | 1,
     type: ViewType = "week"
   ) => {
-    // TODO: fix date change
-    const newDate = addToDate(new Date(period), change, type);
-    // const newDate = addToDate(new Date(dateInfo.year, dateInfo.month, dateInfo.day), change, type);
-
+    const newDate = addToDate(new Date(dateInfo.year, dateInfo.month, dateInfo.day), change, type);
 
     setDateInfo({
       year: newDate.getFullYear(),
       month: newDate.getMonth(),
       day: newDate.getDate(),
       week: getISOWeek(newDate),
+      dateText: viewType === 'year' ? newDate.getFullYear().toString() : viewType === 'month' ? newDate.toLocaleDateString(
+        navigator && navigator.language,
+        {
+          month: "short",
+          year: "numeric",
+        }
+      ) : viewType === 'week' ? `Week ${getISOWeek(newDate)}` : newDate.toLocaleDateString(navigator && navigator.language, {
+        month: "2-digit",
+        day: "2-digit",
+        year: "2-digit",
+      }),
     });
-    setPeriod(toLocalPeriod(newDate));
   };
 
-  // console.log("CALENDAR", calendar, viewType);
+
   return (
-    <div
-      className="gantt-chart relative p-4 text-black dark:text-white"
-      ref={chartRef}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => handleTaskDrag(e)}
-    >
+    <div className="gantt-chart relative p-4 text-black dark:text-white">
       <div role="menubar" className="mb-2 inline-flex space-x-2">
         <Lookup
           size="small"
@@ -225,96 +275,109 @@ const GanttChart = <T extends {}>({
           >
             <div className="col-end-1 w-20 flex items-center justify-center">
               <span className="whitespace-nowrap">
-                {viewType === 'year' ? new Date(period).getFullYear() : viewType === 'month' ? new Date(period).toLocaleDateString(
-                  navigator && navigator.language,
-                  {
-                    month: "short",
-                    year: "numeric",
-                  }
-                ) : 'Week ' + getISOWeek(new Date())}
+                {dateInfo.dateText}
               </span>
             </div>
 
             {calendar
               .filter(
                 (y) =>
-                  y.year === new Date(period).getFullYear() &&
-                  (viewType === "month"
-                    ? y.month === new Date(period).getMonth()
+                  y.year === dateInfo.year &&
+                  (viewType !== "year"
+                    ? y.month === dateInfo.month
                     : true)
               )
               .map((month, monthIndex) => {
                 return month.weeks
                   .filter((week, i) =>
-                    viewType === "week"
-                      ? week.week === getISOWeek(new Date())
+                    viewType === "week" || viewType === 'day'
+                      ? week.week === dateInfo.week
                       : viewType === "year"
                         ? i === 0
                         : true
                   )
                   .map((week, weekIndex) => {
                     return week.dates
-                      .filter((_, i) =>
-                        viewType === "year" ? i === week.dates.length - 1 : true
+                      .filter((day, i) =>
+                        viewType === "year" ? i === week.dates.length - 1 : viewType === 'day' ? toLocaleISODate(day.date) === toLocaleISODate(new Date(dateInfo.year, dateInfo.month, dateInfo.day)) : true
                       )
-                      .map(({ date, isOutsideCurrentMonth }, dateIndex) => {
-                        if (viewType === "month" && isOutsideCurrentMonth)
-                          return null;
-
-                        return (
-                          <div
-                            className="flex items-center justify-center py-3"
-                            key={date.toISOString()}
-                          >
-                            <span
-                              className={clsx(
-                                "flex items-center justify-center",
-                                {
-                                  "bg-pea-500 h-8 w-8 justify-center rounded-full font-semibold text-white":
-                                    date.getMonth() === new Date().getMonth() &&
-                                    viewType === "year",
-                                }
-                              )}
-                            >
-                              {viewType === "month"
-                                ? ""
-                                : viewType === "year"
-                                  ? date.toLocaleDateString(
-                                    navigator && navigator.language,
-                                    {
-                                      month: "short",
-                                    }
-                                  )
-                                  : date.toLocaleDateString(
-                                    navigator && navigator.language,
-                                    {
-                                      weekday: "short",
-                                    }
-                                  )}
-
-                              {(viewType === "week" || viewType == "month") && (
+                      .map(({ date, hours, isOutsideCurrentMonth }, dateIndex) => {
+                        return hours
+                          .filter((_, i) =>
+                            viewType !== "day" ? i === 0 : true
+                          )
+                          .map((hour, hourIndex) => {
+                            if (viewType === "month" && isOutsideCurrentMonth)
+                              return null;
+                            return (
+                              <div
+                                className="flex items-center justify-center py-3"
+                                key={hour.toISOString()}
+                              >
                                 <span
-                                  className={clsx(
-                                    "flex items-center justify-center font-semibold",
-                                    {
-                                      "bg-pea-500 h-8 w-8 rounded-full text-white":
-                                        toLocaleISODate(date) ===
-                                        toLocaleISODate(new Date()),
-                                      "ml-1.5": viewType === 'week'
-                                    }
-                                  )}
+                                  className={"flex items-center justify-center"}
                                 >
-                                  {date.toLocaleDateString(
-                                    navigator && navigator.language,
-                                    {
-                                      day: "numeric",
-                                    }
+                                  {(viewType === "week") && (
+                                    date.toLocaleDateString(
+                                      navigator && navigator.language,
+                                      {
+                                        weekday: "short",
+                                      }
+                                    )
+                                  )}
+
+                                  {(viewType === "week" || viewType == "month" || viewType === 'year' || viewType === "day") && (
+                                    <span
+                                      className={clsx(
+                                        "flex items-center justify-center",
+                                        {
+                                          "bg-pea-500 h-8 w-8 rounded-full text-white":
+                                            (toLocaleISODate(date) ===
+                                              toLocaleISODate(new Date()) &&
+                                              (viewType === "week" || viewType === 'month')) || (toLocalPeriod(date) === toLocalPeriod(new Date()) && viewType === 'year'),
+                                          "bg-pea-500 rounded-full text-white px-1": (
+                                            viewType === 'day' && hour.toLocaleString(
+                                              navigator && navigator.language,
+                                              {
+                                                hour: "2-digit",
+                                                hourCycle: "h23",
+                                              }
+                                            ) === new Date().toLocaleString(
+                                              navigator && navigator.language,
+                                              {
+                                                hour: "2-digit",
+                                                hourCycle: "h23",
+                                              }
+                                            ) && toLocaleISODate(date) ===
+                                            toLocaleISODate(new Date())
+                                          ),
+                                          "font-semibold": viewType === 'week' || viewType === 'month',
+                                          "ml-1.5": viewType === 'week'
+                                        }
+                                      )}
+                                    >
+                                      {viewType === "year" ? date.toLocaleDateString(
+                                        navigator && navigator.language,
+                                        {
+                                          month: "short",
+                                        }
+                                      ) : viewType === 'day' ? hour.toLocaleString(
+                                        navigator && navigator.language,
+                                        {
+                                          hour: "2-digit",
+                                        }
+                                      ) : date.toLocaleDateString(
+                                        navigator && navigator.language,
+                                        {
+                                          day: "numeric",
+                                        }
+                                      )}
+                                    </span>
                                   )}
                                 </span>
-                              )}
-                            </span>
-                          </div>
-                        );
+                              </div>
+                            );
+                          });
                       });
                   });
               })}
@@ -322,27 +385,30 @@ const GanttChart = <T extends {}>({
         </div>
 
         <div className="flex flex-auto text-xs leading-6">
-          <div className="sticky left-0 w-20 z-10 flex-none bg-zinc-300 dark:bg-neutral-800" aria-label="Left bar" />
+          <div className="sticky left-0 w-20 flex-none bg-zinc-300 dark:bg-neutral-800" aria-label="Left bar" />
           <div className="grid flex-auto grid-cols-1 grid-rows-1">
             <div
               aria-label="Grid Rows"
               className="col-start-1 col-end-2 row-start-1 grid divide-y text-black dark:divide-white/20 divide-black/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${Object.keys(ganttData).length}, minmax(3.5rem, 1fr))`,
+                gridTemplateRows: `repeat(${Object.keys(ganttData).length * 2}, minmax(3.5rem, 1fr))`,  // TODO: calculate this based on the number of items in the group
               }}
               role="rowgroup"
             >
               <div className="row-end-1 h-7" role="row" />
               {Object.keys(ganttData).map((entry, index) => (
-                <div
-                  className="flex items-center"
-                  key={`row-${index}`}
-                  role="row"
-                >
-                  <div className="sticky left-0 -ml-20 w-20 pr-2 text-right text-xs">
-                    {entry}
+                <>
+                  <div
+                    className="flex items-center"
+                    key={`row-${index}`}
+                    role="row"
+                  >
+                    <div className="sticky left-0 -ml-20 w-20 pr-2 text-right text-xs uppercase">
+                      {entry}
+                    </div>
                   </div>
-                </div>
+                  <div className="" role="row" />
+                </>
               ))}
             </div>
             <div
@@ -372,47 +438,64 @@ const GanttChart = <T extends {}>({
               aria-label="Chart elements"
               className="col-start-1 col-end-2 row-start-1 grid border-l -mr-px border-r border-b dark:border-white/20 border-black/20 dark:text-white"
               style={{
-                gridTemplateRows: `1.75rem repeat(${tasks.length}, minmax(0px, 1fr)) auto`, // 1.75rem for the header
+                gridTemplateRows: `1.75rem repeat(${Object.keys(ganttData).length * Object.entries(ganttData).reduce((a, [_, v]) => a + v.length, 0) / Object.keys(ganttData).length}, minmax(0px, 1fr)) auto`, // TODO: calculate this based on the number of items in the group
                 gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
-              {/* {ganttTasks.filter((task) => task.start >= new Date(dateInfo.year, dateInfo.month, dateInfo.day) || task.end <= new Date(dateInfo.year, dateInfo.month, dateInfo.day)).map((task, i) => (
-                <li
-                  key={task.id}
-                  className="relative mt-px flex"
-                  style={{
-                    gridRow: `${i + 2} / ${i + 3}`,
-                    gridColumnStart:
-                      viewType === "week"
-                        ? task.start.getDay()
-                        : viewType === "month"
-                          ? task.start.getDate()
-                          : viewType === "year"
-                            ? task.start.getMonth() + 1
-                            : 1,
-                    gridColumnEnd:
-                      viewType === "week"
-                        ? task.end.getDay()
-                        : viewType === "month"
-                          ? task.end.getDate()
-                          : viewType === "year"
-                            ? task.end.getMonth() + 1
-                            : 7,
-                  }}
-                  draggable
-                  onDragStart={(e) => handleTaskDragStart(e, task.id)}
-                  onDragEnd={handleTaskDragEnd}
-                >
-                  <p className="bg-pea-400/80 absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2">
-                    {task.name}
-                  </p>
-                </li>
-              ))} */}
+              {Object.entries(ganttData).map(([k, v]) => ({
+                label: k,
+                data: v.filter((item) => {
+                  return viewType === 'day'
+                    ? toLocaleISODate(new Date(item[dateStartKey].toString())) === toLocaleISODate(new Date(dateInfo.year, dateInfo.month, dateInfo.day))
+                    : viewType === 'week'
+                      ? (getISOWeek(new Date(item[dateStartKey].toString())) === dateInfo.week && new Date(item[dateStartKey].toString()).getFullYear() === dateInfo.year) || (getISOWeek(new Date(item[dateEndKey].toString())) === dateInfo.week && new Date(item[dateEndKey].toString()).getFullYear() === dateInfo.year)
+                      : viewType === 'month'
+                        ? toLocalPeriod(new Date(item[dateStartKey].toString())) === toLocalPeriod(new Date(dateInfo.year, dateInfo.month, dateInfo.day)) || toLocalPeriod(new Date(item[dateEndKey].toString())) === toLocalPeriod(new Date(dateInfo.year, dateInfo.month, dateInfo.day))
+                        : viewType === 'year'
+                          ? new Date(item[dateStartKey].toString()).getFullYear() === dateInfo.year || new Date(item[dateEndKey].toString()).getFullYear() === dateInfo.year
+                          : true
+                })
+              })).map((data, groupIndex) => {
+                return data.data.map((item, i) => (
+                  <li
+                    key={`group-${groupIndex}-item-${i}`}
+                    className="relative mt-px flex"
+                    aria-label={`${data.label}`}
+                    style={{
+                      gridRow: `${groupIndex * 2 + 2 + i} / ${groupIndex * 2 + 3 + i}`, // TODO: calculate this based on the number of items in the group
+                      gridColumnStart:
+                        viewType === 'day'
+                          ? new Date(item[dateStartKey].toString()).getHours() + 1
+                          : viewType === "week"
+                            ? new Date(item[dateStartKey].toString()).getDay()
+                            : viewType === "month"
+                              ? new Date(item[dateStartKey].toString()).getDate()
+                              : viewType === "year"
+                                ? new Date(item[dateStartKey].toString()).getMonth() + 1
+                                : 1,
+                      gridColumnEnd:
+                        viewType === 'day'
+                          ? new Date(item[dateEndKey].toString()).getHours() + 1
+                          : viewType === "week"
+                            ? new Date(item[dateEndKey].toString()).getDay()
+                            : viewType === "month"
+                              ? new Date(item[dateEndKey].toString()).getDate()
+                              : viewType === "year"
+                                ? new Date(item[dateEndKey].toString()).getMonth() + 1
+                                : 7,
+                    }}
+                  >
+                    <p className="bg-pea-400/60 absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2">
+                      {item[group].toString()}
+                    </p>
+                  </li>
+                ))
+              })}
             </ol>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
@@ -469,40 +552,10 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
       />
 
       <GanttChart
-        tasks={[
-          {
-            id: 1,
-            name: "test1",
-            start: new Date("2023-5-30"),
-            end: new Date("2023-11-30"),
-          },
-          {
-            id: 2,
-            name: "test2",
-            start: new Date("2023-12-15"),
-            end: new Date("2024-02-30"),
-          },
-          {
-            id: 3,
-            name: "test3",
-            start: new Date("2023-11-23"),
-            end: new Date("2023-11-23"),
-          },
-          {
-            id: 4,
-            name: "test4",
-            start: new Date(),
-            end: new Date("2023-11-30"),
-          },
-          {
-            id: 5,
-            name: "test5",
-            start: new Date(),
-            end: new Date("2023-11-30"),
-          },
-        ]}
         data={timelineSeasons}
         group="server"
+        dateStartKey="season_start_date"
+        dateEndKey="season_end_date"
       />
 
       <ol className="relative mx-2 border-l border-zinc-500">

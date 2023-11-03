@@ -28,22 +28,6 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
   );
   const [days, setDays] = useState<Date[]>([]);
 
-  const weeksInMonth = (year, month_number) => {
-    let firstOfMonth = new Date(year, month_number - 1, 1);
-    let day = firstOfMonth.getDay() || 6;
-    day = day === 1 ? 0 : day;
-    if (day) {
-      day--;
-    }
-    let diff = 7 - day;
-    let lastOfMonth = new Date(year, month_number, 0);
-    let lastDate = lastOfMonth.getDate();
-    if (lastOfMonth.getDay() === 1) {
-      diff--;
-    }
-    let result = Math.ceil((lastDate - diff) / 7);
-    return result + 1;
-  };
   const getDaysArray = (s: Date, e: Date) => {
     let a = []
     for (
@@ -72,10 +56,6 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     return weeks;
   };
 
-  const dateFromDay = (year: number, day: number) => {
-    let date = new Date(year, 0);
-    return new Date(date.setDate(day));
-  };
   const dayFromDate = (date: Date) => {
     let start = new Date(date.getFullYear(), 0, 0);
     let diff = (date as any) - (start as any);

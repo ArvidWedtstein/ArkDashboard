@@ -143,6 +143,13 @@ export const isDate = (dateString: string | Date | number): boolean => {
 };
 
 /**
+ *
+ * @param arr
+ * @returns
+ */
+export const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
+
+/**
  * Sorts an array of objects based on a specified property and sorting order.
  *
  * @template ItemType
@@ -548,6 +555,8 @@ export const addToDate = (
 
   if (unit === "day") {
     result.setDate(result.getDate() + value);
+  } else if (unit === "week") {
+    result.setDate(result.getDate() + value * 7);
   } else if (unit === "month") {
     result.setMonth(result.getMonth() + value);
   } else if (unit === "year") {
