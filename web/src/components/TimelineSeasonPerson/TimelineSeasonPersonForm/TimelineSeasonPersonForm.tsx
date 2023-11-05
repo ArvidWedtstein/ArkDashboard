@@ -33,7 +33,6 @@ interface TimelineSeasonPersonFormProps {
 
 const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
   const onSubmit = (data: FormTimelineSeasonPerson) => {
-
     data.timeline_season_id = props.timeline_season_id;
     props.onSave(data, props?.timelineSeasonPerson?.id);
   };
@@ -64,7 +63,7 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
                 label: user.username,
                 value: user.id,
               }))}
-              defaultValue={[props.timelineSeasonPerson?.user_id]}
+              defaultValue={props.timelineSeasonPerson?.user_id}
             />
 
             <FieldError name="user_id" className="rw-field-error" />

@@ -46,7 +46,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   };
 
   return (
-    <div className="my-3 rw-form-wrapper">
+    <div className="rw-form-wrapper my-3">
       {props.timelineSeasonEvent?.id && (
         <Form<FormTimelineSeasonEvent>
           onSubmit={onSubmit}
@@ -118,7 +118,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
             }))}
             name="map_id"
-            defaultValue={[props.timelineSeasonEvent?.map_id.toString()]}
+            defaultValue={props.timelineSeasonEvent?.map_id}
             placeholder="Select a map"
           />
 
@@ -176,8 +176,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
 
           <TagInput
             name="tags"
-            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""
-              }`}
+            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
+              raid ? "raid" : ""
+            }`}
           />
 
           <FieldError name="tags" className="rw-field-error" />
@@ -217,27 +218,29 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             <TextField
               name="title"
               defaultValue={props.timelineSeasonEvent?.title}
-              className="dark:text-zinc-300 text-zinc-500 w-full font-medium text-lg pt-2.5 pb-2 px-3 block outline-none bg-transparent"
+              className="block w-full bg-transparent px-3 pt-2.5 pb-2 text-lg font-medium text-zinc-500 outline-none dark:text-zinc-300"
               errorClassName="rw-float-input rw-input-error"
               placeholder="Title"
             />
             <TextAreaField
               name="content"
               defaultValue={props.timelineSeasonEvent?.content}
-              className="dark:text-zinc-300 text-zinc-500 w-full text-sm py-0 block px-3 outline-none bg-transparent"
+              className="block w-full bg-transparent py-0 px-3 text-sm text-zinc-500 outline-none dark:text-zinc-300"
               errorClassName="rw-float-input rw-input-error"
               placeholder="Write a description..."
             />
             <TagInput
               name="tags"
               placeholder="Tags"
-              className="px-2 mb-2"
+              className="mb-2 px-2"
               tagClassName="rw-button rw-button-small rw-button-gray !rounded-full"
               inputClassName="dark:text-zinc-300 text-zinc-500 text-sm py-0 px-3 outline-none bg-transparent"
-              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""}`}
+              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
+                raid ? "raid" : ""
+              }`}
             />
             <FileUpload
-              className="relative !w-full border-none !bg-transparent !rounded-none"
+              className="relative !w-full !rounded-none border-none !bg-transparent"
               storagePath="timelineeventimages"
               defaultValue={props?.timelineSeasonEvent?.images}
               multiple
@@ -248,24 +251,38 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             </div>
           </div>
           <div className="absolute right-0.5 left-0.5 bottom-0">
-            <div className="py-2 px-3 border-t border-zinc-500 flex justify-between items-center">
+            <div className="flex items-center justify-between border-t border-zinc-500 py-2 px-3">
               <div className="flex">
-                <button className="py-2 px-3 rounded-full inline-flex items-center -ml-2" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-4 h-4 -ml-1 mr-2 block">
-                    <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clip-rule="evenodd"></path>
+                <button
+                  className="-ml-2 inline-flex items-center rounded-full py-2 px-3"
+                  type="button"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                    className="-ml-1 mr-2 block h-4 w-4"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
-                  <span className="italic text-sm">Attach file</span>
+                  <span className="text-sm italic">Attach file</span>
                 </button>
               </div>
               <div className="shrink-0">
-                <Submit className="rw-button rw-button-blue rw-button-medium">Create</Submit>
+                <Submit className="rw-button rw-button-blue rw-button-medium">
+                  Create
+                </Submit>
               </div>
             </div>
           </div>
         </Form>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 };
 

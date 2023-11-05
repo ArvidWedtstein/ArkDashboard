@@ -47,7 +47,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
             margin="none"
             options={[]}
             name="item_id"
-            defaultValue={[props.dinoStat?.item_id.toString()]}
+            defaultValue={props.dinoStat?.item_id}
             label="Item"
             validation={{ required: true }}
           />
@@ -65,7 +65,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
               { value: "engrams", label: "Engrams" },
             ]}
             name="type"
-            defaultValue={[props.dinoStat?.type]}
+            defaultValue={props.dinoStat?.type}
             closeOnSelect
             label="Type"
           />

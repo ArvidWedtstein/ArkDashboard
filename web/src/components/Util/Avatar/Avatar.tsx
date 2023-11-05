@@ -142,31 +142,36 @@ const Avatar = memo<AvatarProps>(
               paddingToAnchor={4}
               disablePortal
             >
-              <div className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white" onClick={() => setOpenProfile(false)}>
+              <div
+                className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
+                onClick={() => setOpenProfile(false)}
+              >
                 <ul className="relative m-0 list-none py-2">
-                  <Link
-                    to={routes.profile({
-                      id: currentUser?.id || currentUser?.sub || "",
-                    })}
-                    className="relative box-border flex select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:cursor-pointer hover:bg-black/10 dark:hover:bg-white/10"
-                  >
-                    <div className="inline-flex min-w-[36px] shrink-0">
-                      <svg
-                        className="inline-block h-5 w-5 shrink-0 select-none fill-current"
-                        focusable="false"
-                        aria-hidden="true"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    Profile
-                  </Link>
+                  {isAuthenticated && (
+                    <Link
+                      to={routes.profile({
+                        id: currentUser?.id || currentUser?.sub || "",
+                      })}
+                      className="relative box-border flex select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:cursor-pointer hover:bg-black/10 dark:hover:bg-white/10"
+                    >
+                      <div className="inline-flex min-w-[36px] shrink-0">
+                        <svg
+                          className="inline-block h-5 w-5 shrink-0 select-none fill-current"
+                          focusable="false"
+                          aria-hidden="true"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      Profile
+                    </Link>
+                  )}
                   <li className="reltive box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10">
                     <div className="inline-flex min-w-[36px] shrink-0">
                       <svg

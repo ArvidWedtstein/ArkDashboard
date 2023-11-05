@@ -5,28 +5,28 @@ import {
   Label,
   TextField,
   Submit,
-} from '@redwoodjs/forms'
+} from "@redwoodjs/forms";
 
-import type { EditItemRecipeById, UpdateItemRecipeInput } from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
-import CheckboxGroup from 'src/components/Util/CheckSelect/CheckboxGroup'
-import { InputOutlined } from 'src/components/Util/Input/Input'
-import { Lookup } from 'src/components/Util/Lookup/Lookup'
+import type { EditItemRecipeById, UpdateItemRecipeInput } from "types/graphql";
+import type { RWGqlError } from "@redwoodjs/forms";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import { InputOutlined } from "src/components/Util/Input/Input";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
-type FormItemRecipe = NonNullable<EditItemRecipeById['itemRecipe']>
+type FormItemRecipe = NonNullable<EditItemRecipeById["itemRecipe"]>;
 
 interface ItemRecipeFormProps {
-  itemRecipe?: EditItemRecipeById['itemRecipe']
-  onSave: (data: UpdateItemRecipeInput, id?: FormItemRecipe['id']) => void
-  error: RWGqlError
-  loading: boolean
-  item_id?: number
+  itemRecipe?: EditItemRecipeById["itemRecipe"];
+  onSave: (data: UpdateItemRecipeInput, id?: FormItemRecipe["id"]) => void;
+  error: RWGqlError;
+  loading: boolean;
+  item_id?: number;
 }
 
 const ItemRecipeForm = (props: ItemRecipeFormProps) => {
   const onSubmit = (data: FormItemRecipe) => {
-    props.onSave(data, props?.itemRecipe?.id)
-  }
+    props.onSave(data, props?.itemRecipe?.id);
+  };
 
   return (
     <div className="rw-form-wrapper">
@@ -51,7 +51,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           //   image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
           // }))}
           options={[{ label: "test", value: 1 }]}
-          defaultValue={[props.itemRecipe?.crafted_item_id.toString()]}
+          defaultValue={props.itemRecipe?.crafted_item_id}
           validation={{ required: true }}
         />
 
@@ -157,10 +157,29 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
 
         <FieldError name="crafting_station_id" className="rw-field-error" />
 
-
-        <InputOutlined margin='normal' name="crafting_time" defaultValue={props.itemRecipe?.crafting_time} type="number" label='Crafting Time' validation={{ valueAsNumber: true }} />
-        <InputOutlined margin='normal' name="yields" defaultValue={props.itemRecipe?.yields ?? 1} type="number" label='Yields' validation={{ valueAsNumber: true, required: true }} />
-        <InputOutlined margin='normal' name="required_level" defaultValue={props.itemRecipe?.required_level ?? 0} type="number" label='Required Level' />
+        <InputOutlined
+          margin="normal"
+          name="crafting_time"
+          defaultValue={props.itemRecipe?.crafting_time}
+          type="number"
+          label="Crafting Time"
+          validation={{ valueAsNumber: true }}
+        />
+        <InputOutlined
+          margin="normal"
+          name="yields"
+          defaultValue={props.itemRecipe?.yields ?? 1}
+          type="number"
+          label="Yields"
+          validation={{ valueAsNumber: true, required: true }}
+        />
+        <InputOutlined
+          margin="normal"
+          name="required_level"
+          defaultValue={props.itemRecipe?.required_level ?? 0}
+          type="number"
+          label="Required Level"
+        />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
@@ -169,7 +188,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
         </div>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default ItemRecipeForm
+export default ItemRecipeForm;

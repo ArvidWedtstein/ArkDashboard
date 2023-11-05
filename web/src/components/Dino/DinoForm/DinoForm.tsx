@@ -395,7 +395,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Temperament"
               name="temperament"
-              search
+              defaultValue={props.dino?.temperament}
               options={[
                 { value: "Aggressive", label: "Aggressive" },
                 { value: "Angry", label: "Angry" },
@@ -440,6 +440,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Target Team"
               name="targeting_team_name"
+              defaultValue={props.dino?.targeting_team_name}
               options={[
                 { value: "Herbivores", label: "Herbivores" },
                 { value: "Herbivore_Small", label: "Herbivore Small" },
@@ -513,6 +514,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Diet"
               name="diet"
+              defaultValue={props.dino?.diet}
               options={[
                 { value: "Sanguivore", label: "Sanguivore" },
                 { value: "Minerals", label: "Minerals" },
@@ -1403,7 +1405,6 @@ const DinoForm = (props: DinoFormProps) => {
                       >
                         <Lookup
                           key={ge.id}
-                          // multiple
                           {...register(
                             `DinoStat.create.${index}.item_id` as const,
                             {
@@ -1419,7 +1420,6 @@ const DinoForm = (props: DinoFormProps) => {
                               value: item.id,
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                             }))}
-                          search={true}
                           // defaultValue={[ge.item_id]}
                           closeOnSelect={true}
                           filterFn={(item, search) => {
@@ -1518,8 +1518,7 @@ const DinoForm = (props: DinoFormProps) => {
                               value: item.id,
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                             }))}
-                          search={true}
-                          defaultValue={[w.item_id]}
+                          defaultValue={w.item_id}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -1613,8 +1612,7 @@ const DinoForm = (props: DinoFormProps) => {
                                   }))
                               : []
                           }
-                          search={true}
-                          defaultValue={[d.item_id]}
+                          defaultValue={d.item_id}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -1702,8 +1700,7 @@ const DinoForm = (props: DinoFormProps) => {
                             value: item.id,
                             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                           }))}
-                        search={true}
-                        defaultValue={[s.item_id]}
+                        defaultValue={s.item_id}
                         filterFn={(item, search) => {
                           return item.label
                             .toLowerCase()

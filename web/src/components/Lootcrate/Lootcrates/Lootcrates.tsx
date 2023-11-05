@@ -1,9 +1,4 @@
-import {
-  CheckboxField,
-  Form,
-  Label,
-  Submit,
-} from "@redwoodjs/forms";
+import { CheckboxField, Form, Label, Submit } from "@redwoodjs/forms";
 import {
   Link,
   routes,
@@ -14,7 +9,13 @@ import {
 import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import { useAuth } from "src/auth";
-import { Card, CardActionArea, CardActions, CardContent, CardHeader } from "src/components/Util/Card/Card";
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+} from "src/components/Util/Card/Card";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
@@ -30,7 +31,11 @@ type FormFindLootcrates = NonNullable<{
   types: string;
 }>;
 
-const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
+const LootcratesList = ({
+  lootcratesByMap,
+  maps,
+  loading,
+}: FindLootcrates & {
   loading?: boolean;
 }) => {
   const { currentUser } = useAuth();
@@ -159,8 +164,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
       <Modal content={Filters} />
 
       <div className="flex flex-col items-baseline justify-between border-b border-zinc-500 pb-3  text-gray-900 dark:text-white sm:flex-row md:pt-3">
-
-        <nav className="flex flex-row flex-wrap sm:flex-nowrap justify-center items-center space-x-2 w-full mx-1">
+        <nav className="mx-1 flex w-full flex-row flex-wrap items-center justify-center space-x-2 sm:flex-nowrap">
           <h1 className="align-middle text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
             Lootcrates
           </h1>
@@ -168,14 +172,15 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             <Lookup
               label="Sort by"
               margin="none"
-              className="capitalize hidden sm:block"
+              className="hidden capitalize sm:block"
               name="sort"
-              defaultValue={[sort.column]}
+              defaultValue={sort.column}
               disabled={loading}
               onSelect={(e) => {
+                if (!e) return;
                 setSort((prev) => ({
                   ...prev,
-                  column: e[0].value.toString(),
+                  column: e ? e.value.toString() : "",
                 }));
               }}
               closeOnSelect
@@ -194,7 +199,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
 
             <button
               type="button"
-              className="rw-button rw-button-gray-outline transition-all duration-150 ease-in-out -mr-px hidden sm:block"
+              className="rw-button rw-button-gray-outline -mr-px hidden transition-all duration-150 ease-in-out sm:block"
               onClick={() => {
                 setSort((prev) => ({
                   ...prev,
@@ -219,7 +224,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             <button
               type="button"
               onClick={() => openModal()}
-              className="rw-button rw-button-gray-outline lg:!hidden -mr-px"
+              className="rw-button rw-button-gray-outline -mr-px lg:!hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -262,27 +267,27 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
                     {currentUser?.permissions.some(
                       (p: permission) => p === "gamedata_create"
                     ) && (
-                        <Link
-                          to={routes.newLootcrate()}
-                          className="rw-button rw-button-green ml-1 hidden sm:inline-block"
+                      <Link
+                        to={routes.newLootcrate()}
+                        className="rw-button rw-button-green ml-1 hidden sm:inline-block"
+                      >
+                        New
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 448 512"
+                          className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
                         >
-                          New
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                            className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
-                          >
-                            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-                          </svg>
-                        </Link>
-                      )}
+                          <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                        </svg>
+                      </Link>
+                    )}
                   </>
-                )
+                ),
               }}
             />
           </div>
 
-          <div className="rw-button-group hidden sm:inline-flex h-full">
+          <div className="rw-button-group hidden h-full sm:inline-flex">
             <input
               type="radio"
               id="list"
@@ -294,7 +299,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             />
             <label
               htmlFor="list"
-              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/list:border-pea-500 peer-checked/list:bg-black/10 dark:peer-checked/list:bg-white/10 !rounded-r-none !rounded-l-lg border !py-4"
+              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/list:border-pea-500 !rounded-r-none !rounded-l-lg border !py-4 peer-checked/list:bg-black/10 dark:peer-checked/list:bg-white/10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -315,7 +320,7 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             />
             <label
               htmlFor="grid"
-              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/grid:border-pea-500 peer-checked/grid:bg-black/10 dark:peer-checked/grid:bg-white/10 border !py-4"
+              className="rw-button rw-button-medium rw-button-gray-outline peer-checked/grid:border-pea-500 border !py-4 peer-checked/grid:bg-black/10 dark:peer-checked/grid:bg-white/10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -349,21 +354,26 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
             sort.column,
             sort.direction === "asc"
           ).map(({ id, name, required_level, image, color }) => (
-            <Card key={`lootcrate-${id}`} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out flex flex-col justify-between">
+            <Card
+              key={`lootcrate-${id}`}
+              className="hover:border-pea-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
+            >
               <CardActionArea
                 component="link"
                 to={routes.lootcrate({ id })}
-                className="w-full text-left cursor-pointer"
+                className="w-full cursor-pointer text-left"
               >
                 <CardHeader
                   title={name}
                   className="border-b border-zinc-500"
                   avatar={
                     <img
-                      src={image && image.length > 0
-                        ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
-                        : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"}
-                      className="h-12 w-12 rounded-lg object-contain p-2.5 bg-neutral-700 border border-zinc-500"
+                      src={
+                        image && image.length > 0
+                          ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
+                          : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
+                      }
+                      className="h-12 w-12 rounded-lg border border-zinc-500 bg-neutral-700 object-contain p-2.5"
                       loading="lazy"
                       alt={name}
                     />
@@ -378,7 +388,10 @@ const LootcratesList = ({ lootcratesByMap, maps, loading }: FindLootcrates & {
                 </CardContent>
               </CardActionArea>
               <CardActions>
-                <Link to={routes.lootcrate({ id })} className="rw-button rw-button-green-outline">
+                <Link
+                  to={routes.lootcrate({ id })}
+                  className="rw-button rw-button-green-outline"
+                >
                   View Lootcrate
                 </Link>
               </CardActions>

@@ -129,10 +129,12 @@ const ItemForm = (props: ItemFormProps) => {
               margin="normal"
               type="text"
               validation={{
-                required: true, minLength: 3, pattern: {
+                required: true,
+                minLength: 3,
+                pattern: {
                   value: /^[a-zA-Z0-9 ]*$/i,
                   message: "Invalid name",
-                }
+                },
               }}
             />
 
@@ -277,7 +279,7 @@ const ItemForm = (props: ItemFormProps) => {
 
         <div className="flex flex-wrap space-x-1">
           <Lookup
-            defaultValue={[props.item?.category]}
+            defaultValue={props.item?.category}
             name="category"
             label="Category"
             options={[
@@ -297,7 +299,7 @@ const ItemForm = (props: ItemFormProps) => {
           />
 
           <Lookup
-            defaultValue={[props.item?.type]}
+            defaultValue={props.item?.type}
             name="type"
             label="Type"
             options={[
@@ -684,7 +686,7 @@ const ItemForm = (props: ItemFormProps) => {
           >
             <Lookup
               margin="none"
-              defaultValue={[stat.id]}
+              defaultValue={stat.id}
               label="Stat Type"
               {...register(`stats.${index}.id`)}
               options={[

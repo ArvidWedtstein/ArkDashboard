@@ -22,10 +22,20 @@ import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import { InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import { Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
 import Dino from "../Dino/Dino";
 
-const DinosList = ({ dinosPage, loading }: FindDinos & {
+const DinosList = ({
+  dinosPage,
+  loading,
+}: FindDinos & {
   loading: boolean;
 }) => {
   let { search, temperament, diet, type } = useParams();
@@ -45,7 +55,6 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
     column: "",
     direction: "asc",
   });
-
 
   const onSubmit = (e: FormFindDnios) => {
     navigate(
@@ -79,7 +88,10 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
         <Disclosure title="Type">
           <div className="flex flex-col space-y-5">
             {Object.keys(dinoTypes).map((dinotype) => (
-              <div className="flex items-center space-x-2" key={`type-${dinotype}`}>
+              <div
+                className="flex items-center space-x-2"
+                key={`type-${dinotype}`}
+              >
                 <CheckboxField
                   name="type"
                   id={`type-${dinotype}`}
@@ -102,50 +114,62 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
         </Disclosure>
         <Disclosure title="Diet">
           <div className="flex flex-col space-y-5">
-            {(dinosPage.diets as { diet: string }[]).filter(({ diet }) => diet != null).map(({ diet: dinodiet }) => (
-              <div className="flex items-center space-x-2" key={`diet-${dinodiet}`}>
-                <CheckboxField
-                  name="diet"
-                  id={`diet-${dinodiet}`}
-                  className="rw-input"
-                  value={dinodiet}
-                  errorClassName="rw-input rw-input-error"
-                  defaultChecked={diet && diet.includes(dinodiet) || false}
-                />
-                <Label
-                  name="diet"
-                  htmlFor={`diet-${dinodiet}`}
-                  className="rw-sublabel capitalize"
-                  errorClassName="rw-sublabel rw-label-error"
+            {(dinosPage.diets as { diet: string }[])
+              .filter(({ diet }) => diet != null)
+              .map(({ diet: dinodiet }) => (
+                <div
+                  className="flex items-center space-x-2"
+                  key={`diet-${dinodiet}`}
                 >
-                  {dinodiet}
-                </Label>
-              </div>
-            ))}
+                  <CheckboxField
+                    name="diet"
+                    id={`diet-${dinodiet}`}
+                    className="rw-input"
+                    value={dinodiet}
+                    errorClassName="rw-input rw-input-error"
+                    defaultChecked={(diet && diet.includes(dinodiet)) || false}
+                  />
+                  <Label
+                    name="diet"
+                    htmlFor={`diet-${dinodiet}`}
+                    className="rw-sublabel capitalize"
+                    errorClassName="rw-sublabel rw-label-error"
+                  >
+                    {dinodiet}
+                  </Label>
+                </div>
+              ))}
           </div>
         </Disclosure>
         <Disclosure title="Temperament">
           <div className="flex flex-col space-y-5">
-            {(dinosPage.temperaments as { temperament: string }[]).filter(({ temperament }) => temperament != null).map(({ temperament: dinotemperament }) => (
-              <div className="flex items-center space-x-2" key={`dino-temp-${dinotemperament}`}>
-                <CheckboxField
-                  id={`temperament-${dinotemperament}`}
-                  name="temperament"
-                  className="rw-input"
-                  value={dinotemperament}
-                  errorClassName="rw-input rw-input-error"
-                  defaultChecked={temperament && temperament.includes(dinotemperament)}
-                />
-                <Label
-                  name="temperament"
-                  htmlFor={`temperament-${dinotemperament}`}
-                  className="rw-sublabel capitalize"
-                  errorClassName="rw-sublabel rw-label-error"
+            {(dinosPage.temperaments as { temperament: string }[])
+              .filter(({ temperament }) => temperament != null)
+              .map(({ temperament: dinotemperament }) => (
+                <div
+                  className="flex items-center space-x-2"
+                  key={`dino-temp-${dinotemperament}`}
                 >
-                  {dinotemperament}
-                </Label>
-              </div>
-            ))}
+                  <CheckboxField
+                    id={`temperament-${dinotemperament}`}
+                    name="temperament"
+                    className="rw-input"
+                    value={dinotemperament}
+                    errorClassName="rw-input rw-input-error"
+                    defaultChecked={
+                      temperament && temperament.includes(dinotemperament)
+                    }
+                  />
+                  <Label
+                    name="temperament"
+                    htmlFor={`temperament-${dinotemperament}`}
+                    className="rw-sublabel capitalize"
+                    errorClassName="rw-sublabel rw-label-error"
+                  >
+                    {dinotemperament}
+                  </Label>
+                </div>
+              ))}
           </div>
         </Disclosure>
       </>
@@ -166,14 +190,14 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
             <Lookup
               label="Sort by"
               margin="none"
-              className="capitalize hidden sm:block"
+              className="hidden capitalize sm:block"
               name="sort"
-              defaultValue={[sort.column]}
+              defaultValue={sort.column}
               disabled={loading}
               onSelect={(e) => {
                 setSort((prev) => ({
                   ...prev,
-                  column: e[0].value.toString(),
+                  column: e ? e.value.toString() : "",
                 }));
               }}
               closeOnSelect
@@ -220,7 +244,11 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
               onClick={() => openModal()}
               className="rw-button rw-button-gray-outline lg:!hidden"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="rw-button-icon"
+              >
                 <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
               </svg>
               <span className="sr-only">Filters</span>
@@ -251,7 +279,7 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
                     </svg>
                     <span className="hidden md:block">Search</span>
                   </Submit>
-                )
+                ),
               }}
             />
           </div>
@@ -277,7 +305,7 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
             />
             <label
               htmlFor="list"
-              className="rw-button !py-4 rw-button-gray-outline peer-checked/list:!border-pea-500 peer-checked/list:bg-black/10 dark:peer-checked/list:bg-white/10 h-full !rounded-r-none !rounded-l-lg border peer-checked/grid:border-r-0"
+              className="rw-button rw-button-gray-outline peer-checked/list:!border-pea-500 h-full !rounded-r-none !rounded-l-lg border !py-4 peer-checked/grid:border-r-0 peer-checked/list:bg-black/10 dark:peer-checked/list:bg-white/10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +317,7 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
             </label>
             <label
               htmlFor="grid"
-              className="rw-button !py-4 rw-button-gray-outline peer-checked/grid:!border-pea-500 peer-checked/grid:bg-black/10 dark:peer-checked/grid:bg-white/10 border peer-checked/list:!border-l-0"
+              className="rw-button rw-button-gray-outline peer-checked/grid:!border-pea-500 border !py-4 peer-checked/list:!border-l-0 peer-checked/grid:bg-black/10 dark:peer-checked/grid:bg-white/10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -325,8 +353,20 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
             </div>
           )}
           {dinosPage.dinos.map(
-            ({ id, name, type, image, icon, description, tamable, temperament }) => (
-              <Card key={`dino-${id}`} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out cursor-pointer">
+            ({
+              id,
+              name,
+              type,
+              image,
+              icon,
+              description,
+              tamable,
+              temperament,
+            }) => (
+              <Card
+                key={`dino-${id}`}
+                className="hover:border-pea-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out"
+              >
                 <CardActionArea
                   onClick={() => navigate(routes.dino({ id }))}
                   className="w-full text-left"
@@ -336,10 +376,10 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
                     subheader={temperament}
                     className="border-b border-zinc-500"
                     avatar={
-                      <div className="rounded-full p-1 ring-1 ring-zinc-500 overflow-hidden">
+                      <div className="overflow-hidden rounded-full p-1 ring-1 ring-zinc-500">
                         <img
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon/${icon}`}
-                          className="w-8 h-8 invert"
+                          className="h-8 w-8 invert"
                           loading="lazy"
                           alt={name}
                         />
@@ -359,17 +399,22 @@ const DinosList = ({ dinosPage, loading }: FindDinos & {
                   />
 
                   <CardMedia
-                    className="mx-auto p-4 min-w-[200px] h-auto aspect-square max-h-[200px] overflow-hidden"
+                    className="mx-auto aspect-square h-auto max-h-[200px] min-w-[200px] overflow-hidden p-4"
                     component="img"
                     loading="lazy"
                     image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
                   />
                   <CardContent>
-                    <p className="text-sm truncate" title={description}>{description}</p>
+                    <p className="truncate text-sm" title={description}>
+                      {description}
+                    </p>
                   </CardContent>
                 </CardActionArea>
                 <CardActions>
-                  <Link to={routes.dino({ id })} className="rw-button transition-colors duration-100 ease-in-out hover:bg-black/10 dark:hover:bg-white/10">
+                  <Link
+                    to={routes.dino({ id })}
+                    className="rw-button transition-colors duration-100 ease-in-out hover:bg-black/10 dark:hover:bg-white/10"
+                  >
                     View Dino
                   </Link>
                 </CardActions>

@@ -1,6 +1,12 @@
 import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
-import { CSSProperties, HTMLAttributes, ImgHTMLAttributes, LinkHTMLAttributes, ReactNode } from "react";
+import {
+  CSSProperties,
+  HTMLAttributes,
+  ImgHTMLAttributes,
+  LinkHTMLAttributes,
+  ReactNode,
+} from "react";
 import Ripple from "../Ripple/Ripple";
 
 type CardProps = {
@@ -44,7 +50,13 @@ export const CardHeader = ({
   className,
 }: CardHeaderProps) => {
   return (
-    <div className={clsx("relative flex items-center justify-start p-4", className)} style={sx}>
+    <div
+      className={clsx(
+        "relative flex items-center justify-start p-4",
+        className
+      )}
+      style={sx}
+    >
       {avatar && <div className="mr-4 flex flex-[0_0_auto]">{avatar}</div>}
       {(title || subheader) && (
         <div className="flex-[1_1_auto]">
@@ -70,7 +82,7 @@ export const CardHeader = ({
 type CardMediaImgProps = {
   alt: string;
   height: number | string;
-}
+};
 
 type CardMediaBaseProps = {
   component?: "div" | "img";
@@ -80,7 +92,9 @@ type CardMediaBaseProps = {
   className?: HTMLAttributes<HTMLDivElement>["className"];
 };
 
-type CardMediaImg = CardMediaBaseProps & CardMediaImgProps & ImgHTMLAttributes<HTMLImageElement>;
+type CardMediaImg = CardMediaBaseProps &
+  CardMediaImgProps &
+  ImgHTMLAttributes<HTMLImageElement>;
 
 type CardMediaProps = CardMediaBaseProps | CardMediaImg;
 export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
@@ -126,25 +140,6 @@ export const CardContent = ({ children, sx, className }: CardContentProps) => {
   );
 };
 
-
-// type CommonProps = {
-//   component?: "a" | "button";
-// };
-
-// type ButtonProps = CommonProps & HTMLAttributes<HTMLButtonElement>;
-// type LinkProps = CommonProps & LinkHTMLAttributes<HTMLAnchorElement>;
-
-// type Props = ButtonProps | LinkProps;
-
-// const UniversalButton: React.FC<Props> = ({ component = 'button', ...props }) => {
-//   if (component = 'a') {
-//     const { href, ...linkProps } = props as LinkProps;
-//     return <a href={href} {...linkProps} />;
-//   } else {
-//     const buttonProps = props as ButtonProps;
-//     return <button {...buttonProps} />;
-//   }
-// };
 type CardActionsProps = {
   children?: React.ReactNode | React.ReactNode[];
   className?: HTMLAttributes<HTMLDivElement>["className"];
@@ -152,7 +147,11 @@ type CardActionsProps = {
 };
 
 export const CardActions = ({ children, className, sx }: CardActionsProps) => {
-  return <div style={sx} className={clsx("flex items-center p-2", className)}>{children}</div>;
+  return (
+    <div style={sx} className={clsx("flex items-center p-2", className)}>
+      {children}
+    </div>
+  );
 };
 
 type CardActionAreaBaseProps = CardActionsProps & {
@@ -160,10 +159,11 @@ type CardActionAreaBaseProps = CardActionsProps & {
 };
 
 type ButtonProps = CardActionAreaBaseProps & HTMLAttributes<HTMLButtonElement>;
-type LinkProps = CardActionAreaBaseProps & LinkHTMLAttributes<HTMLAnchorElement> & {
-  to: string;
-  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
-};
+type LinkProps = CardActionAreaBaseProps &
+  LinkHTMLAttributes<HTMLAnchorElement> & {
+    to: string;
+    onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  };
 
 type CardActionAreaProps = ButtonProps | LinkProps;
 export const CardActionArea = ({
@@ -173,8 +173,8 @@ export const CardActionArea = ({
   component = "button",
   ...props
 }: CardActionAreaProps) => {
-  if (component === 'button') {
-    const btnProps = props as ButtonProps
+  if (component === "button") {
+    const btnProps = props as ButtonProps;
     return (
       <button
         className={clsx(
@@ -189,11 +189,14 @@ export const CardActionArea = ({
         {children}
         <Ripple />
       </button>
-    )
+    );
   } else {
-    const linkProps = props as LinkProps
+    const linkProps = props as LinkProps;
     return (
-      <Link {...linkProps} className="relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit">
+      <Link
+        {...linkProps}
+        className="relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit"
+      >
         {children}
         <Ripple />
       </Link>

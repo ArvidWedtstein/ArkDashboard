@@ -15,11 +15,9 @@ import type {
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 
-
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
 >;
-
 
 interface TimelineSeasonBasespotFormProps {
   timelineSeasonBasespot?: EditTimelineSeasonBasespotById["timelineSeasonBasespot"];
@@ -35,7 +33,6 @@ interface TimelineSeasonBasespotFormProps {
 }
 
 const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
-
   const onSubmit = (data: FormTimelineSeasonBasespot) => {
     data.timeline_season_id = props.timeline_season_id;
     props.onSave(data, props?.timelineSeasonBasespot?.id);
@@ -106,27 +103,30 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         </Label>
 
         <Lookup
-          options={props?.basespots.map((bs) => ({
-            label: bs.name,
-            value: bs.id,
-          })) || []}
+          options={
+            props?.basespots.map((bs) => ({
+              label: bs.name,
+              value: bs.id,
+            })) || []
+          }
           name="basespot_id"
-          defaultValue={[props.timelineSeasonBasespot?.basespot_id]}
+          defaultValue={props.timelineSeasonBasespot?.basespot_id}
           placeholder="Select a basespot"
           className="mt-3"
         />
 
         <FieldError name="basespot_id" className="rw-field-error" />
 
-
         <Lookup
-          options={props?.maps.map((map) => ({
-            label: map.name,
-            value: map.id,
-            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`
-          })) || []}
+          options={
+            props?.maps.map((map) => ({
+              label: map.name,
+              value: map.id,
+              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
+            })) || []
+          }
           name="map_id"
-          defaultValue={[props.timelineSeasonBasespot?.map_id.toString()]}
+          defaultValue={props.timelineSeasonBasespot?.map_id}
           placeholder="Select a map"
           className="mt-3"
         />

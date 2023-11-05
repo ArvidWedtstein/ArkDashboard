@@ -17,7 +17,7 @@ import {
 } from "src/components/Util/Card/Card";
 
 const QUERY = gql`
-  query FindBasespots($take: Int, $lastCursor: String) {
+  query FindBasespotsAgain($take: Int, $lastCursor: String) {
     basespotPagination(take: $take, lastCursor: $lastCursor) {
       basespots {
         id
@@ -164,10 +164,10 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
             value: map.id.toString(),
             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
           }))}
-          defaultValue={[map]}
+          defaultValue={map}
           onSelect={(e) => {
             setParams({
-              ...(e[0]?.value && { map: e[0].value.toString() }),
+              ...(e?.value && { map: e.value.toString() }),
               ...(params.type && { type: params.type }),
             });
           }}
@@ -182,11 +182,11 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
             { label: "Waterfall", value: "waterfall" },
             { label: "Underwater", value: "underwater" },
           ]}
-          defaultValue={[type]}
+          defaultValue={type}
           label="Type"
           onSelect={(e) => {
             setParams({
-              ...(e[0]?.value && { map: e[0].value.toString() }),
+              ...(e?.value && { map: e.value.toString() }),
               ...(params.type && { type: params.type }),
             });
           }}

@@ -195,7 +195,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                   <Lookup
                     label="Role"
                     name="role_id"
-                    defaultValue={[props.profile?.role_id.toString()]}
+                    defaultValue={props.profile?.role_id}
                     options={
                       props?.roles.map((r) => ({
                         label: r.name,

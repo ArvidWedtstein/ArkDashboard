@@ -1,30 +1,39 @@
 import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
-import { ArrayElement } from "src/lib/formatters";
 import clsx from "clsx";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 
-type value = string | object | number | null | undefined;
-
 type SelectOption = {
   label?: string;
-  value: string | number;
+  value?: string | number;
   image?: string;
   disabled?: boolean;
+  /**
+   * @private
+   * @ignore
+   */
+  isSelected?: boolean;
+  /**
+   * @private
+   * @ignore
+   */
+  inSearch?: boolean;
 };
+
 type MultiSelectLookupProps = {
   multiple: true;
   defaultValue?: string[] | number[];
-  value?: SelectOption[];
-  onChange?: (value: SelectOption[]) => void;
+  value?: string[] | number[];
+  // value?: SelectOption[];
+  onSelect?: (value: SelectOption[]) => void;
 };
 
 type SingleSelectLookupProps = {
   multiple?: false;
   defaultValue?: string | number;
-  value?: SelectOption;
-  onChange?: (value: SelectOption | undefined) => void;
+  value?: string | number;
+  onSelect?: (value: SelectOption) => void;
 };
 
 type SelectProps = {
@@ -44,6 +53,9 @@ type SelectProps = {
   filterlookupOptions?: boolean;
   required?: boolean;
   selectOnFocus?: boolean;
+  /**
+   * TODO: implement
+   */
   closeOnSelect?: boolean;
   inputValue?: string;
   validation?: RegisterOptions;
@@ -55,63 +67,16 @@ type SelectProps = {
     event: React.ChangeEvent<HTMLInputElement>,
     newInputValue: string
   ) => void;
-  // TODO: fix
-  onSelect?: (options: SelectOption[]) => void;
   filterFn?: (option: SelectOption, searchTerm: string) => boolean;
   InputProps?: {
     style?: CSSProperties;
   };
   placeholder?: string;
-} & (MultiSelectLookupProps | SingleSelectLookupProps);
-
-interface ILookup {
-  defaultValue?: string[];
-  value?: string[];
-  label?: string;
-  name?: string;
-  className?: string;
-  btnClassName?: string;
-  disabled?: boolean;
-  helperText?: string;
-  disableClearable?: boolean;
-  enforceOption?: boolean;
-  readOnly?: boolean;
-  filterlookupOptions?: boolean;
-  multiple?: boolean;
-  required?: boolean;
-  selectOnFocus?: boolean;
-  closeOnSelect?: boolean;
-  inputValue?: string;
-  validation?: RegisterOptions;
-  margin?: "none" | "dense" | "normal";
-  size?: "small" | "medium";
-  options: {
-    label: string;
-    value: string;
-    image?: string;
-    disabled?: boolean;
-    [key: string]: string | object | number | boolean | undefined;
-  }[];
-  groupBy?: (option: ILookup["options"][0]) => string;
-  renderTags?: (lookupOptions: Readonly<ILookup["options"]>) => React.ReactNode;
-  onInputChange?: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    newInputValue: string
-  ) => void;
-  // TODO: fix
-  onSelect?: (options: ILookup["options"]) => void;
-  filterFn?: (
-    option: { label: string; value: string; image?: string },
-    searchTerm: string
-  ) => boolean;
-  InputProps?: {
-    style?: CSSProperties;
-  };
-  placeholder?: string;
-}
+} & (SingleSelectLookupProps | MultiSelectLookupProps);
 
 // TODO: fix error styles
 export const Lookup = ({
+  multiple = false,
   options,
   label,
   name,
@@ -131,7 +96,6 @@ export const Lookup = ({
   readOnly = false,
   required = false,
   disableClearable = false,
-  multiple = false,
   closeOnSelect = true,
   filterlookupOptions = false,
   InputProps,
@@ -140,15 +104,13 @@ export const Lookup = ({
   onSelect,
   onInputChange,
   filterFn,
-}: ILookup) => {
+}: SelectProps) => {
   const anchorEl = useRef(null);
   const [open, setOpen] = useState(false);
-  // Convert this to store all options instead and set selected to the ones that are selected
-  interface ILookupOptions extends ArrayElement<ILookup["options"]> {
-    selected: boolean;
-    inSearch: boolean;
-  }
-  const [lookupOptions, setLookupOptions] = useState<ILookupOptions[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
+  const [internalValue, setInternalValue] = useState<string>("");
+  const [lookupOptions, setLookupOptions] = useState<SelectOption[]>(options);
+  // const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([]);
 
   const { field } =
     !!name &&
@@ -157,8 +119,12 @@ export const Lookup = ({
       defaultValue: defaultValue || value,
       rules: validation,
     });
-  const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
-  const [internalValue, setInternalValue] = useState<string>("");
+
+  // useEffect(() => {
+  //   if (enforceOption && !multiple && lookupOptions.length === 1) {
+  //     // setSelectedOptions([lookupOptions[0]]);
+  //   }
+  // }, [enforceOption, lookupOptions, multiple]);
 
   useEffect(() => {
     setLookupOptions((prev) =>
@@ -185,17 +151,27 @@ export const Lookup = ({
     setSearchTerm("");
     setInternalValue("");
 
-    const valuesToSelect: string[] =
-      (value ?? defaultValue)
-        ?.map((s) => s?.trim())
-        .slice(0, multiple ? undefined : 1) || [];
+    let valuesToSelect = [];
+    if (!multiple && typeof value === "string") {
+      valuesToSelect = [(value ?? defaultValue)?.toString().trim()] || [];
+    } else if (
+      multiple &&
+      Array.isArray(value) &&
+      Array.isArray(defaultValue)
+    ) {
+      valuesToSelect = (value ?? defaultValue)?.map((s) => s?.trim()) || [];
+    }
+    // const valuesToSelect: string[] =
+    //   (value ?? defaultValue)
+    //     ?.map((s) => s?.trim())
+    //     .slice(0, multiple ? undefined : 1) || [];
 
-    const selected: ILookupOptions[] = options.map((option) => {
+    const selected: SelectOption[] = options.map((option) => {
       const isSelected = valuesToSelect.includes(option.value.toString());
 
       return {
         ...option,
-        selected: isSelected,
+        isSelected: isSelected,
         inSearch:
           !searchTerm ||
           option.label.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -204,6 +180,7 @@ export const Lookup = ({
 
     setLookupOptions(selected);
     !!name && field.onChange(multiple ? valuesToSelect : valuesToSelect[0]);
+
     setInternalValue(
       multiple
         ? ""
@@ -211,62 +188,72 @@ export const Lookup = ({
     );
   }, [defaultValue, value]);
 
+  // TODO: fix all onSelect
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // if (event.key === "Enter" && !open) {
+    //   handleOpen();
+    // }
+    if (event.key === "Escape") {
+      setOpen(false);
+    }
+    // if (
+    //   event.key === "Backspace" &&
+    //   !inputValueState &&
+    //   selectedOptions.length
+    // ) {
+    //   setSelectedOptions((prevSelectedOptions) =>
+    //     prevSelectedOptions.slice(0, prevSelectedOptions.length - 1)
+    //   );
+    // }
+  };
+
+  // TODO: do not trigger select if same option is selected again
   const handleOptionSelect = useCallback(
     (
       event: React.MouseEvent<HTMLLIElement> | React.MouseEvent<SVGSVGElement>,
-      option: ArrayElement<ILookup["options"]> // SelectOption
+      option: SelectOption
     ) => {
+      event.stopPropagation();
       event.preventDefault();
 
       if (!option || option.disabled) return;
 
-      // if (enforceOption && !isSelected) {
-      //   updateOptions.forEach((o) => {
-      //     if (o?.value === option.value) {
-      //       o.selected = true;
-      //     } else {
-      //       o.selected = false;
-      //     }
-      //   });
-      // }
-
       const isSelected = lookupOptions.some(
-        (o) => o?.value === option.value && o?.selected
+        (o) => o?.value === option.value && o?.isSelected
       );
 
       const updateOptions = lookupOptions.map((o) => {
         if (o?.value === option.value) {
           return {
             ...o,
-            selected: !isSelected,
+            isSelected: enforceOption ? true : !isSelected,
           };
         }
 
-        return multiple ? o : { ...o, selected: false };
-      });
-
-      setLookupOptions(updateOptions);
+        return { ...o, isSelected: false };
+      }) as SelectOption[];
 
       if (!!name) {
         field.onChange(
           multiple
             ? updateOptions
-                .filter((f) => f != null && f.selected)
+                .filter((f) => f != null && f.isSelected)
                 .map((o) => o?.value)
             : option.value
         );
       }
 
-      onSelect?.(multiple ? updateOptions : [option]); // onSelect?.(multiple ? updateOptions : option)
+      multiple
+        ? onSelect?.(updateOptions)
+        : onSelect?.(Array.isArray(option) ? option[0] : option);
 
-      // onChange?.(multiple ? updateOptions : option);
-
-      if (closeOnSelect && !isSelected) {
-        setOpen(false);
-      }
-
+      setLookupOptions(updateOptions);
       setSearchTerm("");
       setInternalValue(multiple ? "" : option.label);
+
+      if (closeOnSelect) {
+        setOpen(false);
+      }
     },
     [lookupOptions, multiple, onSelect]
   );
@@ -282,7 +269,7 @@ export const Lookup = ({
     setLookupOptions((prev) => prev.map((o) => ({ ...o, selected: false })));
     setSearchTerm("");
     setInternalValue("");
-    onSelect?.(multiple ? [] : undefined);
+    multiple ? onSelect?.([]) : onSelect?.(undefined);
     name && field.onChange(multiple ? [] : undefined);
   };
 
@@ -322,15 +309,50 @@ export const Lookup = ({
     }
   };
 
+  const renderChips = () => {
+    if (multiple && renderTags) {
+      return renderTags(lookupOptions.filter((o) => o != null && o.isSelected));
+    }
+
+    return (
+      multiple &&
+      !renderTags &&
+      lookupOptions
+        .filter((o) => o != null && o.isSelected)
+        .map((option) => (
+          <div
+            role="button"
+            className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+          >
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+              {option.label}
+            </span>
+            {!readOnly && (
+              <svg
+                onClick={(e) => handleOptionSelect(e, option)}
+                className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                viewBox="0 0 24 24"
+                focusable="false"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+              </svg>
+            )}
+          </div>
+        ))
+    );
+  };
+
   const renderOption = (
-    option: ILookupOptions,
+    option: SelectOption,
     index: number
   ): React.JSX.Element => {
     return (
       <li
         key={`option-${option.value}-${index}`}
         onClick={(e) => handleOptionSelect(e, option)}
-        aria-checked={option.selected}
+        aria-checked={option.isSelected}
         aria-disabled={option.disabled}
         // TODO: add check if group is over or under
         className={clsx("flex items-center last:rounded-b-lg", {
@@ -345,8 +367,10 @@ export const Lookup = ({
         {"image" in option && (
           <img className="mr-2 h-6 w-6" src={option.image} alt={option.label} />
         )}
+
         <span className="grow">{option.label}</span>
-        {option.selected && (
+
+        {option.isSelected && (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -390,7 +414,7 @@ export const Lookup = ({
             {
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 open ||
-                lookupOptions.filter((o) => o != null && o.selected).length >
+                lookupOptions.filter((o) => o != null && o.isSelected).length >
                   0 ||
                 searchTerm.length > 0 ||
                 internalValue.length > 0,
@@ -410,45 +434,19 @@ export const Lookup = ({
             {
               "pr-10":
                 !disableClearable &&
-                lookupOptions.filter((d) => d != null && d.selected).length ==
+                lookupOptions.filter((d) => d != null && d.isSelected).length ==
                   0,
               "pr-12":
                 !disableClearable &&
-                lookupOptions.filter((d) => d != null && d.selected).length > 0,
+                lookupOptions.filter((d) => d != null && d.isSelected).length >
+                  0,
               "text-sm": size == "small",
               "text-base": size == "medium",
             }
           )}
         >
           {/* Chips */}
-          {renderTags != null
-            ? renderTags(lookupOptions.filter((o) => o != null && o.selected))
-            : multiple &&
-              lookupOptions.filter((o) => o != null && o.selected).length > 0 &&
-              lookupOptions
-                .filter((o) => o != null && o.selected)
-                .map((option) => (
-                  <div
-                    role="button"
-                    className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-                  >
-                    <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-                      {option.label}
-                    </span>
-                    {!readOnly && (
-                      <svg
-                        onClick={(e) => handleOptionSelect(e, option)}
-                        className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-                        viewBox="0 0 24 24"
-                        focusable="false"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                      </svg>
-                    )}
-                  </div>
-                ))}
+          {renderChips()}
 
           <input
             aria-invalid="false"
@@ -466,6 +464,7 @@ export const Lookup = ({
             readOnly={readOnly}
             required={required}
             placeholder={placeholder}
+            onKeyDown={handleKeyDown}
             onChange={handleInputChange}
             onClick={toggleLookup}
             role="combobox"
@@ -473,7 +472,7 @@ export const Lookup = ({
 
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
-              lookupOptions.filter((d) => d != null && d.selected).length >
+              lookupOptions.filter((d) => d != null && d.isSelected).length >
                 0 && (
                 <button
                   type="button"
@@ -529,8 +528,8 @@ export const Lookup = ({
               {
                 "top-0":
                   open ||
-                  lookupOptions.filter((o) => o != null && o.selected).length >
-                    0 ||
+                  lookupOptions.filter((o) => o != null && o.isSelected)
+                    .length > 0 ||
                   searchTerm.length > 0 ||
                   internalValue.length > 0,
               }
@@ -543,7 +542,7 @@ export const Lookup = ({
                 {
                   "!max-w-full":
                     open ||
-                    lookupOptions.filter((o) => o != null && o.selected)
+                    lookupOptions.filter((o) => o != null && o.isSelected)
                       .length > 0 ||
                     searchTerm.length > 0 ||
                     internalValue.length > 0,
@@ -591,7 +590,7 @@ export const Lookup = ({
               {!options ||
                 (lookupOptions.filter((option) => {
                   if (filterlookupOptions) {
-                    return !option?.selected && option?.inSearch;
+                    return !option?.isSelected && option?.inSearch;
                   }
 
                   return option.inSearch;
@@ -606,15 +605,13 @@ export const Lookup = ({
                     lookupOptions
                       .filter((option) => {
                         if (filterlookupOptions) {
-                          return !option?.selected && option?.inSearch;
+                          return !option?.isSelected && option?.inSearch;
                         }
 
                         return option.inSearch;
                       })
                       .reduce((acc, obj) => {
-                        let groupKey: any = obj; // Use 'any' type for indexing
-
-                        groupKey = groupBy(obj);
+                        let groupKey = groupBy(obj);
 
                         if (!acc.hasOwnProperty(groupKey)) {
                           acc[groupKey] = [];
@@ -622,25 +619,24 @@ export const Lookup = ({
 
                         acc[groupKey].push(obj);
                         return acc;
-                      }, {})
-                  ).map(
-                    ([groupTitle, groupedItems]: [
-                      groupedTitle: string,
-                      groupedItems: ILookupOptions[]
-                    ]) => (
+                      }, {}) as {
+                      [key: string]: SelectOption[];
+                    }
+                  ).map(([groupTitle, groupItems]) => {
+                    return (
                       <li
                         className="overflow-hidden"
                         key={`group-${groupTitle}`}
                       >
                         <div className="px-2 py-1">{groupTitle}</div>
-                        <ul>{groupedItems.map(renderOption)}</ul>
+                        <ul>{groupItems.map(renderOption)}</ul>
                       </li>
-                    )
-                  )
+                    );
+                  })
                 : lookupOptions
                     .filter((option) => {
                       if (filterlookupOptions) {
-                        return !option?.selected && option?.inSearch;
+                        return !option?.isSelected && option?.inSearch;
                       }
 
                       return option.inSearch;

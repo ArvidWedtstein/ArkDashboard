@@ -165,7 +165,7 @@ const ItemsList = ({
                 { value: "fertilizer", label: "Fertilizer" },
                 { value: "other", label: "Other" },
               ]}
-              defaultValue={[category]}
+              defaultValue={category}
               disabled={loading}
               InputProps={{
                 style: {
@@ -174,7 +174,8 @@ const ItemsList = ({
                 },
               }}
               onSelect={(e) => {
-                switch (e[0].value.toString()) {
+                if (!e) return setTypes([]);
+                switch (e.value.toString()) {
                   case "structure":
                     setTypes([
                       "Tek",
@@ -266,14 +267,14 @@ const ItemsList = ({
               <Lookup
                 name="type"
                 margin="none"
-                value={[selectedType]}
+                value={selectedType}
                 options={types.map((type) => ({
                   value: type.toLowerCase().toString(),
                   label: type,
                 }))}
                 onSelect={(e) => {
-                  console.log(e[0].value.toString());
-                  selectType(e[0].value.toString());
+                  if (!e) return selectType("");
+                  selectType(e.value.toString());
                 }}
                 disabled={loading}
                 validation={{
