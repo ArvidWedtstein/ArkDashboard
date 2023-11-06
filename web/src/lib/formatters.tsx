@@ -147,7 +147,7 @@ export const isDate = (dateString: string | Date | number): boolean => {
  * @param arr
  * @returns
  */
-export const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
+export const average = (arr) => arr.reduce((p, c) => p + c, 0) / arr.length;
 
 /**
  * Sorts an array of objects based on a specified property and sorting order.
@@ -165,19 +165,19 @@ export const dynamicSort = <T extends {}>(
 ): Array<T> =>
   property != "" && array
     ? [...array].sort((a: T, b: T) => {
-      const aValue = a[property];
-      const bValue = b[property];
+        const aValue = a[property];
+        const bValue = b[property];
 
-      if (ascending) {
-        if (aValue < bValue) return -1;
-        if (aValue > bValue) return 1;
-        return 0;
-      } else {
-        if (aValue > bValue) return -1;
-        if (aValue < bValue) return 1;
-        return 0;
-      }
-    })
+        if (ascending) {
+          if (aValue < bValue) return -1;
+          if (aValue > bValue) return 1;
+          return 0;
+        } else {
+          if (aValue > bValue) return -1;
+          if (aValue < bValue) return 1;
+          return 0;
+        }
+      })
     : array;
 
 /**
@@ -190,8 +190,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -595,22 +596,25 @@ export const toLocalPeriod = (date: Date): string => {
  * @param firstDayOfWeek
  * @returns
  */
-export const getDateUnit = (type: 'weekday' | 'month' = 'weekday', firstDayOfWeek = 1): Date[] => {
+export const getDateUnit = (
+  type: "weekday" | "month" = "weekday",
+  firstDayOfWeek = 1
+): Date[] => {
   const days: Date[] = [];
   let date = new Date();
 
   // Set the date to the first day of the week (Monday)
 
-  if (type === 'month') {
+  if (type === "month") {
     date.setMonth(0);
   } else {
     date.setDate(date.getDate() - ((date.getDay() - firstDayOfWeek + 7) % 7));
   }
 
   // Get the weekdays (Monday to Sunday)
-  for (let i = 0; i < (type === 'weekday' ? 7 : 12); i++) {
+  for (let i = 0; i < (type === "weekday" ? 7 : 12); i++) {
     days.push(new Date(date));
-    if (type === 'weekday') {
+    if (type === "weekday") {
       date.setDate(date.getDate() + 1);
     } else {
       date.setMonth(date.getMonth() + 1);
@@ -650,7 +654,7 @@ export const adjustCalendarDate = (
   const result = new Date(date);
 
   if (type === "start") {
-    if (period === 'day') {
+    if (period === "day") {
       result.setUTCHours(0, 0, 0, 0);
     } else if (period === "week") {
       const dayOfWeek = result.getUTCDay();
@@ -662,7 +666,7 @@ export const adjustCalendarDate = (
       result.setUTCMonth(0, 1);
     }
   } else if (type === "end") {
-    if (period === 'day') {
+    if (period === "day") {
       result.setUTCHours(23, 59, 59, 999);
     } else if (period === "month") {
       result.setMonth(result.getMonth() + 1, 0);
@@ -978,8 +982,9 @@ export const svgArc = (
   const endY = centerY + radiusY * Math.sin(endAngle);
 
   // Use the A command to create the arc path
-  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${sweepFlag ? 1 : 0
-    } ${endX} ${endY}`;
+  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${
+    sweepFlag ? 1 : 0
+  } ${endX} ${endY}`;
 
   // Construct the full path command
   const pathData = `M ${startX} ${startY} ${arcCommand}`;
@@ -1247,9 +1252,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -1283,7 +1288,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1711,19 +1716,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;
@@ -1758,24 +1763,32 @@ export class SimplexNoise3D {
     return 32.0 * (n0 + n1 + n2 + n3);
   }
 }
-export const useControlled = ({ controlled, default: defaultProp, name = "", state = 'value' }) => {
+export const useControlled = ({
+  controlled,
+  default: defaultProp,
+  name = "",
+  state = "value",
+}) => {
   const { current: isControlled } = React.useRef(controlled !== undefined);
   const [valueState, setValue] = React.useState(defaultProp);
   const value = isControlled ? controlled : valueState;
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     React.useEffect(() => {
       if (isControlled !== (controlled !== undefined)) {
         console.error(
           [
-            `ARK-Dashboard: A component is changing the ${isControlled ? '' : 'un'
-            }controlled ${state} state of ${name} to be ${isControlled ? 'un' : ''}controlled.`,
-            'Elements should not switch from uncontrolled to controlled (or vice versa).',
+            `ArkDashboard: A component is changing the ${
+              isControlled ? "" : "un"
+            }controlled ${state} state of ${name} to be ${
+              isControlled ? "un" : ""
+            }controlled.`,
+            "Elements should not switch from uncontrolled to controlled (or vice versa).",
             `Decide between using a controlled or uncontrolled ${name} ` +
-            'element for the lifetime of the component.',
+              "element for the lifetime of the component.",
             "The nature of the state is determined during the first render. It's considered controlled if the value is not `undefined`.",
-            'More info: https://fb.me/react-controlled-components',
-          ].join('\n'),
+            ,
+          ].join("\n")
         );
       }
     }, [state, name, controlled]);
@@ -1785,9 +1798,9 @@ export const useControlled = ({ controlled, default: defaultProp, name = "", sta
       if (!isControlled && defaultValue !== defaultProp) {
         console.error(
           [
-            `ARK-Dashboard: A component is changing the default ${state} state of an uncontrolled ${name} after being initialized. ` +
-            `To suppress this warning opt to use a controlled ${name}.`,
-          ].join('\n'),
+            `ArkDashboard: A component is changing the default ${state} state of an uncontrolled ${name} after being initialized. ` +
+              `To suppress this warning opt to use a controlled ${name}.`,
+          ].join("\n")
         );
       }
     }, [JSON.stringify(defaultProp)]);
@@ -1798,25 +1811,24 @@ export const useControlled = ({ controlled, default: defaultProp, name = "", sta
       setValue(newValue);
     }
   }, []);
-
   return [value, setValueIfUncontrolled];
-}
+};
 
-function useEventCallback<Fn extends (...args: any[]) => any = (...args: unknown[]) => unknown>(
-  fn: Fn,
-): Fn;
+function useEventCallback<
+  Fn extends (...args: any[]) => any = (...args: unknown[]) => unknown
+>(fn: Fn): Fn;
 function useEventCallback<Args extends unknown[], Return>(
-  fn: (...args: Args) => Return,
+  fn: (...args: Args) => Return
 ): (...args: Args) => Return;
 function useEventCallback<Args extends unknown[], Return>(
-  fn: (...args: Args) => Return,
+  fn: (...args: Args) => Return
 ): (...args: Args) => Return {
   const ref = React.useRef(fn);
   ref.current = fn;
   return React.useRef((...args: Args) =>
     // @ts-expect-error hide `this`
     // tslint:disable-next-line:ban-comma-operator
-    (0, ref.current!)(...args),
+    (0, ref.current!)(...args)
   ).current;
 }
 

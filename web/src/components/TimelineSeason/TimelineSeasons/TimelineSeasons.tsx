@@ -41,17 +41,17 @@ const GanttChart = <T extends Record<string, unknown>>({
       viewType === "year"
         ? new Date().getFullYear().toString()
         : viewType === "month"
-          ? new Date().toLocaleDateString(navigator && navigator.language, {
+        ? new Date().toLocaleDateString(navigator && navigator.language, {
             month: "short",
             year: "numeric",
           })
-          : viewType === "week"
-            ? `Week ${getISOWeek(new Date())}`
-            : new Date().toLocaleDateString(navigator && navigator.language, {
-              month: "2-digit",
-              day: "2-digit",
-              year: "2-digit",
-            }),
+        : viewType === "week"
+        ? `Week ${getISOWeek(new Date())}`
+        : new Date().toLocaleDateString(navigator && navigator.language, {
+            month: "2-digit",
+            day: "2-digit",
+            year: "2-digit",
+          }),
   }));
   const firstDayOfWeek = 1;
 
@@ -221,17 +221,17 @@ const GanttChart = <T extends Record<string, unknown>>({
         viewType === "year"
           ? newDate.getFullYear().toString()
           : viewType === "month"
-            ? newDate.toLocaleDateString(navigator && navigator.language, {
+          ? newDate.toLocaleDateString(navigator && navigator.language, {
               month: "short",
               year: "numeric",
             })
-            : viewType === "week"
-              ? `Week ${getISOWeek(newDate)}`
-              : newDate.toLocaleDateString(navigator && navigator.language, {
-                month: "2-digit",
-                day: "2-digit",
-                year: "2-digit",
-              }),
+          : viewType === "week"
+          ? `Week ${getISOWeek(newDate)}`
+          : newDate.toLocaleDateString(navigator && navigator.language, {
+              month: "2-digit",
+              day: "2-digit",
+              year: "2-digit",
+            }),
     });
   };
 
@@ -241,10 +241,9 @@ const GanttChart = <T extends Record<string, unknown>>({
         <Lookup
           size="small"
           margin="none"
-          // disableClearable
-          // readOnly
-          // defaultValue={"week"}
-          // isOptionEqualToValue={(option, value) => option.value === value.value}
+          label={"View Type"}
+          defaultValue={"week"}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
           multiple={false}
           options={[
             { label: "Day View", value: "day" },
@@ -253,7 +252,6 @@ const GanttChart = <T extends Record<string, unknown>>({
             { label: "Year View", value: "year" },
           ]}
           onSelect={(value) => {
-            console.log(value);
             if (value) {
               setViewType(value.value.toString() as ViewType);
             }
@@ -345,8 +343,8 @@ const GanttChart = <T extends Record<string, unknown>>({
                     viewType === "week" || viewType === "day"
                       ? week.week === dateInfo.week
                       : viewType === "year"
-                        ? i === 0
-                        : true
+                      ? i === 0
+                      : true
                   )
                   .map((week, weekIndex) => {
                     return week.dates
@@ -354,7 +352,7 @@ const GanttChart = <T extends Record<string, unknown>>({
                         viewType === "year"
                           ? i === week.dates.length - 1
                           : viewType === "day"
-                            ? toLocaleISODate(day.date) ===
+                          ? toLocaleISODate(day.date) ===
                             toLocaleISODate(
                               new Date(
                                 dateInfo.year,
@@ -362,7 +360,7 @@ const GanttChart = <T extends Record<string, unknown>>({
                                 dateInfo.day
                               )
                             )
-                            : true
+                          : true
                       )
                       .map(
                         ({ date, hours, isOutsideCurrentMonth }, dateIndex) => {
@@ -395,66 +393,66 @@ const GanttChart = <T extends Record<string, unknown>>({
                                       viewType == "month" ||
                                       viewType === "year" ||
                                       viewType === "day") && (
-                                        <span
-                                          className={clsx(
-                                            "flex items-center justify-center",
-                                            {
-                                              "bg-pea-500 h-8 w-8 rounded-full text-white":
-                                                (toLocaleISODate(date) ===
-                                                  toLocaleISODate(new Date()) &&
-                                                  (viewType === "week" ||
-                                                    viewType === "month")) ||
-                                                (toLocalPeriod(date) ===
-                                                  toLocalPeriod(new Date()) &&
-                                                  viewType === "year"),
-                                              "bg-pea-500 rounded-full px-1 text-white":
-                                                viewType === "day" &&
-                                                hour.toLocaleString(
-                                                  navigator && navigator.language,
-                                                  {
-                                                    hour: "2-digit",
-                                                    hourCycle: "h23",
-                                                  }
-                                                ) ===
+                                      <span
+                                        className={clsx(
+                                          "flex items-center justify-center",
+                                          {
+                                            "bg-pea-500 h-8 w-8 rounded-full text-white":
+                                              (toLocaleISODate(date) ===
+                                                toLocaleISODate(new Date()) &&
+                                                (viewType === "week" ||
+                                                  viewType === "month")) ||
+                                              (toLocalPeriod(date) ===
+                                                toLocalPeriod(new Date()) &&
+                                                viewType === "year"),
+                                            "bg-pea-500 rounded-full px-1 text-white":
+                                              viewType === "day" &&
+                                              hour.toLocaleString(
+                                                navigator && navigator.language,
+                                                {
+                                                  hour: "2-digit",
+                                                  hourCycle: "h23",
+                                                }
+                                              ) ===
                                                 new Date().toLocaleString(
                                                   navigator &&
-                                                  navigator.language,
+                                                    navigator.language,
                                                   {
                                                     hour: "2-digit",
                                                     hourCycle: "h23",
                                                   }
                                                 ) &&
-                                                toLocaleISODate(date) ===
+                                              toLocaleISODate(date) ===
                                                 toLocaleISODate(new Date()),
-                                              "font-semibold":
-                                                viewType === "week" ||
-                                                viewType === "month",
-                                              "ml-1.5": viewType === "week",
-                                            }
-                                          )}
-                                        >
-                                          {viewType === "year"
-                                            ? date.toLocaleDateString(
+                                            "font-semibold":
+                                              viewType === "week" ||
+                                              viewType === "month",
+                                            "ml-1.5": viewType === "week",
+                                          }
+                                        )}
+                                      >
+                                        {viewType === "year"
+                                          ? date.toLocaleDateString(
                                               navigator && navigator.language,
                                               {
                                                 month: "short",
                                               }
                                             )
-                                            : viewType === "day"
-                                              ? hour.toLocaleString(
-                                                navigator && navigator.language,
-                                                {
-                                                  hour: "2-digit",
-                                                }
-                                              )
-                                              : date.toLocaleDateString(
-                                                navigator && navigator.language,
-                                                {
-                                                  day: "numeric",
-                                                }
-                                              )}
-                                        </span>
-                                      )}
+                                          : viewType === "day"
+                                          ? hour.toLocaleString(
+                                              navigator && navigator.language,
+                                              {
+                                                hour: "2-digit",
+                                              }
+                                            )
+                                          : date.toLocaleDateString(
+                                              navigator && navigator.language,
+                                              {
+                                                day: "numeric",
+                                              }
+                                            )}
+                                      </span>
+                                    )}
                                   </span>
                                 </div>
                               );
@@ -476,8 +474,9 @@ const GanttChart = <T extends Record<string, unknown>>({
               aria-label="Grid Rows"
               className="col-start-1 col-end-2 row-start-1 grid divide-y divide-black/20 text-black dark:divide-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${Object.keys(ganttData).length * 2
-                  }, minmax(3.5rem, 1fr))`, // TODO: calculate this based on the number of items in the group
+                gridTemplateRows: `repeat(${
+                  Object.keys(ganttData).length * 2
+                }, minmax(3.5rem, 1fr))`, // TODO: calculate this based on the number of items in the group
               }}
               role="rowgroup"
             >
@@ -524,13 +523,14 @@ const GanttChart = <T extends Record<string, unknown>>({
               aria-label="Chart elements"
               className="col-start-1 col-end-2 row-start-1 -mr-px grid border-l border-r border-b border-black/20 dark:border-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `1.75rem repeat(${(Object.keys(ganttData).length *
-                  Object.entries(ganttData).reduce(
-                    (a, [_, v]) => a + v.length,
-                    0
-                  )) /
+                gridTemplateRows: `1.75rem repeat(${
+                  (Object.keys(ganttData).length *
+                    Object.entries(ganttData).reduce(
+                      (a, [_, v]) => a + v.length,
+                      0
+                    )) /
                   Object.keys(ganttData).length
-                  }, minmax(0px, 1fr)) auto`, // TODO: calculate this based on the number of items in the group
+                }, minmax(0px, 1fr)) auto`, // TODO: calculate this based on the number of items in the group
                 gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
@@ -540,17 +540,17 @@ const GanttChart = <T extends Record<string, unknown>>({
                   data: v.filter((item) => {
                     return viewType === "day"
                       ? toLocaleISODate(
-                        new Date(item[dateStartKey].toString())
-                      ) ===
-                      toLocaleISODate(
-                        new Date(
-                          dateInfo.year,
-                          dateInfo.month,
-                          dateInfo.day
-                        )
-                      )
+                          new Date(item[dateStartKey].toString())
+                        ) ===
+                          toLocaleISODate(
+                            new Date(
+                              dateInfo.year,
+                              dateInfo.month,
+                              dateInfo.day
+                            )
+                          )
                       : viewType === "week"
-                        ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
+                      ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
                           dateInfo.week &&
                           new Date(
                             item[dateStartKey].toString()
@@ -560,10 +560,10 @@ const GanttChart = <T extends Record<string, unknown>>({
                           new Date(
                             item[dateEndKey].toString()
                           ).getFullYear() === dateInfo.year)
-                        : viewType === "month"
-                          ? toLocalPeriod(
-                            new Date(item[dateStartKey].toString())
-                          ) ===
+                      : viewType === "month"
+                      ? toLocalPeriod(
+                          new Date(item[dateStartKey].toString())
+                        ) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -571,7 +571,7 @@ const GanttChart = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           ) ||
-                          toLocalPeriod(new Date(item[dateEndKey].toString())) ===
+                        toLocalPeriod(new Date(item[dateEndKey].toString())) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -579,13 +579,13 @@ const GanttChart = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           )
-                          : viewType === "year"
-                            ? new Date(
-                              item[dateStartKey].toString()
-                            ).getFullYear() === dateInfo.year ||
-                            new Date(item[dateEndKey].toString()).getFullYear() ===
-                            dateInfo.year
-                            : true;
+                      : viewType === "year"
+                      ? new Date(
+                          item[dateStartKey].toString()
+                        ).getFullYear() === dateInfo.year ||
+                        new Date(item[dateEndKey].toString()).getFullYear() ===
+                          dateInfo.year
+                      : true;
                   }),
                 }))
                 .map((data, groupIndex) => {
@@ -595,34 +595,35 @@ const GanttChart = <T extends Record<string, unknown>>({
                       className="relative mt-px flex"
                       aria-label={`${data.label}`}
                       style={{
-                        gridRow: `${groupIndex * 2 + 2 + i} / ${groupIndex * 2 + 3 + i
-                          }`, // TODO: calculate this based on the number of items in the group
+                        gridRow: `${groupIndex * 2 + 2 + i} / ${
+                          groupIndex * 2 + 3 + i
+                        }`, // TODO: calculate this based on the number of items in the group
                         gridColumnStart:
                           viewType === "day"
                             ? new Date(
-                              item[dateStartKey].toString()
-                            ).getHours() + 1
+                                item[dateStartKey].toString()
+                              ).getHours() + 1
                             : viewType === "week"
-                              ? new Date(item[dateStartKey].toString()).getDay()
-                              : viewType === "month"
-                                ? new Date(item[dateStartKey].toString()).getDate()
-                                : viewType === "year"
-                                  ? new Date(
-                                    item[dateStartKey].toString()
-                                  ).getMonth() + 1
-                                  : 1,
+                            ? new Date(item[dateStartKey].toString()).getDay()
+                            : viewType === "month"
+                            ? new Date(item[dateStartKey].toString()).getDate()
+                            : viewType === "year"
+                            ? new Date(
+                                item[dateStartKey].toString()
+                              ).getMonth() + 1
+                            : 1,
                         gridColumnEnd:
                           viewType === "day"
                             ? new Date(item[dateEndKey].toString()).getHours() +
-                            1
+                              1
                             : viewType === "week"
-                              ? new Date(item[dateEndKey].toString()).getDay()
-                              : viewType === "month"
-                                ? new Date(item[dateEndKey].toString()).getDate()
-                                : viewType === "year"
-                                  ? new Date(item[dateEndKey].toString()).getMonth() +
-                                  1
-                                  : 7,
+                            ? new Date(item[dateEndKey].toString()).getDay()
+                            : viewType === "month"
+                            ? new Date(item[dateEndKey].toString()).getDate()
+                            : viewType === "year"
+                            ? new Date(item[dateEndKey].toString()).getMonth() +
+                              1
+                            : 7,
                       }}
                     >
                       <p className="bg-pea-400/60 absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2">
