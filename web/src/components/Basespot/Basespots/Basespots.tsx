@@ -159,35 +159,35 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
 
         <Lookup
           label={"Map"}
-          options={maps.map((map) => ({
-            label: map.name,
-            value: map.id.toString(),
-            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-          }))}
+          options={maps}
+          getOptionLabel={(option) => option.name}
+          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           defaultValue={map}
           onSelect={(e) => {
             setParams({
-              ...(e?.value && { map: e.value.toString() }),
+              ...(e?.id && { map: e.id.toString() }),
               ...(params.type && { type: params.type }),
             });
           }}
         />
         {/* https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc */}
         <Lookup
-          options={[
-            { label: "Rathole", value: "rathole" },
-            { label: "Cave", value: "cave" },
-            { label: "Cliff", value: "cliff" },
-            { label: "Open", value: "open" },
-            { label: "Waterfall", value: "waterfall" },
-            { label: "Underwater", value: "underwater" },
-          ]}
+          // options={[
+          //   { label: "Rathole", value: "rathole" },
+          //   { label: "Cave", value: "cave" },
+          //   { label: "Cliff", value: "cliff" },
+          //   { label: "Open", value: "open" },
+          //   { label: "Waterfall", value: "waterfall" },
+          //   { label: "Underwater", value: "underwater" },
+          // ]}
+          options={["rathole", "cave", "cliff", "open", "waterfall", "underwater"]}
           defaultValue={type}
           label="Type"
           onSelect={(e) => {
             setParams({
-              ...(e?.value && { map: e.value.toString() }),
-              ...(params.type && { type: params.type }),
+              ...(e && { type: e }),
+              ...(params.map && { map: params.map }),
             });
           }}
         />

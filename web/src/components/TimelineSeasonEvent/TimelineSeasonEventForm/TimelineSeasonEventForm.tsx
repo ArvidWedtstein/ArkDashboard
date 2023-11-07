@@ -112,17 +112,16 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           />
 
           <Lookup
-            options={props?.maps.map((map) => ({
-              label: map.name,
-              value: map.id,
-              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-            }))}
+            options={props?.maps || []}
+            getOptionLabel={(option) => option.name}
+            loading={props.loading}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
             name="map_id"
+            label="Map"
             defaultValue={props.timelineSeasonEvent?.map_id}
-            placeholder="Select a map"
           />
 
-          <FieldError name="map_id" className="rw-field-error" />
 
           {raid && (
             <>
@@ -176,9 +175,8 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
 
           <TagInput
             name="tags"
-            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
-              raid ? "raid" : ""
-            }`}
+            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""
+              }`}
           />
 
           <FieldError name="tags" className="rw-field-error" />
@@ -235,9 +233,8 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
               className="mb-2 px-2"
               tagClassName="rw-button rw-button-small rw-button-gray !rounded-full"
               inputClassName="dark:text-zinc-300 text-zinc-500 text-sm py-0 px-3 outline-none bg-transparent"
-              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
-                raid ? "raid" : ""
-              }`}
+              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""
+                }`}
             />
             <FileUpload
               className="relative !w-full !rounded-none border-none !bg-transparent"

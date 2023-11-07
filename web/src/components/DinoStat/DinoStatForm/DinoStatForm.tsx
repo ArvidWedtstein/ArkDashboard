@@ -53,6 +53,8 @@ const DinoStatForm = (props: DinoStatFormProps) => {
           />
           <Lookup
             margin="none"
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            getOptionLabel={(option) => option.label}
             options={[
               { value: "food", label: "Food" },
               { value: "gather_efficiency", label: "Gather Efficiency" },

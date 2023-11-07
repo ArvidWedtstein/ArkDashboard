@@ -81,6 +81,17 @@ export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
   };
 };
 
+export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
+  // return db.basespot.findMany();
+  // return db.$queryRaw`SELECT type FROM Basespot;`;
+  return db.basespot.groupBy({
+    by: ["type"],
+  });
+  // return db.basespot.findMany({
+  //   distinct: ["type"],
+  // });
+};
+
 export const basespots: QueryResolvers["basespots"] = () => {
   return db.basespot.findMany();
 };

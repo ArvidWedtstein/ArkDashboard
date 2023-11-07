@@ -37,6 +37,7 @@ export const schema = gql`
   type Query {
     basespots: [Basespot!]! @skipAuth
     basespot(id: String!): Basespot @requireAuth
+    basespotTypes: [Basespot] @skipAuth
     basespotPage(page: Int, map: Int, type: String): BasespotPage @skipAuth
     basespotPagination(take: Int, lastCursor: String): BasespotPagination
       @skipAuth

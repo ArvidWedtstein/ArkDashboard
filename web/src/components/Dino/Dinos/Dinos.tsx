@@ -197,15 +197,14 @@ const DinosList = ({
               onSelect={(e) => {
                 setSort((prev) => ({
                   ...prev,
-                  column: e ? e.value.toString() : "",
+                  column: e ? e.toString() : "",
                 }));
               }}
               closeOnSelect
               options={Object.keys(dinosPage.dinos[0] || {})
                 .filter(
                   (c) => !["__typename", "id", "image", "blueprint"].includes(c)
-                )
-                .map((key) => ({ value: key, label: key }))}
+                )}
               InputProps={{
                 style: {
                   borderRadius: "0.375rem 0 0 0.375rem",

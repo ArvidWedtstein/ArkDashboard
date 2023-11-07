@@ -26,9 +26,8 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${
-      (size.height / 100) * coordinate.lon + size.width / 100
-    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
+      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -109,10 +108,10 @@ const Map = ({
     return !subMap || !coords
       ? ""
       : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(
-          coords[1].lon
-        )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
-          coords[1].lat
-        )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
+        coords[1].lon
+      )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
+        coords[1].lat
+      )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
   };
 
   useEffect(() => {
@@ -291,22 +290,20 @@ const Map = ({
           size="small"
           defaultValue={map}
           disabled={disable_map}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => option.name}
           options={
             data?.maps
               .filter(
                 (m) =>
                   m.parent_map_id == null &&
                   (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
-              )
-              .map((map: { id: number; name: string }) => ({
-                label: map.name,
-                value: map.id,
-              })) ?? []
+              ) as { id: number; name: string; }[] ?? []
           }
           onSelect={(e) => {
             if (!e) return;
-            onMapChange?.(parseInt(e.value.toString()));
-            setMap(parseInt(e.value.toString()));
+            onMapChange?.(parseInt(e.id.toString()));
+            setMap(parseInt(e.id.toString()));
           }}
         />
         {data &&
@@ -320,16 +317,15 @@ const Map = ({
               size="small"
               defaultValue={subMap}
               disabled={disable_sub_map}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.name}
               options={data.maps
                 ?.find((m) => m.id === map || m.id === map_id)
-                .other_Map.map((map: { id: number; name: string }) => ({
-                  label: map.name,
-                  value: map.id.toString(),
-                }))}
+                .other_Map as { id: number; name: string; }[]}
               onSelect={(e) => {
                 if (!e) return;
-                onSubMapChange?.(parseInt(e.value.toString()));
-                setSubMap(parseInt(e.value.toString()));
+                onSubMapChange?.(parseInt(e.id.toString()));
+                setSubMap(parseInt(e.id.toString()));
               }}
             />
           )}
@@ -378,15 +374,14 @@ const Map = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${
-              data?.maps?.find(
-                (m) =>
-                  m.id ===
-                  (data.maps.find((m) => m.id === map)?.other_Map.length > 0
-                    ? subMap ?? 16
-                    : map)
-              )[mapType] || ""
-            }`}
+            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find(
+              (m) =>
+                m.id ===
+                (data.maps.find((m) => m.id === map)?.other_Map.length > 0
+                  ? subMap ?? 16
+                  : map)
+            )[mapType] || ""
+              }`}
             height={size.height}
             width={size.width}
             ref={imgRef}
@@ -456,20 +451,20 @@ const Map = ({
                         p.lat,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       x={posToMap(
                         p.lon,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       ref={imgRef}
@@ -503,20 +498,20 @@ const Map = ({
                         p.lat,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       cx={posToMap(
                         p.lon,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}

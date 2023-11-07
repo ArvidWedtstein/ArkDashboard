@@ -103,13 +103,10 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         </Label>
 
         <Lookup
-          options={
-            props?.basespots.map((bs) => ({
-              label: bs.name,
-              value: bs.id,
-            })) || []
-          }
+          options={props?.basespots || []}
           name="basespot_id"
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           defaultValue={props.timelineSeasonBasespot?.basespot_id}
           placeholder="Select a basespot"
           className="mt-3"
@@ -118,14 +115,11 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         <FieldError name="basespot_id" className="rw-field-error" />
 
         <Lookup
-          options={
-            props?.maps.map((map) => ({
-              label: map.name,
-              value: map.id,
-              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-            })) || []
-          }
+          options={props?.maps || []}
           name="map_id"
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
           defaultValue={props.timelineSeasonBasespot?.map_id}
           placeholder="Select a map"
           className="mt-3"

@@ -178,12 +178,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-        {
-          type: "",
-          value: 0,
-          item_id: null,
-        },
-      ],
+          {
+            type: "",
+            value: 0,
+            item_id: null,
+          },
+        ],
     },
   });
 
@@ -397,43 +397,34 @@ const DinoForm = (props: DinoFormProps) => {
               name="temperament"
               defaultValue={props.dino?.temperament}
               options={[
-                { value: "Aggressive", label: "Aggressive" },
-                { value: "Angry", label: "Angry" },
-                { value: "Cowardly", label: "Cowardly" },
-                { value: "Curious", label: "Curious" },
-                { value: "Defensive", label: "Defensive" },
-                { value: "Doctile", label: "Doctile" },
-                { value: "Elusive", label: "Elusive" },
-                { value: "Evasive", label: "Evasive" },
-                {
-                  value: "Evasive, Aggressive when attacked",
-                  label: "Evasive, Aggressive when attacked",
-                },
-                {
-                  value: "Extemely Territorial",
-                  label: "Extemely Territorial",
-                },
-                { value: "Fearful", label: "Fearful" },
-                { value: "Flippant", label: "Flippant" },
-                { value: "Friendly", label: "Friendly" },
-                { value: "Highly Aggressive", label: "Highly Aggressive" },
-                { value: "Languorous", label: "Languorous" },
-                { value: "Loyal", label: "Loyal" },
-                { value: "Naive", label: "Naive" },
-                { value: "Neutral", label: "Neutral" },
-                {
-                  value: "Nocturnally Aggressive",
-                  label: "Nocturnally Aggressive",
-                },
-                { value: "Oblivious", label: "Oblivious" },
-                { value: "Opportunistic", label: "Opportunistic" },
-                { value: "Passive", label: "Passive" },
-                { value: "Patient", label: "Patient" },
-                { value: "Reactive", label: "Reactive" },
-                { value: "Short-Tempered", label: "Short-Tempered" },
-                { value: "Skittish", label: "Skittish" },
-                { value: "Stupid", label: "Stupid" },
-                { value: "Territorial", label: "Territorial" },
+                "Aggressive",
+                "Angry",
+                "Cowardly",
+                "Curious",
+                "Defensive",
+                "Doctile",
+                "Elusive",
+                "Evasive",
+                "Evasive, Aggressive when attacked",
+                "Extemely Territorial",
+                "Fearful",
+                "Flippant",
+                "Friendly",
+                "Highly Aggressive",
+                "Languorous",
+                "Loyal",
+                "Naive",
+                "Neutral",
+                "Nocturnally Aggressive",
+                "Oblivious",
+                "Opportunistic",
+                "Passive",
+                "Patient",
+                "Reactive",
+                "Short-Tempered",
+                "Skittish",
+                "Stupid",
+                "Territorial"
               ]}
             />
 
@@ -441,6 +432,8 @@ const DinoForm = (props: DinoFormProps) => {
               label="Target Team"
               name="targeting_team_name"
               defaultValue={props.dino?.targeting_team_name}
+              getOptionLabel={(option) => option.label}
+              isOptionEqualToValue={(option, value) => option.value === value.value}
               options={[
                 { value: "Herbivores", label: "Herbivores" },
                 { value: "Herbivore_Small", label: "Herbivore Small" },
@@ -516,18 +509,18 @@ const DinoForm = (props: DinoFormProps) => {
               name="diet"
               defaultValue={props.dino?.diet}
               options={[
-                { value: "Sanguivore", label: "Sanguivore" },
-                { value: "Minerals", label: "Minerals" },
-                { value: "Flame Eater", label: "Flame Eater" },
-                { value: "Herbivore", label: "Herbivore" },
-                { value: "Piscivore", label: "Piscivore" },
-                { value: "Coprophagic", label: "Coprophagic" },
-                { value: "Carnivore", label: "Carnivore" },
-                { value: "Bottom Feeder", label: "Bottom Feeder" },
-                { value: "Sweet Tooth", label: "Sweet Tooth" },
-                { value: "Carrion-Feeder", label: "Carrion Feeder" },
-                { value: "Sanguinivore", label: "Sanguinivore" },
-                { value: "Omnivore", label: "Omnivore" },
+                "Sanguivore",
+                "Minerals",
+                "Flame Eater",
+                "Herbivore",
+                "Piscivore",
+                "Coprophagic",
+                "Carnivore",
+                "Bottom Feeder",
+                "Sweet Tooth",
+                "Carrion-Feeder",
+                "Sanguinivore",
+                "Omnivore"
               ]}
             />
 
@@ -754,95 +747,68 @@ const DinoForm = (props: DinoFormProps) => {
                 closeOnSelect
                 label="Carryable By"
                 name="carryable_by"
+                getOptionLabel={(option) => option.label}
+                getOptionImage={(option) => option.label === 'Human' ? "https://www.dododex.com/media/item/Pet.png" : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_${option.label.replaceAll(' ', '').toLowerCase()}.webp`}
                 options={[
                   {
                     value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
                     label: "Pteranodon",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_pteranodon.webp",
                   },
                   {
                     value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
                     label: "Tropeognathus",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tropeognathus.webp",
                   },
                   {
                     value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
                     label: "Tapejara",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tapejara.webp",
                   },
                   {
                     value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
                     label: "Griffin",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_griffin.webp",
                   },
                   {
                     value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
                     label: "Desmodus",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_desmodus.webp",
                   },
                   {
                     value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
                     label: "Argentavis",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_argentavis.webp",
                   },
                   {
                     value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
                     label: "Crystal Wyvern",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_crystalwyvern.webp",
                   },
                   {
                     value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
                     label: "Wyvern",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_wyvern.webp",
                   },
                   {
                     value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
                     label: "Quetzal",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_quetzal.webp",
                   },
                   {
                     value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
                     label: "Tusoteuthis",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tusoteuthis.webp",
                   },
                   {
                     value: "d670e948-055e-45e1-adf3-e56d63236238",
                     label: "Karkinos",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_karkinos.webp",
                   },
                   {
                     value: "52156470-6075-487b-a042-2f1d0d88536c",
                     label: "Kaprosuchus",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_kaprosuchus.webp",
                   },
                   {
                     value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
                     label: "Procoptodon",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_procoptodon.webp",
                   },
                   {
                     value: "human",
                     label: "Human",
-                    image: "https://www.dododex.com/media/item/Pet.png",
                   },
                   {
                     value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
                     label: "Gigantopithecus",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_gigantopithecus.webp",
                   },
                 ]}
               />
@@ -851,48 +817,37 @@ const DinoForm = (props: DinoFormProps) => {
                 name="can_destroy"
                 label="Can Destroy"
                 helperText="Structuretypes this dino can destroy"
+                getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${option.label.replaceAll(' ', '').toLowerCase()}-wall.webp`}
                 options={[
                   {
                     label: "Thatch",
                     value: "t",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/thatch-wall.webp",
                   },
                   {
                     label: "Wood",
                     value: "w",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/wooden-wall.webp",
                   },
                   {
                     label: "Adobe",
                     value: "a",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/adobe-wall.webp",
                   },
                   {
                     label: "Stone",
                     value: "s",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-wall.webp",
                   },
                   {
                     label: "Greenhouse",
                     value: "g",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/greenhouse-wall.webp",
                   },
                   {
                     label: "Metal",
                     value: "m",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/metal-wall.webp",
                   },
                   {
                     label: "Tek",
                     value: "tk",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-wall.webp",
                   },
                 ]}
               />
@@ -1422,11 +1377,6 @@ const DinoForm = (props: DinoFormProps) => {
                             }))}
                           // defaultValue={[ge.item_id]}
                           closeOnSelect={true}
-                          filterFn={(item, search) => {
-                            return item.label
-                              .toLowerCase()
-                              .includes(search.toLowerCase());
-                          }}
                         />
                         <NumberField
                           {...register(
@@ -1446,7 +1396,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          // defaultValue={g.type}
+                        // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1519,11 +1469,6 @@ const DinoForm = (props: DinoFormProps) => {
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                             }))}
                           defaultValue={w.item_id}
-                          filterFn={(item, search) => {
-                            return item.label
-                              .toLowerCase()
-                              .includes(search.toLowerCase());
-                          }}
                         />
                         <NumberField
                           {...register(`DinoStat.create.${index}.value`, {
@@ -1603,21 +1548,16 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                  .filter((i) => i.category === "Resource")
-                                  .map((item) => ({
-                                    type: item.type,
-                                    label: item.name,
-                                    value: item.id,
-                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                  }))
+                                .filter((i) => i.category === "Resource")
+                                .map((item) => ({
+                                  type: item.type,
+                                  label: item.name,
+                                  value: item.id,
+                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                }))
                               : []
                           }
                           defaultValue={d.item_id}
-                          filterFn={(item, search) => {
-                            return item.label
-                              .toLowerCase()
-                              .includes(search.toLowerCase());
-                          }}
                         />
                         <TextField
                           {...register(`DinoStat.create.${index}.value`, {
@@ -1701,11 +1641,6 @@ const DinoForm = (props: DinoFormProps) => {
                             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                           }))}
                         defaultValue={s.item_id}
-                        filterFn={(item, search) => {
-                          return item.label
-                            .toLowerCase()
-                            .includes(search.toLowerCase());
-                        }}
                       />
                       <NumberField
                         {...register(`DinoStat.create.${index}.value`, {

@@ -1,5 +1,6 @@
 import {
   CSSProperties,
+  ChangeEvent,
   KeyboardEvent,
   MouseEvent,
   SyntheticEvent,
@@ -55,18 +56,18 @@ function createFilterOptions(
     const filteredOptions = !input
       ? options
       : options.filter((option) => {
-          let candidate = (stringify || getOptionLabel)(option);
-          if (ignoreCase) {
-            candidate = candidate.toLowerCase();
-          }
-          if (ignoreAccents) {
-            candidate = stripDiacritics(candidate);
-          }
+        let candidate = (stringify || getOptionLabel)(option);
+        if (ignoreCase) {
+          candidate = candidate.toLowerCase();
+        }
+        if (ignoreAccents) {
+          candidate = stripDiacritics(candidate);
+        }
 
-          return matchFrom === "start"
-            ? candidate.indexOf(input) === 0
-            : candidate.indexOf(input) > -1;
-        });
+        return matchFrom === "start"
+          ? candidate.indexOf(input) === 0
+          : candidate.indexOf(input) > -1;
+      });
 
     return typeof limit === "number"
       ? filteredOptions.slice(0, limit)
@@ -112,43 +113,47 @@ type SingleSelectLookupProps = {
   onSelect?: (value: SelectOption) => void;
 };
 
-export type AutocompleteChangeReason =
+export type LookupChangeReason =
   | "createOption"
   | "selectOption"
   | "removeOption"
   | "clear"
   | "blur";
-export interface AutocompleteChangeDetails<Value = string> {
+type LookupCloseReason =
+  | 'createOption'
+  | 'toggleInput'
+  | 'escape'
+  | 'selectOption'
+  | 'removeOption'
+  | 'blur';
+interface LookupChangeDetails<Value = string> {
   option: Value;
 }
-export interface FilterOptionsState<Value> {
+interface FilterOptionsState<Value> {
   inputValue: string;
   getOptionLabel: (option: Value) => string;
 }
-export type AutocompleteFreeSoloValueMapping<FreeSolo> = FreeSolo extends true
-  ? string
-  : never;
-export type AutocompleteInputChangeReason = "input" | "reset" | "clear";
-export type AutocompleteValue<Value, Multiple, DisableClearable, FreeSolo> =
+export type LookupInputChangeReason = "input" | "reset" | "clear";
+export type LookupValue<Value, Multiple, DisableClearable> =
   Multiple extends true
-    ? Array<Value | AutocompleteFreeSoloValueMapping<FreeSolo>>
-    : DisableClearable extends true
-    ? NonNullable<Value | AutocompleteFreeSoloValueMapping<FreeSolo>>
-    : Value | null | AutocompleteFreeSoloValueMapping<FreeSolo>;
+  ? Array<Value | never>
+  : DisableClearable extends true
+  ? NonNullable<Value | never>
+  : Value | null | never;
 
+// TODO: comment with default value
 type SelectProps<
   Value,
   Multiple extends boolean | undefined,
-  DisableClearable extends boolean | undefined,
-  FreeSolo extends boolean | undefined
+  DisableClearable extends boolean | undefined
 > = {
   options: ReadonlyArray<Value>;
   label?: string;
   name?: string;
   className?: string;
   btnClassName?: string;
-  defaultValue?: number | string; //AutocompleteValue<Value, Multiple, DisableClearable, FreeSolo>;
-  value?: AutocompleteValue<Value, Multiple, DisableClearable, FreeSolo>;
+  defaultValue?: number | string; //LookupValue<Value, Multiple, DisableClearable>;
+  value?: LookupValue<Value, Multiple, DisableClearable>;
   /**
    * If `true`, the component is disabled.
    * @default false
@@ -174,10 +179,8 @@ type SelectProps<
   noOptionsText?: React.ReactNode;
   helperText?: string;
   disableClearable?: DisableClearable;
-  enforceOption?: boolean;
   readOnly?: boolean;
   open?: boolean;
-  filterlookupOptions?: boolean;
   filterSelectedOptions?: boolean;
   clearOnBlur?: boolean;
   required?: boolean;
@@ -194,7 +197,6 @@ type SelectProps<
   autoComplete?: boolean;
   clearOnEscape?: boolean;
   openOnFocus?: boolean;
-  freeSolo?: FreeSolo;
   autoSelect?: boolean;
   inputValue?: string;
   componentName?: string;
@@ -216,29 +218,32 @@ type SelectProps<
    */
   onChange?: (
     event: React.SyntheticEvent,
-    value: AutocompleteValue<Value, Multiple, DisableClearable, FreeSolo>,
-    reason: AutocompleteChangeReason,
-    details?: AutocompleteChangeDetails<Value>
+    value: LookupValue<Value, Multiple, DisableClearable>,
+    reason: LookupChangeReason,
+    details?: LookupChangeDetails<Value>
   ) => void;
   onSelect?: (value: Value) => void;
   groupBy?: (option: Value) => string;
   renderTags?: (lookupOptions: Readonly<Value[]>) => React.ReactNode;
   onInputChange?: (
-    event: React.ChangeEvent<HTMLInputElement> | React.SyntheticEvent,
+    event: ChangeEvent<HTMLInputElement> | React.SyntheticEvent,
     value: string,
-    reason: AutocompleteInputChangeReason
+    reason: LookupInputChangeReason
   ) => void;
   filterOptions?: (
     options: Value[],
     state: FilterOptionsState<Value>
   ) => Value[];
-  filterFn?: (option: Value, searchTerm: string) => boolean;
   getOptionLabel?: (
-    option: Value | AutocompleteFreeSoloValueMapping<FreeSolo>
+    option: Value
+  ) => string;
+  getOptionImage?: (
+    option: Value
   ) => string;
   isOptionEqualToValue?: (option: Value, value: Value) => boolean;
+  getOptionDisabled?: (option: Value) => boolean;
   onOpen?: (event: React.SyntheticEvent) => void;
-  onClose?: (event: React.SyntheticEvent, reason: string) => void;
+  onClose?: (event: React.SyntheticEvent, reason: LookupCloseReason) => void;
 };
 
 // TODO: fix error styles
@@ -246,9 +251,8 @@ export const Lookup = <
   Value,
   Multiple extends boolean | undefined = false,
   DisableClearable extends boolean | undefined = false,
-  FreeSolo extends boolean | undefined = false
 >(
-  props: SelectProps<Value, Multiple, DisableClearable, FreeSolo>
+  props: SelectProps<Value, Multiple, DisableClearable>
 ) => {
   const {
     multiple,
@@ -278,7 +282,6 @@ export const Lookup = <
     open: openProp,
     loading = false,
     disabled = false,
-    freeSolo = false,
     componentName = "Lookup",
     readOnly = false,
     autoComplete = false,
@@ -288,19 +291,22 @@ export const Lookup = <
     closeOnSelect = true,
     filterSelectedOptions = false,
     InputProps,
+    getOptionDisabled,
     filterOptions = createFilterOptions(),
     groupBy,
     renderTags,
     onSelect,
+    onChange,
     onInputChange,
     onOpen,
     onClose,
-    getOptionLabel: getOptionLabelProp = (option) => {
+    getOptionLabel: getOptionLabelProp = (option: Value | string) => {
       if (typeof option === "object" && option !== null && "label" in option) {
         return option.label;
       }
-      return String(option);
+      return option;
     },
+    getOptionImage = (option: Value) => option && option["image"],
     isOptionEqualToValue = (option: Value, value: Value) => option === value,
   } = props;
   let getOptionLabel = getOptionLabelProp;
@@ -349,10 +355,10 @@ export const Lookup = <
     controlled: valueProp,
     default: Array.isArray(defaultValue)
       ? options
-          .filter((option) =>
-            defaultValue.some((value) => value === option[valueKey])
-          )
-          .map((o) => o[valueKey])
+        .filter((option) =>
+          defaultValue.some((value) => value === option[valueKey])
+        )
+        .map((o) => o[valueKey])
       : options.find((option) => option[valueKey] === defaultValue) || null,
     name: componentName,
   });
@@ -389,7 +395,7 @@ export const Lookup = <
       setInputValueState(newInputValue);
 
       if (onInputChange) {
-        onInputChange(event, newInputValue, "reset"); // onInputChange(event, newInputValue, 'reset')
+        onInputChange(event, newInputValue, "reset");
       }
     },
     [
@@ -418,25 +424,25 @@ export const Lookup = <
 
   const filteredOptions = open
     ? filterOptions(
-        options.filter((option) => {
-          if (
-            filterSelectedOptions &&
-            (multiple ? value : [value]).some(
-              (value2) =>
-                value2 !== null && isOptionEqualToValue(option, value2)
-            )
-          ) {
-            return false;
-          }
-          return true;
-        }),
-
-        {
-          inputValue:
-            inputValueIsSelectedValue && inputPristine ? "" : inputValue,
-          getOptionLabel,
+      options.filter((option) => {
+        if (
+          filterSelectedOptions &&
+          (multiple ? value : [value]).some(
+            (value2) =>
+              value2 !== null && isOptionEqualToValue(option, value2)
+          )
+        ) {
+          return false;
         }
-      )
+        return true;
+      }),
+
+      {
+        inputValue:
+          inputValueIsSelectedValue && inputPristine ? "" : inputValue,
+        getOptionLabel,
+      }
+    )
     : [];
 
   const previousProps = usePreviousProps({
@@ -452,17 +458,13 @@ export const Lookup = <
       return;
     }
 
-    if (freeSolo && !valueChange) {
-      return;
-    }
-
     resetInputValue(null, value);
   }, [value, resetInputValue, focused, previousProps.value]);
 
   const listboxAvailable = open && filteredOptions.length > 0 && !readOnly;
 
   if (process.env.NODE_ENV !== "production") {
-    if (value !== null && !freeSolo && options.length > 0) {
+    if (value !== null && options.length > 0) {
       const missingValue = (multiple ? value : [value]).filter(
         (value2) =>
           !options.some((option) => isOptionEqualToValue(option, value2))
@@ -472,10 +474,9 @@ export const Lookup = <
         console.warn(
           [
             `ArkDashboard: The value provided to ${componentName} is invalid.`,
-            `None of the options match with \`${
-              missingValue.length > 1
-                ? JSON.stringify(missingValue)
-                : JSON.stringify(missingValue[0])
+            `None of the options match with \`${missingValue.length > 1
+              ? JSON.stringify(missingValue)
+              : JSON.stringify(missingValue[0])
             }\`.`,
             "You can use the `isOptionEqualToValue` prop to customize the equality test.",
           ].join("\n")
@@ -519,8 +520,8 @@ export const Lookup = <
       const nextFocusDisabled = disabledItemsFocusable
         ? false
         : !option ||
-          option.disabled ||
-          option.getAttribute("aria-disabled") === "true";
+        option.disabled ||
+        option.getAttribute("aria-disabled") === "true";
 
       if (option && option.hasAttribute("tabindex") && !nextFocusDisabled) {
         // The next option is available
@@ -743,9 +744,9 @@ export const Lookup = <
       previousProps.inputValue === inputValue &&
       (multiple
         ? value.length === previousProps.value.length &&
-          previousProps.value.every(
-            (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
-          )
+        previousProps.value.every(
+          (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
+        )
         : isSameValue(previousProps.value, value))
     ) {
       const previousHighlightedOption =
@@ -796,7 +797,7 @@ export const Lookup = <
         multiple &&
         currentOption &&
         value.findIndex((val) => isOptionEqualToValue(currentOption, val)) !==
-          -1
+        -1
       ) {
         return;
       }
@@ -889,7 +890,7 @@ export const Lookup = <
 
   const handleClose = (
     event: React.MouseEvent<unknown> | React.SyntheticEvent,
-    reason: string = ""
+    reason: LookupCloseReason
   ) => {
     if (!open) {
       return;
@@ -905,7 +906,7 @@ export const Lookup = <
   const handleValue = (
     event: React.SyntheticEvent,
     newValue,
-    reason: string = "",
+    reason: LookupChangeReason = "clear",
     details = {}
   ) => {
     if (multiple) {
@@ -924,20 +925,22 @@ export const Lookup = <
         field.onChange(
           multiple
             ? Array.isArray(newValue)
-              ? newValue.map((f) => f.value)
+              ? newValue.map((f) => f[valueKey])
               : newValue
             : newValue
         );
       }
-      onSelect(newValue); // onChange(event, newValue, reason, details);
+
+      onSelect(newValue);
+      onChange(event, newValue, reason, details as LookupChangeDetails<Value>);
     }
 
     setValueState(newValue);
   };
 
-  const isTouch = React.useRef(false);
+  const isTouch = useRef(false);
 
-  const selectNewValue = (event, option, reasonProp = "selectOption") => {
+  const selectNewValue = (event, option, reasonProp: LookupCloseReason = "selectOption") => {
     let reason = reasonProp;
     let newValue = option;
 
@@ -972,7 +975,7 @@ export const Lookup = <
 
     resetInputValue(event, newValue);
 
-    handleValue(event, newValue, reason, { option });
+    handleValue(event, newValue, reason as LookupChangeReason, { option });
 
     if (closeOnSelect && (!event || (!event.ctrlKey && !event.metaKey))) {
       handleClose(event, reason);
@@ -995,7 +998,6 @@ export const Lookup = <
     let nextFocus = index;
 
     while (true) {
-      // Out of range
       if (
         (direction === "next" && nextFocus === value.length) ||
         (direction === "previous" && nextFocus === -1)
@@ -1063,7 +1065,6 @@ export const Lookup = <
       onInputChange(event as SyntheticEvent, "", "clear");
     }
 
-    console.log("handleClear", event, value);
     handleValue(event, multiple ? [] : null, "clear");
   };
 
@@ -1082,8 +1083,7 @@ export const Lookup = <
 
     switch (event.key) {
       case "Home":
-        let handleHomeEndKeys = true;
-        if (open && handleHomeEndKeys) {
+        if (open) {
           // Prevent scroll of the page
           event.preventDefault();
           changeHighlightedIndex({
@@ -1095,7 +1095,7 @@ export const Lookup = <
         }
         break;
       case "End":
-        if (popupOpen && handleHomeEndKeys) {
+        if (popupOpen) {
           // Prevent scroll of the page
           event.preventDefault();
           changeHighlightedIndex({
@@ -1157,11 +1157,9 @@ export const Lookup = <
         handleFocusTag(event, "next");
         break;
       case "Enter":
-        let freeSolo = false;
         if (highlightedIndexRef.current !== -1 && popupOpen) {
           const option = filteredOptions[highlightedIndexRef.current];
-          // const disabled = getOptionDisabled ? getOptionDisabled(option) : false;
-          const disabled = false;
+          const disabled = getOptionDisabled ? getOptionDisabled(option) : false;
 
           // Avoid early form validation, let the end-users continue filling the form.
           event.preventDefault();
@@ -1179,16 +1177,6 @@ export const Lookup = <
               inputRef.current.value.length
             );
           }
-        } else if (
-          freeSolo &&
-          inputValue !== "" &&
-          inputValueIsSelectedValue === false
-        ) {
-          if (multiple) {
-            // Allow people to add new values before they submit the form.
-            event.preventDefault();
-          }
-          selectNewValue(event, inputValue, "createOption");
         }
         break;
       case "Escape":
@@ -1321,7 +1309,7 @@ export const Lookup = <
     isTouch.current = false;
   };
 
-  const handleTagDelete = (index) => (event) => {
+  const handleTagDelete = (index: number) => (event: MouseEvent) => {
     const newvalue = value.slice();
     newvalue.splice(index, 1);
     handleValue(event, newvalue, "removeOption", {
@@ -1329,9 +1317,9 @@ export const Lookup = <
     });
   };
 
-  const handlePopupIndicator = (event) => {
+  const handlePopupIndicator = (event: MouseEvent) => {
     if (open) {
-      handleClose(event, "toggleinput");
+      handleClose(event, "toggleInput");
     } else {
       handleOpen(event);
     }
@@ -1370,7 +1358,7 @@ export const Lookup = <
     }
   };
 
-  let dirty = freeSolo && inputValue.length > 0;
+  let dirty = false && inputValue.length > 0;
   dirty = dirty || (multiple ? value.length > 0 : value !== null);
 
   let groupedOptions = filteredOptions;
@@ -1412,27 +1400,27 @@ export const Lookup = <
     handleBlur();
   }
 
-  // correct order to here
 
   const renderChips = () => {
     if (multiple && renderTags) {
-      return renderTags(filteredOptions);
+      return renderTags(groupedOptions);
     }
 
     return (
       multiple &&
       !renderTags &&
-      filteredOptions.map((option) => (
+      groupedOptions.map((option: Value) => (
         <div
           role="button"
+          data-tag-index={value.indexOf(option)}
+          onClick={handleTagDelete(value.indexOf(option))}
           className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
         >
           <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-            {option.label}
+            {getOptionLabel(option) as string}
           </span>
           {!readOnly && (
             <svg
-              // onClick={(e) => handleOptionSelect(e, option)}
               className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
               viewBox="0 0 24 24"
               focusable="false"
@@ -1448,11 +1436,13 @@ export const Lookup = <
   };
 
   const renderOption = (option: Value, index: number): React.JSX.Element => {
-    // const { image, disabled } = option;
-
     const selected = (multiple ? value : [value]).some(
       (value2) => value2 != null && isOptionEqualToValue(option, value2)
     );
+
+    const disabled = getOptionDisabled ? getOptionDisabled(option) : false;
+
+    const image = getOptionImage ? getOptionImage(option) : null;
 
     // TODO: add check if group is over or under
     const optionClassNames = clsx("flex items-center last:rounded-b-lg", {
@@ -1468,19 +1458,20 @@ export const Lookup = <
         key={`option-${index}`}
         onMouseMove={handleOptionMouseMove}
         onClick={handleOptionClick}
+        onTouchStart={handleOptionTouchStart}
         aria-selected={selected}
         aria-disabled={disabled}
         className={optionClassNames}
         tabIndex={-1}
         role="option"
       >
-        {/* {"image" in option && (
+        {image && (
           <img
             className="mr-2 h-6 w-6"
             src={image}
-            alt={getOptionLabel(option)}
+            alt={getOptionLabel(option) as string}
           />
-        )} */}
+        )}
 
         <span className="grow">{getOptionLabel(option) as string}</span>
 
@@ -1551,7 +1542,6 @@ export const Lookup = <
       )}
       onKeyDown={handleKeyDown}
       onMouseDown={handleMouseDown}
-      ref={anchorEl}
       aria-owns={listboxAvailable ? `${id}-listbox` : null}
       onClick={(event) => {
         if (handleClick) {
@@ -1572,6 +1562,7 @@ export const Lookup = <
             "mt-0 mb-0": margin == "none",
           }
         )}
+        ref={anchorEl}
       >
         <label
           className={clsx(
@@ -1630,7 +1621,7 @@ export const Lookup = <
           />
 
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
-            {!disableClearable && filteredOptions.length > 0 && (
+            {!disableClearable && (value !== null || value?.length > 0) && (
               <button
                 type="button"
                 onClick={handleClear}
@@ -1655,8 +1646,8 @@ export const Lookup = <
                 className={clsx(
                   "h-4 w-4 transition-transform duration-75 will-change-transform",
                   {
-                    "shrink-0": !open,
-                    "shrink-0 rotate-180": open,
+                    "shrink-0": !popupOpen,
+                    "shrink-0 rotate-180": popupOpen,
                   }
                 )}
                 fill="none"
@@ -1720,7 +1711,17 @@ export const Lookup = <
 
       {/* Dropdown Menu */}
       <Popper anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>
-        <ClickAwayListener onClickAway={handleClose}>
+        <ClickAwayListener
+          onClickAway={(e) => {
+            if (
+              anchorEl?.current?.parentElement &&
+              anchorEl.current.parentElement.contains(e.target as HTMLElement)
+            ) {
+              return;
+            }
+            handleClose(e, "escape")
+          }}
+        >
           <div
             role="menu"
             className={clsx(
@@ -1780,10 +1781,6 @@ type OldSelectProps = {
   noOptionsText?: React.ReactNode;
   helperText?: string;
   disableClearable?: boolean;
-  /**
-   * TODO: implement
-   */
-  enforceOption?: boolean;
   readOnly?: boolean;
   open?: boolean;
   filterlookupOptions?: boolean;
@@ -1792,11 +1789,8 @@ type OldSelectProps = {
   required?: boolean;
   selectOnFocus?: boolean;
   closeOnSelect?: boolean;
-  autoHighlight?: boolean;
-  autoComplete?: boolean;
   clearOnEscape?: boolean;
   openOnFocus?: boolean;
-  freeSolo?: boolean;
   autoSelect?: boolean;
   inputValue?: string;
   componentName?: string;
@@ -1862,7 +1856,6 @@ export const Lookup2 = ({
   const [searchTerm, setSearchTerm] = useState<string>(inputValueProp || "");
   const [internalValue, setInternalValue] = useState<string>("");
   const [lookupOptions, setLookupOptions] = useState<SelectOption[]>(options);
-  const listboxRef = useRef(null);
 
   let getOptionLabel = getOptionLabelProp;
 
@@ -1894,8 +1887,8 @@ export const Lookup2 = ({
           (filterFn
             ? filterFn(option, searchTerm)
             : getOptionLabel(option)
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()));
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()));
 
         return {
           ...option,
@@ -1914,13 +1907,13 @@ export const Lookup2 = ({
       ? Array.isArray(valueProp) && multiple
         ? valueProp.map((s) => s.value)
         : !Array.isArray(valueProp)
-        ? [valueProp.value]
-        : []
+          ? [valueProp.value]
+          : []
       : Array.isArray(defaultValue) && multiple
-      ? defaultValue.map(
+        ? defaultValue.map(
           (dv) => options.find((o) => o.value === dv) ?? { valueProp: "" }
         )
-      : [defaultValue];
+        : [defaultValue];
 
     const selected: SelectOption[] = options.map((option) => {
       // const isSelected = valuesToSelect.includes(option.valueProp);
@@ -1956,13 +1949,13 @@ export const Lookup2 = ({
       multiple
         ? ""
         : options?.find((e) =>
-            isOptionEqualToValue(
-              e,
-              options.find((o) => o.value === valuesToSelect[0]) ?? {
-                value: "",
-              }
-            )
-          )?.label ?? ""
+          isOptionEqualToValue(
+            e,
+            options.find((o) => o.value === valuesToSelect[0]) ?? {
+              value: "",
+            }
+          )
+        )?.label ?? ""
     );
   }, [defaultValue, valueProp, multiple, options]);
 
@@ -2010,8 +2003,8 @@ export const Lookup2 = ({
         field.onChange(
           multiple
             ? updateOptions
-                .filter((f) => f != null && f.isSelected)
-                .map((o) => o?.value)
+              .filter((f) => f != null && f.isSelected)
+              .map((o) => o?.value)
             : option.value
         );
       }
@@ -2019,10 +2012,10 @@ export const Lookup2 = ({
       multiple
         ? onSelect?.(updateOptions)
         : onSelect?.(
-            Array.isArray(updateOptions.find((o) => o.isSelected))
-              ? updateOptions.find((o) => o.isSelected)[0]
-              : updateOptions.find((o) => o.isSelected) ?? undefined
-          );
+          Array.isArray(updateOptions.find((o) => o.isSelected))
+            ? updateOptions.find((o) => o.isSelected)[0]
+            : updateOptions.find((o) => o.isSelected) ?? undefined
+        );
 
       setLookupOptions(updateOptions);
       setSearchTerm("");
@@ -2254,7 +2247,7 @@ export const Lookup2 = ({
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 isOpen ||
                 lookupOptions.filter((o) => o != null && o.isSelected).length >
-                  0 ||
+                0 ||
                 searchTerm.length > 0 ||
                 internalValue.length > 0,
               "text-sm": size == "small",
@@ -2274,11 +2267,11 @@ export const Lookup2 = ({
               "pr-10":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.isSelected).length ==
-                  0,
+                0,
               "pr-12":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.isSelected).length >
-                  0,
+                0,
               "text-sm": size == "small",
               "text-base": size == "medium",
             }
@@ -2312,7 +2305,7 @@ export const Lookup2 = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               lookupOptions.filter((d) => d != null && d.isSelected).length >
-                0 && (
+              0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}
@@ -2424,7 +2417,6 @@ export const Lookup2 = ({
             <ul
               className="relative max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
               aria-labelledby="dropdownButton"
-              ref={listboxRef}
               onMouseDown={(event) => {
                 event.preventDefault();
               }}

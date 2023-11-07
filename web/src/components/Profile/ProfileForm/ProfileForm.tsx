@@ -107,7 +107,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                           new Date(props.profile.created_at).getFullYear() +
                           (new Date().getMonth() -
                             new Date(props.profile.created_at).getMonth()) /
-                            12
+                          12
                         ).toPrecision(1)}
                       </span>
                       <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -192,18 +192,14 @@ const ProfileForm = (props: ProfileFormProps) => {
                 {currentUser.permissions.some((p: permission) =>
                   p.includes("user_update")
                 ) && (
-                  <Lookup
-                    label="Role"
-                    name="role_id"
-                    defaultValue={props.profile?.role_id}
-                    options={
-                      props?.roles.map((r) => ({
-                        label: r.name,
-                        value: r.id,
-                      })) || []
-                    }
-                  />
-                )}
+                    <Lookup
+                      label="Role"
+                      name="role_id"
+                      defaultValue={props.profile?.role_id}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      options={props?.roles || []}
+                    />
+                  )}
               </div>
             </Form>
           </div>

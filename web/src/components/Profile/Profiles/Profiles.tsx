@@ -7,7 +7,6 @@ import { useAuth } from "src/auth";
 
 import { QUERY } from "src/components/Profile/ProfilesCell";
 import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
-import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import Popper from "src/components/Util/Popper/Popper";
 import Table from "src/components/Util/Table/Table";
 import Tooltip from "src/components/Util/Tooltip/Tooltip";
@@ -109,9 +108,9 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                 // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
                 src={
                   mapImages[
-                    Object.keys(mapImages)[
-                      Math.floor(Math.random() * Object.keys(mapImages).length)
-                    ]
+                  Object.keys(mapImages)[
+                  Math.floor(Math.random() * Object.keys(mapImages).length)
+                  ]
                   ]
                 }
                 alt={`${profile.full_name} bg-image`}
@@ -180,11 +179,11 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                         // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
                         src={
                           mapImages[
-                            Object.keys(mapImages)[
-                              Math.floor(
-                                Math.random() * Object.keys(mapImages).length
-                              )
-                            ]
+                          Object.keys(mapImages)[
+                          Math.floor(
+                            Math.random() * Object.keys(mapImages).length
+                          )
+                          ]
                           ]
                         }
                         alt={`${row.full_name} bg-image`}

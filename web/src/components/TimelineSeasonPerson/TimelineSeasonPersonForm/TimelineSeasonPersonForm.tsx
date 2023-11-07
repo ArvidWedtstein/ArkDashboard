@@ -49,24 +49,14 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
 
         <div className="flex">
           <div className="flex-1">
-            <Label
-              name="user_id"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              User
-            </Label>
-
             <Lookup
               name="user_id"
-              options={props?.profiles.map((user) => ({
-                label: user.username,
-                value: user.id,
-              }))}
+              label="User"
+              options={props?.profiles ?? []}
+              getOptionLabel={(option) => option.username}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               defaultValue={props.timelineSeasonPerson?.user_id}
             />
-
-            <FieldError name="user_id" className="rw-field-error" />
           </div>
           <div className="flex-1">
             <Label

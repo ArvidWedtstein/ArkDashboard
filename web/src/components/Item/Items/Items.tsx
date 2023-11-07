@@ -15,12 +15,9 @@ import {
 
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import ArkCard from "src/components/Util/ArkCard/ArkCard";
 import {
   Card,
   CardActionArea,
-  CardActions,
-  CardContent,
   CardHeader,
   CardMedia,
 } from "src/components/Util/Card/Card";
@@ -165,6 +162,8 @@ const ItemsList = ({
                 { value: "fertilizer", label: "Fertilizer" },
                 { value: "other", label: "Other" },
               ]}
+              isOptionEqualToValue={(option, value) => option.value === value.value}
+              getOptionLabel={(option) => option.label}
               defaultValue={category}
               disabled={loading}
               InputProps={{
@@ -173,8 +172,8 @@ const ItemsList = ({
                   marginRight: "-0.5px",
                 },
               }}
-              onSelect={(e) => {
-                if (!e) return setTypes([]);
+              onChange={(_, e: { value: string, label: string }) => {
+                if (!e || !("value" in e)) return setTypes([]);
                 switch (e.value.toString()) {
                   case "structure":
                     setTypes([
@@ -267,12 +266,14 @@ const ItemsList = ({
               <Lookup
                 name="type"
                 margin="none"
-                value={selectedType}
+                value={{ value: selectedType, label: selectedType }}
                 options={types.map((type) => ({
                   value: type.toLowerCase().toString(),
                   label: type,
                 }))}
-                onSelect={(e) => {
+                getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                onChange={(_, e) => {
                   if (!e) return selectType("");
                   selectType(e.value.toString());
                 }}
