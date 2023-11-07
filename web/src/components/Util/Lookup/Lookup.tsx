@@ -358,8 +358,8 @@ export const Lookup = <
         .filter((option) =>
           defaultValue.some((value) => value === option[valueKey])
         )
-        .map((o) => o[valueKey])
-      : options.find((option) => option[valueKey] === defaultValue) || null,
+        .map((o) => o[valueKey]) as Value[]
+      : options.find((option) => option[valueKey] === defaultValue) as Value || null,
     name: componentName,
   });
 
@@ -374,7 +374,7 @@ export const Lookup = <
 
   const resetInputValue = useCallback(
     (event, newValue) => {
-      const isOptionselected = multiple
+      const isOptionselected = multiple && Array.isArray(value)
         ? value.length < newValue.length
         : newValue !== null;
       if (isOptionselected && !clearOnBlur) {
@@ -418,7 +418,7 @@ export const Lookup = <
   const [inputPristine, setInputPristine] = useState(true);
 
   const inputValueIsSelectedValue =
-    !multiple && value != null && inputValue === getOptionLabel(value);
+    !multiple && value != null && inputValue === getOptionLabel(value as Value) as string;
 
   const popupOpen = open && !readOnly;
 
@@ -427,7 +427,7 @@ export const Lookup = <
       options.filter((option) => {
         if (
           filterSelectedOptions &&
-          (multiple ? value : [value]).some(
+          (multiple ? value as Value[] : [value as Value]).some(
             (value2) =>
               value2 !== null && isOptionEqualToValue(option, value2)
           )
