@@ -12,7 +12,6 @@ import {
   toLocaleISODate,
   getISOWeek,
   groupBy,
-  average,
 } from "src/lib/formatters";
 
 import type { FindTimelineSeasons } from "types/graphql";
@@ -31,6 +30,20 @@ const GanttChart = <T extends Record<string, unknown>>({
 }) => {
   const [ganttData, setGanttData] = useState(groupBy(data, group.toString()));
   const [viewType, setViewType] = useState<ViewType>("week");
+
+  // generate light colors for each group as hex
+  const colors = Object.keys(ganttData).reduce((acc, cur, i) => {
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    const hexOpacity = Math.floor((50 / 100) * 255).toString(16).padStart(2, '0');
+    return {
+      ...acc,
+      [cur]: [
+        `#${randomColor}${hexOpacity}`,
+        `#${(parseInt(randomColor, 16) + Math.floor(Math.random() * 128)).toString(16)}${hexOpacity}`
+      ],
+    };
+  }, {});
+
 
   const [dateInfo, setDateInfo] = useState(() => ({
     year: new Date().getFullYear(),
@@ -76,6 +89,7 @@ const GanttChart = <T extends Record<string, unknown>>({
     season_end_date: string;
     cluster: string;
   }
+
 
   function findMaxGroupLengthForYear(
     data: Record<string, TimelineSeason[]>,
@@ -138,12 +152,6 @@ const GanttChart = <T extends Record<string, unknown>>({
     return maxGroupLength;
   }
 
-  console.log(
-    findMaxGroupLengthForYear(
-      ganttData as unknown as Record<string, TimelineSeason[]>,
-      2021
-    )
-  );
 
   const calendar = Array.from({ length: 12 }, (_, monthIndex) => {
     const firstDayOfMonth = new Date(dateInfo.year, monthIndex, 1);
@@ -242,6 +250,7 @@ const GanttChart = <T extends Record<string, unknown>>({
           size="small"
           margin="none"
           defaultValue={"week"}
+          disableClearable
           isOptionEqualToValue={(option, value) => option.value === value.value}
           multiple={false}
           options={[
@@ -250,29 +259,28 @@ const GanttChart = <T extends Record<string, unknown>>({
             { label: "Month View", value: "month" },
             { label: "Year View", value: "year" },
           ]}
-          onSelect={(value) => {
+          onChange={(_, { value }) => {
             if (value) {
-              setViewType(value.value.toString() as ViewType);
-            }
-          }}
-        />
-        <Lookup2
-          size="small"
-          margin="none"
-          // disableClearable
-          // readOnly
-          defaultValue={"week"}
-          multiple={false}
-          options={[
-            { label: "Day View", value: "day" },
-            { label: "Week View", value: "week" },
-            { label: "Month View", value: "month" },
-            { label: "Year View", value: "year" },
-          ]}
-          onSelect={(value) => {
-            console.log(value);
-            if (value) {
-              setViewType(value.value.toString() as ViewType);
+              setViewType(value as ViewType);
+
+              setDateInfo({
+                ...dateInfo,
+                dateText:
+                  value === "year"
+                    ? dateInfo.year.toString()
+                    : value === "month"
+                      ? new Date(dateInfo.year, dateInfo.month, dateInfo.day).toLocaleDateString(navigator && navigator.language, {
+                        month: "short",
+                        year: "numeric",
+                      })
+                      : value === "week"
+                        ? `Week ${dateInfo.week}`
+                        : new Date(dateInfo.year, dateInfo.month, dateInfo.day).toLocaleDateString(navigator && navigator.language, {
+                          month: "2-digit",
+                          day: "2-digit",
+                          year: "2-digit",
+                        }),
+              });
             }
           }}
         />
@@ -388,70 +396,66 @@ const GanttChart = <T extends Record<string, unknown>>({
                                         }
                                       )}
 
-                                    {(viewType === "week" ||
-                                      viewType == "month" ||
-                                      viewType === "year" ||
-                                      viewType === "day") && (
-                                        <span
-                                          className={clsx(
-                                            "flex items-center justify-center",
-                                            {
-                                              "bg-pea-500 h-8 w-8 rounded-full text-white":
-                                                (toLocaleISODate(date) ===
-                                                  toLocaleISODate(new Date()) &&
-                                                  (viewType === "week" ||
-                                                    viewType === "month")) ||
-                                                (toLocalPeriod(date) ===
-                                                  toLocalPeriod(new Date()) &&
-                                                  viewType === "year"),
-                                              "bg-pea-500 rounded-full px-1 text-white":
-                                                viewType === "day" &&
-                                                hour.toLocaleString(
-                                                  navigator && navigator.language,
-                                                  {
-                                                    hour: "2-digit",
-                                                    hourCycle: "h23",
-                                                  }
-                                                ) ===
-                                                new Date().toLocaleString(
-                                                  navigator &&
-                                                  navigator.language,
-                                                  {
-                                                    hour: "2-digit",
-                                                    hourCycle: "h23",
-                                                  }
-                                                ) &&
-                                                toLocaleISODate(date) ===
-                                                toLocaleISODate(new Date()),
-                                              "font-semibold":
-                                                viewType === "week" ||
-                                                viewType === "month",
-                                              "ml-1.5": viewType === "week",
-                                            }
-                                          )}
-                                        >
-                                          {viewType === "year"
-                                            ? date.toLocaleDateString(
+
+                                    <span
+                                      className={clsx(
+                                        "flex items-center justify-center",
+                                        {
+                                          "bg-pea-500 h-8 w-8 rounded-full text-white":
+                                            (toLocaleISODate(date) ===
+                                              toLocaleISODate(new Date()) &&
+                                              (viewType === "week" ||
+                                                viewType === "month")) ||
+                                            (toLocalPeriod(date) ===
+                                              toLocalPeriod(new Date()) &&
+                                              viewType === "year"),
+                                          "bg-pea-500 rounded-full px-1 text-white":
+                                            viewType === "day" &&
+                                            hour.toLocaleString(
                                               navigator && navigator.language,
                                               {
-                                                month: "short",
+                                                hour: "2-digit",
+                                                hourCycle: "h23",
                                               }
-                                            )
-                                            : viewType === "day"
-                                              ? hour.toLocaleString(
-                                                navigator && navigator.language,
-                                                {
-                                                  hour: "2-digit",
-                                                }
-                                              )
-                                              : date.toLocaleDateString(
-                                                navigator && navigator.language,
-                                                {
-                                                  day: "numeric",
-                                                }
-                                              )}
-                                        </span>
+                                            ) ===
+                                            new Date().toLocaleString(
+                                              navigator &&
+                                              navigator.language,
+                                              {
+                                                hour: "2-digit",
+                                                hourCycle: "h23",
+                                              }
+                                            ) &&
+                                            toLocaleISODate(date) ===
+                                            toLocaleISODate(new Date()),
+                                          "font-semibold":
+                                            viewType === "week" ||
+                                            viewType === "month",
+                                          "ml-1.5": viewType === "week",
+                                        }
                                       )}
+                                    >
+                                      {viewType === "year"
+                                        ? date.toLocaleDateString(
+                                          navigator && navigator.language,
+                                          {
+                                            month: "short",
+                                          }
+                                        )
+                                        : viewType === "day"
+                                          ? hour.toLocaleString(
+                                            navigator && navigator.language,
+                                            {
+                                              hour: "2-digit",
+                                            }
+                                          )
+                                          : date.toLocaleDateString(
+                                            navigator && navigator.language,
+                                            {
+                                              day: "numeric",
+                                            }
+                                          )}
+                                    </span>
                                   </span>
                                 </div>
                               );
@@ -473,7 +477,10 @@ const GanttChart = <T extends Record<string, unknown>>({
               aria-label="Grid Rows"
               className="col-start-1 col-end-2 row-start-1 grid divide-y divide-black/20 text-black dark:divide-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${Object.keys(ganttData).length * 2
+                gridTemplateRows: `repeat(${Object.keys(ganttData).length * findMaxGroupLengthForYear(
+                  ganttData as unknown as Record<string, TimelineSeason[]>,
+                  dateInfo.year
+                )
                   }, minmax(3.5rem, 1fr))`, // TODO: calculate this based on the number of items in the group
               }}
               role="rowgroup"
@@ -521,13 +528,10 @@ const GanttChart = <T extends Record<string, unknown>>({
               aria-label="Chart elements"
               className="col-start-1 col-end-2 row-start-1 -mr-px grid border-l border-r border-b border-black/20 dark:border-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `1.75rem repeat(${(Object.keys(ganttData).length *
-                  Object.entries(ganttData).reduce(
-                    (a, [_, v]) => a + v.length,
-                    0
-                  )) /
-                  Object.keys(ganttData).length
-                  }, minmax(0px, 1fr)) auto`, // TODO: calculate this based on the number of items in the group
+                gridTemplateRows: `1.75rem repeat(${Object.keys(ganttData).length * findMaxGroupLengthForYear(
+                  ganttData as unknown as Record<string, TimelineSeason[]>,
+                  dateInfo.year
+                )}, minmax(0px, 1fr)) auto`, // TODO: calculate this based on the number of items in the group
                 gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
@@ -586,53 +590,79 @@ const GanttChart = <T extends Record<string, unknown>>({
                   }),
                 }))
                 .map((data, groupIndex) => {
-                  return data.data.map((item, i) => (
-                    <li
-                      key={`group-${groupIndex}-item-${i}`}
-                      className="relative mt-px flex"
-                      aria-label={`${data.label}`}
-                      style={{
-                        gridRow: `${groupIndex * 2 + 2 + i} / ${groupIndex * 2 + 3 + i
-                          }`, // TODO: calculate this based on the number of items in the group
-                        gridColumnStart:
-                          viewType === "day"
-                            ? new Date(
-                              item[dateStartKey].toString()
-                            ).getHours() + 1
-                            : viewType === "week"
-                              ? new Date(item[dateStartKey].toString()).getDay()
-                              : viewType === "month"
-                                ? new Date(item[dateStartKey].toString()).getDate()
-                                : viewType === "year"
-                                  ? new Date(
-                                    item[dateStartKey].toString()
-                                  ).getMonth() + 1
-                                  : 1,
-                        gridColumnEnd:
-                          viewType === "day"
-                            ? new Date(item[dateEndKey].toString()).getHours() +
-                            1
-                            : viewType === "week"
-                              ? new Date(item[dateEndKey].toString()).getDay()
-                              : viewType === "month"
-                                ? new Date(item[dateEndKey].toString()).getDate()
-                                : viewType === "year"
-                                  ? new Date(item[dateEndKey].toString()).getMonth() +
-                                  1
-                                  : 7,
-                      }}
-                    >
-                      <p className="bg-pea-400/60 absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2">
-                        {item[group].toString()}
-                      </p>
-                    </li>
-                  ));
+                  console.log(data, groupIndex)
+
+                  return data.data.map((item, i) => {
+                    const overlappingItems = data.data.filter((otherItem) => {
+                      return (
+                        (new Date(otherItem[dateStartKey].toString()) <= new Date(item[dateEndKey].toString())) &&
+                        (new Date(otherItem[dateEndKey].toString()) >= new Date(item[dateStartKey].toString()))
+                      );
+                    });
+                    const extra = overlappingItems.length > 1 ? overlappingItems.indexOf(item) : 0;
+
+                    return (
+                      <li
+                        key={`group-${groupIndex}-item-${i}`}
+                        className="relative mt-px flex"
+                        aria-label={`${data.label}-${groupIndex}-${data.label}`}
+                        style={{
+                          // backgroundColor: colors[data.label],
+                          gridRow: `${((groupIndex * findMaxGroupLengthForYear(
+                            ganttData as unknown as Record<string, TimelineSeason[]>,
+                            dateInfo.year
+                          )) + 2 + extra)} / span 1`,// TODO: calculate this based on the number of items in the group
+                          gridColumnStart:
+                            viewType === "day"
+                              ? new Date(
+                                item[dateStartKey].toString()
+                              ).getHours() + 1
+                              : viewType === "week"
+                                ? new Date(item[dateStartKey].toString()).getDay()
+                                : viewType === "month"
+                                  ? new Date(item[dateStartKey].toString()).getDate()
+                                  : viewType === "year"
+                                    ? new Date(
+                                      item[dateStartKey].toString()
+                                    ).getFullYear() < dateInfo.year ? 1 : new Date(
+                                      item[dateStartKey].toString()
+                                    ).getMonth() + 1
+                                    : 1,
+                          gridColumnEnd:
+                            (viewType === "day"
+                              ? new Date(item[dateEndKey].toString()).getHours() +
+                              1
+                              : viewType === "week"
+                                ? new Date(item[dateEndKey].toString()).getDay()
+                                : viewType === "month"
+                                  ? new Date(item[dateEndKey].toString()).getDate()
+                                  : viewType === "year"
+                                    ? new Date(item[dateEndKey].toString()).getMonth() +
+                                    1
+                                    : 7) + 1,
+                        }}
+                      >
+                        <p
+                          className={clsx("absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-1 text-xs", // dark:bg-sky-600/50 bg-blue-400/20 border border-blue-700/10 dark:border-sky-500
+                          )}
+                          style={{
+                            background: `linear-gradient(to right, ${colors[data.label].join(' 30%, ')})`,
+                            border: `1px solid ${colors[data.label][0].substring(0, 7)}`,
+                          }}
+                          aria-label={colors[data.label].join(', ')}
+                        >
+                          <span>{item["tribe_name"].toString()}</span>
+                          {new Intl.DateTimeFormat(navigator && navigator.language, { dateStyle: 'short' }).formatRange(new Date(item[dateStartKey].toString()), new Date(item[dateEndKey].toString()))}
+                        </p>
+                      </li>
+                    )
+                  });
                 })}
             </ol>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

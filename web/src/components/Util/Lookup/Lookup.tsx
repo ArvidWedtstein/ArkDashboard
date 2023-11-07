@@ -3,6 +3,8 @@ import {
   ChangeEvent,
   KeyboardEvent,
   MouseEvent,
+  MouseEventHandler,
+  ReactNode,
   SyntheticEvent,
   useCallback,
   useEffect,
@@ -14,24 +16,22 @@ import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import clsx from "clsx";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
-import useEventCallback, { useControlled } from "src/lib/formatters";
+import { useControlled, usePreviousProps, useEventCallback } from "src/lib/formatters";
+import Ripple from "../Ripple/Ripple";
 
 function stripDiacritics(string) {
   return typeof string.normalize !== "undefined"
     ? string.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     : string;
 }
-const defaultIsActiveElementInListbox = (listboxRef) =>
-  listboxRef.current !== null &&
-  listboxRef.current.parentElement?.contains(document.activeElement);
 
-function createFilterOptions(
+function createFilterOptions<Value>(
   config: {
     ignoreAccents?: boolean;
     ignoreCase?: boolean;
     limit?: number;
     matchFrom?: "any" | "start";
-    stringify?: (option: SelectOption) => string;
+    stringify?: (option: Value) => string;
     trim?: boolean;
   } = {}
 ) {
@@ -133,6 +133,7 @@ interface FilterOptionsState<Value> {
   inputValue: string;
   getOptionLabel: (option: Value) => string;
 }
+
 export type LookupInputChangeReason = "input" | "reset" | "clear";
 export type LookupValue<Value, Multiple, DisableClearable> =
   Multiple extends true
@@ -141,6 +142,12 @@ export type LookupValue<Value, Multiple, DisableClearable> =
   ? NonNullable<Value | never>
   : Value | null | never;
 
+interface LookupGroupedOption<Value = string> {
+  key: number;
+  index: number;
+  group: string;
+  options: Value[];
+}
 // TODO: comment with default value
 type SelectProps<
   Value,
@@ -209,6 +216,10 @@ type SelectProps<
   };
   placeholder?: string;
   /**
+   * @default -1
+   */
+  limitTags?: number;
+  /**
    * Callback fired when the value changes.
    *
    * @param {React.SyntheticEvent} event The event source of the callback.
@@ -224,7 +235,16 @@ type SelectProps<
   ) => void;
   onSelect?: (value: Value) => void;
   groupBy?: (option: Value) => string;
-  renderTags?: (lookupOptions: Readonly<Value[]>) => React.ReactNode;
+  renderTags?: (
+    value: Value[],
+    getTagProps: ({ index }: { index: number }) => {
+      key: number;
+      disabled: boolean;
+      'data-tag-index'?: number;
+      tabIndex?: number;
+      onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    }
+  ) => React.ReactNode;
   onInputChange?: (
     event: ChangeEvent<HTMLInputElement> | React.SyntheticEvent,
     value: string,
@@ -290,9 +310,10 @@ export const Lookup = <
     disableClearable = false,
     closeOnSelect = true,
     filterSelectedOptions = false,
+    limitTags = -1,
     InputProps,
     getOptionDisabled,
-    filterOptions = createFilterOptions(),
+    filterOptions = createFilterOptions<Value>(),
     groupBy,
     renderTags,
     onSelect,
@@ -333,14 +354,6 @@ export const Lookup = <
 
   const id = useId();
 
-  const usePreviousProps = <T extends {}>(value: T) => {
-    const ref = useRef<T | {}>({});
-    useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current as Partial<T>;
-  };
-
   const ignoreFocus = useRef(false);
   const firstFocus = useRef(true);
   const inputRef = useRef(null);
@@ -353,13 +366,13 @@ export const Lookup = <
 
   const [value, setValueState] = useControlled({
     controlled: valueProp,
-    default: Array.isArray(defaultValue)
+    default: multiple && Array.isArray(defaultValue)
       ? options
         .filter((option) =>
           defaultValue.some((value) => value === option[valueKey])
         )
-        .map((o) => o[valueKey]) as Value[]
-      : options.find((option) => option[valueKey] === defaultValue) as Value || null,
+      // .map((o) => o[valueKey] as Value)
+      : options.find((option) => option[valueKey] === defaultValue) || null,
     name: componentName,
   });
 
@@ -418,16 +431,16 @@ export const Lookup = <
   const [inputPristine, setInputPristine] = useState(true);
 
   const inputValueIsSelectedValue =
-    !multiple && value != null && inputValue === getOptionLabel(value as Value) as string;
+    !multiple && !Array.isArray(value) && value != null && inputValue === getOptionLabel(value) as string;
 
   const popupOpen = open && !readOnly;
 
-  const filteredOptions = open
+  const filteredOptions: Value[] = open
     ? filterOptions(
       options.filter((option) => {
         if (
           filterSelectedOptions &&
-          (multiple ? value as Value[] : [value as Value]).some(
+          (multiple && Array.isArray(value) ? value : [value as Value]).some(
             (value2) =>
               value2 !== null && isOptionEqualToValue(option, value2)
           )
@@ -465,9 +478,9 @@ export const Lookup = <
 
   if (process.env.NODE_ENV !== "production") {
     if (value !== null && options.length > 0) {
-      const missingValue = (multiple ? value : [value]).filter(
+      const missingValue = (multiple && Array.isArray(value) ? value : [value]).filter(
         (value2) =>
-          !options.some((option) => isOptionEqualToValue(option, value2))
+          !options.some((option) => isOptionEqualToValue(option, value2 as Value))
       );
 
       if (missingValue.length > 0) {
@@ -497,7 +510,7 @@ export const Lookup = <
 
   // Ensure the focusedTag is never inconsistent
   useEffect(() => {
-    if (multiple && focusedTag > value.length - 1) {
+    if (multiple && Array.isArray(value) && focusedTag > value.length - 1) {
       setFocusedTag(-1);
       focusTag(-1);
     }
@@ -742,7 +755,7 @@ export const Lookup = <
       previousProps.filteredOptions &&
       previousProps.filteredOptions.length !== filteredOptions.length &&
       previousProps.inputValue === inputValue &&
-      (multiple
+      (multiple && Array.isArray(value) && Array.isArray(previousProps.value)
         ? value.length === previousProps.value.length &&
         previousProps.value.every(
           (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
@@ -795,6 +808,7 @@ export const Lookup = <
 
       if (
         multiple &&
+        Array.isArray(value) &&
         currentOption &&
         value.findIndex((val) => isOptionEqualToValue(currentOption, val)) !==
         -1
@@ -909,7 +923,7 @@ export const Lookup = <
     reason: LookupChangeReason = "clear",
     details = {}
   ) => {
-    if (multiple) {
+    if (multiple && Array.isArray(value)) {
       if (
         value.length === newValue.length &&
         value.every((val, i) => val === newValue[i])
@@ -919,20 +933,22 @@ export const Lookup = <
     } else if (value === newValue) {
       return;
     }
+    if (!!name) {
+      field.onChange(
+        multiple
+          ? Array.isArray(newValue)
+            ? newValue.map((f) => f[valueKey])
+            : newValue
+          : newValue
+      );
+    }
 
     if (onSelect) {
-      if (!!name) {
-        field.onChange(
-          multiple
-            ? Array.isArray(newValue)
-              ? newValue.map((f) => f[valueKey])
-              : newValue
-            : newValue
-        );
-      }
-
       onSelect(newValue);
-      onChange(event, newValue, reason, details as LookupChangeDetails<Value>);
+    }
+
+    if (onChange) {
+      onChange?.(event, newValue, reason, details as LookupChangeDetails<Value>);
     }
 
     setValueState(newValue);
@@ -999,7 +1015,7 @@ export const Lookup = <
 
     while (true) {
       if (
-        (direction === "next" && nextFocus === value.length) ||
+        (direction === "next" && nextFocus === (Array.isArray(value) ? value : [value]).length) ||
         (direction === "previous" && nextFocus === -1)
       ) {
         return -1;
@@ -1023,7 +1039,7 @@ export const Lookup = <
   }
 
   const handleFocusTag = (event, direction: "previous" | "next") => {
-    if (!multiple) {
+    if (!multiple || !Array.isArray(value)) {
       return;
     }
 
@@ -1188,7 +1204,7 @@ export const Lookup = <
           handleClose(event, "escape");
         } else if (
           clearOnEscape &&
-          (inputValue !== "" || (multiple && value.length > 0))
+          (inputValue !== "" || (multiple && Array.isArray(value) && value.length > 0))
         ) {
           // Avoid Opera to exit fullscreen mode.
           event.preventDefault();
@@ -1198,7 +1214,7 @@ export const Lookup = <
         }
         break;
       case "Backspace":
-        if (multiple && !readOnly && inputValue === "" && value.length > 0) {
+        if (multiple && Array.isArray(value) && !readOnly && inputValue === "" && value.length > 0) {
           const index = focusedTag === -1 ? value.length - 1 : focusedTag;
           const newValue = value.slice();
           newValue.splice(index, 1);
@@ -1210,6 +1226,7 @@ export const Lookup = <
       case "Delete":
         if (
           multiple &&
+          Array.isArray(value) &&
           !readOnly &&
           inputValue === "" &&
           value.length > 0 &&
@@ -1310,6 +1327,10 @@ export const Lookup = <
   };
 
   const handleTagDelete = (index: number) => (event: MouseEvent) => {
+    if (!multiple || !Array.isArray(value)) {
+      return;
+    }
+
     const newvalue = value.slice();
     newvalue.splice(index, 1);
     handleValue(event, newvalue, "removeOption", {
@@ -1359,11 +1380,15 @@ export const Lookup = <
   };
 
   let dirty = false && inputValue.length > 0;
-  dirty = dirty || (multiple ? value.length > 0 : value !== null);
+  dirty = dirty || (multiple && Array.isArray(value) ? value.length > 0 : value !== null);
 
-  let groupedOptions = filteredOptions;
+  let groupedOptions: Value[] | {
+    key: number;
+    index: number;
+    group: string;
+    options: Value[];
+  }[] = filteredOptions;
   if (groupBy) {
-    // used to keep track of key and indexes in the result array
     const indexBy = new Map();
     let warn = false;
 
@@ -1402,42 +1427,76 @@ export const Lookup = <
 
 
   const renderChips = () => {
-    if (multiple && renderTags) {
-      return renderTags(groupedOptions);
+    if (!(multiple && Array.isArray(value) && (value as Array<unknown>).length > 0)) {
+      return;
     }
 
-    return (
-      multiple &&
-      !renderTags &&
-      groupedOptions.map((option: Value) => (
-        <div
-          role="button"
-          data-tag-index={value.indexOf(option)}
-          onClick={handleTagDelete(value.indexOf(option))}
-          className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-        >
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-            {getOptionLabel(option) as string}
-          </span>
-          {!readOnly && (
-            <svg
-              className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-              viewBox="0 0 24 24"
-              focusable="false"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-            </svg>
-          )}
-        </div>
-      ))
-    );
+    let selectedOptions;
+
+    const getCustomizedTagProps: ({ index }: { index: number }) => {
+      key: number;
+      disabled: boolean;
+      'data-tag-index': number;
+      tabIndex: number;
+      onClick: MouseEventHandler;
+    } = ({ index }) => {
+      const disabled = getOptionDisabled ? getOptionDisabled(value[index]) : false;
+      return {
+        key: index,
+        tabIndex: -1,
+        'data-tag-index': index,
+        disabled,
+        ...(!readOnly && { onClick: handleTagDelete(index) })
+      }
+    }
+
+    if (renderTags) {
+      selectedOptions = renderTags(value, getCustomizedTagProps);
+    } else {
+      selectedOptions = (value as Array<unknown>).map((option, index) => {
+        return (
+          <div
+            key={index}
+            role="button"
+            data-tag-index={index}
+            className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+          >
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+              {getOptionLabel(option as Value) as string}
+            </span>
+            {!readOnly && (
+              <svg
+                className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                viewBox="0 0 24 24"
+                focusable="false"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                {...getCustomizedTagProps({ index })}
+              >
+                <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+              </svg>
+            )}
+          </div>
+        )
+      })
+    }
+
+    if (limitTags > -1 && Array.isArray(selectedOptions)) {
+      const more = selectedOptions.length - limitTags;
+      if (!focused && more > 0) {
+        selectedOptions = selectedOptions.slice(0, limitTags);
+        selectedOptions.push(
+          <span className="max-w-[calc(100%-6px)] m-1">{`+${more}`}</span>
+        )
+      }
+    }
+
+    return selectedOptions;
   };
 
-  const renderOption = (option: Value, index: number): React.JSX.Element => {
-    const selected = (multiple ? value : [value]).some(
-      (value2) => value2 != null && isOptionEqualToValue(option, value2)
+  const renderOption = (option: Value, index: number, group: boolean = false): React.JSX.Element => {
+    const selected = (multiple && Array.isArray(value) ? value : [value]).some(
+      (value2) => value2 != null && isOptionEqualToValue(option, value2 as Value)
     );
 
     const disabled = getOptionDisabled ? getOptionDisabled(option) : false;
@@ -1475,7 +1534,7 @@ export const Lookup = <
 
         <span className="grow">{getOptionLabel(option) as string}</span>
 
-        {selected && (
+        {selected && !group && (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -1512,26 +1571,18 @@ export const Lookup = <
       );
     }
 
-    if (groupBy) {
-      const groupedOptions = filteredOptions.reduce((acc, obj) => {
-        let groupKey = groupBy(obj);
-        acc[groupKey] = [...(acc[groupKey] || []), obj];
-        return acc;
-      }, {}) as {
-        [key: string]: SelectOption[];
-      };
-
-      return Object.entries(groupedOptions).map(([groupTitle, groupItems]) => {
+    return groupedOptions.map((option, index) => {
+      if (groupBy && "group" in option) {
+        const typedOption = option;
         return (
-          <li className="overflow-hidden" key={`group-${groupTitle}`}>
-            <div className="px-2 py-1">{groupTitle}</div>
-            <ul>{groupItems.map(renderOption)}</ul>
+          <li className="overflow-hidden" key={typedOption.key}>
+            <div className="px-2 py-1">{typedOption.group}</div>
+            <ul>{typedOption.options.map((option2, index2) => renderOption(option2, typedOption.index + index2))}</ul>
           </li>
-        );
-      });
-    }
-
-    return groupedOptions.map(renderOption);
+        )
+      }
+      return renderOption(option, index);
+    })
   };
 
   return (
@@ -1584,8 +1635,8 @@ export const Lookup = <
             "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded font-normal leading-6",
             btnClassName,
             {
-              "pr-10": !disableClearable && value?.length == 0,
-              "pr-12": !disableClearable && value?.length > 0,
+              "pr-10": !disableClearable && open,
+              "pr-12": !disableClearable && open,
               "text-sm": size == "small",
               "text-base": size == "medium",
             }
@@ -1621,7 +1672,7 @@ export const Lookup = <
           />
 
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
-            {!disableClearable && (value !== null || value?.length > 0) && (
+            {(!disableClearable && !disabled && dirty && !readOnly) && (
               <button
                 type="button"
                 onClick={handleClear}
@@ -1663,6 +1714,7 @@ export const Lookup = <
                   d={"M19 9l-7 7-7-7"}
                 />
               </svg>
+              <Ripple center />
             </button>
           </div>
           <fieldset

@@ -1763,13 +1763,14 @@ export class SimplexNoise3D {
 }
 
 type UseControlledOptions<T> = {
-  controlled?: T;
+  controlled?: T | undefined;
   default?: T;
   name?: string;
   state?: string;
 };
 
 type UseControlledReturnValue<T> = [T, (newValue: T) => void];
+
 export const useControlled = <T extends unknown>({
   controlled,
   default: defaultProp,
@@ -1778,7 +1779,7 @@ export const useControlled = <T extends unknown>({
 }: UseControlledOptions<T>): UseControlledReturnValue<T> => {
   const { current: isControlled } = React.useRef(controlled !== undefined);
   const [valueState, setValue] = React.useState(defaultProp);
-  const value = isControlled ? controlled : valueState;
+  const value = isControlled ? controlled as T : valueState;
 
   if (process.env.NODE_ENV !== "production") {
     React.useEffect(() => {
@@ -1819,13 +1820,13 @@ export const useControlled = <T extends unknown>({
   return [value, setValueIfUncontrolled];
 };
 
-function useEventCallback<
+export function useEventCallback<
   Fn extends (...args: any[]) => any = (...args: unknown[]) => unknown
 >(fn: Fn): Fn;
-function useEventCallback<Args extends unknown[], Return>(
+export function useEventCallback<Args extends unknown[], Return>(
   fn: (...args: Args) => Return
 ): (...args: Args) => Return;
-function useEventCallback<Args extends unknown[], Return>(
+export function useEventCallback<Args extends unknown[], Return>(
   fn: (...args: Args) => Return
 ): (...args: Args) => Return {
   const ref = React.useRef(fn);
@@ -1837,4 +1838,11 @@ function useEventCallback<Args extends unknown[], Return>(
   ).current;
 }
 
-export default useEventCallback;
+export const usePreviousProps = <T extends {}>(value: T) => {
+  const ref = React.useRef<T | {}>({});
+  React.useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current as Partial<T>;
+};
+
