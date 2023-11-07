@@ -10,56 +10,54 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
     activated: number;
     scale: number;
     duration: number;
-  }
+  };
   const [ripples, setRipples] = useState<RippleType[]>([]);
   // let ripples = [];
   const [mouseDown, setMouseDown] = useState(false);
 
-
-
   useEffect(() => {
-    const element = node?.parentNode;//ref.current;
+    const element = node?.parentNode; //ref.current;
 
     if (!element) return;
 
     element.addEventListener("mousedown", handleMouseDown);
     element.addEventListener("mouseup", handleMouseUp);
-    element.addEventListener('mouseleave', handleMouseUp);
+    element.addEventListener("mouseout", handleMouseUp);
 
     return () => {
       element.removeEventListener("mousedown", handleMouseDown);
       element.removeEventListener("mouseup", handleMouseUp);
-      element.removeEventListener('mouseleave', handleMouseUp);
+      element.removeEventListener("mouseout", handleMouseUp);
     };
   }, []);
-
-
 
   let node = null;
   const createRipple = (event) => {
     node = event.originalTarget;
-    if (!node) return
-    if (!node.parentNode) return
-
+    if (!node) return;
+    if (!node.parentNode) return;
 
     const rippleSize = Math.max(node.clientWidth, node.clientHeight);
     const duration = Math.sqrt(rippleSize) * 100;
 
-    const localX = event.clientX - node.getBoundingClientRect().left - rippleSize / 2;
-    const localY = event.clientY - node.getBoundingClientRect().top - rippleSize / 2;
+    const localX =
+      event.clientX - node.getBoundingClientRect().left - rippleSize / 2;
+    const localY =
+      event.clientY - node.getBoundingClientRect().top - rippleSize / 2;
 
-    let radius = 0
-    let scale = 0.3
-    scale = 0.15
-    radius = node.clientWidth / 2
-    radius = center ? radius : radius + Math.sqrt((localX - radius) ** 2 + (localY - radius) ** 2) / 4
+    let radius = 0;
+    let scale = 0.3;
+    scale = 0.15;
+    radius = node.clientWidth / 2;
+    radius = center
+      ? radius
+      : radius + Math.sqrt((localX - radius) ** 2 + (localY - radius) ** 2) / 4;
 
+    const centerX = (node.clientWidth - radius * 2) / 2;
+    const centerY = (node.clientHeight - radius * 2) / 2;
 
-    const centerX = (node.clientWidth - (radius * 2)) / 2
-    const centerY = (node.clientHeight - (radius * 2)) / 2
-
-    const x = center ? centerX : localX
-    const y = center ? centerY : localY
+    const x = center ? centerX : localX;
+    const y = center ? centerY : localY;
     const newRipple = {
       radius: radius,
       scale: scale,
@@ -88,26 +86,28 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
     }, 100);
   };
 
-
   const handleMouseUp = (e) => {
     setMouseDown(false);
     const n = e.target;
 
-    if (ripples.length === 0) return
+    if (ripples.length === 0) return;
 
     ripples.forEach((ripple) => {
       const diff = performance.now() - Number(ripple.activated);
       const delay = Math.max(250 - diff, 0);
 
       setTimeout(() => {
-        let animationElement = document.getElementById(`ripple-${ripple.id.toString()}`);
+        let animationElement = document.getElementById(
+          `ripple-${ripple.id.toString()}`
+        );
         if (!animationElement) {
           return setRipples((prev) => prev.filter((r) => r.id !== ripple.id));
         }
 
         animationElement.style.animationName = "ripple-animation-hide";
         animationElement.style.animationDuration = "200ms";
-        animationElement.style.animationTimingFunction = "cubic-bezier(0.4, 0, 0.2, 1)";
+        animationElement.style.animationTimingFunction =
+          "cubic-bezier(0.4, 0, 0.2, 1)";
         animationElement.style.animationFillMode = "forwards";
 
         setTimeout(() => {
@@ -123,29 +123,39 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
 
   return (
     <span
+      aria-label="ripple"
       ref={(el) => (node = el)}
-      className="w-full h-full absolute inset-0 overflow-hidden rounded-[inherit]"
+      className="absolute inset-0 h-full w-full overflow-hidden rounded-[inherit]"
     >
-      {[...new Map(ripples.map(item =>
-        [item['id'], item])).values()].map((ripple) => {
+      {[...new Map(ripples.map((item) => [item["id"], item])).values()].map(
+        (ripple) => {
           const style = {
             width: `${ripple.size}px`,
             height: `${ripple.size}px`,
             left: `${ripple.x}px`,
             top: `${ripple.y}px`,
             transform: `scale(${ripple.scale})`,
-            animationName: 'ripple-animation',
+            animationName: "ripple-animation",
             animationTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-            borderRadius: ripple.radius ? `${ripple.radius}px` : '50%',
+            borderRadius: ripple.radius ? `${ripple.radius}px` : "50%",
             animationFillMode: "forwards",
             animationDuration: `${ripple.duration}ms`,
-            transition: 'opacity transform 0.3s cubic-bezier(0, 0, 0.2, 1)',
+            transition: "opacity transform 0.3s cubic-bezier(0, 0, 0.2, 1)",
           };
 
-          return <span key={ripple.id} aria-label="ripple" className="pointer-events-none bg-white/25 select-none absolute overflow-hidden z-0" id={`ripple-${ripple.id.toString()}`} style={{ ...style }} />
-        })}
+          return (
+            <span
+              key={ripple.id}
+              aria-labelledby="ripple"
+              className="pointer-events-none absolute z-0 select-none overflow-hidden bg-white/25"
+              id={`ripple-${ripple.id.toString()}`}
+              style={{ ...style }}
+            />
+          );
+        }
+      )}
     </span>
   );
-}
+};
 
-export default Ripple
+export default Ripple;

@@ -116,12 +116,13 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             getOptionLabel={(option) => option.name}
             loading={props.loading}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+            getOptionImage={(option) =>
+              `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`
+            }
             name="map_id"
             label="Map"
             defaultValue={props.timelineSeasonEvent?.map_id}
           />
-
 
           {raid && (
             <>
@@ -175,8 +176,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
 
           <TagInput
             name="tags"
-            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""
-              }`}
+            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
+              raid ? "raid" : ""
+            }`}
           />
 
           <FieldError name="tags" className="rw-field-error" />
@@ -233,8 +235,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
               className="mb-2 px-2"
               tagClassName="rw-button rw-button-small rw-button-gray !rounded-full"
               inputClassName="dark:text-zinc-300 text-zinc-500 text-sm py-0 px-3 outline-none bg-transparent"
-              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""
-                }`}
+              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
+                raid ? "raid" : ""
+              }`}
             />
             <FileUpload
               className="relative !w-full !rounded-none border-none !bg-transparent"
@@ -262,9 +265,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
                     className="-ml-1 mr-2 block h-4 w-4"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     ></path>
                   </svg>
                   <span className="text-sm italic">Attach file</span>

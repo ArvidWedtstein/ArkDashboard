@@ -17,6 +17,7 @@ import type {
   FindTimelineSeasonById,
 } from "types/graphql";
 import Toast from "src/components/Util/Toast/Toast";
+import Ripple from "src/components/Util/Ripple/Ripple";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -88,10 +89,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
     | "editevent"
     | "previewimage";
   const [editEvent, setEditEvent] = useState<string | null>(null);
-  const [openModal, setOpenModal] = React.useState<modalType>(null);
+  const [openModal, setOpenModal] = useState<modalType>(null);
 
   return (
-    <>
+    <div>
       <FormModal
         title={
           openModal === "timelineseasonperson"
@@ -190,6 +191,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">Basespots</p>
             <button
+              type="button"
               className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
               onClick={() => setOpenModal("timelineseasonbasespot")}
             >
@@ -200,6 +202,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
+              <Ripple center />
             </button>
           </div>
 
@@ -210,6 +213,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <div className="mt-3 flex items-center justify-between">
             <p>Events</p>
             <button
+              type="button"
               className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
               onClick={() => setOpenModal("timelineseasonevent")}
             >
@@ -220,6 +224,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
+              <Ripple center />
             </button>
           </div>
 
@@ -238,6 +243,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               Persons in this season
             </p>
             <button
+              type="button"
               className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
               onClick={() => setOpenModal("timelineseasonperson")}
             >
@@ -248,6 +254,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
+              <Ripple center />
             </button>
           </div>
           <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
@@ -269,7 +276,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           Delete
         </button>
       </nav>
-    </>
+    </div>
   );
 };
 

@@ -96,7 +96,11 @@ type CardMediaImg = CardMediaBaseProps &
   CardMediaImgProps &
   ImgHTMLAttributes<HTMLImageElement>;
 
-type CardMediaProps = CardMediaBaseProps | CardMediaImg;
+type CardMediaDiv = CardMediaBaseProps & {
+  children?: React.ReactNode;
+};
+
+type CardMediaProps = CardMediaDiv | CardMediaImg;
 export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
   if (component === "img") {
     const { alt, height, className, ...imgprops } = props as CardMediaImg;
@@ -112,7 +116,7 @@ export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
       />
     );
   } else {
-    const { sx, image, title, className } = props;
+    const { sx, image, title, className, children } = props;
     return (
       <div
         className={clsx("block !bg-cover bg-center bg-no-repeat", className)}
@@ -122,7 +126,9 @@ export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
           backgroundImage: `url(${image})`,
         }}
         title={title}
-      />
+      >
+        {children}
+      </div>
     );
   }
 };
@@ -192,10 +198,14 @@ export const CardActionArea = ({
     );
   } else {
     const linkProps = props as LinkProps;
+
     return (
       <Link
+        className={clsx(
+          "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
+          className
+        )}
         {...linkProps}
-        className="relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit"
       >
         {children}
         <Ripple />

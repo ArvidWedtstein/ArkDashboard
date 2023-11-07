@@ -34,16 +34,19 @@ const GanttChart = <T extends Record<string, unknown>>({
   // generate light colors for each group as hex
   const colors = Object.keys(ganttData).reduce((acc, cur, i) => {
     const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-    const hexOpacity = Math.floor((50 / 100) * 255).toString(16).padStart(2, '0');
+    const hexOpacity = Math.floor((50 / 100) * 255)
+      .toString(16)
+      .padStart(2, "0");
     return {
       ...acc,
       [cur]: [
         `#${randomColor}${hexOpacity}`,
-        `#${(parseInt(randomColor, 16) + Math.floor(Math.random() * 128)).toString(16)}${hexOpacity}`
+        `#${(
+          parseInt(randomColor, 16) + Math.floor(Math.random() * 128)
+        ).toString(16)}${hexOpacity}`,
       ],
     };
   }, {});
-
 
   const [dateInfo, setDateInfo] = useState(() => ({
     year: new Date().getFullYear(),
@@ -54,17 +57,17 @@ const GanttChart = <T extends Record<string, unknown>>({
       viewType === "year"
         ? new Date().getFullYear().toString()
         : viewType === "month"
-          ? new Date().toLocaleDateString(navigator && navigator.language, {
+        ? new Date().toLocaleDateString(navigator && navigator.language, {
             month: "short",
             year: "numeric",
           })
-          : viewType === "week"
-            ? `Week ${getISOWeek(new Date())}`
-            : new Date().toLocaleDateString(navigator && navigator.language, {
-              month: "2-digit",
-              day: "2-digit",
-              year: "2-digit",
-            }),
+        : viewType === "week"
+        ? `Week ${getISOWeek(new Date())}`
+        : new Date().toLocaleDateString(navigator && navigator.language, {
+            month: "2-digit",
+            day: "2-digit",
+            year: "2-digit",
+          }),
   }));
   const firstDayOfWeek = 1;
 
@@ -89,7 +92,6 @@ const GanttChart = <T extends Record<string, unknown>>({
     season_end_date: string;
     cluster: string;
   }
-
 
   function findMaxGroupLengthForYear(
     data: Record<string, TimelineSeason[]>,
@@ -151,7 +153,6 @@ const GanttChart = <T extends Record<string, unknown>>({
 
     return maxGroupLength;
   }
-
 
   const calendar = Array.from({ length: 12 }, (_, monthIndex) => {
     const firstDayOfMonth = new Date(dateInfo.year, monthIndex, 1);
@@ -229,17 +230,17 @@ const GanttChart = <T extends Record<string, unknown>>({
         viewType === "year"
           ? newDate.getFullYear().toString()
           : viewType === "month"
-            ? newDate.toLocaleDateString(navigator && navigator.language, {
+          ? newDate.toLocaleDateString(navigator && navigator.language, {
               month: "short",
               year: "numeric",
             })
-            : viewType === "week"
-              ? `Week ${getISOWeek(newDate)}`
-              : newDate.toLocaleDateString(navigator && navigator.language, {
-                month: "2-digit",
-                day: "2-digit",
-                year: "2-digit",
-              }),
+          : viewType === "week"
+          ? `Week ${getISOWeek(newDate)}`
+          : newDate.toLocaleDateString(navigator && navigator.language, {
+              month: "2-digit",
+              day: "2-digit",
+              year: "2-digit",
+            }),
     });
   };
 
@@ -269,17 +270,25 @@ const GanttChart = <T extends Record<string, unknown>>({
                   value === "year"
                     ? dateInfo.year.toString()
                     : value === "month"
-                      ? new Date(dateInfo.year, dateInfo.month, dateInfo.day).toLocaleDateString(navigator && navigator.language, {
+                    ? new Date(
+                        dateInfo.year,
+                        dateInfo.month,
+                        dateInfo.day
+                      ).toLocaleDateString(navigator && navigator.language, {
                         month: "short",
                         year: "numeric",
                       })
-                      : value === "week"
-                        ? `Week ${dateInfo.week}`
-                        : new Date(dateInfo.year, dateInfo.month, dateInfo.day).toLocaleDateString(navigator && navigator.language, {
-                          month: "2-digit",
-                          day: "2-digit",
-                          year: "2-digit",
-                        }),
+                    : value === "week"
+                    ? `Week ${dateInfo.week}`
+                    : new Date(
+                        dateInfo.year,
+                        dateInfo.month,
+                        dateInfo.day
+                      ).toLocaleDateString(navigator && navigator.language, {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "2-digit",
+                      }),
               });
             }
           }}
@@ -350,8 +359,8 @@ const GanttChart = <T extends Record<string, unknown>>({
                     viewType === "week" || viewType === "day"
                       ? week.week === dateInfo.week
                       : viewType === "year"
-                        ? i === 0
-                        : true
+                      ? i === 0
+                      : true
                   )
                   .map((week, weekIndex) => {
                     return week.dates
@@ -359,7 +368,7 @@ const GanttChart = <T extends Record<string, unknown>>({
                         viewType === "year"
                           ? i === week.dates.length - 1
                           : viewType === "day"
-                            ? toLocaleISODate(day.date) ===
+                          ? toLocaleISODate(day.date) ===
                             toLocaleISODate(
                               new Date(
                                 dateInfo.year,
@@ -367,7 +376,7 @@ const GanttChart = <T extends Record<string, unknown>>({
                                 dateInfo.day
                               )
                             )
-                            : true
+                          : true
                       )
                       .map(
                         ({ date, hours, isOutsideCurrentMonth }, dateIndex) => {
@@ -396,7 +405,6 @@ const GanttChart = <T extends Record<string, unknown>>({
                                         }
                                       )}
 
-
                                     <span
                                       className={clsx(
                                         "flex items-center justify-center",
@@ -418,16 +426,15 @@ const GanttChart = <T extends Record<string, unknown>>({
                                                 hourCycle: "h23",
                                               }
                                             ) ===
-                                            new Date().toLocaleString(
-                                              navigator &&
-                                              navigator.language,
-                                              {
-                                                hour: "2-digit",
-                                                hourCycle: "h23",
-                                              }
-                                            ) &&
+                                              new Date().toLocaleString(
+                                                navigator && navigator.language,
+                                                {
+                                                  hour: "2-digit",
+                                                  hourCycle: "h23",
+                                                }
+                                              ) &&
                                             toLocaleISODate(date) ===
-                                            toLocaleISODate(new Date()),
+                                              toLocaleISODate(new Date()),
                                           "font-semibold":
                                             viewType === "week" ||
                                             viewType === "month",
@@ -437,19 +444,19 @@ const GanttChart = <T extends Record<string, unknown>>({
                                     >
                                       {viewType === "year"
                                         ? date.toLocaleDateString(
-                                          navigator && navigator.language,
-                                          {
-                                            month: "short",
-                                          }
-                                        )
+                                            navigator && navigator.language,
+                                            {
+                                              month: "short",
+                                            }
+                                          )
                                         : viewType === "day"
-                                          ? hour.toLocaleString(
+                                        ? hour.toLocaleString(
                                             navigator && navigator.language,
                                             {
                                               hour: "2-digit",
                                             }
                                           )
-                                          : date.toLocaleDateString(
+                                        : date.toLocaleDateString(
                                             navigator && navigator.language,
                                             {
                                               day: "numeric",
@@ -477,11 +484,13 @@ const GanttChart = <T extends Record<string, unknown>>({
               aria-label="Grid Rows"
               className="col-start-1 col-end-2 row-start-1 grid divide-y divide-black/20 text-black dark:divide-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${Object.keys(ganttData).length * findMaxGroupLengthForYear(
-                  ganttData as unknown as Record<string, TimelineSeason[]>,
-                  dateInfo.year
-                )
-                  }, minmax(3.5rem, 1fr))`, // TODO: calculate this based on the number of items in the group
+                gridTemplateRows: `repeat(${
+                  Object.keys(ganttData).length *
+                  findMaxGroupLengthForYear(
+                    ganttData as unknown as Record<string, TimelineSeason[]>,
+                    dateInfo.year
+                  )
+                }, minmax(3.5rem, 1fr))`, // TODO: calculate this based on the number of items in the group
               }}
               role="rowgroup"
             >
@@ -528,10 +537,13 @@ const GanttChart = <T extends Record<string, unknown>>({
               aria-label="Chart elements"
               className="col-start-1 col-end-2 row-start-1 -mr-px grid border-l border-r border-b border-black/20 dark:border-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `1.75rem repeat(${Object.keys(ganttData).length * findMaxGroupLengthForYear(
-                  ganttData as unknown as Record<string, TimelineSeason[]>,
-                  dateInfo.year
-                )}, minmax(0px, 1fr)) auto`, // TODO: calculate this based on the number of items in the group
+                gridTemplateRows: `1.75rem repeat(${
+                  Object.keys(ganttData).length *
+                  findMaxGroupLengthForYear(
+                    ganttData as unknown as Record<string, TimelineSeason[]>,
+                    dateInfo.year
+                  )
+                }, minmax(0px, 1fr)) auto`, // TODO: calculate this based on the number of items in the group
                 gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
@@ -541,17 +553,17 @@ const GanttChart = <T extends Record<string, unknown>>({
                   data: v.filter((item) => {
                     return viewType === "day"
                       ? toLocaleISODate(
-                        new Date(item[dateStartKey].toString())
-                      ) ===
-                      toLocaleISODate(
-                        new Date(
-                          dateInfo.year,
-                          dateInfo.month,
-                          dateInfo.day
-                        )
-                      )
+                          new Date(item[dateStartKey].toString())
+                        ) ===
+                          toLocaleISODate(
+                            new Date(
+                              dateInfo.year,
+                              dateInfo.month,
+                              dateInfo.day
+                            )
+                          )
                       : viewType === "week"
-                        ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
+                      ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
                           dateInfo.week &&
                           new Date(
                             item[dateStartKey].toString()
@@ -561,10 +573,10 @@ const GanttChart = <T extends Record<string, unknown>>({
                           new Date(
                             item[dateEndKey].toString()
                           ).getFullYear() === dateInfo.year)
-                        : viewType === "month"
-                          ? toLocalPeriod(
-                            new Date(item[dateStartKey].toString())
-                          ) ===
+                      : viewType === "month"
+                      ? toLocalPeriod(
+                          new Date(item[dateStartKey].toString())
+                        ) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -572,7 +584,7 @@ const GanttChart = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           ) ||
-                          toLocalPeriod(new Date(item[dateEndKey].toString())) ===
+                        toLocalPeriod(new Date(item[dateEndKey].toString())) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -580,26 +592,31 @@ const GanttChart = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           )
-                          : viewType === "year"
-                            ? new Date(
-                              item[dateStartKey].toString()
-                            ).getFullYear() === dateInfo.year ||
-                            new Date(item[dateEndKey].toString()).getFullYear() ===
-                            dateInfo.year
-                            : true;
+                      : viewType === "year"
+                      ? new Date(
+                          item[dateStartKey].toString()
+                        ).getFullYear() === dateInfo.year ||
+                        new Date(item[dateEndKey].toString()).getFullYear() ===
+                          dateInfo.year
+                      : true;
                   }),
                 }))
                 .map((data, groupIndex) => {
-                  console.log(data, groupIndex)
+                  console.log(data, groupIndex);
 
                   return data.data.map((item, i) => {
                     const overlappingItems = data.data.filter((otherItem) => {
                       return (
-                        (new Date(otherItem[dateStartKey].toString()) <= new Date(item[dateEndKey].toString())) &&
-                        (new Date(otherItem[dateEndKey].toString()) >= new Date(item[dateStartKey].toString()))
+                        new Date(otherItem[dateStartKey].toString()) <=
+                          new Date(item[dateEndKey].toString()) &&
+                        new Date(otherItem[dateEndKey].toString()) >=
+                          new Date(item[dateStartKey].toString())
                       );
                     });
-                    const extra = overlappingItems.length > 1 ? overlappingItems.indexOf(item) : 0;
+                    const extra =
+                      overlappingItems.length > 1
+                        ? overlappingItems.indexOf(item)
+                        : 0;
 
                     return (
                       <li
@@ -607,62 +624,88 @@ const GanttChart = <T extends Record<string, unknown>>({
                         className="relative mt-px flex"
                         aria-label={`${data.label}-${groupIndex}-${data.label}`}
                         style={{
-                          // backgroundColor: colors[data.label],
-                          gridRow: `${((groupIndex * findMaxGroupLengthForYear(
-                            ganttData as unknown as Record<string, TimelineSeason[]>,
-                            dateInfo.year
-                          )) + 2 + extra)} / span 1`,// TODO: calculate this based on the number of items in the group
+                          gridRow: `${
+                            groupIndex *
+                              findMaxGroupLengthForYear(
+                                ganttData as unknown as Record<
+                                  string,
+                                  TimelineSeason[]
+                                >,
+                                dateInfo.year
+                              ) +
+                            2 +
+                            extra
+                          } / span 1`, // TODO: calculate this based on the number of items in the group
                           gridColumnStart:
                             viewType === "day"
                               ? new Date(
-                                item[dateStartKey].toString()
-                              ).getHours() + 1
+                                  item[dateStartKey].toString()
+                                ).getHours() + 1
                               : viewType === "week"
-                                ? new Date(item[dateStartKey].toString()).getDay()
-                                : viewType === "month"
-                                  ? new Date(item[dateStartKey].toString()).getDate()
-                                  : viewType === "year"
-                                    ? new Date(
-                                      item[dateStartKey].toString()
-                                    ).getFullYear() < dateInfo.year ? 1 : new Date(
-                                      item[dateStartKey].toString()
-                                    ).getMonth() + 1
-                                    : 1,
+                              ? new Date(item[dateStartKey].toString()).getDay()
+                              : viewType === "month"
+                              ? new Date(
+                                  item[dateStartKey].toString()
+                                ).getDate()
+                              : viewType === "year"
+                              ? new Date(
+                                  item[dateStartKey].toString()
+                                ).getFullYear() < dateInfo.year
+                                ? 1
+                                : new Date(
+                                    item[dateStartKey].toString()
+                                  ).getMonth() + 1
+                              : 1,
                           gridColumnEnd:
                             (viewType === "day"
-                              ? new Date(item[dateEndKey].toString()).getHours() +
-                              1
+                              ? new Date(
+                                  item[dateEndKey].toString()
+                                ).getHours() + 1
                               : viewType === "week"
-                                ? new Date(item[dateEndKey].toString()).getDay()
-                                : viewType === "month"
-                                  ? new Date(item[dateEndKey].toString()).getDate()
-                                  : viewType === "year"
-                                    ? new Date(item[dateEndKey].toString()).getMonth() +
-                                    1
-                                    : 7) + 1,
+                              ? new Date(item[dateEndKey].toString()).getDay()
+                              : viewType === "month"
+                              ? new Date(item[dateEndKey].toString()).getDate()
+                              : viewType === "year"
+                              ? new Date(
+                                  item[dateEndKey].toString()
+                                ).getMonth() + 1
+                              : 7) + 1,
                         }}
                       >
-                        <p
-                          className={clsx("absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-1 text-xs", // dark:bg-sky-600/50 bg-blue-400/20 border border-blue-700/10 dark:border-sky-500
+                        <Link
+                          to={routes.timelineSeason({ id: item.id as string })}
+                          className={clsx(
+                            "absolute inset-1 flex flex-col overflow-y-auto border p-1 text-xs transition hover:ring-1 hover:ring-black/50 dark:hover:ring-white/50 " // dark:bg-sky-600/50 bg-blue-400/20 border border-blue-700/10 dark:border-sky-500
                           )}
                           style={{
-                            background: `linear-gradient(to right, ${colors[data.label].join(' 30%, ')})`,
-                            border: `1px solid ${colors[data.label][0].substring(0, 7)}`,
+                            borderRadius: "0.5rem",
+                            background: `linear-gradient(to right, ${colors[
+                              data.label
+                            ].join(" 30%, ")})`,
+                            borderColor: `${colors[data.label][0].substring(
+                              0,
+                              7
+                            )}`,
                           }}
-                          aria-label={colors[data.label].join(', ')}
                         >
                           <span>{item["tribe_name"].toString()}</span>
-                          {new Intl.DateTimeFormat(navigator && navigator.language, { dateStyle: 'short' }).formatRange(new Date(item[dateStartKey].toString()), new Date(item[dateEndKey].toString()))}
-                        </p>
+                          {new Intl.DateTimeFormat(
+                            navigator && navigator.language,
+                            { dateStyle: "short" }
+                          ).formatRange(
+                            new Date(item[dateStartKey].toString()),
+                            new Date(item[dateEndKey].toString())
+                          )}
+                        </Link>
                       </li>
-                    )
+                    );
                   });
                 })}
             </ol>
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
@@ -737,8 +780,8 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
             tribe_name,
           }) => (
             <li className="not-last:mb-10 ml-4" key={id}>
-              <div className="absolute -left-1.5 mt-1.5  h-3 w-3 rounded-full border border-white bg-zinc-500 dark:border-gray-900"></div>
-              <time className="mb-1 text-sm font-normal leading-none text-gray-500">
+              <div className="absolute -left-1.5 mt-1.5  h-3 w-3 rounded-full border border-white bg-zinc-500 dark:border-zinc-900"></div>
+              <time className="mb-1 text-sm font-normal leading-none text-zinc-500">
                 {dateformatter.formatRange(
                   new Date(season_start_date),
                   new Date(season_end_date)
@@ -753,9 +796,9 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
                   />
                 )}
 
-                <div className="text-gray-600 dark:text-gray-300">
+                <div className="text-zinc-600 dark:text-zinc-300">
                   <div className="text-base font-normal">
-                    <span className="font-medium text-gray-900 dark:text-white">
+                    <span className="font-medium text-zinc-900 dark:text-white">
                       {server}{" "}
                       {cluster && (
                         <span className={`rw-badge ${servers[server]?.badge}`}>
@@ -767,7 +810,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
                   <div className="text-sm font-normal">
                     {season && `Season ${season},`} {tribe_name}
                   </div>
-                  <span className="inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
+                  <span className="inline-flex items-center text-xs font-normal text-zinc-500 dark:text-zinc-400">
                     <svg
                       aria-hidden="true"
                       className="mr-1 h-3 w-3"
@@ -779,16 +822,29 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
                         fillRule="evenodd"
                         d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z"
                         clipRule="evenodd"
-                      ></path>
+                      />
                     </svg>
-                    {/* <svg aria-hidden="true" className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd"></path><path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"></path></svg> */}
+                    {/* <svg
+                      aria-hidden="true"
+                      className="mr-1 h-3 w-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z"
+                        clipRule="evenodd"
+                      ></path>
+                      <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
+                    </svg> */}
                     Public
                   </span>
                 </div>
               </div>
               <Link
                 to={routes.timelineSeason({ id })}
-                className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                className="relative inline-flex items-center rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:text-black focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:text-white"
               >
                 Learn more
                 <svg
@@ -801,8 +857,9 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
                     fillRule="evenodd"
                     d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
                     clipRule="evenodd"
-                  ></path>
+                  />
                 </svg>
+                <Ripple />
               </Link>
             </li>
           )
