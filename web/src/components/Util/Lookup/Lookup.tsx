@@ -4,7 +4,6 @@ import {
   KeyboardEvent,
   MouseEvent,
   MouseEventHandler,
-  ReactNode,
   SyntheticEvent,
   useCallback,
   useEffect,
@@ -16,7 +15,11 @@ import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import clsx from "clsx";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
-import { useControlled, usePreviousProps, useEventCallback } from "src/lib/formatters";
+import {
+  useControlled,
+  usePreviousProps,
+  useEventCallback,
+} from "src/lib/formatters";
 import Ripple from "../Ripple/Ripple";
 
 function stripDiacritics(string) {
@@ -56,18 +59,18 @@ function createFilterOptions<Value>(
     const filteredOptions = !input
       ? options
       : options.filter((option) => {
-        let candidate = (stringify || getOptionLabel)(option);
-        if (ignoreCase) {
-          candidate = candidate.toLowerCase();
-        }
-        if (ignoreAccents) {
-          candidate = stripDiacritics(candidate);
-        }
+          let candidate = (stringify || getOptionLabel)(option);
+          if (ignoreCase) {
+            candidate = candidate.toLowerCase();
+          }
+          if (ignoreAccents) {
+            candidate = stripDiacritics(candidate);
+          }
 
-        return matchFrom === "start"
-          ? candidate.indexOf(input) === 0
-          : candidate.indexOf(input) > -1;
-      });
+          return matchFrom === "start"
+            ? candidate.indexOf(input) === 0
+            : candidate.indexOf(input) > -1;
+        });
 
     return typeof limit === "number"
       ? filteredOptions.slice(0, limit)
@@ -120,12 +123,12 @@ export type LookupChangeReason =
   | "clear"
   | "blur";
 type LookupCloseReason =
-  | 'createOption'
-  | 'toggleInput'
-  | 'escape'
-  | 'selectOption'
-  | 'removeOption'
-  | 'blur';
+  | "createOption"
+  | "toggleInput"
+  | "escape"
+  | "selectOption"
+  | "removeOption"
+  | "blur";
 interface LookupChangeDetails<Value = string> {
   option: Value;
 }
@@ -137,10 +140,10 @@ interface FilterOptionsState<Value> {
 export type LookupInputChangeReason = "input" | "reset" | "clear";
 export type LookupValue<Value, Multiple, DisableClearable> =
   Multiple extends true
-  ? Array<Value | never>
-  : DisableClearable extends true
-  ? NonNullable<Value | never>
-  : Value | null | never;
+    ? Array<Value | never>
+    : DisableClearable extends true
+    ? NonNullable<Value | never>
+    : Value | null | never;
 
 interface LookupGroupedOption<Value = string> {
   key: number;
@@ -240,7 +243,7 @@ type SelectProps<
     getTagProps: ({ index }: { index: number }) => {
       key: number;
       disabled: boolean;
-      'data-tag-index'?: number;
+      "data-tag-index"?: number;
       tabIndex?: number;
       onClick?: React.MouseEventHandler<HTMLButtonElement>;
     }
@@ -254,12 +257,8 @@ type SelectProps<
     options: Value[],
     state: FilterOptionsState<Value>
   ) => Value[];
-  getOptionLabel?: (
-    option: Value
-  ) => string;
-  getOptionImage?: (
-    option: Value
-  ) => string;
+  getOptionLabel?: (option: Value) => string;
+  getOptionImage?: (option: Value) => string;
   isOptionEqualToValue?: (option: Value, value: Value) => boolean;
   getOptionDisabled?: (option: Value) => boolean;
   onOpen?: (event: React.SyntheticEvent) => void;
@@ -270,7 +269,7 @@ type SelectProps<
 export const Lookup = <
   Value,
   Multiple extends boolean | undefined = false,
-  DisableClearable extends boolean | undefined = false,
+  DisableClearable extends boolean | undefined = false
 >(
   props: SelectProps<Value, Multiple, DisableClearable>
 ) => {
@@ -366,13 +365,13 @@ export const Lookup = <
 
   const [value, setValueState] = useControlled({
     controlled: valueProp,
-    default: multiple && Array.isArray(defaultValue)
-      ? options
-        .filter((option) =>
-          defaultValue.some((value) => value === option[valueKey])
-        )
-      // .map((o) => o[valueKey] as Value)
-      : options.find((option) => option[valueKey] === defaultValue) || null,
+    default:
+      multiple && Array.isArray(defaultValue)
+        ? options.filter((option) =>
+            defaultValue.some((value) => value === option[valueKey])
+          )
+        : // .map((o) => o[valueKey] as Value)
+          options.find((option) => option[valueKey] === defaultValue) || null,
     name: componentName,
   });
 
@@ -387,9 +386,10 @@ export const Lookup = <
 
   const resetInputValue = useCallback(
     (event, newValue) => {
-      const isOptionselected = multiple && Array.isArray(value)
-        ? value.length < newValue.length
-        : newValue !== null;
+      const isOptionselected =
+        multiple && Array.isArray(value)
+          ? value.length < newValue.length
+          : newValue !== null;
       if (isOptionselected && !clearOnBlur) {
         return;
       }
@@ -431,31 +431,34 @@ export const Lookup = <
   const [inputPristine, setInputPristine] = useState(true);
 
   const inputValueIsSelectedValue =
-    !multiple && !Array.isArray(value) && value != null && inputValue === getOptionLabel(value) as string;
+    !multiple &&
+    !Array.isArray(value) &&
+    value != null &&
+    inputValue === (getOptionLabel(value) as string);
 
   const popupOpen = open && !readOnly;
 
   const filteredOptions: Value[] = open
     ? filterOptions(
-      options.filter((option) => {
-        if (
-          filterSelectedOptions &&
-          (multiple && Array.isArray(value) ? value : [value as Value]).some(
-            (value2) =>
-              value2 !== null && isOptionEqualToValue(option, value2)
-          )
-        ) {
-          return false;
-        }
-        return true;
-      }),
+        options.filter((option) => {
+          if (
+            filterSelectedOptions &&
+            (multiple && Array.isArray(value) ? value : [value as Value]).some(
+              (value2) =>
+                value2 !== null && isOptionEqualToValue(option, value2)
+            )
+          ) {
+            return false;
+          }
+          return true;
+        }),
 
-      {
-        inputValue:
-          inputValueIsSelectedValue && inputPristine ? "" : inputValue,
-        getOptionLabel,
-      }
-    )
+        {
+          inputValue:
+            inputValueIsSelectedValue && inputPristine ? "" : inputValue,
+          getOptionLabel,
+        }
+      )
     : [];
 
   const previousProps = usePreviousProps({
@@ -478,18 +481,23 @@ export const Lookup = <
 
   if (process.env.NODE_ENV !== "production") {
     if (value !== null && options.length > 0) {
-      const missingValue = (multiple && Array.isArray(value) ? value : [value]).filter(
+      const missingValue = (
+        multiple && Array.isArray(value) ? value : [value]
+      ).filter(
         (value2) =>
-          !options.some((option) => isOptionEqualToValue(option, value2 as Value))
+          !options.some((option) =>
+            isOptionEqualToValue(option, value2 as Value)
+          )
       );
 
       if (missingValue.length > 0) {
         console.warn(
           [
             `ArkDashboard: The value provided to ${componentName} is invalid.`,
-            `None of the options match with \`${missingValue.length > 1
-              ? JSON.stringify(missingValue)
-              : JSON.stringify(missingValue[0])
+            `None of the options match with \`${
+              missingValue.length > 1
+                ? JSON.stringify(missingValue)
+                : JSON.stringify(missingValue[0])
             }\`.`,
             "You can use the `isOptionEqualToValue` prop to customize the equality test.",
           ].join("\n")
@@ -533,8 +541,8 @@ export const Lookup = <
       const nextFocusDisabled = disabledItemsFocusable
         ? false
         : !option ||
-        option.disabled ||
-        option.getAttribute("aria-disabled") === "true";
+          option.disabled ||
+          option.getAttribute("aria-disabled") === "true";
 
       if (option && option.hasAttribute("tabindex") && !nextFocusDisabled) {
         // The next option is available
@@ -757,9 +765,9 @@ export const Lookup = <
       previousProps.inputValue === inputValue &&
       (multiple && Array.isArray(value) && Array.isArray(previousProps.value)
         ? value.length === previousProps.value.length &&
-        previousProps.value.every(
-          (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
-        )
+          previousProps.value.every(
+            (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
+          )
         : isSameValue(previousProps.value, value))
     ) {
       const previousHighlightedOption =
@@ -811,7 +819,7 @@ export const Lookup = <
         Array.isArray(value) &&
         currentOption &&
         value.findIndex((val) => isOptionEqualToValue(currentOption, val)) !==
-        -1
+          -1
       ) {
         return;
       }
@@ -944,7 +952,12 @@ export const Lookup = <
     }
 
     if (onChange) {
-      onChange?.(event, newValue, reason, details as LookupChangeDetails<Value>);
+      onChange?.(
+        event,
+        newValue,
+        reason,
+        details as LookupChangeDetails<Value>
+      );
     }
 
     setValueState(newValue);
@@ -952,7 +965,11 @@ export const Lookup = <
 
   const isTouch = useRef(false);
 
-  const selectNewValue = (event, option, reasonProp: LookupCloseReason = "selectOption") => {
+  const selectNewValue = (
+    event,
+    option,
+    reasonProp: LookupCloseReason = "selectOption"
+  ) => {
     let reason = reasonProp;
     let newValue = option;
 
@@ -1011,7 +1028,8 @@ export const Lookup = <
 
     while (true) {
       if (
-        (direction === "next" && nextFocus === (Array.isArray(value) ? value : [value]).length) ||
+        (direction === "next" &&
+          nextFocus === (Array.isArray(value) ? value : [value]).length) ||
         (direction === "previous" && nextFocus === -1)
       ) {
         return -1;
@@ -1171,7 +1189,9 @@ export const Lookup = <
       case "Enter":
         if (highlightedIndexRef.current !== -1 && popupOpen) {
           const option = filteredOptions[highlightedIndexRef.current];
-          const disabled = getOptionDisabled ? getOptionDisabled(option) : false;
+          const disabled = getOptionDisabled
+            ? getOptionDisabled(option)
+            : false;
 
           // Avoid early form validation, let the end-users continue filling the form.
           event.preventDefault();
@@ -1200,7 +1220,8 @@ export const Lookup = <
           handleClose(event, "escape");
         } else if (
           clearOnEscape &&
-          (inputValue !== "" || (multiple && Array.isArray(value) && value.length > 0))
+          (inputValue !== "" ||
+            (multiple && Array.isArray(value) && value.length > 0))
         ) {
           // Avoid Opera to exit fullscreen mode.
           event.preventDefault();
@@ -1210,7 +1231,13 @@ export const Lookup = <
         }
         break;
       case "Backspace":
-        if (multiple && Array.isArray(value) && !readOnly && inputValue === "" && value.length > 0) {
+        if (
+          multiple &&
+          Array.isArray(value) &&
+          !readOnly &&
+          inputValue === "" &&
+          value.length > 0
+        ) {
           const index = focusedTag === -1 ? value.length - 1 : focusedTag;
           const newValue = value.slice();
           newValue.splice(index, 1);
@@ -1376,14 +1403,18 @@ export const Lookup = <
   };
 
   let dirty = false && inputValue.length > 0;
-  dirty = dirty || (multiple && Array.isArray(value) ? value.length > 0 : value !== null);
+  dirty =
+    dirty ||
+    (multiple && Array.isArray(value) ? value.length > 0 : value !== null);
 
-  let groupedOptions: Value[] | {
-    key: number;
-    index: number;
-    group: string;
-    options: Value[];
-  }[] = filteredOptions;
+  let groupedOptions:
+    | Value[]
+    | {
+        key: number;
+        index: number;
+        group: string;
+        options: Value[];
+      }[] = filteredOptions;
   if (groupBy) {
     const indexBy = new Map();
     let warn = false;
@@ -1421,9 +1452,14 @@ export const Lookup = <
     handleBlur();
   }
 
-
   const renderChips = () => {
-    if (!(multiple && Array.isArray(value) && (value as Array<unknown>).length > 0)) {
+    if (
+      !(
+        multiple &&
+        Array.isArray(value) &&
+        (value as Array<unknown>).length > 0
+      )
+    ) {
       return;
     }
 
@@ -1432,19 +1468,21 @@ export const Lookup = <
     const getCustomizedTagProps: ({ index }: { index: number }) => {
       key: number;
       disabled: boolean;
-      'data-tag-index': number;
+      "data-tag-index": number;
       tabIndex: number;
       onClick: MouseEventHandler;
     } = ({ index }) => {
-      const disabled = getOptionDisabled ? getOptionDisabled(value[index]) : false;
+      const disabled = getOptionDisabled
+        ? getOptionDisabled(value[index])
+        : false;
       return {
         key: index,
         tabIndex: -1,
-        'data-tag-index': index,
+        "data-tag-index": index,
         disabled,
-        ...(!readOnly && { onClick: handleTagDelete(index) })
-      }
-    }
+        ...(!readOnly && { onClick: handleTagDelete(index) }),
+      };
+    };
 
     if (renderTags) {
       selectedOptions = renderTags(value, getCustomizedTagProps);
@@ -1473,8 +1511,8 @@ export const Lookup = <
               </svg>
             )}
           </div>
-        )
-      })
+        );
+      });
     }
 
     if (limitTags > -1 && Array.isArray(selectedOptions)) {
@@ -1482,17 +1520,22 @@ export const Lookup = <
       if (!focused && more > 0) {
         selectedOptions = selectedOptions.slice(0, limitTags);
         selectedOptions.push(
-          <span className="max-w-[calc(100%-6px)] m-1">{`+${more}`}</span>
-        )
+          <span className="m-1 max-w-[calc(100%-6px)]">{`+${more}`}</span>
+        );
       }
     }
 
     return selectedOptions;
   };
 
-  const renderOption = (option: Value, index: number, group: boolean = false): React.JSX.Element => {
+  const renderOption = (
+    option: Value,
+    index: number,
+    group: boolean = false
+  ): React.JSX.Element => {
     const selected = (multiple && Array.isArray(value) ? value : [value]).some(
-      (value2) => value2 != null && isOptionEqualToValue(option, value2 as Value)
+      (value2) =>
+        value2 != null && isOptionEqualToValue(option, value2 as Value)
     );
 
     const disabled = getOptionDisabled ? getOptionDisabled(option) : false;
@@ -1573,12 +1616,16 @@ export const Lookup = <
         return (
           <li className="overflow-hidden" key={typedOption.key}>
             <div className="px-2 py-1">{typedOption.group}</div>
-            <ul>{typedOption.options.map((option2, index2) => renderOption(option2, typedOption.index + index2))}</ul>
+            <ul>
+              {typedOption.options.map((option2, index2) =>
+                renderOption(option2, typedOption.index + index2)
+              )}
+            </ul>
           </li>
-        )
+        );
       }
       return renderOption(option, index);
-    })
+    });
   };
 
   return (
@@ -1668,7 +1715,7 @@ export const Lookup = <
           />
 
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
-            {(!disableClearable && !disabled && dirty && !readOnly) && (
+            {!disableClearable && !disabled && dirty && !readOnly && (
               <button
                 type="button"
                 onClick={handleClear}
@@ -1767,7 +1814,7 @@ export const Lookup = <
             ) {
               return;
             }
-            handleClose(e, "escape")
+            handleClose(e, "escape");
           }}
         >
           <div
@@ -1935,8 +1982,8 @@ export const Lookup2 = ({
           (filterFn
             ? filterFn(option, searchTerm)
             : getOptionLabel(option)
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()));
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()));
 
         return {
           ...option,
@@ -1955,13 +2002,13 @@ export const Lookup2 = ({
       ? Array.isArray(valueProp) && multiple
         ? valueProp.map((s) => s.value)
         : !Array.isArray(valueProp)
-          ? [valueProp.value]
-          : []
+        ? [valueProp.value]
+        : []
       : Array.isArray(defaultValue) && multiple
-        ? defaultValue.map(
+      ? defaultValue.map(
           (dv) => options.find((o) => o.value === dv) ?? { valueProp: "" }
         )
-        : [defaultValue];
+      : [defaultValue];
 
     const selected: SelectOption[] = options.map((option) => {
       // const isSelected = valuesToSelect.includes(option.valueProp);
@@ -1997,13 +2044,13 @@ export const Lookup2 = ({
       multiple
         ? ""
         : options?.find((e) =>
-          isOptionEqualToValue(
-            e,
-            options.find((o) => o.value === valuesToSelect[0]) ?? {
-              value: "",
-            }
-          )
-        )?.label ?? ""
+            isOptionEqualToValue(
+              e,
+              options.find((o) => o.value === valuesToSelect[0]) ?? {
+                value: "",
+              }
+            )
+          )?.label ?? ""
     );
   }, [defaultValue, valueProp, multiple, options]);
 
@@ -2051,8 +2098,8 @@ export const Lookup2 = ({
         field.onChange(
           multiple
             ? updateOptions
-              .filter((f) => f != null && f.isSelected)
-              .map((o) => o?.value)
+                .filter((f) => f != null && f.isSelected)
+                .map((o) => o?.value)
             : option.value
         );
       }
@@ -2060,10 +2107,10 @@ export const Lookup2 = ({
       multiple
         ? onSelect?.(updateOptions)
         : onSelect?.(
-          Array.isArray(updateOptions.find((o) => o.isSelected))
-            ? updateOptions.find((o) => o.isSelected)[0]
-            : updateOptions.find((o) => o.isSelected) ?? undefined
-        );
+            Array.isArray(updateOptions.find((o) => o.isSelected))
+              ? updateOptions.find((o) => o.isSelected)[0]
+              : updateOptions.find((o) => o.isSelected) ?? undefined
+          );
 
       setLookupOptions(updateOptions);
       setSearchTerm("");
@@ -2295,7 +2342,7 @@ export const Lookup2 = ({
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 isOpen ||
                 lookupOptions.filter((o) => o != null && o.isSelected).length >
-                0 ||
+                  0 ||
                 searchTerm.length > 0 ||
                 internalValue.length > 0,
               "text-sm": size == "small",
@@ -2315,11 +2362,11 @@ export const Lookup2 = ({
               "pr-10":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.isSelected).length ==
-                0,
+                  0,
               "pr-12":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.isSelected).length >
-                0,
+                  0,
               "text-sm": size == "small",
               "text-base": size == "medium",
             }
@@ -2353,7 +2400,7 @@ export const Lookup2 = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               lookupOptions.filter((d) => d != null && d.isSelected).length >
-              0 && (
+                0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}

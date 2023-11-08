@@ -2,19 +2,27 @@ import { routes } from "@redwoodjs/router";
 import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
 import { useMemo, useState } from "react";
-import { addToDate, adjustCalendarDate, getDaysBetweenDates, getISOWeek, groupBy, toLocalPeriod, toLocaleISODate } from "src/lib/formatters";
+import {
+  addToDate,
+  adjustCalendarDate,
+  getDaysBetweenDates,
+  getISOWeek,
+  groupBy,
+  toLocalPeriod,
+  toLocaleISODate,
+} from "src/lib/formatters";
 import Ripple from "../Ripple/Ripple";
 import { Lookup } from "../Lookup/Lookup";
 
 type ViewType = "day" | "week" | "month" | "year";
-type GanttData<T> = Record<string, { elements: T[]; color?: string[] }>
+type GanttData<T> = Record<string, { elements: T[]; color?: string[] }>;
 type GanttProps<T> = {
   data?: T[];
   group?: keyof T;
   dateStartKey?: keyof T;
   dateEndKey?: keyof T;
   labelKey?: keyof T;
-}
+};
 const Gantt = <T extends Record<string, unknown>>({
   data,
   group,
@@ -23,13 +31,16 @@ const Gantt = <T extends Record<string, unknown>>({
   labelKey,
 }: GanttProps<T>) => {
   const formatDate = (options?: Intl.DateTimeFormatOptions) => {
-    const dateFormatter = new Intl.DateTimeFormat(navigator && navigator.language, options)
+    const dateFormatter = new Intl.DateTimeFormat(
+      navigator && navigator.language,
+      options
+    );
 
     return {
       formatRange: dateFormatter.formatRange,
       format: dateFormatter.format,
-    }
-  }
+    };
+  };
 
   const [dateInfo, setDateInfo] = useState(() => ({
     year: new Date().getFullYear(),
@@ -40,17 +51,17 @@ const Gantt = <T extends Record<string, unknown>>({
       viewType === "year"
         ? new Date().getFullYear().toString()
         : viewType === "month"
-          ? new Date().toLocaleDateString(navigator && navigator.language, {
+        ? new Date().toLocaleDateString(navigator && navigator.language, {
             month: "short",
             year: "numeric",
           })
-          : viewType === "week"
-            ? `Week ${getISOWeek(new Date())}`
-            : new Date().toLocaleDateString(navigator && navigator.language, {
-              month: "2-digit",
-              day: "2-digit",
-              year: "2-digit",
-            }),
+        : viewType === "week"
+        ? `Week ${getISOWeek(new Date())}`
+        : new Date().toLocaleDateString(navigator && navigator.language, {
+            month: "2-digit",
+            day: "2-digit",
+            year: "2-digit",
+          }),
   }));
 
   const calendar = useMemo(() => {
@@ -95,7 +106,6 @@ const Gantt = <T extends Record<string, unknown>>({
     return months;
   }, [dateInfo.year, dateInfo.month]);
 
-
   const getGridColumns = () => {
     if (viewType === "day") {
       return 24;
@@ -131,17 +141,17 @@ const Gantt = <T extends Record<string, unknown>>({
         viewType === "year"
           ? newDate.getFullYear().toString()
           : viewType === "month"
-            ? newDate.toLocaleDateString(navigator && navigator.language, {
+          ? newDate.toLocaleDateString(navigator && navigator.language, {
               month: "short",
               year: "numeric",
             })
-            : viewType === "week"
-              ? `Week ${getISOWeek(newDate)}`
-              : newDate.toLocaleDateString(navigator && navigator.language, {
-                month: "2-digit",
-                day: "2-digit",
-                year: "2-digit",
-              }),
+          : viewType === "week"
+          ? `Week ${getISOWeek(newDate)}`
+          : newDate.toLocaleDateString(navigator && navigator.language, {
+              month: "2-digit",
+              day: "2-digit",
+              year: "2-digit",
+            }),
     }));
   };
 
@@ -160,10 +170,10 @@ const Gantt = <T extends Record<string, unknown>>({
             `#${(
               parseInt(randomColor, 16) + Math.floor(Math.random() * 128)
             ).toString(16)}${hexOpacity}`,
-          ]
-        }
-      }
-    })
+          ],
+        },
+      };
+    });
 
     return generatedData.reduce((acc, cur) => {
       return {
@@ -189,10 +199,12 @@ const Gantt = <T extends Record<string, unknown>>({
     for (const key in ganttData) {
       if (ganttData.hasOwnProperty(key)) {
         const groupData = ganttData[key].elements.filter((season) => {
-          const startYear = new Date(season[dateStartKey].toString()).getFullYear();
+          const startYear = new Date(
+            season[dateStartKey].toString()
+          ).getFullYear();
           const endYear = new Date(season[dateEndKey].toString()).getFullYear();
           return startYear === dateInfo.year || endYear === dateInfo.year;
-        })
+        });
 
         const overlappingGroupElements: T[][] = [];
         const processed: Set<string> = new Set();
@@ -203,23 +215,39 @@ const Gantt = <T extends Record<string, unknown>>({
 
             groupData.forEach((seasonB, j) => {
               if (i !== j) {
-                const startA = new Date(new Date(seasonA[dateStartKey].toString()).toISOString().slice(0, dateFormat.length)).getTime();
-                const startB = new Date(new Date(seasonB[dateStartKey].toString()).toISOString().slice(0, dateFormat.length)).getTime();
-                const endA = new Date(new Date(seasonA[dateEndKey].toString()).toISOString().slice(0, dateFormat.length)).getTime();
-                const endB = new Date(new Date(seasonB[dateEndKey].toString()).toISOString().slice(0, dateFormat.length)).getTime();
+                const startA = new Date(
+                  new Date(seasonA[dateStartKey].toString())
+                    .toISOString()
+                    .slice(0, dateFormat.length)
+                ).getTime();
+                const startB = new Date(
+                  new Date(seasonB[dateStartKey].toString())
+                    .toISOString()
+                    .slice(0, dateFormat.length)
+                ).getTime();
+                const endA = new Date(
+                  new Date(seasonA[dateEndKey].toString())
+                    .toISOString()
+                    .slice(0, dateFormat.length)
+                ).getTime();
+                const endB = new Date(
+                  new Date(seasonB[dateEndKey].toString())
+                    .toISOString()
+                    .slice(0, dateFormat.length)
+                ).getTime();
 
                 if (!(endA < startB || endB < startA)) {
                   overlaps.push(seasonB);
                   processed.add(seasonB.id.toString());
                 }
               }
-            })
+            });
 
             if (overlaps.length > 1) {
               overlappingGroupElements.push(overlaps);
             }
           }
-        })
+        });
 
         if (overlappingGroupElements.length > 0) {
           overlappingElements[key] = overlappingGroupElements;
@@ -227,12 +255,15 @@ const Gantt = <T extends Record<string, unknown>>({
       }
     }
 
-    const maxOverlapCount = Object.values(overlappingElements).reduce((max, group) => {
-      return Math.max(max, group.flat().length);
-    }, 0);
+    const maxOverlapCount = Object.values(overlappingElements).reduce(
+      (max, group) => {
+        return Math.max(max, group.flat().length);
+      },
+      0
+    );
 
     return { overlappingElements, overlappingCount: maxOverlapCount };
-  }, [ganttData, viewType, dateInfo, dateStartKey, dateEndKey])
+  }, [ganttData, viewType, dateInfo, dateStartKey, dateEndKey]);
 
   return (
     <div className="gantt-chart relative p-4 text-black dark:text-white">
@@ -260,7 +291,7 @@ const Gantt = <T extends Record<string, unknown>>({
                   value === "year"
                     ? dateInfo.year.toString()
                     : value === "month"
-                      ? new Date(
+                    ? new Date(
                         dateInfo.year,
                         dateInfo.month,
                         dateInfo.day
@@ -268,17 +299,17 @@ const Gantt = <T extends Record<string, unknown>>({
                         month: "short",
                         year: "numeric",
                       })
-                      : value === "week"
-                        ? `Week ${dateInfo.week}`
-                        : new Date(
-                          dateInfo.year,
-                          dateInfo.month,
-                          dateInfo.day
-                        ).toLocaleDateString(navigator && navigator.language, {
-                          month: "2-digit",
-                          day: "2-digit",
-                          year: "2-digit",
-                        }),
+                    : value === "week"
+                    ? `Week ${dateInfo.week}`
+                    : new Date(
+                        dateInfo.year,
+                        dateInfo.month,
+                        dateInfo.day
+                      ).toLocaleDateString(navigator && navigator.language, {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "2-digit",
+                      }),
               });
             }
           }}
@@ -349,8 +380,8 @@ const Gantt = <T extends Record<string, unknown>>({
                     viewType === "week" || viewType === "day"
                       ? week.week === dateInfo.week
                       : viewType === "year"
-                        ? i === 0
-                        : true
+                      ? i === 0
+                      : true
                   )
                   .map((week, weekIndex) => {
                     return week.dates
@@ -358,7 +389,7 @@ const Gantt = <T extends Record<string, unknown>>({
                         viewType === "year"
                           ? i === week.dates.length - 1
                           : viewType === "day"
-                            ? toLocaleISODate(day.date) ===
+                          ? toLocaleISODate(day.date) ===
                             toLocaleISODate(
                               new Date(
                                 dateInfo.year,
@@ -366,7 +397,7 @@ const Gantt = <T extends Record<string, unknown>>({
                                 dateInfo.day
                               )
                             )
-                            : true
+                          : true
                       )
                       .map(
                         ({ date, hours, isOutsideCurrentMonth }, dateIndex) => {
@@ -416,15 +447,15 @@ const Gantt = <T extends Record<string, unknown>>({
                                                 hourCycle: "h23",
                                               }
                                             ) ===
-                                            new Date().toLocaleString(
-                                              navigator && navigator.language,
-                                              {
-                                                hour: "2-digit",
-                                                hourCycle: "h23",
-                                              }
-                                            ) &&
+                                              new Date().toLocaleString(
+                                                navigator && navigator.language,
+                                                {
+                                                  hour: "2-digit",
+                                                  hourCycle: "h23",
+                                                }
+                                              ) &&
                                             toLocaleISODate(date) ===
-                                            toLocaleISODate(new Date()),
+                                              toLocaleISODate(new Date()),
                                           "font-semibold":
                                             viewType === "week" ||
                                             viewType === "month",
@@ -434,19 +465,19 @@ const Gantt = <T extends Record<string, unknown>>({
                                     >
                                       {viewType === "year"
                                         ? date.toLocaleDateString(
-                                          navigator && navigator.language,
-                                          {
-                                            month: "short",
-                                          }
-                                        )
+                                            navigator && navigator.language,
+                                            {
+                                              month: "short",
+                                            }
+                                          )
                                         : viewType === "day"
-                                          ? hour.toLocaleString(
+                                        ? hour.toLocaleString(
                                             navigator && navigator.language,
                                             {
                                               hour: "2-digit",
                                             }
                                           )
-                                          : date.toLocaleDateString(
+                                        : date.toLocaleDateString(
                                             navigator && navigator.language,
                                             {
                                               day: "numeric",
@@ -474,9 +505,9 @@ const Gantt = <T extends Record<string, unknown>>({
               aria-label="Grid Rows"
               className="col-start-1 col-end-2 row-start-1 grid divide-y divide-black/20 text-black dark:divide-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${Object.keys(ganttData).length *
-                  overlappingCount
-                  }, minmax(3.5rem, 1fr))`,
+                gridTemplateRows: `repeat(${
+                  Object.keys(ganttData).length * overlappingCount
+                }, minmax(3.5rem, 1fr))`,
               }}
               role="rowgroup"
             >
@@ -488,12 +519,14 @@ const Gantt = <T extends Record<string, unknown>>({
                     key={`row-${index}`}
                     role="row"
                   >
-                    <div className="sticky left-0 -ml-20 w-20 pr-2 text-right text-xs uppercase">
+                    <div className="sticky left-0 -ml-20 w-20 border border-transparent pr-2 text-right align-middle text-xs uppercase [&:first-of-type]:border-t-white [&:last-of-type]:border-b-white">
                       {entry}
                     </div>
                   </div>
                   {Array.from({ length: overlappingCount - 1 }).map(() => (
-                    <div className="" role="row" />
+                    <div className="flex items-center" role="row">
+                      {/* <div className="sticky left-0 -ml-20 h-full border-transparent border [&:first-of-type]:border-t-white [&:last-of-type]:border-b-white" /> */}
+                    </div>
                   ))}
                 </>
               ))}
@@ -525,9 +558,9 @@ const Gantt = <T extends Record<string, unknown>>({
               aria-label={`Chart elements`}
               className="col-start-1 col-end-2 row-start-1 -mr-px grid border-l border-r border-b border-black/20 dark:border-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `1.75rem repeat(${Object.keys(ganttData).length *
-                  overlappingCount
-                  }, minmax(0px, 1fr)) auto`,
+                gridTemplateRows: `1.75rem repeat(${
+                  Object.keys(ganttData).length * overlappingCount
+                }, minmax(0px, 1fr)) auto`,
                 gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
@@ -538,17 +571,17 @@ const Gantt = <T extends Record<string, unknown>>({
                   data: v.elements.filter((item) => {
                     return viewType === "day"
                       ? toLocaleISODate(
-                        new Date(item[dateStartKey].toString())
-                      ) ===
-                      toLocaleISODate(
-                        new Date(
-                          dateInfo.year,
-                          dateInfo.month,
-                          dateInfo.day
-                        )
-                      )
+                          new Date(item[dateStartKey].toString())
+                        ) ===
+                          toLocaleISODate(
+                            new Date(
+                              dateInfo.year,
+                              dateInfo.month,
+                              dateInfo.day
+                            )
+                          )
                       : viewType === "week"
-                        ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
+                      ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
                           dateInfo.week &&
                           new Date(
                             item[dateStartKey].toString()
@@ -558,10 +591,10 @@ const Gantt = <T extends Record<string, unknown>>({
                           new Date(
                             item[dateEndKey].toString()
                           ).getFullYear() === dateInfo.year)
-                        : viewType === "month"
-                          ? toLocalPeriod(
-                            new Date(item[dateStartKey].toString())
-                          ) ===
+                      : viewType === "month"
+                      ? toLocalPeriod(
+                          new Date(item[dateStartKey].toString())
+                        ) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -569,7 +602,7 @@ const Gantt = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           ) ||
-                          toLocalPeriod(new Date(item[dateEndKey].toString())) ===
+                        toLocalPeriod(new Date(item[dateEndKey].toString())) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -577,13 +610,13 @@ const Gantt = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           )
-                          : viewType === "year"
-                            ? new Date(
-                              item[dateStartKey].toString()
-                            ).getFullYear() === dateInfo.year ||
-                            new Date(item[dateEndKey].toString()).getFullYear() ===
-                            dateInfo.year
-                            : true;
+                      : viewType === "year"
+                      ? new Date(
+                          item[dateStartKey].toString()
+                        ).getFullYear() === dateInfo.year ||
+                        new Date(item[dateEndKey].toString()).getFullYear() ===
+                          dateInfo.year
+                      : true;
                   }),
                 }))
                 .map((data, groupIndex) => {
@@ -591,9 +624,9 @@ const Gantt = <T extends Record<string, unknown>>({
                     const overlappingItems = data.data.filter((otherItem) => {
                       return (
                         new Date(otherItem[dateStartKey].toString()) <=
-                        new Date(item[dateEndKey].toString()) &&
+                          new Date(item[dateEndKey].toString()) &&
                         new Date(otherItem[dateEndKey].toString()) >=
-                        new Date(item[dateStartKey].toString())
+                          new Date(item[dateStartKey].toString())
                       );
                     });
                     const extra =
@@ -607,45 +640,43 @@ const Gantt = <T extends Record<string, unknown>>({
                         className="relative mt-px flex"
                         aria-label={`${data.label}-${groupIndex}-${data.label}`}
                         style={{
-                          gridRow: `${groupIndex *
-                            overlappingCount +
-                            2 +
-                            extra
-                            } / span 1`,
+                          gridRow: `${
+                            groupIndex * overlappingCount + 2 + extra
+                          } / span 1`,
                           gridColumnStart:
                             viewType === "day"
                               ? new Date(
-                                item[dateStartKey].toString()
-                              ).getHours() + 1
+                                  item[dateStartKey].toString()
+                                ).getHours() + 1
                               : viewType === "week"
-                                ? new Date(item[dateStartKey].toString()).getDay()
-                                : viewType === "month"
-                                  ? new Date(
+                              ? new Date(item[dateStartKey].toString()).getDay()
+                              : viewType === "month"
+                              ? new Date(
+                                  item[dateStartKey].toString()
+                                ).getDate()
+                              : viewType === "year"
+                              ? new Date(
+                                  item[dateStartKey].toString()
+                                ).getFullYear() < dateInfo.year
+                                ? 1
+                                : new Date(
                                     item[dateStartKey].toString()
-                                  ).getDate()
-                                  : viewType === "year"
-                                    ? new Date(
-                                      item[dateStartKey].toString()
-                                    ).getFullYear() < dateInfo.year
-                                      ? 1
-                                      : new Date(
-                                        item[dateStartKey].toString()
-                                      ).getMonth() + 1
-                                    : 1,
+                                  ).getMonth() + 1
+                              : 1,
                           gridColumnEnd:
                             (viewType === "day"
                               ? new Date(
-                                item[dateEndKey].toString()
-                              ).getHours() + 1
+                                  item[dateEndKey].toString()
+                                ).getHours() + 1
                               : viewType === "week"
-                                ? new Date(item[dateEndKey].toString()).getDay()
-                                : viewType === "month"
-                                  ? new Date(item[dateEndKey].toString()).getDate()
-                                  : viewType === "year"
-                                    ? new Date(
-                                      item[dateEndKey].toString()
-                                    ).getMonth() + 1
-                                    : 7) + 1,
+                              ? new Date(item[dateEndKey].toString()).getDay()
+                              : viewType === "month"
+                              ? new Date(item[dateEndKey].toString()).getDate()
+                              : viewType === "year"
+                              ? new Date(
+                                  item[dateEndKey].toString()
+                                ).getMonth() + 1
+                              : 7) + 1,
                         }}
                       >
                         <Link
@@ -655,18 +686,19 @@ const Gantt = <T extends Record<string, unknown>>({
                           )}
                           style={{
                             borderRadius: "0.5rem",
-                            background: `linear-gradient(to right, ${data.colors.join(" 30%, ")})`,
-                            borderColor: `${data.colors[0].substring(
-                              0,
-                              7
-                            )}`,
+                            background: `linear-gradient(to right, ${data.colors.join(
+                              " 30%, "
+                            )})`,
+                            borderColor: `${data.colors[0].substring(0, 7)}`,
                           }}
                         >
                           <span>{item[labelKey].toString()}</span>
-                          <time>{formatDate({ dateStyle: 'short' }).formatRange(
-                            new Date(item[dateStartKey].toString()),
-                            new Date(item[dateEndKey].toString())
-                          )}</time>
+                          <time>
+                            {formatDate({ dateStyle: "short" }).formatRange(
+                              new Date(item[dateStartKey].toString()),
+                              new Date(item[dateEndKey].toString())
+                            )}
+                          </time>
                         </Link>
                       </li>
                     );
@@ -680,4 +712,4 @@ const Gantt = <T extends Record<string, unknown>>({
   );
 };
 
-export default Gantt
+export default Gantt;
