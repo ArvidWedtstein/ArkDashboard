@@ -144,9 +144,8 @@ type ToggleButtonGroupProps = {
 
 
 export const ToggleButton = (props) => {
-  console.log(props)
   return (
-    <button type="button" tabIndex={0} {...props} className={clsx("inline-flex items-center justify-center relative box-border cursor-pointer select-none appearance-none font-medium p-2 uppercase border text-sm border-black/10 dark:text-white text-black dark:border-white/10", props.className)}>
+    <button type="button" tabIndex={0} {...props} className={clsx("inline-flex rounded items-center justify-center relative box-border cursor-pointer select-none appearance-none font-medium p-2 uppercase border text-sm border-black/10 dark:text-white text-black dark:border-white/10", props.className)}>
       {props.children}
       <Ripple />
     </button>
@@ -165,7 +164,7 @@ export const ToggleButtonGroup = ({
   // https://github.com/mui/material-ui/blob/a13c0c026692aafc303756998a78f1d6c2dd707d/packages/mui-material/src/ToggleButtonGroup/ToggleButtonGroup.js
 
   let classes = orientation === 'horizontal'
-    ? `[&:not(:first-of-type)]:!-ml-px [&:not(:first-of-type)]:!border-l-transparent [&:not(:first-of-type)]:!rounded-l-none [&:not(:last-of-type)]:!rounded-r-none`
+    ? `[&:not(:first-of-type)]:-ml-px [&:not(:first-of-type)]:!border-l-transparent [&:not(:first-of-type)]:!rounded-l-none [&:not(:last-of-type)]:!rounded-r-none`
     : `[&:not(:first-of-type)]:!-mt-px [&:not(:first-of-type)]:!border-t-transparent [&:not(:first-of-type)]:!rounded-t-none [&:not(:last-of-type)]:!rounded-b-none`
 
   const handleChange = (event, buttonValue) => {
@@ -206,7 +205,7 @@ export const ToggleButtonGroup = ({
     return value === candidate;
   }
   return (
-    <div role="group" className={clsx("rounded", className, classes)}>
+    <div role="group" className={clsx("rounded", className)}>
       {React.Children.map(children, (child) => {
         if (!React.isValidElement(child)) {
           return null;
