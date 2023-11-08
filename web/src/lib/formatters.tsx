@@ -50,7 +50,7 @@ export const formatNumber = (
   num: number,
   options?: Intl.NumberFormatOptions
 ): string => {
-  return new Intl.NumberFormat("en-GB", options).format(num);
+  return new Intl.NumberFormat(navigator && navigator.language, options).format(num);
 };
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
@@ -85,7 +85,7 @@ export const timeTag = (
     return "";
   }
 
-  const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
+  const formattedDateTime = new Date(dateTime).toLocaleString(navigator && navigator.language, {
     timeStyle: timeStyle == "none" ? undefined : timeStyle || "short",
     dateStyle: dateStyle || "long",
   });
@@ -710,21 +710,6 @@ export function toISODate(date: Date | null): string | null {
 
   return null;
 }
-
-/**
- * TODO: remove
- * @deprecated not in use
- * @param num
- * @param unit
- * @returns
- */
-export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
-  return new Intl.RelativeTimeFormat("en", {
-    localeMatcher: "best fit", // other values: "lookup"
-    numeric: "always", // other values: "auto"
-    style: "long", // other values: "short" or "narrow"
-  }).format(num, unit);
-};
 
 /**
  *

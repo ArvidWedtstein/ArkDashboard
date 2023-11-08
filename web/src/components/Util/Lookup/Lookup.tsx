@@ -873,10 +873,6 @@ export const Lookup = <
             [
               `ArkDashboard: Unable to find the input element. It was resolved to ${inputRef.current} while an HTMLInputElement was expected.`,
               `Instead, ${componentName} expects an input element.`,
-              "",
-              componentName === "useAutocomplete"
-                ? "Make sure you have bound getInputProps correctly and that the normal ref/effect resolutions order is guaranteed."
-                : "Make sure you have customized the input component correctly.",
             ].join("\n")
           );
         }

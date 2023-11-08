@@ -1,6 +1,7 @@
 import { useController } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
+import Ripple from "../Ripple/Ripple";
 
 interface CheckboxGroupProps {
   name?: string;
@@ -122,5 +123,111 @@ const CheckboxGroup = ({
     </div>
   );
 };
+
+type ToggleButtonGroupProps = {
+  value?: string;
+  exclusive?: boolean;
+  onChange?: (event: React.MouseEvent<HTMLElement>, value: string) => void;
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+  orientation?: "vertical" | "horizontal";
+  size?: "small" | "medium" | "large";
+  validation?: {
+    valueAsBoolean?: boolean;
+    valueAsJSON?: boolean;
+    valueAsNumber?: boolean;
+    required?: boolean;
+    single?: boolean;
+  };
+};
+
+
+export const ToggleButton = (props) => {
+  console.log(props)
+  return (
+    <button type="button" tabIndex={0} {...props} className={clsx("inline-flex items-center justify-center relative box-border cursor-pointer select-none appearance-none font-medium p-2 uppercase border text-sm border-black/10 dark:text-white text-black dark:border-white/10", props.className)}>
+      {props.children}
+      <Ripple />
+    </button>
+  )
+}
+export const ToggleButtonGroup = ({
+  value,
+  disabled = false,
+  onChange,
+  className,
+  orientation = "horizontal",
+  size = "medium",
+  exclusive = false,
+  children,
+}: ToggleButtonGroupProps) => {
+  // https://github.com/mui/material-ui/blob/a13c0c026692aafc303756998a78f1d6c2dd707d/packages/mui-material/src/ToggleButtonGroup/ToggleButtonGroup.js
+
+  let classes = orientation === 'horizontal'
+    ? `[&:not(:first-of-type)]:!-ml-px [&:not(:first-of-type)]:!border-l-transparent [&:not(:first-of-type)]:!rounded-l-none [&:not(:last-of-type)]:!rounded-r-none`
+    : `[&:not(:first-of-type)]:!-mt-px [&:not(:first-of-type)]:!border-t-transparent [&:not(:first-of-type)]:!rounded-t-none [&:not(:last-of-type)]:!rounded-b-none`
+
+  const handleChange = (event, buttonValue) => {
+    if (!onChange) {
+      return;
+    }
+
+    const index = value && value.indexOf(buttonValue);
+    let newValue;
+
+    if (value && index >= 0) {
+      newValue = value.slice();
+      newValue.splice(index, 1);
+    } else {
+      newValue = value ? value.concat(buttonValue) : [buttonValue];
+    }
+
+    onChange(event, newValue);
+  };
+
+  const handleExclusiveChange = (event, buttonValue) => {
+    if (!onChange) {
+      return;
+    }
+
+    onChange(event, value === buttonValue ? null : buttonValue);
+  };
+
+  function isValueSelected(value, candidate) {
+    if (candidate === undefined || value === undefined) {
+      return false;
+    }
+
+    if (Array.isArray(candidate)) {
+      return candidate.indexOf(value) >= 0;
+    }
+
+    return value === candidate;
+  }
+  return (
+    <div role="group" className={clsx("rounded", className, classes)}>
+      {React.Children.map(children, (child) => {
+        if (!React.isValidElement(child)) {
+          return null;
+        }
+
+        return React.cloneElement(child as React.ReactElement<any>, {
+          className: clsx(child.props.className, classes, {
+            'bg-zinc-300 dark:bg-zinc-600': isValueSelected(child.props.value, value),
+            'bg-zinc-100 dark:bg-zinc-700': !isValueSelected(child.props.value, value),
+          }),
+          size: child.props.size || size,
+          selected: child.props.selected === undefined
+            ? isValueSelected(child.props.value, value)
+            : child.props.selected,
+          onClick: exclusive ? handleExclusiveChange : handleChange,
+          disabled: disabled || child.props.disabled,
+          "aria-pressed": false,
+        });
+      })}
+    </div>
+  )
+}
 
 export default CheckboxGroup;

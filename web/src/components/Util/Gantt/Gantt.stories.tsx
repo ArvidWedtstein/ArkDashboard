@@ -4,8 +4,8 @@
 // ```tsx
 // import type { ComponentStory } from '@storybook/react'
 //
-// export const generated: ComponentStory<typeof Calendar> = (args) => {
-//   return <Calendar {...args} />
+// export const generated: ComponentStory<typeof Gantt> = (args) => {
+//   return <Gantt {...args} />
 // }
 // ```
 //
@@ -13,13 +13,13 @@
 
 import type { ComponentMeta } from '@storybook/react'
 
-import Calendar from './Calendar'
+import Gantt from './Gantt'
 
 export const generated = () => {
-  return <Calendar />
+  return <Gantt />
 }
 
 export default {
-  title: 'Components/Calendar',
-  component: Calendar,
-} as ComponentMeta<typeof Calendar>
+  title: 'Components/Gantt',
+  component: Gantt,
+} as ComponentMeta<typeof Gantt>
