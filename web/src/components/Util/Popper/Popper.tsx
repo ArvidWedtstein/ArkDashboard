@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 type PopperProps = {
@@ -42,7 +42,7 @@ const Popper = ({
     setPopperPosition({ top, left });
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     updatePosition();
 
     window.addEventListener("scroll", updatePosition);

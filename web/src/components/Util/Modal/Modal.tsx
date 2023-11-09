@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 type iModal = {
   isOpen?: boolean;
   image?: string;
+  mimetype?: string;
   title?: string;
   content?: string | React.ReactNode;
   actions?: React.ReactNode;
@@ -22,7 +23,7 @@ type iModal = {
  *
  * @returns a modal
  */
-export const Modal = ({ image, title, content }: iModal) => {
+export const Modal = ({ image, title, content, mimetype }: iModal) => {
   const { modalOpen, closeModal } = useModal();
 
   return ReactDOM.createPortal(
@@ -44,9 +45,9 @@ export const Modal = ({ image, title, content }: iModal) => {
     >
       <div
         className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
+        // onClick={(e) => {
+        //   e.stopPropagation();
+        // }}
       >
         <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
@@ -79,7 +80,17 @@ export const Modal = ({ image, title, content }: iModal) => {
             </button>
           </div>
           <div className="space-y-6 p-6">
-            {image && <img src={image} className="w-full rounded" />}
+            {image && mimetype?.startsWith("image") ? (
+              <img src={image} className="w-full rounded" />
+            ) : (
+              <video
+                src={image}
+                className="w-full rounded"
+                autoPlay={false}
+                controlsList="nodownload"
+                controls
+              />
+            )}
             {content &&
               (typeof content == "string" ? (
                 <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
@@ -101,8 +112,13 @@ type FormModalProps = {
   isOpen: boolean;
   onClose?: () => void;
   children?: React.ReactNode;
-}
-export const FormModal = ({ title, isOpen, children, onClose }: FormModalProps) => {
+};
+export const FormModal = ({
+  title,
+  isOpen,
+  children,
+  onClose,
+}: FormModalProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -192,17 +208,17 @@ type ModalContextValue = {
   openModal: () => void;
   closeModal: () => void;
   modalOpen: boolean;
-}
+};
 
 const ModalContext = createContext<ModalContextValue>({
-  openModal: () => { },
-  closeModal: () => { },
+  openModal: () => {},
+  closeModal: () => {},
   modalOpen: false,
 });
 
 type ModalProviderProps = {
   children: JSX.Element;
-}
+};
 
 // TODO: https://stackoverflow.com/questions/4770025/how-to-disable-scrolling-temporarily
 export const ModalProvider = ({ children }: ModalProviderProps) => {
@@ -231,4 +247,4 @@ export const useModal = () => {
   }
 
   return context;
-}
+};
