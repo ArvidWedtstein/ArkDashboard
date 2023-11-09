@@ -366,6 +366,7 @@ const Basespot = ({ basespot }: Props) => {
                 slides={images.map((img) => ({ url: img.url }))}
                 autoPlay={false}
                 imageTabs={true}
+                border={false}
               />
             </div>
           </div>

@@ -170,7 +170,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           )}
         </section>
 
-        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
+        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden text-base lg:mb-0 lg:w-1/2">
               <p>
@@ -194,7 +194,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
         </section>
 
         {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent?.length > 0 && (
-          <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-gray-200">
+          <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-white/20">
             <h1
               id="event-heading"
               className="title-font mt-8 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
@@ -222,7 +222,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                   tags,
                 }) => {
                   return {
-                    tabColor: `bg-pea-500`,
                     content: (
                       <div key={id} className="flex justify-center px-5 py-12">
                         <div className="text-center lg:w-3/4 xl:w-1/2">
@@ -267,7 +266,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           </section>
         )}
 
-        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
+        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
               {timelineSeasonBasespot.map_id && (
@@ -358,21 +357,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                         className="rw-link"
                       >
                         {timelineSeasonBasespot.Basespot.name}
-                        <svg
-                          className="ml-2 h-3.5 w-3.5"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
                       </Link>
                     </p>
                   </div>
