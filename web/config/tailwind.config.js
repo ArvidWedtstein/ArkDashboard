@@ -152,10 +152,9 @@ module.exports = {
     require("@tailwindcss/typography"),
     require("autoprefixer"),
     plugin(({ addVariant, addComponents, theme }) => {
-      addVariant("dataready", '&[data-ready="true"]');
       addVariant("not-last", "&:not(:last-child)");
       addVariant("not-only", "&:not(:only-child)");
-      addVariant("not-firstlast", "&:not(:first-child):not(:last-child)");
+      addVariant("between", "&:not(:first-child):not(:last-child)");
       addComponents({
         ".rw-badge": {
           display: "inline-flex",

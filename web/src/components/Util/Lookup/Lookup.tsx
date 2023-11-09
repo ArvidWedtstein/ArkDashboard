@@ -59,18 +59,18 @@ function createFilterOptions<Value>(
     const filteredOptions = !input
       ? options
       : options.filter((option) => {
-          let candidate = (stringify || getOptionLabel)(option);
-          if (ignoreCase) {
-            candidate = candidate.toLowerCase();
-          }
-          if (ignoreAccents) {
-            candidate = stripDiacritics(candidate);
-          }
+        let candidate = (stringify || getOptionLabel)(option);
+        if (ignoreCase) {
+          candidate = candidate.toLowerCase();
+        }
+        if (ignoreAccents) {
+          candidate = stripDiacritics(candidate);
+        }
 
-          return matchFrom === "start"
-            ? candidate.indexOf(input) === 0
-            : candidate.indexOf(input) > -1;
-        });
+        return matchFrom === "start"
+          ? candidate.indexOf(input) === 0
+          : candidate.indexOf(input) > -1;
+      });
 
     return typeof limit === "number"
       ? filteredOptions.slice(0, limit)
@@ -140,10 +140,10 @@ interface FilterOptionsState<Value> {
 export type LookupInputChangeReason = "input" | "reset" | "clear";
 export type LookupValue<Value, Multiple, DisableClearable> =
   Multiple extends true
-    ? Array<Value | never>
-    : DisableClearable extends true
-    ? NonNullable<Value | never>
-    : Value | null | never;
+  ? Array<Value | never>
+  : DisableClearable extends true
+  ? NonNullable<Value | never>
+  : Value | null | never;
 
 interface LookupGroupedOption<Value = string> {
   key: number;
@@ -286,9 +286,14 @@ export const Lookup = <
     inputValue: inputValueProp,
     helperText,
     validation,
-    valueKey = Object.keys(options[0]).includes("value")
-      ? ("value" as keyof Value)
-      : (Object.keys(options[0])[0] as keyof Value),
+    // TODO: remove this crap
+    valueKey = options && options.length > 0
+      ? Object.keys(options[0]).includes("value")
+        ? ("value" as keyof Value)
+        : options.every(d => typeof d === 'object')
+          ? Object.keys(options[0])[0] as keyof Value
+          : null
+      : null,
     loadingText = "Loading…",
     noOptionsText = "No options",
     margin = "normal",
@@ -368,10 +373,9 @@ export const Lookup = <
     default:
       multiple && Array.isArray(defaultValue)
         ? options.filter((option) =>
-            defaultValue.some((value) => value === option[valueKey])
-          )
-        : // .map((o) => o[valueKey] as Value)
-          options.find((option) => option[valueKey] === defaultValue) || null,
+          defaultValue.some((value) => value === (typeof option === 'object' ? option[valueKey] : option))
+        )
+        : options.find((option) => (typeof option === 'object' ? option[valueKey] : option) === defaultValue) || null,
     name: componentName,
   });
 
@@ -440,25 +444,25 @@ export const Lookup = <
 
   const filteredOptions: Value[] = open
     ? filterOptions(
-        options.filter((option) => {
-          if (
-            filterSelectedOptions &&
-            (multiple && Array.isArray(value) ? value : [value as Value]).some(
-              (value2) =>
-                value2 !== null && isOptionEqualToValue(option, value2)
-            )
-          ) {
-            return false;
-          }
-          return true;
-        }),
-
-        {
-          inputValue:
-            inputValueIsSelectedValue && inputPristine ? "" : inputValue,
-          getOptionLabel,
+      options.filter((option) => {
+        if (
+          filterSelectedOptions &&
+          (multiple && Array.isArray(value) ? value : [value as Value]).some(
+            (value2) =>
+              value2 !== null && isOptionEqualToValue(option, value2)
+          )
+        ) {
+          return false;
         }
-      )
+        return true;
+      }),
+
+      {
+        inputValue:
+          inputValueIsSelectedValue && inputPristine ? "" : inputValue,
+        getOptionLabel,
+      }
+    )
     : [];
 
   const previousProps = usePreviousProps({
@@ -494,10 +498,9 @@ export const Lookup = <
         console.warn(
           [
             `ArkDashboard: The value provided to ${componentName} is invalid.`,
-            `None of the options match with \`${
-              missingValue.length > 1
-                ? JSON.stringify(missingValue)
-                : JSON.stringify(missingValue[0])
+            `None of the options match with \`${missingValue.length > 1
+              ? JSON.stringify(missingValue)
+              : JSON.stringify(missingValue[0])
             }\`.`,
             "You can use the `isOptionEqualToValue` prop to customize the equality test.",
           ].join("\n")
@@ -541,8 +544,8 @@ export const Lookup = <
       const nextFocusDisabled = disabledItemsFocusable
         ? false
         : !option ||
-          option.disabled ||
-          option.getAttribute("aria-disabled") === "true";
+        option.disabled ||
+        option.getAttribute("aria-disabled") === "true";
 
       if (option && option.hasAttribute("tabindex") && !nextFocusDisabled) {
         // The next option is available
@@ -765,9 +768,9 @@ export const Lookup = <
       previousProps.inputValue === inputValue &&
       (multiple && Array.isArray(value) && Array.isArray(previousProps.value)
         ? value.length === previousProps.value.length &&
-          previousProps.value.every(
-            (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
-          )
+        previousProps.value.every(
+          (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
+        )
         : isSameValue(previousProps.value, value))
     ) {
       const previousHighlightedOption =
@@ -819,7 +822,7 @@ export const Lookup = <
         Array.isArray(value) &&
         currentOption &&
         value.findIndex((val) => isOptionEqualToValue(currentOption, val)) !==
-          -1
+        -1
       ) {
         return;
       }
@@ -1410,11 +1413,11 @@ export const Lookup = <
   let groupedOptions:
     | Value[]
     | {
-        key: number;
-        index: number;
-        group: string;
-        options: Value[];
-      }[] = filteredOptions;
+      key: number;
+      index: number;
+      group: string;
+      options: Value[];
+    }[] = filteredOptions;
   if (groupBy) {
     const indexBy = new Map();
     let warn = false;
@@ -1982,8 +1985,8 @@ export const Lookup2 = ({
           (filterFn
             ? filterFn(option, searchTerm)
             : getOptionLabel(option)
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()));
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()));
 
         return {
           ...option,
@@ -2002,13 +2005,13 @@ export const Lookup2 = ({
       ? Array.isArray(valueProp) && multiple
         ? valueProp.map((s) => s.value)
         : !Array.isArray(valueProp)
-        ? [valueProp.value]
-        : []
+          ? [valueProp.value]
+          : []
       : Array.isArray(defaultValue) && multiple
-      ? defaultValue.map(
+        ? defaultValue.map(
           (dv) => options.find((o) => o.value === dv) ?? { valueProp: "" }
         )
-      : [defaultValue];
+        : [defaultValue];
 
     const selected: SelectOption[] = options.map((option) => {
       // const isSelected = valuesToSelect.includes(option.valueProp);
@@ -2044,13 +2047,13 @@ export const Lookup2 = ({
       multiple
         ? ""
         : options?.find((e) =>
-            isOptionEqualToValue(
-              e,
-              options.find((o) => o.value === valuesToSelect[0]) ?? {
-                value: "",
-              }
-            )
-          )?.label ?? ""
+          isOptionEqualToValue(
+            e,
+            options.find((o) => o.value === valuesToSelect[0]) ?? {
+              value: "",
+            }
+          )
+        )?.label ?? ""
     );
   }, [defaultValue, valueProp, multiple, options]);
 
@@ -2098,8 +2101,8 @@ export const Lookup2 = ({
         field.onChange(
           multiple
             ? updateOptions
-                .filter((f) => f != null && f.isSelected)
-                .map((o) => o?.value)
+              .filter((f) => f != null && f.isSelected)
+              .map((o) => o?.value)
             : option.value
         );
       }
@@ -2107,10 +2110,10 @@ export const Lookup2 = ({
       multiple
         ? onSelect?.(updateOptions)
         : onSelect?.(
-            Array.isArray(updateOptions.find((o) => o.isSelected))
-              ? updateOptions.find((o) => o.isSelected)[0]
-              : updateOptions.find((o) => o.isSelected) ?? undefined
-          );
+          Array.isArray(updateOptions.find((o) => o.isSelected))
+            ? updateOptions.find((o) => o.isSelected)[0]
+            : updateOptions.find((o) => o.isSelected) ?? undefined
+        );
 
       setLookupOptions(updateOptions);
       setSearchTerm("");
@@ -2342,7 +2345,7 @@ export const Lookup2 = ({
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 isOpen ||
                 lookupOptions.filter((o) => o != null && o.isSelected).length >
-                  0 ||
+                0 ||
                 searchTerm.length > 0 ||
                 internalValue.length > 0,
               "text-sm": size == "small",
@@ -2362,11 +2365,11 @@ export const Lookup2 = ({
               "pr-10":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.isSelected).length ==
-                  0,
+                0,
               "pr-12":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.isSelected).length >
-                  0,
+                0,
               "text-sm": size == "small",
               "text-base": size == "medium",
             }
@@ -2400,7 +2403,7 @@ export const Lookup2 = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               lookupOptions.filter((d) => d != null && d.isSelected).length >
-                0 && (
+              0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}

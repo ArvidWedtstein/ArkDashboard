@@ -337,7 +337,7 @@ const Map = ({ map }: Props) => {
           </div>
           <div className="grid grid-flow-row gap-3 md:grid-cols-2">
             <CheckboxGroup
-              size="md"
+              size="medium"
               options={types}
               onChange={(_, values) => {
                 setSelectedTypes(
@@ -369,8 +369,8 @@ const Map = ({ map }: Props) => {
                       color: `${f.color}${checkedItems.includes(
                         `${entry.type}|${entry.latitude}-${entry.longitude}`
                       )
-                          ? "1A"
-                          : "FF"
+                        ? "1A"
+                        : "FF"
                         }`,
                       image: entry.item_id !== null ? f.image : null,
                     }))

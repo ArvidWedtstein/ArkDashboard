@@ -38,7 +38,7 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
     if (!node.parentNode) return;
 
     const rippleSize = Math.max(node.clientWidth, node.clientHeight);
-    const duration = Math.sqrt(rippleSize) * 100;
+    const duration = Math.sqrt(rippleSize) * 90;
 
     const localX =
       event.clientX - node.getBoundingClientRect().left - rippleSize / 2;

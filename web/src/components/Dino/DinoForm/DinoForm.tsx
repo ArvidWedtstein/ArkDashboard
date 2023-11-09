@@ -342,17 +342,9 @@ const DinoForm = (props: DinoFormProps) => {
               defaultChecked={props.dino?.disable_mult}
             />
 
-            <Label
-              name="type"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Dino Type
-            </Label>
-
             <CheckboxGroup
               name="type"
-              defaultValue={props.dino?.type}
+              defaultValue={props.dino?.type ?? []}
               validation={{
                 required: true,
               }}
@@ -395,7 +387,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Temperament"
               name="temperament"
-              defaultValue={props.dino?.temperament}
+              defaultValue={props.dino?.temperament ?? "Neutral"}
               options={[
                 "Aggressive",
                 "Angry",
@@ -431,7 +423,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Target Team"
               name="targeting_team_name"
-              defaultValue={props.dino?.targeting_team_name}
+              defaultValue={props.dino?.targeting_team_name ?? "TargetOnlyPlayers"}
               getOptionLabel={(option) => option.label}
               isOptionEqualToValue={(option, value) => option.value === value.value}
               options={[
