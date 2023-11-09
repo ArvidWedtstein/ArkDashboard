@@ -1,4 +1,4 @@
-import { Link, routes } from "@redwoodjs/router";
+import { routes } from "@redwoodjs/router";
 import { Card, CardActionArea, CardMedia } from "src/components/Util/Card/Card";
 import type { FindTimelineSeasonBasespots } from "types/graphql";
 
@@ -18,7 +18,7 @@ const TimelineSeasonBasespotsList = ({
                 image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220618173551_1.jpg?t=2023-06-28T09%3A03%3A09.582Z`}
                 title="base"
                 component="div"
-                className="h-full min-h-[6rem] w-full transition duration-200 ease-in group-hover:rotate-2 group-hover:scale-110"
+                className="h-full min-h-[10rem] w-full transition duration-200 ease-in group-hover:rotate-2 group-hover:scale-110"
               >
                 <CardActionArea
                   className="from-0% to-90% h-full w-full bg-gradient-to-t from-[#001022cc] to-[#f0f4fd33]"

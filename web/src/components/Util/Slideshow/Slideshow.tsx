@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useCallback, useEffect, useState, useRef } from "react";
-import { BgColor } from "src/lib/formatters";
+import { ArrayElement, BgColor } from "src/lib/formatters";
 
 interface ISlideshowProps {
   className?: string;
@@ -12,6 +12,7 @@ interface ISlideshowProps {
   slide?: number;
   border?: boolean;
   onSlideChange?: (index: number) => void;
+  renderSlide?: (slide: ArrayElement<ISlideshowProps["slides"]>) => React.ReactNode;
   slides: {
     url?: string;
     content?: React.ReactNode;
@@ -29,6 +30,7 @@ const Slideshow = ({
   imageTabs = false,
   delay = 5000,
   onSlideChange,
+  renderSlide,
   slide = 0,
   border = true,
   ...props

@@ -336,6 +336,8 @@ const Map = ({
           size="small"
           defaultValue={mapType}
           disabled={disable_map_type}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+          getOptionLabel={(option) => option.label}
           options={[
             { label: "Drawn", value: "img" },
             { label: "Topographic", value: "topographic_img" },
@@ -346,7 +348,7 @@ const Map = ({
           }}
         />
         <button
-          className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
+          className="rw-button !ml-0 rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => {
             reset();
           }}
