@@ -1,5 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { CheckmarkIcon } from "@redwoodjs/web/dist/toast";
+import clsx from "clsx";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Gantt from "src/components/Util/Gantt/Gantt";
 import Ripple from "src/components/Util/Ripple/Ripple";
@@ -33,7 +34,10 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
     },
   };
 
-  const [val, setVal] = React.useState(["left", "center"]);
+
+
+
+
   return (
     <article className="rw-segment overflow-x-auto">
       <header className="rw-segment-header">
