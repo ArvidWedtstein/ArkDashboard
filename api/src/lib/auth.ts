@@ -6,9 +6,7 @@ import {
 } from "@redwoodjs/graphql-server";
 import { db } from "./db";
 import type { Profile as PrismaUser } from "@prisma/client";
-import { Context } from "@redwoodjs/graphql-server/dist/functions/types";
 import { permission } from "types/graphql";
-import { logger } from "./logger";
 /**
  * Represents the user attributes returned by the decoding the
  * Authentication provider's JWT together with an optional list of roles.
@@ -51,6 +49,10 @@ export const getCurrentUser = async (
   decoded: Decoded
 ): Promise<RedwoodUser | null> => {
   try {
+    if (context.currentUser) {
+      return context.currentUser;
+    }
+
     const user = await db.profile.findUnique({
       select: {
         id: true,
@@ -58,6 +60,7 @@ export const getCurrentUser = async (
         created_at: true,
         username: true,
         avatar_url: true,
+        email: false,
         role_id: true,
         full_name: true,
         status: true,
@@ -90,7 +93,6 @@ export const getCurrentUser = async (
       },
     };
   } catch (error) {
-    // console.log(error);
     return {
       id: decoded.sub.toString(),
       roles: parseJWT({ decoded: decoded }).roles,

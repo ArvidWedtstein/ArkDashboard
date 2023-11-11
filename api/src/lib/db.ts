@@ -19,7 +19,7 @@ BigInt.prototype.toJSON = function () {
  */
 export const db = new PrismaClient({
   // errorFormat: "minimal",
-  // errorFormat: "pretty",
+  errorFormat: "pretty",
   log: emitLogLevels(["info", "warn", "error"]), // [{ emit: 'stdout', level: 'warn' }, { emit: 'stdout', level: 'error' }, { emit: 'stdout', level: 'info' }]
 });
 

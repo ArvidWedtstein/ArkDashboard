@@ -7,9 +7,9 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route, Private } from '@redwoodjs/router'
+import { Set, Router, Route, Private } from "@redwoodjs/router";
 
-import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
+import ScaffoldLayout from "src/layouts/ScaffoldLayout";
 
 import MainLayout from "src/layouts/MainLayout/MainLayout";
 
@@ -18,7 +18,7 @@ import { useAuth } from "./auth";
 const Routes = () => {
   return (
     <Router useAuth={useAuth} pageLoadingDelay={0}>
-      <Set wrap={MainLayout}>
+      <Set wrap={MainLayout} whileLoadingAuth={HomePage}>
         {/*whileLoadingPage*/}
         <Route path="/terms" page={TermsPage} name="terms" />
         <Route
@@ -26,7 +26,7 @@ const Routes = () => {
           page={MaterialCalculatorPage}
           name="materialCalculator"
         />
-        <Route path="/" page={HomePage} name="home" />
+        <Route path="/" page={HomePage} name="home" prerender />
 
         <Route path="/gtw" page={GTWPage} name="gtw" />
 
@@ -220,16 +220,38 @@ const Routes = () => {
           <Route path="/maps/{id:Int}" page={MapMapPage} name="map" />
           <Route path="/maps" page={MapMapsPage} name="maps" />
         </Set>
-        <Set wrap={ScaffoldLayout} title="MapRegions" titleTo="mapRegions" buttonLabel="New MapRegion" buttonTo="newMapRegion">
+        <Set
+          wrap={ScaffoldLayout}
+          title="MapRegions"
+          titleTo="mapRegions"
+          buttonLabel="New MapRegion"
+          buttonTo="newMapRegion"
+        >
           <Private
             unauthenticated="home"
             roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
           >
-            <Route path="/map-regions/new" page={MapRegionNewMapRegionPage} name="newMapRegion" />
-            <Route path="/map-regions/{id:Int}/edit" page={MapRegionEditMapRegionPage} name="editMapRegion" />
+            <Route
+              path="/map-regions/new"
+              page={MapRegionNewMapRegionPage}
+              name="newMapRegion"
+            />
+            <Route
+              path="/map-regions/{id:Int}/edit"
+              page={MapRegionEditMapRegionPage}
+              name="editMapRegion"
+            />
           </Private>
-          <Route path="/map-regions/{id:Int}" page={MapRegionMapRegionPage} name="mapRegion" />
-          <Route path="/map-regions" page={MapRegionMapRegionsPage} name="mapRegions" />
+          <Route
+            path="/map-regions/{id:Int}"
+            page={MapRegionMapRegionPage}
+            name="mapRegion"
+          />
+          <Route
+            path="/map-regions"
+            page={MapRegionMapRegionsPage}
+            name="mapRegions"
+          />
         </Set>
         <Set
           wrap={ScaffoldLayout}

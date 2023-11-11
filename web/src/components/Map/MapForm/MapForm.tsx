@@ -4,11 +4,9 @@ import {
   FieldError,
   Label,
   TextField,
-  TextAreaField,
   Submit,
   useForm,
   useFieldArray,
-  useFormContext,
 } from "@redwoodjs/forms";
 
 import type { EditMapById, UpdateMapInput } from "types/graphql";
@@ -70,44 +68,54 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
       </summary>
       <div className="grid grid-cols-1 md:grid-cols-2">
         <div className="flex flex-col">
-          {fields.map((cr: { lat?: number, lon?: number, id?: number | string }, index) => (
-            <div
-              className="rw-button-group !mt-0 justify-start"
-              role="group"
-              key={cr.id}
-            >
-              <TextField
-                name={`${name}.${index}.lat`}
-                {...register(`${name}.${index}.lat`)}
-                defaultValue={cr.lat.toString()}
-                className="rw-input !mt-0 max-w-[7rem]"
-                errorClassName="rw-input rw-input-error"
-                title="Latitude"
-                placeholder="Latitude"
-              />
-              <TextField
-                name={`${name}.${index}.lon`}
-                {...register(`${name}.${index}.lon`)}
-                defaultValue={cr.lon.toString()}
-                className="rw-input !mt-0 max-w-[7rem]"
-                errorClassName="rw-input rw-input-error"
-                title="Longitude"
-                placeholder="Longitude"
-              />
-              <button
-                type="button"
-                className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                onClick={() => remove(index)}
+          {fields.map(
+            (
+              cr: { lat?: number; lon?: number; id?: number | string },
+              index
+            ) => (
+              <div
+                className="rw-button-group !mt-0 justify-start"
+                role="group"
+                key={cr.id}
               >
-                Remove
-              </button>
-            </div>
-          ))}
+                <TextField
+                  name={`${name}.${index}.lat`}
+                  {...register(`${name}.${index}.lat`)}
+                  defaultValue={cr.lat.toString()}
+                  className="rw-input !mt-0 max-w-[7rem]"
+                  errorClassName="rw-input rw-input-error"
+                  title="Latitude"
+                  placeholder="Latitude"
+                />
+                <TextField
+                  name={`${name}.${index}.lon`}
+                  {...register(`${name}.${index}.lon`)}
+                  defaultValue={cr.lon.toString()}
+                  className="rw-input !mt-0 max-w-[7rem]"
+                  errorClassName="rw-input rw-input-error"
+                  title="Longitude"
+                  placeholder="Longitude"
+                />
+                <button
+                  type="button"
+                  className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                  onClick={() => remove(index)}
+                >
+                  Remove
+                </button>
+              </div>
+            )
+          )}
         </div>
         <div>
           <Map
             map_id={2}
-            pos={fields.map((cr: { lat?: number, lon?: number, id?: number | string }) => ({ lat: cr.lat, lon: cr.lon }))}
+            pos={fields.map(
+              (cr: { lat?: number; lon?: number; id?: number | string }) => ({
+                lat: cr.lat,
+                lon: cr.lon,
+              })
+            )}
           />
         </div>
       </div>

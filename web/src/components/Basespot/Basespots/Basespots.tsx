@@ -1,12 +1,7 @@
 import { navigate, parseSearch } from "@redwoodjs/router";
 import { Link, routes, useParams } from "@redwoodjs/router";
-import { useQuery } from "@redwoodjs/web";
 import { useEffect, useState } from "react";
-import ArkCard from "src/components/Util/ArkCard/ArkCard";
-
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import { random, truncate } from "src/lib/formatters";
-
 import type { FindBasespots } from "types/graphql";
 import { useLazyQuery } from "@apollo/client";
 import {
@@ -66,7 +61,6 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
     onError: (error) => {
       console.log(error);
     },
-    query: QUERY,
     onCompleted: (data) => {
       console.log(data);
       setCursor(data.basespotPagination.cursor);
@@ -161,7 +155,9 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
           label={"Map"}
           options={maps}
           getOptionLabel={(option) => option.name}
-          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+          getOptionImage={(option) =>
+            `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`
+          }
           isOptionEqualToValue={(option, value) => option.id === value.id}
           defaultValue={map}
           onSelect={(e) => {
@@ -181,7 +177,14 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
           //   { label: "Waterfall", value: "waterfall" },
           //   { label: "Underwater", value: "underwater" },
           // ]}
-          options={["rathole", "cave", "cliff", "open", "waterfall", "underwater"]}
+          options={[
+            "rathole",
+            "cave",
+            "cliff",
+            "open",
+            "waterfall",
+            "underwater",
+          ]}
           defaultValue={type}
           label="Type"
           onSelect={(e) => {

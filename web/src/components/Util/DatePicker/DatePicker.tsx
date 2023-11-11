@@ -1,4 +1,4 @@
-import { FieldError } from "@redwoodjs/forms";
+import { FieldError } from "@redwoodjs/forms/dist";
 import clsx from "clsx";
 import { CSSProperties, useRef, useState } from "react";
 

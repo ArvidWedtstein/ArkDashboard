@@ -1,10 +1,4 @@
-import {
-  Form,
-  Label,
-  SearchField,
-  SelectField,
-  Submit,
-} from "@redwoodjs/forms";
+import { Form, Submit } from "@redwoodjs/forms";
 import {
   Link,
   routes,
@@ -162,7 +156,9 @@ const ItemsList = ({
                 { value: "fertilizer", label: "Fertilizer" },
                 { value: "other", label: "Other" },
               ]}
-              isOptionEqualToValue={(option, value) => option.value === value.value}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
               getOptionLabel={(option) => option.label}
               defaultValue={category}
               disabled={loading}
@@ -172,7 +168,7 @@ const ItemsList = ({
                   marginRight: "-0.5px",
                 },
               }}
-              onChange={(_, e: { value: string, label: string }) => {
+              onChange={(_, e: { value: string; label: string }) => {
                 if (!e || !("value" in e)) return setTypes([]);
                 switch (e.value.toString()) {
                   case "structure":
@@ -272,7 +268,9 @@ const ItemsList = ({
                   label: type,
                 }))}
                 getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                 onChange={(_, e) => {
                   if (!e) return selectType("");
                   selectType(e.value.toString());

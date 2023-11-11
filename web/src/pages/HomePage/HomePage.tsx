@@ -2,7 +2,7 @@ import { Form, Submit } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 
 // https://codepen.io/tjramage/pen/yOEbyw
@@ -168,7 +168,6 @@ const HomePage = () => {
               className="rw-button rw-button-green-outline"
             >
               Get Started
-
               <svg
                 className="ml-2 h-3.5 w-3.5"
                 aria-hidden="true"

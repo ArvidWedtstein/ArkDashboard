@@ -1,10 +1,8 @@
 import {
-  AuthenticationError,
   createValidatorDirective,
   ValidatorDirectiveFunc,
 } from "@redwoodjs/graphql-server";
 import { hasPermission as applicationHasPermission } from "src/lib/auth";
-import { logger } from "src/lib/logger";
 import { permission } from "types/graphql";
 
 export const schema = gql`
@@ -29,7 +27,6 @@ const validate: RequirePermissionValidate = ({ directiveArgs }) => {
    */
 
   // currentUser is only available when auth is setup.
-  // logger.debug({ directiveArgs }, "currentUser in hasPermission directive");
 
   // You can also modify your directive to take arguments
   // and use the directiveArgs object provided to this function to get values

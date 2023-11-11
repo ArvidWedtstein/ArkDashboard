@@ -1,30 +1,77 @@
-import React, { createContext, useState, useContext } from 'react';
+// import resolveConfig from "tailwindcss/resolveConfig";
+// import tailwindConfig from "./../../../../config/tailwind.config.js";
+// const tailwindConfig = require("./../../../../config/tailwind.config.js");
+import React, { createContext, useState, useContext } from "react";
+import { Color } from "src/lib/formatters";
 
-interface Theme {
-  primaryColor: string;
-  secondaryColor: string;
-}
+type TypeBackground = {
+  // default: string;
+  light: string;
+  dark: string;
+};
+type PaletteColorOptions = {
+  // main: Color;
+  light?: Color;
+  dark?: Color;
+  contrastText?: Color;
+};
+type PaletteOptions = {
+  primary?: PaletteColorOptions;
+  secondary?: PaletteColorOptions;
+  error?: PaletteColorOptions;
+  warning?: PaletteColorOptions;
+  info?: PaletteColorOptions;
+  success?: PaletteColorOptions;
+  background?: Partial<TypeBackground>;
+  getContrastText?: (background: string) => string;
+};
+type Theme = {
+  palette: PaletteOptions;
+  setTheme?: (theme: Partial<Theme>) => void;
+};
 
-interface ThemeContextProps {
-  primaryColor: string;
-  secondaryColor: string;
-  setTheme: (newTheme: Partial<Theme>) => void;
-}
+type ThemeContextProps = Theme & {
+  setTheme: (theme: Partial<Theme>) => void;
+};
 
 interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
 const ThemeContext = createContext<ThemeContextProps>({
-  primaryColor: 'blue',
-  secondaryColor: 'green',
-  setTheme: () => { },
+  palette: {},
+  setTheme: () => {},
 });
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>({
-    primaryColor: 'blue',
-    secondaryColor: 'green',
+    palette: {
+      primary: {
+        light: "blue-400",
+      },
+      secondary: {
+        light: "zinc-400",
+      },
+      error: {
+        light: "red-500",
+        dark: "red-500",
+        contrastText: "white",
+      },
+      warning: {
+        light: "amber-500",
+      },
+      info: {
+        light: "blue-500",
+      },
+      success: {
+        light: "green-500",
+        dark: "green-500",
+      },
+      background: {
+        light: "gray-100",
+        dark: "gray-900",
+      },
+    },
   });
 
   const updateTheme = (newTheme: Partial<Theme>) => {
@@ -38,11 +85,36 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   );
 };
 
+// TODO: fix
+export const useThemeProps = (props) => {
+  const theme = useTheme();
+
+  // Utility function to generate dynamic Tailwind classes based on theme properties
+  const generateClasses = () => {
+    const classes = [];
+
+    // Add color classes
+    if (theme.palette.primary) {
+      classes.push(`text-${theme.palette.primary}`);
+    }
+
+    return classes.join(" ");
+  };
+
+  // Merge the theme properties with the component props and add Tailwind classes
+  const themedProps = {
+    ...props,
+    className: `${props.className || ""} ${generateClasses()}`,
+  };
+
+  return themedProps;
+};
+
 // Custom hook to easily consume the theme context
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 };

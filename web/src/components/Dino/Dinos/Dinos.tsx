@@ -5,16 +5,7 @@ import {
   routes,
   useParams,
 } from "@redwoodjs/router";
-import {
-  CheckboxField,
-  FieldError,
-  Form,
-  Label,
-  SearchField,
-  SelectField,
-  Submit,
-} from "@redwoodjs/forms";
-
+import { CheckboxField, Form, Label, Submit } from "@redwoodjs/forms/dist";
 import type { FindDinos } from "types/graphql";
 import { useMemo, useState } from "react";
 import clsx from "clsx";
@@ -30,7 +21,6 @@ import {
   CardHeader,
   CardMedia,
 } from "src/components/Util/Card/Card";
-import Dino from "../Dino/Dino";
 
 const DinosList = ({
   dinosPage,
@@ -180,7 +170,7 @@ const DinosList = ({
     <Form<FormFindDnios> className="rw-segment" onSubmit={onSubmit}>
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
-      <div className="flex flex-col items-baseline justify-between border-b border-zinc-500 pb-6 pt-24 text-gray-900 dark:text-white sm:flex-row md:pt-6">
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-24 text-gray-900 dark:text-white sm:flex-row md:pt-6">
         <h1 className="py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
           Dinos
         </h1>
@@ -201,10 +191,9 @@ const DinosList = ({
                 }));
               }}
               closeOnSelect
-              options={Object.keys(dinosPage.dinos[0] || {})
-                .filter(
-                  (c) => !["__typename", "id", "image", "blueprint"].includes(c)
-                )}
+              options={Object.keys(dinosPage.dinos[0] || {}).filter(
+                (c) => !["__typename", "id", "image", "blueprint"].includes(c)
+              )}
               InputProps={{
                 style: {
                   borderRadius: "0.375rem 0 0 0.375rem",
@@ -340,7 +329,8 @@ const DinosList = ({
             "grid w-full gap-6 text-zinc-900 transition-all ease-in-out dark:text-white lg:col-span-3",
             {
               "grid-cols-1": view === "list",
-              "grid-cols-1 lg:grid-cols-3 xl:grid-cols-4": view === "grid",
+              "grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4":
+                view === "grid",
             }
           )}
         >

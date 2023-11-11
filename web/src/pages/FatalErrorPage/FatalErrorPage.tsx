@@ -10,36 +10,110 @@
 import { Link, routes } from "@redwoodjs/router";
 
 // Ensures that production builds do not include the error page
-let RedwoodDevFatalErrorPage = undefined;
-if (process.env.NODE_ENV === "development") {
-  RedwoodDevFatalErrorPage =
-    require("@redwoodjs/web/dist/components/DevFatalErrorPage").DevFatalErrorPage;
-}
+import { DevFatalErrorPage } from "@redwoodjs/web/dist/components/DevFatalErrorPage";
+type ErrorWithRequestMeta = Error & {
+  mostRecentRequest?: {
+    query: string;
+    operationName: string;
+    operationKind: string;
+    variables: any;
+  };
+  mostRecentResponse?: any;
+};
 
-// export default RedwoodDevFatalErrorPage ||
-export default (err) => (
-  <div className="flex h-[100vh] items-center text-center">
-    <section className="mx-auto bg-white dark:bg-[#252636]">
-      <div className="border border-[#60728F] bg-[#0D2836] p-8 text-[#97FBFF]">
-        <h1 className="mb-3 text-2xl font-bold uppercase">Error</h1>
-        <h1 className="my-8">
-          <span>Outgoing reliable buffer overflow</span>
-        </h1>
-        <div className="mt-3 flex flex-row items-center space-x-8 text-center">
-          <Link
-            to={routes.home()}
-            className="w-full bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0"
-          >
-            Accept
-          </Link>
-          <Link
-            to={routes.home()}
-            className="w-full bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0"
-          >
-            Cancel
-          </Link>
+export default (({ error }: { error: ErrorWithRequestMeta }) => {
+  const syntaxHighlight = (string) => {
+    // Regular expression to match {, }, (, and = outside of strings
+    const regex = /([\{\}\(\)=]|String|Number|Int|Boolean|Float)/g;
+
+    // Split the JSX string using the regex
+    const parts = string.split(regex);
+
+    return (
+      <span>
+        {parts.map((part, index) => {
+          let className = "";
+          if (part === "") {
+            return null;
+          }
+          // Set styles based on the matched symbol
+          switch (part) {
+            case "{":
+            case "}":
+              className = "text-blue-500";
+              break;
+            case "(":
+            case ")":
+              className = "text-yellow-500";
+              break;
+            case "=":
+              className = "text-blue-400";
+              break;
+            case "String":
+            case "Number":
+            case "Boolean":
+            case "Int":
+            case "Float":
+              className = "text-green-600";
+              break;
+            default:
+              break;
+          }
+
+          return (
+            <span key={index} {...{ className }}>
+              {part}
+            </span>
+          );
+        })}
+      </span>
+    );
+  };
+
+  const query = syntaxHighlight(error.mostRecentRequest.query);
+  return (
+    <div className="flex h-[100vh] items-center text-center">
+      <section className="mx-auto max-w-3xl bg-white dark:bg-[#252636]">
+        <div className="flex flex-col border border-[#60728F] bg-[#0D2836] p-8 text-[#97FBFF]">
+          <h1 className="mb-3 text-2xl font-bold uppercase">
+            {error.name ?? "Error"}
+          </h1>
+          <span className="my-2">
+            {error.message || "Outgoing reliable buffer overflow"}
+          </span>
+          <pre className="mb-4 whitespace-pre-wrap rounded bg-zinc-800 p-4 text-left">
+            <div
+              id="header-buttons"
+              className="inline-flex w-full items-center py-2 px-4"
+            >
+              <div className="mr-2 h-3 w-3 rounded-full bg-red-500" />
+              <div className="mr-2 h-3 w-3 rounded-full bg-yellow-500" />
+              <div className="h-3 w-3 rounded-full bg-green-500" />
+              <p className="ml-4 text-base font-semibold">Query</p>
+            </div>
+            <div className="p-4 text-base text-white">
+              <code className="font-light">
+                {/* {error.mostRecentRequest.query} */}
+                {query}
+              </code>
+            </div>
+          </pre>
+          <div className="mt-3 flex flex-row items-center space-x-8 text-center">
+            <Link
+              to={routes.home()}
+              className="w-full bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0"
+            >
+              Accept
+            </Link>
+            <Link
+              to={routes.home()}
+              className="w-full bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0"
+            >
+              Cancel
+            </Link>
+          </div>
         </div>
-      </div>
-    </section>
-  </div>
-);
+      </section>
+    </div>
+  );
+}) || DevFatalErrorPage;

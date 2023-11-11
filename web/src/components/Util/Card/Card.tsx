@@ -5,6 +5,7 @@ import {
   HTMLAttributes,
   ImgHTMLAttributes,
   LinkHTMLAttributes,
+  MouseEventHandler,
   ReactNode,
 } from "react";
 import Ripple from "../Ripple/Ripple";
@@ -35,8 +36,8 @@ export const Card = ({ sx, children, className }: CardProps) => {
 
 type CardHeaderProps = {
   sx?: CSSProperties;
-  avatar?: React.ReactNode;
-  action?: React.ReactNode;
+  avatar?: ReactNode;
+  action?: ReactNode;
   title?: string;
   subheader?: string;
   className?: HTMLAttributes<HTMLDivElement>["className"];
@@ -97,7 +98,7 @@ type CardMediaImg = CardMediaBaseProps &
   ImgHTMLAttributes<HTMLImageElement>;
 
 type CardMediaDiv = CardMediaBaseProps & {
-  children?: React.ReactNode;
+  children?: ReactNode;
 };
 
 type CardMediaProps = CardMediaDiv | CardMediaImg;
@@ -134,7 +135,7 @@ export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
 };
 
 type CardContentProps = {
-  children?: React.ReactNode | React.ReactNode[];
+  children?: ReactNode | ReactNode[];
   sx?: CSSProperties;
   className?: HTMLAttributes<HTMLDivElement>["className"];
 };
@@ -147,7 +148,7 @@ export const CardContent = ({ children, sx, className }: CardContentProps) => {
 };
 
 type CardActionsProps = {
-  children?: React.ReactNode | React.ReactNode[];
+  children?: ReactNode | ReactNode[];
   className?: HTMLAttributes<HTMLDivElement>["className"];
   sx?: CSSProperties;
 };
@@ -168,7 +169,7 @@ type ButtonProps = CardActionAreaBaseProps & HTMLAttributes<HTMLButtonElement>;
 type LinkProps = CardActionAreaBaseProps &
   LinkHTMLAttributes<HTMLAnchorElement> & {
     to: string;
-    onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+    onClick?: MouseEventHandler<HTMLAnchorElement>;
   };
 
 type CardActionAreaProps = ButtonProps | LinkProps;

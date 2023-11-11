@@ -1,6 +1,6 @@
 import { SkipNavContent } from "@redwoodjs/router";
 import { usePageLoadingContext } from "@redwoodjs/router";
-import { Toaster, resolveValue } from "@redwoodjs/web/toast";
+import { Toaster } from "@redwoodjs/web/toast";
 import Footer from "src/components/Footer/Footer";
 import Sidebar from "src/components/Sidebar/Sidebar";
 
@@ -11,17 +11,10 @@ type LayoutProps = {
 const MainLayout = ({ children }: LayoutProps) => {
   const { loading } = usePageLoadingContext();
   return (
-    <div className="w-full">
+    <>
       {/* <SkipNavLink contentId="main-content"></SkipNavLink> */}
-      {/* {(t) => (
-          <div
-            style={{ opacity: t.visible ? 1 : 0, background: 'white', padding: 8 }}
-          >
-            <p>test</p>
-            {resolveValue(t.message, t)}
-          </div>
-        )} */}
       <Toaster
+        aria-label="Global notifications"
         toastOptions={{
           className: "rw-toast",
           duration: 6000,
@@ -31,17 +24,17 @@ const MainLayout = ({ children }: LayoutProps) => {
       <div className="flex w-full flex-col sm:flex-row">
         <Sidebar />
         <SkipNavContent id="main-content" />
-        <main className="h-auto min-h-screen overflow-x-hidden sm:w-full sm:overflow-x-auto">
+        <main className="m-3 h-auto min-h-screen overflow-x-hidden p-3 sm:w-full sm:overflow-x-auto">
           {loading && (
             <div className="z-50 flex h-full w-full items-center justify-center">
-              <div className="h-32 w-32 animate-spin rounded-full border-t-2 border-b-2 border-gray-900"></div>
+              <div className="h-32 w-32 animate-spin rounded-full border-t-2 border-b-2 border-gray-900" />
             </div>
           )}
           {children}
         </main>
       </div>
       <Footer />
-    </div>
+    </>
   );
 };
 export default MainLayout;

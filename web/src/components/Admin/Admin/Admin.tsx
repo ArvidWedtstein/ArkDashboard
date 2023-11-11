@@ -1,5 +1,5 @@
-import { MetaTags, useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { MetaTags, useMutation } from "@redwoodjs/web/apollo";
+import { toast } from "@redwoodjs/web/toast";
 import { useEffect, useMemo, useState } from "react";
 import Chart from "src/components/Util/Chart/Chart";
 import StatCard from "src/components/Util/StatCard/StatCard";
@@ -10,8 +10,6 @@ import {
   getHexCodeFromPercentage,
   groupBy,
   relativeDate,
-  timeFormatL,
-  timeTag,
   truncate,
 } from "src/lib/formatters";
 import { FindAdminData } from "types/graphql";
@@ -184,7 +182,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             value={formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-              100,
+                100,
               { maximumSignificantDigits: 3 }
             )}
             valueDisplay="percent"
@@ -216,27 +214,33 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               }}
               type="line"
               height={200}
-              dataset={Object.entries(groupDatesByMonth(
-                profiles
-                  .map((p) => new Date(p.created_at))
-                  .sort((a, b) => a.getTime() - b.getTime())
-              )).map(([k, v]: [k: string, v: unknown[]]) => ({
-                month: new Date(k).toLocaleDateString("en-GB", { month: "short" }),
+              dataset={Object.entries(
+                groupDatesByMonth(
+                  profiles
+                    .map((p) => new Date(p.created_at))
+                    .sort((a, b) => a.getTime() - b.getTime())
+                )
+              ).map(([k, v]: [k: string, v: unknown[]]) => ({
+                month: new Date(k).toLocaleDateString("en-GB", {
+                  month: "short",
+                }),
                 newUsers: v.length,
               }))}
               series={[
                 {
                   area: true,
-                  color: '#34b364',
-                  dataKey: 'newUsers'
-                }
+                  color: "#34b364",
+                  dataKey: "newUsers",
+                },
               ]}
-              xAxis={[{
-                scaleType: 'point',
-                dataKey: 'month',
-                label: 'New Users in the last months'
-              }]}
-            // title={"New Users in the last months"}
+              xAxis={[
+                {
+                  scaleType: "point",
+                  dataKey: "month",
+                  label: "New Users in the last months",
+                },
+              ]}
+              // title={"New Users in the last months"}
             />
           </div>
         </div>
@@ -399,7 +403,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   input: {
                                     banned_until: new Date(
                                       new Date().getTime() +
-                                      1000 * 60 * 60 * 24 * 7
+                                        1000 * 60 * 60 * 24 * 7
                                     ),
                                   },
                                 },
@@ -464,10 +468,13 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${row.username
-                          }'s role from ${roles.find((r) => r.id == value)?.name
-                          } to ${roles.find((r) => r.id == e.target.value)?.name
-                          }?`}
+                        message={`Are you sure you want to change ${
+                          row.username
+                        }'s role from ${
+                          roles.find((r) => r.id == value)?.name
+                        } to ${
+                          roles.find((r) => r.id == e.target.value)?.name
+                        }?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(

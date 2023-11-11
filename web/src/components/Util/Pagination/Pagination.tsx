@@ -1,6 +1,6 @@
 import { Link, routes, useParams } from "@redwoodjs/router";
 import clsx from "clsx";
-import { useCallback } from "react";
+import { Fragment, useCallback } from "react";
 
 interface IPagination {
   count: number;
@@ -90,7 +90,7 @@ const Pagination = ({
         </Link>
 
         {getPaginationGroup().map((item, index) => (
-          <React.Fragment key={`page-${index}`}>
+          <Fragment key={`page-${index}`}>
             <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />
             <Link
               to={routes[route]({ ...params, page: item })}
@@ -103,7 +103,7 @@ const Pagination = ({
             >
               {item}
             </Link>
-          </React.Fragment>
+          </Fragment>
         ))}
 
         <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />

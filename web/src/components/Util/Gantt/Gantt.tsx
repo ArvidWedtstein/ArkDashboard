@@ -1,7 +1,7 @@
 import { routes } from "@redwoodjs/router";
 import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import {
   addToDate,
   adjustCalendarDate,
@@ -42,6 +42,8 @@ const Gantt = <T extends Record<string, unknown>>({
     };
   };
 
+  const [viewType, setViewType] = useState<ViewType>("week");
+
   const [dateInfo, setDateInfo] = useState(() => ({
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
@@ -51,17 +53,17 @@ const Gantt = <T extends Record<string, unknown>>({
       viewType === "year"
         ? new Date().getFullYear().toString()
         : viewType === "month"
-          ? new Date().toLocaleDateString(navigator && navigator.language, {
+        ? new Date().toLocaleDateString(navigator && navigator.language, {
             month: "short",
             year: "numeric",
           })
-          : viewType === "week"
-            ? `Week ${getISOWeek(new Date())}`
-            : new Date().toLocaleDateString(navigator && navigator.language, {
-              month: "2-digit",
-              day: "2-digit",
-              year: "2-digit",
-            }),
+        : viewType === "week"
+        ? `Week ${getISOWeek(new Date())}`
+        : new Date().toLocaleDateString(navigator && navigator.language, {
+            month: "2-digit",
+            day: "2-digit",
+            year: "2-digit",
+          }),
   }));
 
   const calendar = useMemo(() => {
@@ -141,17 +143,17 @@ const Gantt = <T extends Record<string, unknown>>({
         viewType === "year"
           ? newDate.getFullYear().toString()
           : viewType === "month"
-            ? newDate.toLocaleDateString(navigator && navigator.language, {
+          ? newDate.toLocaleDateString(navigator && navigator.language, {
               month: "short",
               year: "numeric",
             })
-            : viewType === "week"
-              ? `Week ${getISOWeek(newDate)}`
-              : newDate.toLocaleDateString(navigator && navigator.language, {
-                month: "2-digit",
-                day: "2-digit",
-                year: "2-digit",
-              }),
+          : viewType === "week"
+          ? `Week ${getISOWeek(newDate)}`
+          : newDate.toLocaleDateString(navigator && navigator.language, {
+              month: "2-digit",
+              day: "2-digit",
+              year: "2-digit",
+            }),
     }));
   };
 
@@ -182,8 +184,6 @@ const Gantt = <T extends Record<string, unknown>>({
       };
     }, {});
   }, [data, group]);
-
-  const [viewType, setViewType] = useState<ViewType>("week");
 
   const { overlappingElements, overlappingCount } = useMemo(() => {
     const overlappingElements: Record<string, T[][]> = {};
@@ -291,7 +291,7 @@ const Gantt = <T extends Record<string, unknown>>({
                   value === "year"
                     ? dateInfo.year.toString()
                     : value === "month"
-                      ? new Date(
+                    ? new Date(
                         dateInfo.year,
                         dateInfo.month,
                         dateInfo.day
@@ -299,17 +299,17 @@ const Gantt = <T extends Record<string, unknown>>({
                         month: "short",
                         year: "numeric",
                       })
-                      : value === "week"
-                        ? `Week ${dateInfo.week}`
-                        : new Date(
-                          dateInfo.year,
-                          dateInfo.month,
-                          dateInfo.day
-                        ).toLocaleDateString(navigator && navigator.language, {
-                          month: "2-digit",
-                          day: "2-digit",
-                          year: "2-digit",
-                        }),
+                    : value === "week"
+                    ? `Week ${dateInfo.week}`
+                    : new Date(
+                        dateInfo.year,
+                        dateInfo.month,
+                        dateInfo.day
+                      ).toLocaleDateString(navigator && navigator.language, {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "2-digit",
+                      }),
               });
             }
           }}
@@ -380,8 +380,8 @@ const Gantt = <T extends Record<string, unknown>>({
                     viewType === "week" || viewType === "day"
                       ? week.week === dateInfo.week
                       : viewType === "year"
-                        ? i === 0
-                        : true
+                      ? i === 0
+                      : true
                   )
                   .map((week, weekIndex) => {
                     return week.dates
@@ -389,7 +389,7 @@ const Gantt = <T extends Record<string, unknown>>({
                         viewType === "year"
                           ? i === week.dates.length - 1
                           : viewType === "day"
-                            ? toLocaleISODate(day.date) ===
+                          ? toLocaleISODate(day.date) ===
                             toLocaleISODate(
                               new Date(
                                 dateInfo.year,
@@ -397,7 +397,7 @@ const Gantt = <T extends Record<string, unknown>>({
                                 dateInfo.day
                               )
                             )
-                            : true
+                          : true
                       )
                       .map(
                         ({ date, hours, isOutsideCurrentMonth }, dateIndex) => {
@@ -447,15 +447,15 @@ const Gantt = <T extends Record<string, unknown>>({
                                                 hourCycle: "h23",
                                               }
                                             ) ===
-                                            new Date().toLocaleString(
-                                              navigator && navigator.language,
-                                              {
-                                                hour: "2-digit",
-                                                hourCycle: "h23",
-                                              }
-                                            ) &&
+                                              new Date().toLocaleString(
+                                                navigator && navigator.language,
+                                                {
+                                                  hour: "2-digit",
+                                                  hourCycle: "h23",
+                                                }
+                                              ) &&
                                             toLocaleISODate(date) ===
-                                            toLocaleISODate(new Date()),
+                                              toLocaleISODate(new Date()),
                                           "font-semibold":
                                             viewType === "week" ||
                                             viewType === "month",
@@ -465,19 +465,19 @@ const Gantt = <T extends Record<string, unknown>>({
                                     >
                                       {viewType === "year"
                                         ? date.toLocaleDateString(
-                                          navigator && navigator.language,
-                                          {
-                                            month: "short",
-                                          }
-                                        )
+                                            navigator && navigator.language,
+                                            {
+                                              month: "short",
+                                            }
+                                          )
                                         : viewType === "day"
-                                          ? hour.toLocaleString(
+                                        ? hour.toLocaleString(
                                             navigator && navigator.language,
                                             {
                                               hour: "2-digit",
                                             }
                                           )
-                                          : date.toLocaleDateString(
+                                        : date.toLocaleDateString(
                                             navigator && navigator.language,
                                             {
                                               day: "numeric",
@@ -505,27 +505,28 @@ const Gantt = <T extends Record<string, unknown>>({
               aria-label="Grid Rows"
               className="col-start-1 col-end-2 row-start-1 grid divide-y divide-black/20 text-black dark:divide-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `repeat(${Object.keys(ganttData).length * overlappingCount
-                  }, minmax(3.5rem, 1fr))`,
+                gridTemplateRows: `repeat(${
+                  Object.keys(ganttData).length * overlappingCount
+                }, minmax(3.5rem, 1fr))`,
               }}
               role="rowgroup"
             >
               <div className="row-end-1 h-7" role="row" />
               {Object.keys(ganttData).map((entry, index) => (
-                <React.Fragment key={`row-${index}`}>
-                  <div
-                    className="flex items-center"
-                    role="row"
-                  >
+                <Fragment key={`row-${index}`}>
+                  <div className="flex items-center" role="row">
                     <div className="sticky left-0 -ml-20 w-20 border border-transparent pr-2 text-right align-middle text-xs uppercase">
                       {entry}
                     </div>
                   </div>
                   {Array.from({ length: overlappingCount - 1 }).map((_, i) => (
-                    <div className="flex items-center" role="row" key={`row-sub-${index + i}`}>
-                    </div>
+                    <div
+                      className="flex items-center"
+                      role="row"
+                      key={`row-sub-${index + i}`}
+                    ></div>
                   ))}
-                </React.Fragment>
+                </Fragment>
               ))}
             </div>
             <div
@@ -556,8 +557,9 @@ const Gantt = <T extends Record<string, unknown>>({
               aria-label={`Chart elements`}
               className="col-start-1 col-end-2 row-start-1 -mr-px grid border-l border-r border-b border-black/20 dark:border-white/20 dark:text-white"
               style={{
-                gridTemplateRows: `1.75rem repeat(${Object.keys(ganttData).length * overlappingCount
-                  }, minmax(0px, 1fr)) auto`,
+                gridTemplateRows: `1.75rem repeat(${
+                  Object.keys(ganttData).length * overlappingCount
+                }, minmax(0px, 1fr)) auto`,
                 gridTemplateColumns: `repeat(${getGridColumns()}, minmax(0px, 1fr))`,
               }}
             >
@@ -568,17 +570,17 @@ const Gantt = <T extends Record<string, unknown>>({
                   data: v.elements.filter((item) => {
                     return viewType === "day"
                       ? toLocaleISODate(
-                        new Date(item[dateStartKey].toString())
-                      ) ===
-                      toLocaleISODate(
-                        new Date(
-                          dateInfo.year,
-                          dateInfo.month,
-                          dateInfo.day
-                        )
-                      )
+                          new Date(item[dateStartKey].toString())
+                        ) ===
+                          toLocaleISODate(
+                            new Date(
+                              dateInfo.year,
+                              dateInfo.month,
+                              dateInfo.day
+                            )
+                          )
                       : viewType === "week"
-                        ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
+                      ? (getISOWeek(new Date(item[dateStartKey].toString())) ===
                           dateInfo.week &&
                           new Date(
                             item[dateStartKey].toString()
@@ -588,10 +590,10 @@ const Gantt = <T extends Record<string, unknown>>({
                           new Date(
                             item[dateEndKey].toString()
                           ).getFullYear() === dateInfo.year)
-                        : viewType === "month"
-                          ? toLocalPeriod(
-                            new Date(item[dateStartKey].toString())
-                          ) ===
+                      : viewType === "month"
+                      ? toLocalPeriod(
+                          new Date(item[dateStartKey].toString())
+                        ) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -599,7 +601,7 @@ const Gantt = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           ) ||
-                          toLocalPeriod(new Date(item[dateEndKey].toString())) ===
+                        toLocalPeriod(new Date(item[dateEndKey].toString())) ===
                           toLocalPeriod(
                             new Date(
                               dateInfo.year,
@@ -607,13 +609,13 @@ const Gantt = <T extends Record<string, unknown>>({
                               dateInfo.day
                             )
                           )
-                          : viewType === "year"
-                            ? new Date(
-                              item[dateStartKey].toString()
-                            ).getFullYear() === dateInfo.year ||
-                            new Date(item[dateEndKey].toString()).getFullYear() ===
-                            dateInfo.year
-                            : true;
+                      : viewType === "year"
+                      ? new Date(
+                          item[dateStartKey].toString()
+                        ).getFullYear() === dateInfo.year ||
+                        new Date(item[dateEndKey].toString()).getFullYear() ===
+                          dateInfo.year
+                      : true;
                   }),
                 }))
                 .map((data, groupIndex) => {
@@ -621,9 +623,9 @@ const Gantt = <T extends Record<string, unknown>>({
                     const overlappingItems = data.data.filter((otherItem) => {
                       return (
                         new Date(otherItem[dateStartKey].toString()) <=
-                        new Date(item[dateEndKey].toString()) &&
+                          new Date(item[dateEndKey].toString()) &&
                         new Date(otherItem[dateEndKey].toString()) >=
-                        new Date(item[dateStartKey].toString())
+                          new Date(item[dateStartKey].toString())
                       );
                     });
                     const extra =
@@ -637,42 +639,43 @@ const Gantt = <T extends Record<string, unknown>>({
                         className="relative mt-px flex"
                         aria-label={`${data.label}-${groupIndex}-${data.label}`}
                         style={{
-                          gridRow: `${groupIndex * overlappingCount + 2 + extra
-                            } / span 1`,
+                          gridRow: `${
+                            groupIndex * overlappingCount + 2 + extra
+                          } / span 1`,
                           gridColumnStart:
                             viewType === "day"
                               ? new Date(
-                                item[dateStartKey].toString()
-                              ).getHours() + 1
+                                  item[dateStartKey].toString()
+                                ).getHours() + 1
                               : viewType === "week"
-                                ? new Date(item[dateStartKey].toString()).getDay()
-                                : viewType === "month"
-                                  ? new Date(
+                              ? new Date(item[dateStartKey].toString()).getDay()
+                              : viewType === "month"
+                              ? new Date(
+                                  item[dateStartKey].toString()
+                                ).getDate()
+                              : viewType === "year"
+                              ? new Date(
+                                  item[dateStartKey].toString()
+                                ).getFullYear() < dateInfo.year
+                                ? 1
+                                : new Date(
                                     item[dateStartKey].toString()
-                                  ).getDate()
-                                  : viewType === "year"
-                                    ? new Date(
-                                      item[dateStartKey].toString()
-                                    ).getFullYear() < dateInfo.year
-                                      ? 1
-                                      : new Date(
-                                        item[dateStartKey].toString()
-                                      ).getMonth() + 1
-                                    : 1,
+                                  ).getMonth() + 1
+                              : 1,
                           gridColumnEnd:
                             (viewType === "day"
                               ? new Date(
-                                item[dateEndKey].toString()
-                              ).getHours() + 1
+                                  item[dateEndKey].toString()
+                                ).getHours() + 1
                               : viewType === "week"
-                                ? new Date(item[dateEndKey].toString()).getDay()
-                                : viewType === "month"
-                                  ? new Date(item[dateEndKey].toString()).getDate()
-                                  : viewType === "year"
-                                    ? new Date(
-                                      item[dateEndKey].toString()
-                                    ).getMonth() + 1
-                                    : 7) + 1,
+                              ? new Date(item[dateEndKey].toString()).getDay()
+                              : viewType === "month"
+                              ? new Date(item[dateEndKey].toString()).getDate()
+                              : viewType === "year"
+                              ? new Date(
+                                  item[dateEndKey].toString()
+                                ).getMonth() + 1
+                              : 7) + 1,
                         }}
                       >
                         <Link
