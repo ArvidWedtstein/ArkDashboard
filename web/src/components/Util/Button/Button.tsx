@@ -1,7 +1,14 @@
 import clsx from "clsx";
 import Ripple from "../Ripple/Ripple";
 import { useTheme } from "../ThemeContext/ThemeContext";
-import { createContext, forwardRef, useContext } from "react";
+import {
+  ElementType,
+  LinkHTMLAttributes,
+  MouseEventHandler,
+  createContext,
+  forwardRef,
+  useContext,
+} from "react";
 
 interface ButtonGroupOwnProps {
   /**
@@ -114,9 +121,11 @@ type ButtonProps = {
   fullWidth?: boolean;
   children?: React.ReactNode;
   disableRipple?: boolean;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+  to?: string;
+} & React.ButtonHTMLAttributes<HTMLButtonElement> &
+  LinkHTMLAttributes<HTMLAnchorElement>;
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (props: ButtonProps, ref) => {
     const contextProps = useContext(ButtonGroupContext);
     const buttonGroupButtonContextPositionClassName = useContext(
@@ -224,6 +233,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         : "rounded min-w-[4rem]"
     }`;
     const classNames = clsx(
+      contextProps.className,
       base,
       sizes[variant][size],
       buttonGroupButtonContextPositionClassName,
@@ -231,7 +241,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       // colors2[variant],
       {
         [disabledClasses[variant]]: disabled,
-      }
+      },
+      className,
+      buttonGroupButtonContextPositionClassName
     );
 
     const startIcon = startIconProp && variant !== "icon" && (
@@ -256,25 +268,31 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       </span>
     );
 
-    const positionClassName = buttonGroupButtonContextPositionClassName || "";
+    const Root: ElementType = props.href || props.to ? "a" : "button";
 
+    const componentProps = {
+      className: classNames,
+      disabled,
+      ref,
+      ...(props.href || props.to
+        ? { href: props.href || props.to }
+        : { type: type }),
+    };
     return (
-      <button
-        className={clsx(
-          contextProps.className,
-          classNames,
-          className,
-          positionClassName
-        )}
-        ref={ref}
-        type={type}
+      <Root
+        className={classNames}
+        {...componentProps}
+        ref={
+          ref as React.LegacyRef<HTMLButtonElement> &
+            React.LegacyRef<HTMLAnchorElement>
+        }
         {...contextProps}
       >
         {startIcon}
         {children}
         {endIcon}
         {!disableRipple && <Ripple center={variant === "icon"} />}
-      </button>
+      </Root>
     );
   }
 );

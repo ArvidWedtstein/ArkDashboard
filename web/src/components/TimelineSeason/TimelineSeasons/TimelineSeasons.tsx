@@ -35,23 +35,10 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
     <article className="rw-segment overflow-x-auto">
       <header className="rw-segment-header">
         <h2 className="rw-heading text-xl">Timeline Seasons</h2>
-        <Link
-          to={routes.newTimelineSeason()}
-          className="rw-button rw-button-green-outline my-3"
-        >
-          New Timeline Season
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 448 512"
-            className="rw-button-icon-end"
-            focusable="false"
-          >
-            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-          </svg>
-        </Link>
-
         <Button
+          to={routes.newTimelineSeason()}
           size="large"
+          className="my-3"
           color="success"
           variant="outlined"
           endIcon={
@@ -150,25 +137,23 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
                   </span>
                 </div>
               </div>
-              <Link
+
+              <Button
                 to={routes.timelineSeason({ id })}
-                className="relative inline-flex items-center rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:text-black focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:text-white"
+                color="secondary"
+                variant="outlined"
+                endIcon={
+                  <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      fillRule="evenodd"
+                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                }
               >
                 Learn more
-                <svg
-                  className="ml-2 h-3 w-3"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <Ripple />
-              </Link>
+              </Button>
             </li>
           )
         )}
