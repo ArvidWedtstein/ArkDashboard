@@ -17,7 +17,7 @@ import type {
   UseFormRegister,
 } from "@redwoodjs/forms";
 import Map from "src/components/Util/Map/Map";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { InputLabel, InputOutlined } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 type FormMap = NonNullable<EditMapById["map"]>;

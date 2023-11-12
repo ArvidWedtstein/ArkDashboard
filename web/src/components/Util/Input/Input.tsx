@@ -9,7 +9,7 @@ import {
   useErrorStyles,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { CSSProperties, useDeferredValue, useState } from "react";
+import { CSSProperties, LabelHTMLAttributes, forwardRef, useDeferredValue, useState } from "react";
 import { debounce, isEmpty } from "src/lib/formatters";
 type InputProps = {
   name?: string;
@@ -17,6 +17,8 @@ type InputProps = {
   label?: string;
   inputClassName?: string;
   fullWidth?: boolean;
+  color?: 'primary' | 'secondary' | 'warning' | 'success' | 'danger';
+  variant?: 'outlined' | 'contained' | 'filled' | 'standard'
   margin?: "none" | "dense" | "normal";
   type?:
   | "number"
@@ -78,6 +80,7 @@ export const InputOutlined = ({
   ...props
 }: InputProps) => {
   // TODO: add variants, colors, sizing, make base component
+  // https://github.com/mui/material-ui/blob/master/packages/mui-material/src/InputBase/InputBase.js#L245
   const [focus, setFocus] = useState(false);
   const { field } = !!name
     ? useController({
@@ -246,6 +249,204 @@ export const InputOutlined = ({
     </div>
   );
 };
+
+export const FormControl = () => {
+
+}
+function formControlState({ props, states, formControl }) {
+  // for every prop in `states` that is undefined, set it with the value from formControlContext
+  return states.reduce((acc, state) => {
+    acc[state] = props[state];
+
+    if (formControl) {
+      if (typeof props[state] === 'undefined') {
+        acc[state] = formControl[state];
+      }
+    }
+
+    return acc;
+  }, {});
+}
+export interface FormControlOwnProps {
+  /**
+   * The content of the component.
+   */
+  children?: React.ReactNode;
+  /**
+   * The color of the component.
+   * It supports both default and custom theme colors, which can be added as shown in the
+   * [palette customization guide](https://mui.com/material-ui/customization/palette/#custom-colors).
+   * @default 'primary'
+   */
+  color?: 'primary' | 'secondary' | 'error' | 'success' | 'warning';
+  /**
+   * If `true`, the label, input and helper text should be displayed in a disabled state.
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * If `true`, the label is displayed in an error state.
+   * @default false
+   */
+  error?: boolean;
+  /**
+   * If `true`, the component will take up the full width of its container.
+   * @default false
+   */
+  fullWidth?: boolean;
+  /**
+   * If `true`, the component is displayed in focused state.
+   */
+  focused?: boolean;
+  /**
+   * If `true`, the label is hidden.
+   * This is used to increase density for a `FilledInput`.
+   * Be sure to add `aria-label` to the `input` element.
+   * @default false
+   */
+  hiddenLabel?: boolean;
+  /**
+   * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
+   * @default 'none'
+   */
+  margin?: 'dense' | 'normal' | 'none';
+  /**
+   * If `true`, the label will indicate that the `input` is required.
+   * @default false
+   */
+  required?: boolean;
+  /**
+   * The size of the component.
+   * @default 'medium'
+   */
+  size?: 'small' | 'medium' | 'large';
+  /**
+   * The variant to use.
+   * @default 'outlined'
+   */
+  variant?: 'standard' | 'outlined' | 'filled';
+}
+interface OverridableTypeMap {
+  props: {};
+  defaultComponent: React.ElementType;
+}
+interface CommonProps {
+  className?: string;
+  style?: React.CSSProperties;
+}
+type DistributiveOmit<T, K extends keyof any> = T extends any
+  ? Omit<T, K>
+  : never;
+
+export interface FormControlTypeMap<
+  AdditionalProps = {},
+  RootComponent extends React.ElementType = 'div',
+> {
+  props: AdditionalProps & FormControlOwnProps;
+  defaultComponent: RootComponent;
+}
+type BaseProps<TypeMap extends OverridableTypeMap> = TypeMap["props"] &
+  CommonProps;
+
+type OverrideProps<
+  TypeMap extends OverridableTypeMap,
+  RootComponent extends React.ElementType
+> = BaseProps<TypeMap> &
+  DistributiveOmit<
+    React.ComponentPropsWithRef<RootComponent>,
+    keyof BaseProps<TypeMap>
+  >;
+type ContextFromPropsKey =
+  | 'color'
+  | 'disabled'
+  | 'error'
+  | 'fullWidth'
+  | 'hiddenLabel'
+  | 'margin'
+  | 'required'
+  | 'size'
+  | 'variant';
+  type FormControlProps<
+  RootComponent extends React.ElementType = FormControlTypeMap['defaultComponent'],
+  AdditionalProps = {},
+> = OverrideProps<FormControlTypeMap<AdditionalProps, RootComponent>, RootComponent> & {
+  component?: React.ElementType;
+};
+export interface FormControlContextValue extends Pick<FormControlProps, ContextFromPropsKey> {
+  adornedStart: boolean;
+  filled: boolean;
+  focused: boolean;
+  onBlur: (event?: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onFocus: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onEmpty: () => void;
+  onFilled: () => void;
+  registerEffect: undefined | (() => () => void);
+  setAdornedStart: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const FormControlContext = React.createContext<FormControlContextValue | undefined>(undefined);
+function useFormControl(): FormControlContextValue | undefined {
+  return React.useContext(FormControlContext);
+}
+type InputLabelProps = {
+  color?: 'primary' | 'secondary' | 'warning' | 'success' | 'danger';
+  variant?: 'outlined' | 'contained' | 'filled' | 'standard';
+  className?: string;
+  shrink?: boolean;
+  disableAnimation?: boolean;
+  margin?: 'dense' | 'normal' | 'none';
+}
+// <InputLabel shrink size="small" variant="contained">
+// <>{"test"}</>
+// </InputLabel>
+// TODO: test
+export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => {
+  const {
+    disableAnimation = false,
+    margin,
+    shrink: shrinkProp,
+    variant,
+    className,
+    ...other
+  } = props;
+
+  const formControl = useFormControl();
+
+  let shrink = shrinkProp;
+  if (typeof shrink === 'undefined' && formControl) {
+    shrink = formControl.filled || formControl.focused || formControl.adornedStart;
+  }
+
+  const fcs = formControlState({
+    props,
+    formControl,
+    states: ["size", "variant", "required", "focused"]
+  })
+
+  const state = {
+    ...props,
+    disableAnimation,
+    formControl,
+    shrink,
+    size: fcs.size,
+    required: fcs.required,
+    focused: fcs.focused,
+    variant: fcs.variant,
+  }
+
+  console.log(state)
+  return (
+    <label
+      data-shrink={shrink}
+      className={clsx(className)}
+      ref={ref}
+    >
+      test
+    </label>
+  )
+})
+export const Input = () => {
+
+}
 
 export const ColorInput = () => {
   const [color, setColor] = useState("#000000");
