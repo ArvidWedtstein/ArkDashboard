@@ -1,9 +1,7 @@
-import { Link, Redirect, navigate, routes } from "@redwoodjs/router";
-import ArkCard from "src/components/Util/ArkCard/ArkCard";
+import {  navigate, routes } from "@redwoodjs/router";
 import {
   Card,
   CardActionArea,
-  CardContent,
   CardHeader,
   CardMedia,
 } from "src/components/Util/Card/Card";

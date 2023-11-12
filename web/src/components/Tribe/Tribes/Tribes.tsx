@@ -11,6 +11,7 @@ import type { FindTribes, permission } from "types/graphql";
 import NewTribe from "../NewTribe/NewTribe";
 import Popper from "src/components/Util/Popper/Popper";
 import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
+import { Card, CardActionArea } from "src/components/Util/Card/Card";
 
 const TribesList = ({ tribes }: FindTribes) => {
   const [anchorRef, setAnchorRef] = useState<{
@@ -47,54 +48,58 @@ const TribesList = ({ tribes }: FindTribes) => {
       >
         <NewTribe />
       </FormModal>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <button
-          className="hover:ring-pea-400 focus:ring-pea-400 dark:ring-pea-600 flex cursor-pointer items-start space-x-4 rounded-lg bg-zinc-200 p-4 shadow-lg ring-1 ring-zinc-500 transition-shadow hover:shadow-sm disabled:cursor-not-allowed disabled:ring-transparent dark:bg-zinc-700"
-          onClick={() => setOpenModal(true)}
-          disabled={
-            !currentUser ||
-            !currentUser?.permissions?.some(
-              (p: permission) => p === "tribe_create"
-            )
-          }
-        >
-          <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              className="text-pea-500 fill-pea-500 !h-6 !w-6"
-            >
-              <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-            </svg>
-          </div>
-          <div className="text-gray-700 dark:text-white">
-            <span className="">Add a new tribe</span>
-          </div>
-        </button>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 my-2">
+        <Card className="hover:ring-pea-400 transition ease-in-out duration-100 focus:ring-pea-400 hover:shadow-sm dark:ring-pea-600 ring-1 ring-zinc-500 disabled:ring-transparent shadow-lg">
+          <CardActionArea
+            className="relative flex m-0 justify-between items-center w-full h-full p-4"
+            onClick={() => setOpenModal(true)}
+            disabled={
+              !currentUser ||
+              !currentUser?.permissions?.some(
+                (p: permission) => p === "tribe_create"
+              )
+            }
+          >
+            <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="text-pea-500 fill-pea-500 !h-6 !w-6"
+              >
+                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+              </svg>
+            </div>
+            <div className="text-gray-700 dark:text-white">
+              <span className="">Add a new tribe</span>
+            </div>
+          </CardActionArea>
+        </Card>
 
-        <button
-          className="hover:ring-pea-400 focus:ring-pea-400 dark:ring-pea-600 flex items-start space-x-4 rounded-lg bg-zinc-200 p-4 shadow-lg ring-1 ring-zinc-500 transition-shadow hover:shadow-sm dark:bg-zinc-700"
-          onClick={() => {
-            const randomIndex = Math.floor(Math.random() * tribes.length);
-            const randomTribe = tribes[randomIndex];
-            toast.success(`You've been assigned to ${randomTribe.name}!`);
-          }}
-        >
-          <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-              className="text-pea-500 fill-pea-500 !h-6 !w-6"
-            >
-              <path d="M213.1 32H106.7C47.84 32 0 79.84 0 138.7V160c0 8.844 7.156 16 16 16S32 168.9 32 160V138.7C32 97.48 65.5 64 106.7 64h106.5C254.4 64 288 97.58 288 138.9c0 27-14.62 52-38.16 65.25L152.5 258.9C137.4 267.4 128 283.4 128 300.7V336c0 8.844 7.156 16.01 16 16.01S160 344.8 160 336V300.7c0-5.766 3.125-11.11 8.156-13.95l97.38-54.78C299.1 213.1 320 177.4 320 138.9C320 79.94 272.1 32 213.1 32zM144 400c-17.67 0-32 14.32-32 31.99s14.33 32 32 32s32-14.33 32-32S161.7 400 144 400z" />
-            </svg>
-          </div>
-          <div className="text-gray-700 dark:text-white">
-            <span className="">Pick random tribe name</span>
-          </div>
-        </button>
+        <Card className="hover:ring-pea-400 transition ease-in-out duration-100 focus:ring-pea-400 hover:shadow-sm dark:ring-pea-600 ring-1 ring-zinc-500 disabled:ring-transparent shadow-lg">
+          <CardActionArea
+            className="relative flex m-0 justify-start items-center w-full h-full p-4"
+            onClick={() => {
+              const randomIndex = Math.floor(Math.random() * tribes.length);
+              const randomTribe = tribes[randomIndex];
+              toast.success(`You've been assigned to ${randomTribe.name}!`);
+            }}
+          >
+            <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex aspect-square !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+                className="text-pea-500 fill-pea-500 !h-6 !w-6"
+              >
+                <path d="M213.1 32H106.7C47.84 32 0 79.84 0 138.7V160c0 8.844 7.156 16 16 16S32 168.9 32 160V138.7C32 97.48 65.5 64 106.7 64h106.5C254.4 64 288 97.58 288 138.9c0 27-14.62 52-38.16 65.25L152.5 258.9C137.4 267.4 128 283.4 128 300.7V336c0 8.844 7.156 16.01 16 16.01S160 344.8 160 336V300.7c0-5.766 3.125-11.11 8.156-13.95l97.38-54.78C299.1 213.1 320 177.4 320 138.9C320 79.94 272.1 32 213.1 32zM144 400c-17.67 0-32 14.32-32 31.99s14.33 32 32 32s32-14.33 32-32S161.7 400 144 400z" />
+              </svg>
+            </div>
+            <div className="text-gray-700 dark:text-white">
+              <span className="">Pick random tribe name</span>
+            </div>
+          </CardActionArea>
+        </Card>
 
-        <div className="flex items-start space-x-4 rounded-lg bg-zinc-300 bg-opacity-40 p-4 shadow-lg dark:bg-zinc-700">
+        <Card className="flex justify-start space-x-4 items-center p-4 transition ease-in-out duration-100 ring-1 ring-zinc-500 disabled:ring-transparent shadow-lg">
           <div className="border-pea-100 bg-pea-50 dark:border-pea-400 flex h-12 w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +124,7 @@ const TribesList = ({ tribes }: FindTribes) => {
               Created this week
             </p>
           </div>
-        </div>
+        </Card>
       </div>
 
       <div className="">

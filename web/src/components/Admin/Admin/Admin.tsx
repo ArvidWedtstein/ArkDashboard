@@ -1,4 +1,4 @@
-import { MetaTags, useMutation } from "@redwoodjs/web/apollo";
+import { MetaTags, useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useEffect, useMemo, useState } from "react";
 import Chart from "src/components/Util/Chart/Chart";
@@ -553,7 +553,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                 <div className="flex items-center gap-x-3 leading-6">
                   <a
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     href={`https://github.com/ArvidWedtstein/ArkDashboard/commit/${value.tree.sha}`}
                     className="text-ellipsis whitespace-nowrap font-mono text-sm leading-6"
                   >

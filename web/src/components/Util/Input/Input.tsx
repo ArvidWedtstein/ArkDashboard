@@ -77,6 +77,7 @@ export const InputOutlined = ({
   InputProps,
   ...props
 }: InputProps) => {
+  // TODO: add variants, colors, sizing, make base component
   const [focus, setFocus] = useState(false);
   const { field } = !!name
     ? useController({
@@ -102,22 +103,29 @@ export const InputOutlined = ({
       | React.FocusEvent<HTMLTextAreaElement>
   ) => {
     setFocus(e.target.value !== "");
-    !!name && field.onBlur();
+
+    if (name) {
+      field.onBlur();
+    }
 
     props.onBlur?.(e);
   };
 
-  const { className: labelClassName, style: labelStyle } = useErrorStyles({
+  const LabelComponent: React.ElementType = !!name ? Label : "label";
+
+  const InputComponent: React.ElementType = !!name ? type === 'textarea' ? TextAreaField : InputField : "input";
+
+  const { className: labelClassName, style: labelStyle } = name ? useErrorStyles({
     className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
     errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base !text-red-600`,
     name,
-  });
-  // relative block w-full rounded-t border-b border-black/40 bg-black/[.06] px-3 pb-2 pt-6 text-base text-gray-900 transition-colors duration-200 placeholder:opacity-0 hover:border-black/80 hover:bg-black/[.09] focus:bg-black/[.06] focus:outline-none focus:ring-0 dark:border-white/70 dark:bg-white/[.09] dark:hover:border-white dark:hover:bg-white/[.13] dark:focus:bg-white/[.09];
-  const { className: inputClassNames, style: inputStyle } = useErrorStyles({
+  }) : { className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`, style: {}};
+
+  const { className: inputClassNames, style: inputStyle } = name ? useErrorStyles({
     className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded border-0 bg-transparent py-4`,
     errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
     name,
-  })
+  }) : { className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded border-0 bg-transparent py-4`, style: {}}
 
   return (
     <div
@@ -133,18 +141,18 @@ export const InputOutlined = ({
         }
       )}
     >
-      <Label
+      <LabelComponent
         style={labelStyle}
         className={clsx(labelClassName, {
           "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-            focus || !isEmpty(field?.value) || !!props?.placeholder,
+            focus || (name && !isEmpty(field?.value)) || !!props?.placeholder,
           "translate-x-10": !!InputProps?.startAdornment,
         })}
-        name={name}
+        {...(name ? { name: name } : {})}
         htmlFor={`input-${name}`}
       >
         {label ?? name} {required && " *"}
-      </Label>
+      </LabelComponent>
       <div
         className={clsx(
           "relative box-content inline-flex cursor-text items-center rounded text-base font-normal leading-6",
@@ -159,72 +167,36 @@ export const InputOutlined = ({
             {InputProps?.startAdornment}
           </div>
         )}
-        {!!!name ? (
-          <input
-            aria-invalid="false"
-            id={`input-${name}`}
-            type={type}
-            className={clsx(inputClassNames, {
-              "pl-0": !!InputProps?.startAdornment,
-              "pr-0": !!InputProps?.endAdornment,
-            })}
-            style={inputStyle}
-            disabled={disabled}
-            {...field}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            aria-describedby={helperText ? `${name}-helper-text` : null}
-            {...props}
-          />
-        ) : type === "textarea" ? (
-          <TextAreaField
-            name={name}
-            className={clsx(inputClassNames, {
-              "pl-0": !!InputProps?.startAdornment,
-              "pr-0": !!InputProps?.endAdornment,
-            })}
-            style={inputStyle}
-            onChange={(e) => {
+        <InputComponent
+          aria-invalid="false"
+          id={`input-${name}`}
+          type={type}
+          className={clsx(inputClassNames, {
+            "pl-0": !!InputProps?.startAdornment,
+            "pr-0": !!InputProps?.endAdornment,
+          })}
+          style={inputStyle}
+          disabled={disabled}
+          {...(name ? field : {})}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={(e) => {
+            if (name) {
               field.onChange(e);
-              props.onChange?.(e);
-            }}
-            onInput={(e) => {
+            }
+            props.onChange?.(e);
+          }}
+          onInput={(e) => {
+            if (name) {
               field.onChange(e);
-              props.onInput?.(e);
-            }}
-            {...field}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            aria-describedby={helperText ? `${name}-helper-text` : null}
-            aria-multiline={true}
-            {...props}
-          />
-        ) : (
-          <InputField
-            aria-invalid="false"
-            id={`input-${name}`}
-            type={type}
-            className={clsx(inputClassNames, {
-              "pl-0": !!InputProps?.startAdornment,
-              "pr-0": !!InputProps?.endAdornment,
-            })}
-            style={inputStyle}
-            disabled={disabled}
-            onChange={(e) => {
-              field.onChange(e);
-              props.onChange?.(e);
-            }}
-            onInput={(e) => {
-              field.onChange(e);
-              props.onInput?.(e);
-            }}
-            {...field}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            aria-describedby={helperText ? `${name}-helper-text` : null}
-            {...props}
-          />
-        )}
+            }
+            props.onInput?.(e);
+          }}
+          {...(name ? { 'aria-multiline': true, name: name } : {})}
+          aria-describedby={helperText ? `${name}-helper-text` : null}
+          {...props}
+        >
+        </InputComponent>
         {InputProps?.endAdornment && (
           <div className="ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70">
             {InputProps?.endAdornment}
@@ -890,78 +862,3 @@ export const ColorInput = () => {
     </div>
   );
 };
-
-// const Input = ({
-//   name,
-//   type = "text",
-//   label,
-//   helperText,
-//   className,
-//   inputClassName,
-//   placeholder,
-//   ...props
-// }: InputProps) => {
-//   return (
-//     <div className={clsx(`w-fit min-w-fit max-w-sm`, className)}>
-//       <div className="rw-input-underline">
-//         {type === "textarea" ? (
-//           <TextAreaField
-//             name={name}
-//             className={clsx("peer", inputClassName)}
-//             {...props}
-//             errorClassName="peer rw-input-error"
-//             placeholder={placeholder ?? ""}
-//             aria-describedby={helperText ? `${name}-helper-text` : null}
-//             aria-multiline={true}
-//           />
-//         ) : (
-//           <InputField
-//             type={type}
-//             name={name}
-//             className={clsx("peer", inputClassName)}
-//             {...props}
-//             errorClassName="peer rw-input-error" // TODO: fix input error
-//             placeholder={placeholder ?? ""}
-//             aria-describedby={helperText ? `${name}-helper-text` : null}
-//           />
-//         )}
-//         <Label
-//           name={name}
-//           className="peer-focus-within:text-pea-500 peer-focus-within:dark:text-pea-400 inline-flex items-center space-x-1 capitalize peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
-//           errorClassName="rw-label-error"
-//         >
-//           {/* {icon && icon} */}
-//           <span>
-//             {label ?? name} {props.required && "*"}
-//           </span>
-//         </Label>
-//       </div>
-//       <FieldError name={name} className="rw-field-error" />
-//       {helperText && (
-//         <p className="rw-helper-text" id={`${name}-helper-text`}>
-//           {helperText}
-//         </p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Input;
-
-//   <div className="relative max-w-sm">
-//   <TextField
-//     name="start_date"
-//     className="rw-float-input peer"
-//     errorClassName="rw-float-input rw-input-error"
-//     placeholder=""
-//   />
-//   <Label
-//     name="start_date"
-//     className="rw-float-label"
-//     errorClassName="rw-float-label rw-label-error"
-//   >
-//     Start date
-//   </Label>
-//   {/* https://mui.com/material-ui/react-text-field/ */}
-//   <FieldError name="start_date" className="rw-field-error" />
-// </div>

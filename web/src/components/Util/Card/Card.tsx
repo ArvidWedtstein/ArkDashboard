@@ -38,8 +38,8 @@ type CardHeaderProps = {
   sx?: CSSProperties;
   avatar?: ReactNode;
   action?: ReactNode;
-  title?: string;
-  subheader?: string;
+  title?: ReactNode;
+  subheader?: ReactNode;
   className?: HTMLAttributes<HTMLDivElement>["className"];
 };
 export const CardHeader = ({
@@ -162,6 +162,7 @@ export const CardActions = ({ children, className, sx }: CardActionsProps) => {
 };
 
 type CardActionAreaBaseProps = CardActionsProps & {
+  disabled?: boolean;
   component?: "link" | "button";
 };
 

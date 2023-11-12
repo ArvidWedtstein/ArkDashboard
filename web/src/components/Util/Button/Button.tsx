@@ -1,14 +1,14 @@
 import clsx from "clsx";
 import Ripple from "../Ripple/Ripple";
-import { useTheme } from "../ThemeContext/ThemeContext";
 import {
   ElementType,
   LinkHTMLAttributes,
-  MouseEventHandler,
   createContext,
   forwardRef,
   useContext,
 } from "react";
+import { permission } from "types/graphql";
+import { useAuth } from "src/auth";
 
 interface ButtonGroupOwnProps {
   /**
@@ -121,12 +121,17 @@ type ButtonProps = {
   fullWidth?: boolean;
   children?: React.ReactNode;
   disableRipple?: boolean;
+  /**
+   * Will not render if user does not have permission or user is not logged in and permission is defined
+   */
+  permission?: permission;
   to?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement> &
   LinkHTMLAttributes<HTMLAnchorElement>;
 
 const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (props: ButtonProps, ref) => {
+    const { currentUser } = useAuth();
     const contextProps = useContext(ButtonGroupContext);
     const buttonGroupButtonContextPositionClassName = useContext(
       ButtonGroupButtonContext
@@ -139,10 +144,15 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       disabled = props.disabled || contextProps.disabled || false,
       startIcon: startIconProp,
       endIcon: endIconProp,
-      className,
       disableRipple,
       type = "button",
+      permission,
     } = props;
+
+    if (permission && (currentUser && !currentUser?.permissions.some((perm) => perm === permission))) {
+      return;
+    }
+
     const sizes = {
       text: {
         small: `text-xs leading-7 py-1 px-1.5`,
@@ -242,7 +252,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       {
         [disabledClasses[variant]]: disabled,
       },
-      className,
+      props.className,
       buttonGroupButtonContextPositionClassName
     );
 
@@ -271,6 +281,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     const Root: ElementType = props.href || props.to ? "a" : "button";
 
     const componentProps = {
+      ...props, // TODO: find solution for this
       className: classNames,
       disabled,
       ref,

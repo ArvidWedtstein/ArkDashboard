@@ -160,7 +160,7 @@ const DatePicker = ({
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (event) => {
     if (
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)

@@ -5,6 +5,8 @@ import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
+import Button from "../Button/Button";
+import { InputOutlined } from "../Input/Input";
 type Filter<Row extends Record<string, any>> = {
   /**
    * The column name.
@@ -74,12 +76,6 @@ type TableColumn<Row extends TableDataRow> = {
    * Column Sort Direction
    */
   sortDirection?: "desc";
-  /**
-   * Column order
-   * @ignore - used for ordering columns
-   * NOT IMPLEMENTED YET
-   */
-  order?: number;
   /**
    *  Indicates whether the column is a summary column.
    */
@@ -847,7 +843,6 @@ const Table = <Row extends Record<string, any>>({
           onChange={(e) => {
             setSelectedPageSizeOption(parseInt(e.target.value));
           }}
-          // defaultValue={mergedSettings.pagination.rowsPerPage}
           defaultValue={selectedPageSizeOption}
         >
           {!mergedSettings?.pagination?.pageSizeOptions.includes(
@@ -957,22 +952,17 @@ const Table = <Row extends Record<string, any>>({
     <div
       className={clsx("relative overflow-y-hidden sm:rounded-lg", className)}
     >
-      <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
+      <div className="rw-button-group">
         {mergedSettings.filter && (
-          <div className="relative w-fit">
-            <ClickAwayListener onClickAway={() => setOpen(false)}>
-              <button
-                className="rw-button rw-button-gray m-0"
-                onClick={() => {
-                  setOpen(!open);
-                }}
-                ref={anchorRef}
-              >
+          <>
+            {/* Filter Button */}
+
+              <Button className="rounded-r-none" ref={anchorRef} variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
                 <span className="sr-only">Filter</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 640 512"
-                  className="pointer-events-none w-6"
+                  className="pointer-events-none w-8 h-8"
                   fill="currentColor"
                   stroke="currentColor"
                 >
@@ -982,13 +972,18 @@ const Table = <Row extends Record<string, any>>({
                     <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
                   )}
                 </svg>
-                {filters.length > 0 && (
-                  <div className="absolute -top-2 -right-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-bold text-white dark:border-gray-900">
-                    {filters.length}
-                  </div>
-                )}
-              </button>
-              <Popper anchorEl={anchorRef.current} open={open} disablePortal>
+              </Button>
+              <Popper anchorEl={anchorRef.current} open={open}>
+              <ClickAwayListener onClickAway={(event) => {
+                if (
+                  anchorRef?.current &&
+                  (anchorRef?.current?.contains(event.target as HTMLElement) || anchorRef?.current?.element.contains(event.target as HTMLElement))
+                ) {
+                  return;
+                }
+                setOpen(false);
+            }}
+            >
                 <Form<Filter<Row>>
                   className="z-10 flex flex-col rounded-lg border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
                   method="dialog"
@@ -1117,9 +1112,9 @@ const Table = <Row extends Record<string, any>>({
                     </button>
                   </div>
                 </Form>
-              </Popper>
             </ClickAwayListener>
-          </div>
+              </Popper>
+          </>
         )}
         {mergedSettings.select && mergedSettings.export && (
           <button
@@ -1141,8 +1136,51 @@ const Table = <Row extends Record<string, any>>({
           </button>
         )}
         {mergedSettings.search && (
-          <div className="relative">
-            <label htmlFor="table-search" className="sr-only">
+          <>
+                 <InputOutlined
+                 className="-ml-px"
+                 margin="none"
+              fullWidth
+              id="table-search"
+              type="search"
+              label="Search"
+              onChange={handleSearch}
+              InputProps={{
+                style: {
+                  borderRadius: "0 0.375rem 0.375rem 0",
+                },
+                startAdornment: (
+                  <svg
+                className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clipRule="evenodd"
+                />
+              </svg>
+                ),
+                endAdornment: (
+                  <Submit
+                    className="rw-button rw-button-green"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="rw-button-icon-start"
+                    >
+                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+                    </svg>
+                    <span className="hidden md:block">Search</span>
+                  </Submit>
+                ),
+              }}
+            />
+            {/* <label htmlFor="table-search" className="sr-only">
               Search
             </label>
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -1157,7 +1195,7 @@ const Table = <Row extends Record<string, any>>({
                   fillRule="evenodd"
                   d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                   clipRule="evenodd"
-                ></path>
+                />
               </svg>
             </div>
             <input
@@ -1165,8 +1203,8 @@ const Table = <Row extends Record<string, any>>({
               onChange={handleSearch}
               className="rw-input m-0 pl-10"
               placeholder="Search for items"
-            />
-          </div>
+            /> */}
+          </>
         )}
         {toolbar.map((item, index) => (
           <div key={`toolbar-${index}`}>{item}</div>
