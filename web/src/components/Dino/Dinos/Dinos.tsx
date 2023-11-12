@@ -21,6 +21,10 @@ import {
   CardHeader,
   CardMedia,
 } from "src/components/Util/Card/Card";
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+} from "src/components/Util/ToggleButton/ToggleButton";
 
 const DinosList = ({
   dinosPage,
@@ -30,7 +34,7 @@ const DinosList = ({
 }) => {
   let { search, temperament, diet, type } = useParams();
 
-  type FormFindDnios = NonNullable<{
+  type FormFindDinos = NonNullable<{
     diet: string;
     search: string;
     temperament: string;
@@ -46,13 +50,13 @@ const DinosList = ({
     direction: "asc",
   });
 
-  const onSubmit = (e: FormFindDnios) => {
+  const onSubmit = (e: FormFindDinos) => {
     navigate(
       routes.dinos({
         ...parseSearch(
           Object.fromEntries(
             Object.entries(e).filter(([_, v]) => v != "")
-          ) as FormFindDnios
+          ) as FormFindDinos
         ),
         page: 1,
       })
@@ -167,16 +171,16 @@ const DinosList = ({
     []
   );
   return (
-    <Form<FormFindDnios> className="rw-segment" onSubmit={onSubmit}>
+    <Form<FormFindDinos> className="rw-segment" onSubmit={onSubmit}>
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
-      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-24 text-gray-900 dark:text-white sm:flex-row md:pt-6">
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
         <h1 className="py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
           Dinos
         </h1>
 
         <div className="flex items-center justify-center space-x-2">
-          <div className="rw-button-group ml-5">
+          <div className="rw-button-group m-0">
             <Lookup
               label="Sort by"
               margin="none"
@@ -272,50 +276,32 @@ const DinosList = ({
             />
           </div>
 
-          <div className="rw-button-group">
-            <input
-              type="radio"
-              id="list"
-              name="view"
-              value="list"
-              className="peer/list hidden"
-              checked={view === "list"}
-              onChange={() => setView("list")}
-            />
-            <input
-              type="radio"
-              id="grid"
-              name="view"
-              value="grid"
-              className="peer/grid hidden"
-              checked={view === "grid"}
-              onChange={() => setView("grid")}
-            />
-            <label
-              htmlFor="list"
-              className="rw-button rw-button-gray-outline peer-checked/list:!border-pea-500 h-full !rounded-r-none !rounded-l-lg border !py-4 peer-checked/grid:border-r-0 peer-checked/list:bg-black/10 dark:peer-checked/list:bg-white/10"
-            >
+          <ToggleButtonGroup
+            orientation="horizontal"
+            value={view}
+            exclusive
+            enforce
+            onChange={(_, value) => setView(value)}
+          >
+            <ToggleButton value="list">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                className="rw-button-icon h-5 w-5"
+                className="h-5 w-5 fill-current"
               >
                 <path d="M64 48H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 62.33 81.67 48 64 48zM64 112H32v-32h32V112zM64 368H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 382.3 81.67 368 64 368zM64 432H32v-32h32V432zM176 112h320c8.801 0 16-7.201 16-15.1C512 87.2 504.8 80 496 80h-320C167.2 80 160 87.2 160 95.1C160 104.8 167.2 112 176 112zM496 240h-320C167.2 240 160 247.2 160 256c0 8.799 7.201 16 16 16h320C504.8 272 512 264.8 512 256C512 247.2 504.8 240 496 240zM496 400h-320C167.2 400 160 407.2 160 416c0 8.799 7.201 16 16 16h320c8.801 0 16-7.201 16-16C512 407.2 504.8 400 496 400zM64 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 222.3 81.67 208 64 208zM64 272H32v-32h32V272z" />
               </svg>
-            </label>
-            <label
-              htmlFor="grid"
-              className="rw-button rw-button-gray-outline peer-checked/grid:!border-pea-500 border !py-4 peer-checked/list:!border-l-0 peer-checked/grid:bg-black/10 dark:peer-checked/grid:bg-white/10"
-            >
+            </ToggleButton>
+            <ToggleButton value="grid">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                className="rw-button-icon h-5 w-5"
+                className="h-5 w-5 fill-current"
               >
                 <path d="M160 0H64C28.65 0 0 28.65 0 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C224 28.65 195.3 0 160 0zM192 160c0 17.64-14.36 32-32 32H64C46.36 192 32 177.6 32 160V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM160 288H64c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C224 316.7 195.3 288 160 288zM192 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448zM448 0h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C512 28.65 483.3 0 448 0zM480 160c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM448 288h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C512 316.7 483.3 288 448 288zM480 448c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448z" />
               </svg>
-            </label>
-          </div>
+            </ToggleButton>
+          </ToggleButtonGroup>
         </div>
       </div>
 
@@ -329,7 +315,7 @@ const DinosList = ({
             "grid w-full gap-6 text-zinc-900 transition-all ease-in-out dark:text-white lg:col-span-3",
             {
               "grid-cols-1": view === "list",
-              "grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4":
+              "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4":
                 view === "grid",
             }
           )}
@@ -357,7 +343,8 @@ const DinosList = ({
                 className="hover:border-pea-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out"
               >
                 <CardActionArea
-                  onClick={() => navigate(routes.dino({ id }))}
+                  to={routes.dino({ id })}
+                  component="link"
                   className="w-full text-left"
                 >
                   <CardHeader
@@ -388,25 +375,19 @@ const DinosList = ({
                   />
 
                   <CardMedia
-                    className="mx-auto aspect-square h-auto max-h-[200px] min-w-[200px] overflow-hidden p-4"
+                    className="mx-auto aspect-square h-auto min-w-[200px] overflow-hidden p-4"
                     component="img"
                     loading="lazy"
                     image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
                   />
-                  <CardContent>
-                    <p className="truncate text-sm" title={description}>
-                      {description}
-                    </p>
-                  </CardContent>
+                  {description && (
+                    <CardContent>
+                      <p className="truncate text-sm" title={description}>
+                        {description}
+                      </p>
+                    </CardContent>
+                  )}
                 </CardActionArea>
-                <CardActions>
-                  <Link
-                    to={routes.dino({ id })}
-                    className="rw-button transition-colors duration-100 ease-in-out hover:bg-black/10 dark:hover:bg-white/10"
-                  >
-                    View Dino
-                  </Link>
-                </CardActions>
               </Card>
             )
           )}

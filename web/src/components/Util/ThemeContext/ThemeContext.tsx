@@ -85,31 +85,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   );
 };
 
-// TODO: fix
-export const useThemeProps = (props) => {
-  const theme = useTheme();
-
-  // Utility function to generate dynamic Tailwind classes based on theme properties
-  const generateClasses = () => {
-    const classes = [];
-
-    // Add color classes
-    if (theme.palette.primary) {
-      classes.push(`text-${theme.palette.primary}`);
-    }
-
-    return classes.join(" ");
-  };
-
-  // Merge the theme properties with the component props and add Tailwind classes
-  const themedProps = {
-    ...props,
-    className: `${props.className || ""} ${generateClasses()}`,
-  };
-
-  return themedProps;
-};
-
 // Custom hook to easily consume the theme context
 export const useTheme = () => {
   const context = useContext(ThemeContext);
