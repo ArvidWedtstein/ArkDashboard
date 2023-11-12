@@ -6,9 +6,10 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Util/Pagination/Pagination";
 
+
 export const QUERY = gql`
-  query FindBasespots($take: Int, $lastCursor: String) {
-    basespotPagination(take: $take, lastCursor: $lastCursor) {
+  query FindBasespots($page: Int, $map: Int, $type: String) {
+    basespotPage(page: $page, map: $map, type: $type) {
       basespots {
         id
         name
@@ -25,8 +26,7 @@ export const QUERY = gql`
           icon
         }
       }
-      hasNextPage
-      cursor
+      count
     }
     maps {
       id
@@ -36,13 +36,13 @@ export const QUERY = gql`
   }
 `;
 
-export const beforeQuery = ({ lastCursor, take }) => {
-  return { variables: { take: take || 9, lastCursor } };
+export const beforeQuery = ({ page, map, type }) => {
+  page = parseInt(page) ? parseInt(page, 10) : 1;
+  return { variables: { page, map: parseInt(map), type } };
 };
-
 // export const QUERY = gql`
-//   query FindBasespots($page: Int, $map: Int, $type: String) {
-//     basespotPage(page: $page, map: $map, type: $type) {
+//   query FindBasespots($take: Int, $lastCursor: String) {
+//     basespotPagination(take: $take, lastCursor: $lastCursor) {
 //       basespots {
 //         id
 //         name
@@ -56,9 +56,11 @@ export const beforeQuery = ({ lastCursor, take }) => {
 //         estimated_for_players
 //         Map {
 //           name
+//           icon
 //         }
 //       }
-//       count
+//       hasNextPage
+//       cursor
 //     }
 //     maps {
 //       id
@@ -68,10 +70,11 @@ export const beforeQuery = ({ lastCursor, take }) => {
 //   }
 // `;
 
-// export const beforeQuery = ({ page, map, type }) => {
-//   page = parseInt(page) ? parseInt(page, 10) : 1;
-//   return { variables: { page, map: parseInt(map), type } };
+// export const beforeQuery = ({ lastCursor, take }) => {
+//   return { variables: { take: take || 9, lastCursor } };
 // };
+
+
 
 export const Loading = () => {
   return (
@@ -137,21 +140,21 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 export const Success = ({
-  basespotPagination,
-  // basespotPage,
+  // basespotPagination,
+  basespotPage,
   maps,
 }: CellSuccessProps<FindBasespots>) => {
   return (
     <>
-      {/* {basespotPage.count > 0 ? (
+      {basespotPage.count > 0 ? (
         <>
           <Basespots basespotPage={basespotPage} maps={maps} />
           <Pagination count={basespotPage.count} route={"basespots"} />
         </>
       ) : (
         <Basespots basespotPage={basespotPage} maps={maps} />
-      )} */}
-      <Basespots basespotPagination={basespotPagination} maps={maps} />
+      )}
+      {/* <Basespots basespotPagination={basespotPagination} maps={maps} /> */}
     </>
   );
 };

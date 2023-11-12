@@ -52,8 +52,7 @@ const CheckboxGroup = ({
       : { field: null };
   const memoizedOptions = useMemo(() => options, [options]);
 
-  const handleCheckboxChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = ((event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       let newSelectedOptions;
 
@@ -69,26 +68,20 @@ const CheckboxGroup = ({
 
       setSelectedOptions(newSelectedOptions);
 
-      if (!name && !form) {
-        onChange?.(value, newSelectedOptions);
-        return;
+      if (name && field) {
+        field.onChange(
+          validation.single || exclusive
+            ? validation.valueAsNumber
+              ? parseInt(newSelectedOptions[0])
+              : newSelectedOptions[0]
+            : newSelectedOptions
+        );
       }
 
-      if (!field) {
-        return;
+      if (onChange) {
+        onChange(value, newSelectedOptions);
       }
-
-      field.onChange(
-        validation.single || exclusive
-          ? validation.valueAsNumber
-            ? parseInt(newSelectedOptions[0])
-            : newSelectedOptions[0]
-          : newSelectedOptions
-      );
-      onChange?.(value, newSelectedOptions);
-    },
-    [name, onChange, selectedOptions, validation.single, exclusive]
-  );
+    });
 
   return (
     <div

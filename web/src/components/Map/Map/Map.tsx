@@ -1,5 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { useMemo, useState } from "react";
+import { Card, CardActionArea, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import ItemList from "src/components/Util/ItemList/ItemList";
 import MapComp from "src/components/Util/Map/Map";
@@ -296,7 +297,7 @@ const Map = ({ map }: Props) => {
             {map.name.includes("The") ? map.name : `The ${map.name}`} Map
           </h2>
         </header>
-        <div className="rw-segment-main text-black dark:text-white">
+        <div className="rw-segment text-black dark:text-white">
           {map?.other_Map && map.other_Map.length > 0 && (
             <section>
               <h6>Realms:</h6>
@@ -314,7 +315,7 @@ const Map = ({ map }: Props) => {
               </Tabs>
             </section>
           )}
-          <div className="my-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
+          <div className="mb-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
             <div className="h-16 px-4">
               <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
                 Released
@@ -335,17 +336,7 @@ const Map = ({ map }: Props) => {
               </p>
             </div>
           </div>
-          <div className="grid grid-flow-row gap-3 md:grid-cols-2">
-            <CheckboxGroup
-              size="medium"
-              options={types}
-              onChange={(_, values) => {
-                setSelectedTypes(
-                  values.filter((v) => values.some((h) => h === v))
-                );
-              }}
-            />
-
+          <div className="grid grid-flow-row gap-3 grid-cols-1 md:grid-cols-2">
             <MapComp
               interactive={true}
               disable_sub_map={!(map?.other_Map && map.other_Map.length > 0)}
@@ -417,7 +408,97 @@ const Map = ({ map }: Props) => {
                   .filter((c) => c.lat !== -1 && c.lon !== -1),
               }}
             />
+            <div className="flex flex-col">
+              <CheckboxGroup
+                size="medium"
+                options={types}
+                onChange={(val, values) => {
+                  console.log("dd", val, values)
+                  setSelectedTypes(
+                    values.filter((v) => values.some((h) => h === v))
+                  );
+                }}
+              />
 
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 my-4">
+              <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+                  <CardActionArea
+                    to={routes.basespots({ map: map.name })}
+                    sx={{
+                      height: "100%",
+                      minHeight: "200px",
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      width: "100%",
+                    }}
+                  >
+                    <CardHeader
+                      title={`${map.name} Basespots`}
+                      sx={{
+                        position: "relative",
+                        width: "100%",
+                        zIndex: 10,
+                        textAlign: "left",
+                        backgroundImage:
+                          "linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.8) 100%)",
+                      }}
+                    />
+
+                    <CardMedia
+                      sx={{
+                        objectFit: "fill",
+                        background: `url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg)`,
+                        position: "absolute",
+                        inset: 0,
+                        zIndex: 0,
+                      }}
+                      component="div"
+                      image={"https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg"}
+                    />
+                  </CardActionArea>
+                </Card>
+
+                <Card className="hover:border-pea-500 h-full border border-transparent transition-all duration-75 ease-in-out">
+                  <CardActionArea
+                    to={routes.lootcrates({ map: map.id })}
+                    className="h-full w-full"
+                    sx={{
+                      minHeight: "100px",
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <CardHeader
+                      title={`${map.name} Lootcrates`}
+                      sx={{
+                        position: "relative",
+                        width: "100%",
+                        zIndex: 10,
+                        textAlign: "left",
+                        backgroundImage:
+                          "linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.8) 100%)",
+                      }}
+                    />
+
+                    <CardMedia
+                      sx={{
+                        objectFit: "fill",
+                        background: `url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/aberration_lootcrate.webp)`,
+                        position: "absolute",
+                        inset: 0,
+                        zIndex: 0,
+                      }}
+                      component="div"
+                      image={"https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/aberration_lootcrate.webp"}
+                    />
+                  </CardActionArea>
+                </Card>
+              </div>
+            </div>
             <ItemList
               onSelect={(_, item) => {
                 let c: SVGCircleElement = document.getElementById(
@@ -472,130 +553,9 @@ const Map = ({ map }: Props) => {
                 })),
               }))}
             />
-
-            {/* <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">
-              {Object.values(
-                types
-                  .filter((f) =>
-                    selectedTypes.find((v) => v === f.value || v === f.label)
-                      ? true
-                      : false
-                  )
-                  .flatMap((f) => f.items.map((v) => ({ ...v, ...f })))
-              ).map((d, i) => (
-                <li
-                  key={`point- ${i}`}
-                  className="animate-fade-in w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500"
-                >
-                  <div
-                    className={
-                      "inline-flex w-full border-l-2 p-2 text-left capitalize"
-                    }
-                    style={{ borderLeftColor: d.color }}
-                  >
-                    <input
-                      className="rw-input mr-2"
-                      type="checkbox"
-                      checked={checkedItems.includes(
-                        `${d.type}|${d.latitude}-${d.longitude}`
-                      )}
-                      onChange={(e) =>
-                        setCheckedItems((prev) => {
-                          return e.target.checked
-                            ? [
-                              ...prev,
-                              `${d.type}|${d.latitude}-${d.longitude}`,
-                            ]
-                            : prev.filter(
-                              (p) =>
-                                p !== `${d.type}|${d.latitude}-${d.longitude}`
-                            );
-                        })
-                      }
-                    />
-
-                    <button
-                      onClick={() => {
-                        let c: SVGCircleElement = document.getElementById(
-                          `map-pos-${i}`
-                        ) as unknown as SVGCircleElement;
-                        if (
-                          c != null &&
-                          !checkedItems.includes(
-                            `${d.type}|${d.latitude}-${d.longitude}`
-                          )
-                        ) {
-                          c.setAttribute("fill", "antiquewhite");
-                          c.classList.toggle("animate-pulse");
-                          setTimeout(() => {
-                            c.setAttribute("fill", d.color);
-                            c.classList.toggle("animate-pulse");
-                          }, 3000);
-                        } else if (c != null) {
-                          if (
-                            !checkedItems.includes(
-                              `${d.type}|${d.latitude}-${d.longitude}`
-                            )
-                          )
-                            c.setAttribute("fill", "#59ff00");
-                        }
-                      }}
-                    >
-                      {d?.label ? d.label.split("\n")[0] : ""} |{" "}
-                      {d.latitude.toFixed(1)}, {d.longitude.toFixed(1)}
-                    </button>
-
-                    {d.note_index && (
-                      <>
-                        <span className="ml-auto inline-flex place-self-end">
-                          Noterun
-                        </span>
-                        <input
-                          className="rw-input"
-                          type="checkbox"
-                          checked={checkedItems.includes(
-                            `${d.type}|${d.latitude}-${d.longitude}`
-                          )}
-                          onChange={(e) =>
-                            setCheckedItems((prev) => {
-                              return e.target.checked
-                                ? [
-                                  ...prev,
-                                  `${d.type}|${d.latitude}-${d.longitude}`,
-                                ]
-                                : prev.filter(
-                                  (p) =>
-                                    p !==
-                                    `${d.type}|${d.latitude}-${d.longitude}`
-                                );
-                            })
-                          }
-                        />
-                      </>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul> */}
           </div>
         </div>
       </div>
-      <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link
-          className="after:content-['_↗']"
-          to={routes.basespots({ map: map.name })}
-        >
-          Basespots
-        </Link>
-      </section>
-      <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link
-          className="after:content-['_↗']"
-          to={routes.lootcrates({ map: map.id })}
-        >
-          Lootcrates
-        </Link>
-      </section>
     </article>
   );
 };

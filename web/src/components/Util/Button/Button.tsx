@@ -131,7 +131,6 @@ type ButtonProps = {
 
 const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (props: ButtonProps, ref) => {
-    const { currentUser } = useAuth();
     const contextProps = useContext(ButtonGroupContext);
     const buttonGroupButtonContextPositionClassName = useContext(
       ButtonGroupButtonContext
@@ -149,8 +148,11 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       permission,
     } = props;
 
-    if (permission && (currentUser && !currentUser?.permissions.some((perm) => perm === permission))) {
-      return;
+    if (permission) {
+      const { currentUser } = useAuth();
+      if (currentUser && !currentUser?.permissions.some((perm) => perm === permission)) {
+        return;
+      }
     }
 
     const sizes = {
@@ -205,7 +207,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         secondary:
           "bg-zinc-500 hover:bg-zinc-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         success:
-          "bg-pea-500 hover:bg-pea-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
+          "bg-pea-500 hover:bg-pea-600 text-white shadow-sm hover:shadow-md",
         warning:
           "bg-amber-400 hover:bg-orange-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         error:

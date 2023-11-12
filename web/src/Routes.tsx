@@ -18,7 +18,7 @@ import { useAuth } from "./auth";
 const Routes = () => {
   return (
     <Router useAuth={useAuth} pageLoadingDelay={0}>
-      <Set wrap={MainLayout} whileLoadingAuth={HomePage}>
+      <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
         <Route path="/terms" page={TermsPage} name="terms" />
         <Route

@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardMedia,
 } from "src/components/Util/Card/Card";
+import Button from "src/components/Util/Button/Button";
 
 const QUERY = gql`
   query FindBasespotsAgain($take: Int, $lastCursor: String) {
@@ -34,11 +35,15 @@ const QUERY = gql`
     }
   }
 `;
-const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
-  const [basespot, setBasespot] = useState(basespotPagination.basespots);
-  const [cursor, setCursor] = useState(basespotPagination.cursor);
-  let basespots = basespotPagination.basespots;
+// const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
+const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
+  const [basespot, setBasespot] = useState(basespotPage.basespots);
+  // const [cursor, setCursor] = useState(basespotPagination.cursor);
+  // let basespots = basespotPagination.basespots;
   let { map, type } = useParams();
+
+  // TODO: https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
+
 
   const [params, setParams] = useState({ map, type });
   useEffect(() => {
@@ -53,32 +58,32 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
       })
     );
   }, [params]);
-  const [loadMore, { called, loading, data, variables }] = useLazyQuery(QUERY, {
-    variables: {
-      take: 9,
-      lastCursor: cursor,
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-    onCompleted: (data) => {
-      console.log(data);
-      setCursor(data.basespotPagination.cursor);
-      if (
-        data.basespotPagination.basespots.length == 0 ||
-        !data.basespotPagination.hasNextPage
-      )
-        return;
-      setBasespot([...basespot, ...data.basespotPagination.basespots]);
-    },
-  });
+  // const [loadMore, { called, loading, data, variables }] = useLazyQuery(QUERY, {
+  //   variables: {
+  //     take: 9,
+  //     lastCursor: cursor,
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //   },
+  //   onCompleted: (data) => {
+  //     console.log(data);
+  //     setCursor(data.basespotPagination.cursor);
+  //     if (
+  //       data.basespotPagination.basespots.length == 0 ||
+  //       !data.basespotPagination.hasNextPage
+  //     )
+  //       return;
+  //     setBasespot([...basespot, ...data.basespotPagination.basespots]);
+  //   },
+  // });
 
-  const loadMoreData = (e) => {
-    e.preventDefault();
-    if (!loading) {
-      loadMore();
-    }
-  };
+  // const loadMoreData = (e) => {
+  //   e.preventDefault();
+  //   if (!loading) {
+  //     loadMore();
+  //   }
+  // };
 
   const mapImages = {
     theisland:
@@ -122,21 +127,24 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
           </p>
         </div>
       </header>
-      <div className="my-4 flex items-center justify-start gap-3">
-        <Link
+      <div className="rw-button-group space-x-3">
+        <Button
           to={routes.newBasespot()}
-          className="rw-button rw-button-green-outline rw-button-large"
+          color="success"
+          variant="outlined"
+          size="large"
+          startIcon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+            >
+              <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+            </svg>
+          }
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 448 512"
-            className="rw-button-icon-start"
-          >
-            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-          </svg>
           New Basespot
-        </Link>
-        <button
+        </Button>
+        {/* <button
           type="button"
           onClick={loadMoreData}
           className="rw-button rw-button-green-outline rw-button-large"
@@ -149,11 +157,12 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
             <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
           </svg>
           test
-        </button>
+        </button> */}
 
         <Lookup
           label={"Map"}
           options={maps}
+          margin="none"
           getOptionLabel={(option) => option.name}
           getOptionImage={(option) =>
             `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`
@@ -167,16 +176,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
             });
           }}
         />
-        {/* https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc */}
         <Lookup
-          // options={[
-          //   { label: "Rathole", value: "rathole" },
-          //   { label: "Cave", value: "cave" },
-          //   { label: "Cliff", value: "cliff" },
-          //   { label: "Open", value: "open" },
-          //   { label: "Waterfall", value: "waterfall" },
-          //   { label: "Underwater", value: "underwater" },
-          // ]}
           options={[
             "rathole",
             "cave",
@@ -185,6 +185,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
             "waterfall",
             "underwater",
           ]}
+          margin="none"
           defaultValue={type}
           label="Type"
           onSelect={(e) => {

@@ -1,10 +1,11 @@
 import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
 import {
+  AnchorHTMLAttributes,
   CSSProperties,
+  ElementType,
   HTMLAttributes,
   ImgHTMLAttributes,
-  LinkHTMLAttributes,
   MouseEventHandler,
   ReactNode,
 } from "react";
@@ -168,7 +169,7 @@ type CardActionAreaBaseProps = CardActionsProps & {
 
 type ButtonProps = CardActionAreaBaseProps & HTMLAttributes<HTMLButtonElement>;
 type LinkProps = CardActionAreaBaseProps &
-  LinkHTMLAttributes<HTMLAnchorElement> & {
+  AnchorHTMLAttributes<HTMLAnchorElement> & {
     to: string;
     onClick?: MouseEventHandler<HTMLAnchorElement>;
   };
@@ -181,8 +182,7 @@ export const CardActionArea = ({
   component = "button",
   ...props
 }: CardActionAreaProps) => {
-  if (component === "button") {
-    const btnProps = props as ButtonProps;
+  if (component === "button" && (!(props as LinkProps).href && !(props as LinkProps).to)) {
     return (
       <button
         className={clsx(
@@ -192,26 +192,26 @@ export const CardActionArea = ({
         tabIndex={0}
         type="button"
         style={sx}
-        {...btnProps}
+        {...(props as ButtonProps)}
       >
         {children}
         <Ripple />
       </button>
     );
-  } else {
-    const linkProps = props as LinkProps;
-
-    return (
-      <Link
-        className={clsx(
-          "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
-          className
-        )}
-        {...linkProps}
-      >
-        {children}
-        <Ripple />
-      </Link>
-    );
   }
+
+  return (
+    <Link
+      className={clsx(
+        "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
+        className
+      )}
+      tabIndex={0}
+      style={sx}
+      {...(props as LinkProps)}
+    >
+      {children}
+      <Ripple />
+    </Link>
+  );
 };

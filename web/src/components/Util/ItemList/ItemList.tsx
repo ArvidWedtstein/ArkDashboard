@@ -181,7 +181,7 @@ const ItemList = ({
         </li>
         {!options ||
           (options.length < 1 && (
-            <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+            <li className="flex items-center rounded-lg p-2 text-gray-900 dark:text-white">
               No items found
             </li>
           ))}
