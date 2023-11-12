@@ -9,7 +9,7 @@ import {
   useFieldArray,
   NumberField,
 } from "@redwoodjs/forms";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";

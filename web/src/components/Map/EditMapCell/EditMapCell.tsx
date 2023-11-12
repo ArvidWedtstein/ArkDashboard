@@ -13,6 +13,15 @@ export const QUERY = gql`
       id
       created_at
       name
+      img
+      icon
+      description
+      release_date
+      boundaries
+      cord_shift_lat
+      cord_shift_lon
+      cord_mult_lat
+      cord_mult_lon
       MapResource {
         latitude
         longitude
@@ -23,7 +32,6 @@ export const QUERY = gql`
         longitude
         note_index
       }
-      img
     }
   }
 `;

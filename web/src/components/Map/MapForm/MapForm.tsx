@@ -17,6 +17,8 @@ import type {
   UseFormRegister,
 } from "@redwoodjs/forms";
 import Map from "src/components/Util/Map/Map";
+import { InputOutlined } from "src/components/Util/Input/Input";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 type FormMap = NonNullable<EditMapById["map"]>;
 
@@ -150,40 +152,75 @@ const MapForm = (props: MapFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Label
+        <InputOutlined
           name="name"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Name
-        </Label>
-
-        <TextField
-          name="name"
+          label="Name"
           defaultValue={props.map?.name}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
         />
+          <br />
+        <InputOutlined
+          name="description"
+          label="Description"
+          type="textarea"
+          margin="normal"
+          defaultValue={props.map?.description}
+          rows={5}
+        />
+        <br />
 
-        <FieldError name="name" className="rw-field-error" />
-
+        <InputOutlined
+          name="cord_shift_lat"
+          label="Cordinates Shift Latitude"
+          inputClassName="!rounded-r-none"
+          type="number"
+          margin="normal"
+          defaultValue={props.map?.cord_shift_lat}
+        />
+        <InputOutlined
+          name="cord_shift_lon"
+          label="Cordinates Shift Longitude"
+          inputClassName="!rounded-l-none -ml-px"
+          type="number"
+          margin="normal"
+          defaultValue={props.map?.cord_shift_lon}
+        />
+        <br />
+        <InputOutlined
+          name="cord_mult_lat"
+          label="Cordinates Multiplier Latitude"
+          inputClassName="!rounded-r-none"
+          type="number"
+          margin="normal"
+          defaultValue={props.map?.cord_mult_lat}
+        />
+        <InputOutlined
+          name="cord_mult_lon"
+          label="Cordinates Multiplier Longitude"
+          inputClassName="!rounded-l-none -ml-px"
+          type="number"
+          margin="normal"
+          defaultValue={props.map?.cord_mult_lon}
+        />
+        <br/>
+      {/* TODO: add boundaries */}
         <Label
           name="img"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
-        >
+          >
           Image
         </Label>
 
-        <TextField
-          name="img"
-          defaultValue={props.map?.img}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+        <FileUpload
+          name="image"
+          secondaryName="icon"
+          label="Image"
+          defaultValue={props?.map?.img}
+          defaultSecondaryValue={props?.map?.icon}
+          storagePath={`arkimages`}
         />
 
-        <FieldError name="img" className="rw-field-error" />
-
+{/* TODO: remove */}
         <MapInput name="oil_veins" register={register} control={control} />
 
         <MapInput name="water_veins" register={register} control={control} />

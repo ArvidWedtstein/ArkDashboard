@@ -122,10 +122,10 @@ export const InputOutlined = ({
   }) : { className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`, style: {}};
 
   const { className: inputClassNames, style: inputStyle } = name ? useErrorStyles({
-    className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded border-0 bg-transparent py-4`,
-    errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
+    className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
+    errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded-[inherit] border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
     name,
-  }) : { className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded border-0 bg-transparent py-4`, style: {}}
+  }) : { className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`, style: {}}
 
   return (
     <div
@@ -156,6 +156,7 @@ export const InputOutlined = ({
       <div
         className={clsx(
           "relative box-content inline-flex cursor-text items-center rounded text-base font-normal leading-6",
+          inputClassName,
           {
             "pl-3.5": !!InputProps?.startAdornment,
             "pr-3.5": !!InputProps?.endAdornment,
@@ -211,7 +212,7 @@ export const InputOutlined = ({
             } as CSSProperties
           }
           className={clsx(
-            "!peer-invalid:border-red-500 pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+            "!peer-invalid:border-red-500 pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
               "top-0": focus || !isEmpty(field?.value) || !!props?.placeholder,
             }
