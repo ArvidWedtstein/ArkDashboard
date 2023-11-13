@@ -239,11 +239,10 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       outlined: `pointer-events-none cursor-default dark:text-white/30 dark:border-white/[.12] text-black/30 border-black/[.12]`,
       icon: `pointer-events-none cursor-default dark:text-white/30 text-black/30`,
     };
-    const base = `inline-flex items-center justify-center box-border relative cursor-pointer select-none appearance-none font-medium uppercase tracking-wide transition-colors duration-[250ms] ${
-      variant === "icon"
+    const base = `inline-flex items-center justify-center box-border relative cursor-pointer select-none appearance-none font-medium uppercase tracking-wide transition-colors duration-[250ms] ${variant === "icon"
         ? "[&>svg]:inline-block aspect-square rounded-[50%] text-center [&>svg]:fill-current flex-[0_0_auto] [&>svg]:shrink-0 overflow-visible"
         : "rounded min-w-[4rem]"
-    }`;
+      }`;
     const classNames = clsx(
       contextProps.className,
       base,
@@ -297,7 +296,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         {...componentProps}
         ref={
           ref as React.LegacyRef<HTMLButtonElement> &
-            React.LegacyRef<HTMLAnchorElement>
+          React.LegacyRef<HTMLAnchorElement>
         }
         {...contextProps}
       >

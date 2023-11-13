@@ -31,6 +31,7 @@ module.exports = {
         fill: "fill 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         ripple: "ripple 0.6s linear infinite",
         "ripple-hover": "ripple 0.6s linear forwards",
+        "auto-fill-cancel": "auto-fill-cancel 10ms",
       },
       keyframes: {
         ripple: {
@@ -101,6 +102,11 @@ module.exports = {
           },
           to: {
             transform: "scaleX(1)",
+          },
+        },
+        "auto-fill-cancel": {
+          from: {
+            display: "block",
           },
         },
         flyInTop: {

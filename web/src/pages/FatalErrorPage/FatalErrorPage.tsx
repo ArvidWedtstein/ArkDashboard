@@ -70,7 +70,7 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
     );
   };
 
-  const query = syntaxHighlight(error.mostRecentRequest.query);
+  const query = error?.mostRecentRequest ? syntaxHighlight(error?.mostRecentRequest?.query) : '';
   return (
     <div className="flex h-[100vh] items-center text-center">
       <section className="mx-auto max-w-3xl bg-white dark:bg-[#252636]">
@@ -81,23 +81,24 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
           <span className="my-2">
             {error.message || "Outgoing reliable buffer overflow"}
           </span>
-          <pre className="mb-4 whitespace-pre-wrap rounded bg-zinc-800 p-4 text-left">
-            <div
-              id="header-buttons"
-              className="inline-flex w-full items-center py-2 px-4"
-            >
-              <div className="mr-2 h-3 w-3 rounded-full bg-red-500" />
-              <div className="mr-2 h-3 w-3 rounded-full bg-yellow-500" />
-              <div className="h-3 w-3 rounded-full bg-green-500" />
-              <p className="ml-4 text-base font-semibold">Query</p>
-            </div>
-            <div className="p-4 text-base text-white">
-              <code className="font-light">
-                {/* {error.mostRecentRequest.query} */}
-                {query}
-              </code>
-            </div>
-          </pre>
+          {query != "" && (
+            <pre className="mb-4 whitespace-pre-wrap rounded bg-zinc-800 p-4 text-left">
+              <div
+                id="header-buttons"
+                className="inline-flex w-full items-center py-2 px-4"
+              >
+                <div className="mr-2 h-3 w-3 rounded-full bg-red-500" />
+                <div className="mr-2 h-3 w-3 rounded-full bg-yellow-500" />
+                <div className="h-3 w-3 rounded-full bg-green-500" />
+                <p className="ml-4 text-base font-semibold">Query</p>
+              </div>
+              <div className="p-4 text-base text-white">
+                <code className="font-light">
+                  {query}
+                </code>
+              </div>
+            </pre>
+          )}
           <div className="mt-3 flex flex-row items-center space-x-8 text-center">
             <Link
               to={routes.home()}

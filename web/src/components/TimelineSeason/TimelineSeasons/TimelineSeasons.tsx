@@ -1,6 +1,7 @@
 import { Link, routes } from "@redwoodjs/router";
 import Button from "src/components/Util/Button/Button";
 import Gantt from "src/components/Util/Gantt/Gantt";
+import { FormControl, Input, InputBase, InputLabel, TextInput } from "src/components/Util/Input/Input";
 import Ripple from "src/components/Util/Ripple/Ripple";
 
 import type { FindTimelineSeasons } from "types/graphql";
@@ -53,6 +54,20 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         >
           New Timeline Season
         </Button>
+
+        <FormControl variant="outlined">
+          <InputLabel variant="outlined" color="warning">
+            test
+          </InputLabel>
+          <Input variant="outlined" defaultValue={'test'} />
+        </FormControl>
+
+        <TextInput variant="outlined" color="success" label="test">
+          <option>test1</option>
+          <option>test2</option>
+          <option>test3</option>
+          <option>test4</option>
+        </TextInput>
       </header>
 
       <Gantt

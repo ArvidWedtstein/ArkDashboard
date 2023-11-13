@@ -9,7 +9,7 @@ import {
   useErrorStyles,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { CSSProperties, LabelHTMLAttributes, forwardRef, useDeferredValue, useState } from "react";
+import { CSSProperties, Fragment, HTMLAttributes, LabelHTMLAttributes, ReactNode, forwardRef, useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import { debounce, isEmpty } from "src/lib/formatters";
 type InputProps = {
   name?: string;
@@ -122,13 +122,13 @@ export const InputOutlined = ({
     className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
     errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base !text-red-600`,
     name,
-  }) : { className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`, style: {}};
+  }) : { className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`, style: {} };
 
   const { className: inputClassNames, style: inputStyle } = name ? useErrorStyles({
     className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
     errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded-[inherit] border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
     name,
-  }) : { className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`, style: {}}
+  }) : { className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`, style: {} }
 
   return (
     <div
@@ -250,9 +250,7 @@ export const InputOutlined = ({
   );
 };
 
-export const FormControl = () => {
 
-}
 function formControlState({ props, states, formControl }) {
   // for every prop in `states` that is undefined, set it with the value from formControlContext
   return states.reduce((acc, state) => {
@@ -366,7 +364,7 @@ type ContextFromPropsKey =
   | 'required'
   | 'size'
   | 'variant';
-  type FormControlProps<
+type FormControlProps<
   RootComponent extends React.ElementType = FormControlTypeMap['defaultComponent'],
   AdditionalProps = {},
 > = OverrideProps<FormControlTypeMap<AdditionalProps, RootComponent>, RootComponent> & {
@@ -387,6 +385,147 @@ const FormControlContext = React.createContext<FormControlContextValue | undefin
 function useFormControl(): FormControlContextValue | undefined {
   return React.useContext(FormControlContext);
 }
+
+
+export const FormControl = forwardRef((props: FormControlProps, ref) => {
+  const {
+    children,
+    className,
+    color = 'primary',
+    component: Component = 'div',
+    disabled = false,
+    error = false,
+    focused: visuallyFocused,
+    fullWidth = false,
+    hiddenLabel = false,
+    margin = 'none',
+    required = false,
+    size = 'medium',
+    variant = 'outlined',
+    ...other
+  } = props;
+
+  const ownerState = {
+    ...props,
+    color,
+    component: Component,
+    disabled,
+    error,
+    fullWidth,
+    hiddenLabel,
+    margin,
+    required,
+    size,
+    variant,
+  };
+
+  const [adornedStart, setAdornedStart] = React.useState(() => {
+    let initialAdornedStart = false;
+
+    if (children) {
+      React.Children.forEach(children, (child) => {
+        if (!React.isValidElement(child)) {
+          return;
+        }
+
+        const input = React.isValidElement(child) ? child.props.input : child;
+
+        if (input && input.props.startAdornment) {
+          initialAdornedStart = true;
+        }
+      });
+    }
+    return initialAdornedStart;
+  });
+
+  const [filled, setFilled] = React.useState(() => {
+    // We need to iterate through the children and find the Input in order
+    // to fully support server-side rendering.
+    let initialFilled = false;
+
+    if (children) {
+      React.Children.forEach(children, (child) => {
+        if (!React.isValidElement(child)) {
+          return;
+        }
+
+        if (isFilled(child.props, true) || isFilled(child.props.inputProps, true)) {
+          initialFilled = true;
+        }
+      });
+    }
+
+    return initialFilled;
+  });
+
+  const [focusedState, setFocused] = React.useState(false);
+  if (disabled && focusedState) {
+    setFocused(false);
+  }
+
+  const focused = visuallyFocused !== undefined && !disabled ? visuallyFocused : focusedState;
+
+  const childContext = React.useMemo(() => {
+    return {
+      adornedStart,
+      setAdornedStart,
+      color,
+      disabled,
+      error,
+      filled,
+      focused,
+      fullWidth,
+      hiddenLabel,
+      size,
+      onBlur: () => {
+        setFocused(false);
+      },
+      onEmpty: () => {
+        setFilled(false);
+      },
+      onFilled: () => {
+        setFilled(true);
+      },
+      onFocus: () => {
+        setFocused(true);
+      },
+      required,
+      registerEffect: () => {
+        return () => { }
+      },
+      variant,
+    };
+  }, [
+    adornedStart, ,
+    color,
+    disabled,
+    error,
+    filled,
+    focused,
+    fullWidth,
+    hiddenLabel,
+    required,
+    size,
+    variant,
+  ]);
+
+  return (
+    <FormControlContext.Provider value={childContext}>
+      <Component
+        className={clsx("relative mx-0 inline-flex min-w-0 flex-col p-0 align-top text-black dark:text-white", {
+          "w-full": fullWidth,
+          "mt-4 mb-2": ownerState.margin === 'normal',
+          "mt-2 mb-1": ownerState.margin === 'dense',
+        })}
+        ref={ref}
+        {...other}
+      >
+        {children}
+      </Component>
+    </FormControlContext.Provider>
+  )
+})
+
 type InputLabelProps = {
   color?: 'primary' | 'secondary' | 'warning' | 'success' | 'danger';
   variant?: 'outlined' | 'contained' | 'filled' | 'standard';
@@ -394,11 +533,8 @@ type InputLabelProps = {
   shrink?: boolean;
   disableAnimation?: boolean;
   margin?: 'dense' | 'normal' | 'none';
+  children?: ReactNode;
 }
-// <InputLabel shrink size="small" variant="contained">
-// <>{"test"}</>
-// </InputLabel>
-// TODO: test
 export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => {
   const {
     disableAnimation = false,
@@ -406,8 +542,37 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, 
     shrink: shrinkProp,
     variant,
     className,
+    color,
     ...other
   } = props;
+
+
+  const labelSize = {
+    outlined: {
+      small: { close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-[9px] scale-100`, open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto` },
+      medium: { close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100`, open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto` },
+      large: ``
+    },
+    filled: {
+      small: { close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-[13px] scale-100`, open: `scale-75 translate-x-3 translate-y-1 max-w-[calc(133%-24px)] pointer-events-auto` },
+      medium: { close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-4 scale-100`, open: `scale-75 translate-x-3 translate-y-[7px] max-w-[calc(133%-24px)] pointer-events-auto` },
+      large: ``
+    },
+    standard: {
+      small: { close: `max-w-[100%] translate-x-0 translate-y-[17px] scale-100`, open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]` },
+      medium: { close: `max-w-[100%] translate-x-0 translate-y-5 scale-100`, open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]` },
+      large: ``
+    }
+  }
+  const colors = {
+    success: `text-green-500`,
+    error: `text-red-500`,
+    warning: `text-amber-400`,
+    primary: `text-white/70`,
+    secondary: `text-white/70`
+  }
+
+
 
   const formControl = useFormControl();
 
@@ -422,31 +587,722 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, 
     states: ["size", "variant", "required", "focused"]
   })
 
+  const labelClasses = {
+    outlined: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
+    filled: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
+    standard: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 transition-transform`,
+  }
+
   const state = {
     ...props,
     disableAnimation,
     formControl,
     shrink,
-    size: fcs.size,
+    size: fcs.size = "medium",
     required: fcs.required,
     focused: fcs.focused,
     variant: fcs.variant,
   }
 
-  console.log(state)
   return (
     <label
       data-shrink={shrink}
-      className={clsx(className)}
+      aria-description={`Variant: ${state.variant}`}
+      className={clsx(labelClasses[state.variant], labelSize[state.variant][state.size][state.focused || shrink ? 'open' : 'close'], className, state.focused ? colors[fcs.color || color] : 'text-white/70')}
       ref={ref}
-    >
-      test
-    </label>
+      {...other}
+    />
   )
 })
-export const Input = () => {
 
+function isFilled(obj: any, SSR = false) {
+  return (
+    obj &&
+    (((obj.value != null && !(Array.isArray(obj.value) && obj.value.length === 0)) && obj.value !== '') ||
+      (SSR && (obj.defaultValue != null && !(Array.isArray(obj.defaultValue) && obj.defaultValue.length === 0)) && obj.defaultValue !== ''))
+  );
 }
+
+type InputBaseProps = {
+  classes?: {};
+  className?: string;
+  'aria-describedby'?: string;
+  autoComplete?: string;
+  autoFocus?: boolean;
+  color?: 'primary' | 'secondary' | 'error' | 'success' | 'warning';
+  components?: {
+    Root?: React.ElementType;
+    Input?: React.ElementType;
+  };
+  /**
+   * The extra props for the slot components.
+   * You can override the existing props or add new ones.
+   *
+   * This prop is an alias for the `slotProps` prop.
+   * It's recommended to use the `slotProps` prop instead, as `componentsProps` will be deprecated in the future.
+   *
+   * @default {}
+   */
+  componentsProps?: {
+    root?: React.HTMLAttributes<HTMLDivElement>;
+    input?: React.InputHTMLAttributes<HTMLInputElement>;
+  };
+  defaultValue?: unknown;
+  disabled?: boolean;
+  endAdornment?: React.ReactNode;
+  error?: boolean;
+  fullWidth?: boolean;
+  id?: string;
+  inputComponent?: React.ElementType<React.HTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & {
+    [arbitrary: string]: any;
+  }>
+  /**
+   * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
+   */
+  inputProps?: React.HTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & {
+    [arbitrary: string]: any;
+  };
+  inputRef?: React.Ref<any>;
+  margin?: 'dense' | 'normal' | 'none';
+  multiline?: boolean;
+  name?: string;
+  onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+  onKeyUp?: React.KeyboardEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+  onClick?: React.MouseEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  onInvalid?: React.FormEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  placeholder?: string;
+  readOnly?: boolean;
+  required?: boolean;
+  renderSuffix?: (state: {
+    disabled?: boolean;
+    error?: boolean;
+    filled?: boolean;
+    focused?: boolean;
+    margin?: 'dense' | 'none' | 'normal';
+    required?: boolean;
+    startAdornment?: React.ReactNode;
+  }) => React.ReactNode;
+  rows?: string | number;
+  maxRows?: string | number;
+  minRows?: string | number;
+  size?: 'small' | 'medium' | 'large';
+  /**
+   * The extra props for the slot components.
+   * You can override the existing props or add new ones.
+   *
+   * This prop is an alias for the `componentsProps` prop, which will be deprecated in the future.
+   *
+   * @default {}
+   */
+  slotProps?: {
+    root?: React.HTMLAttributes<HTMLDivElement> & { sx?: CSSProperties };
+    input?: React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & { sx?: CSSProperties };
+  };
+  /**
+   * The components used for each slot inside.
+   *
+   * This prop is an alias for the `components` prop, which will be deprecated in the future.
+   *
+   * @default {}
+   */
+  slots?: {
+    root?: React.ElementType;
+    input?: React.ElementType;
+  };
+  startAdornment?: React.ReactNode;
+  type?: string;
+  value?: unknown;
+}
+export const InputBase = forwardRef((props: InputBaseProps, ref) => {
+  const {
+    'aria-describedby': ariaDescribedby,
+    autoComplete,
+    autoFocus,
+    className,
+    color,
+    components = {},
+    componentsProps = {},
+    defaultValue,
+    disabled,
+    endAdornment,
+    error,
+    fullWidth = false,
+    id,
+    inputComponent = 'input',
+    inputProps: inputPropsProp = {},
+    inputRef: inputRefProp,
+    margin,
+    maxRows,
+    minRows,
+    multiline = false,
+    name,
+    onBlur,
+    onChange,
+    onClick,
+    onFocus,
+    onKeyDown,
+    onKeyUp,
+    placeholder,
+    readOnly,
+    renderSuffix,
+    rows,
+    size,
+    slotProps = {},
+    slots = {},
+    startAdornment,
+    type = 'text',
+    value: valueProp,
+    ...other
+  } = props;
+
+  const value = inputPropsProp.value != null ? inputPropsProp.value : valueProp;
+  const { current: isControlled } = useRef(value != null);
+
+  const inputRef = useRef();
+  const handleInputRefWarning = useCallback((instance) => {
+    if (process.env.NODE_ENV !== 'production') {
+      if (instance && instance.nodeName !== 'INPUT' && !instance.focus) {
+        console.error(
+          [
+            'ArkDashboard: You have provided a `inputComponent` to the input component',
+            'that does not correctly handle the `ref` prop.',
+            'Make sure the `ref` prop is called with a HTMLInputElement.',
+          ].join('\n'),
+        );
+      }
+    }
+  }, []);
+
+  const handleInputRef = useMemo(() => {
+    if ([inputRef,
+      inputRefProp,
+      inputPropsProp.ref,
+      handleInputRefWarning
+    ].every((ref) => ref == null)) {
+      return null;
+    }
+
+    return (instance) => {
+      [inputRef,
+        inputRefProp,
+        inputPropsProp.ref,
+        handleInputRefWarning].forEach((ref) => {
+          if (typeof ref === 'function') {
+            ref(instance);
+          } else if (ref) {
+            ref.current = instance;
+          }
+        });
+    };
+  }, [inputRef,
+    inputRefProp,
+    inputPropsProp.ref,
+    handleInputRefWarning]);
+
+  const [focused, setFocused] = useState(false);
+  const formControl = useFormControl();
+
+  const fcs = formControlState({
+    props,
+    formControl,
+    states: ['color', 'disabled', 'error', 'hiddenLabel', 'size', 'required', 'filled'],
+  });
+
+  fcs.focused = formControl ? formControl.focused : focused;
+
+  // The blur won't fire when the disabled state is set on a focused input.
+  // We need to book keep the focused state manually.
+  React.useEffect(() => {
+    if (!formControl && disabled && focused) {
+      setFocused(false);
+      if (onBlur) {
+        onBlur(undefined);
+      }
+    }
+  }, [formControl, disabled, focused, onBlur]);
+
+  const onFilled = formControl && formControl.onFilled;
+  const onEmpty = formControl && formControl.onEmpty;
+
+  const checkDirty = React.useCallback(
+    (obj) => {
+      if (isFilled(obj)) {
+        if (onFilled) {
+          onFilled();
+        }
+      } else if (onEmpty) {
+        onEmpty();
+      }
+    },
+    [onFilled, onEmpty],
+  );
+
+  useEffect(() => {
+    if (isControlled) {
+      checkDirty({ value });
+    }
+  }, [value, checkDirty, isControlled]);
+
+
+  const handleFocus = (event) => {
+    if (fcs.disabled) {
+      event.stopPropagation();
+      return;
+    }
+
+    if (onFocus) {
+      onFocus(event);
+    }
+    if (inputPropsProp.onFocus) {
+      inputPropsProp.onFocus(event);
+    }
+
+    if (formControl && formControl.onFocus) {
+      formControl.onFocus(event);
+    } else {
+      setFocused(true);
+    }
+  };
+
+  const handleBlur = (event) => {
+    if (onBlur) {
+      onBlur(event);
+    }
+    if (inputPropsProp.onBlur) {
+      inputPropsProp.onBlur(event);
+    }
+
+    if (formControl && formControl.onBlur) {
+      formControl.onBlur(event);
+    } else {
+      setFocused(false);
+    }
+  };
+
+  const handleChange = (event, ...args) => {
+    if (!isControlled) {
+      const element = event.target || inputRef.current;
+      if (element == null) {
+        throw new Error(
+          'ArkDashboard: Expected valid input target. ' +
+          'Did you use a custom `inputComponent` and forget to forward refs? '
+        );
+      }
+
+      checkDirty({
+        value: element.value,
+      });
+    }
+
+    if (inputPropsProp.onChange) {
+      inputPropsProp.onChange(event);
+      // inputPropsProp.onChange(event, ...args);
+    }
+
+    if (onChange) {
+      onChange(event);
+      // onChange(event, ...args);
+    }
+  };
+
+  // Check the input state on mount, in case it was filled by the user
+  useEffect(() => {
+    checkDirty(inputRef.current);
+  }, []);
+
+  const handleClick = (event) => {
+    if (inputRef.current && event.currentTarget === event.target) {
+      (inputRef.current as HTMLInputElement).focus();
+    }
+
+    if (onClick) {
+      onClick(event);
+    }
+  };
+
+  let InputComponent = inputComponent;
+  let inputProps = inputPropsProp;
+
+  if (multiline && InputComponent === 'input') {
+    inputProps = {
+      type: undefined,
+      minRows: rows ? rows : minRows,
+      maxRows: rows ? rows : maxRows,
+      ...inputProps,
+    };
+
+    InputComponent = TextAreaField;
+  }
+
+  const handleAutoFill = (event) => {
+    // Provide a fake value as Chrome might not let you access it for security reasons.
+    checkDirty(event.animationName === 'auto-fill-cancel' ? inputRef.current : { value: 'x' });
+  };
+
+  useEffect(() => {
+    if (formControl) {
+      formControl.setAdornedStart(Boolean(startAdornment));
+    }
+  }, [formControl, startAdornment]);
+
+  const ownerState = {
+    ...props,
+    color: fcs.color || 'primary',
+    disabled: fcs.disabled,
+    endAdornment,
+    error: fcs.error,
+    focused: fcs.focused,
+    formControl: formControl,
+    fullWidth,
+    hiddenLabel: fcs.hiddenLabel,
+    multiline,
+    size: fcs.size,
+    variant: fcs.variant,
+    startAdornment,
+    type,
+  };
+  const variant = "filled"
+  const inputSize = {
+    standard: `pt-1 px-0 pb-1`,// pb-[5px]
+    outlined: `py-4 px-3.5`,// py-[16.5px]
+    filled: `pt-[25px] px-3 pb-2`
+  }
+
+  const inputBaseClasses = {
+    outlined: `relative box-border inline-flex cursor-text items-center text-base font-normal leading-6 dark:text-white text-black rounded`,
+    filled: `relative box-border inline-flex cursor-text items-center text-base font-normal leading-6 dark:text-white text-black bg-white/10 rounded-t transition-colors hover:transform hover:after:scale-x-100`,
+    standard: `relative box-border inline-flex cursor-text items-center text-base font-normal leading-6 dark:text-white text-black`,
+  }
+  const inputBaseClassesBefore = {
+    outlined: ``,
+    filled: `before:content-[''] before:border-b before:border-white/70 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none`,
+    standard: `before:content-[''] before:border-b before:border-white/70 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none`,
+  }
+  const inputBaseClassesAfter = {
+    outlined: ``,
+    filled: `after:content-[''] after:border-b-2 after:border-blue-500 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform`, //.split(' ').map((p) => `after:${p}`).join(' '),
+    standard: `after:border-b-2 after:border-pea-500 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform`,
+  }
+  const inputClasses = `font-[inherit] leading-[inherit] m-0 h-6 min-w-0 w-full box-content block focus:outline-none disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${inputSize[variant]}`
+
+  const classes = {};
+  const Root = slots.root || components.Root || 'div';
+  const rootProps = slotProps.root || componentsProps.root || {};
+
+  const Input = slots.input || components.Input || InputComponent;
+  inputProps = { ...inputProps, ...(slotProps.input ?? componentsProps.input) };
+  console.log(fcs.variant, variant, inputProps)
+  return (
+    <Fragment>
+      <Root
+        aria-description={`Variant: ${variant}`}
+        {...rootProps}
+        {...(!(typeof Root === 'string') && {
+          ownerstate: { ...ownerState },
+        })}
+        ref={ref}
+        onClick={handleClick}
+        {...other}
+        className={clsx(
+          classes,
+          inputBaseClasses[variant],
+          inputBaseClassesBefore[variant],
+          inputBaseClassesAfter[variant],
+          {
+            'readonlyclasses': readOnly
+          },
+          rootProps.className,
+          className,
+        )}
+      >
+        {startAdornment}
+        <FormControlContext.Provider value={null}>
+          <Input
+            ownerState={ownerState}
+            aria-invalid={fcs.error}
+            aria-describedby={ariaDescribedby}
+            autoComplete={autoComplete}
+            autoFocus={autoFocus}
+            defaultValue={defaultValue}
+            disabled={fcs.disabled}
+            id={id}
+            onAnimationStart={handleAutoFill}
+            name={name}
+            placeholder={placeholder}
+            readOnly={readOnly}
+            required={fcs.required}
+            rows={rows}
+            value={value}
+            onKeyDown={onKeyDown}
+            onKeyUp={onKeyUp}
+            type={type}
+            {...inputProps}
+            {...(!(typeof Input === 'string') && {
+              as: InputComponent,
+              ownerState: { ...ownerState, ...inputProps.ownerState },
+            })}
+            ref={handleInputRef}
+            className={clsx(
+              inputClasses,
+              "animate-auto-fill-cancel",
+              {
+                // TODO v6: remove this class as it duplicates with the global state class Mui-readOnly
+                'MuiInputBase-readOnly': readOnly,
+              },
+              inputProps.className,
+            )}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            onFocus={handleFocus}
+          />
+        </FormControlContext.Provider>
+        {endAdornment}
+        {renderSuffix ? renderSuffix({
+          ...fcs,
+          startAdornment
+        }) : null}
+      </Root>
+    </Fragment>
+  )
+})
+
+
+function deepClone<T>(source: T): T | Record<keyof any, unknown> {
+  if (!(source !== null && typeof source === 'object' && source.constructor === Object)) {
+    return source;
+  }
+
+  const output: Record<keyof any, unknown> = {};
+
+  Object.keys(source).forEach((key) => {
+    output[key] = deepClone(source[key]);
+  });
+
+  return output;
+}
+function deepmerge<T>(
+  target: T,
+  source: unknown,
+  options: {
+    clone?: boolean;
+  } = { clone: true },
+): T {
+  const output = options.clone ? { ...target } : target;
+
+  if ((target !== null && typeof target === 'object' && target.constructor === Object) && (source !== null && typeof source === 'object' && source.constructor === Object)) {
+    Object.keys(source).forEach((key) => {
+      // Avoid prototype pollution
+      if (key === '__proto__') {
+        return;
+      }
+
+      if ((source[key] !== null && typeof source[key] === 'object' && source[key].constructor === Object) && key in target && (target[key] !== null && typeof target[key] === 'object' && target[key].constructor === Object)) {
+        // Since `output` is a clone of `target` and we have narrowed `target` in this block we can cast to the same type.
+        (output as Record<keyof any, unknown>)[key] = deepmerge(target[key], source[key], options);
+      } else if (options.clone) {
+        (output as Record<keyof any, unknown>)[key] = (source[key] !== null && typeof source[key] === 'object' && source[key].constructor === Object)
+          ? deepClone(source[key])
+          : source[key];
+      } else {
+        (output as Record<keyof any, unknown>)[key] = source[key];
+      }
+    });
+  }
+
+  return output;
+}
+interface iInputProps extends InputBaseProps {
+  sx?: CSSProperties;
+  [key: string]: any
+}
+export const Input = forwardRef((props: iInputProps, ref) => {
+  const {
+    components = {},
+    componentsProps: componentsPropsProp,
+    fullWidth = false,
+    inputComponent = 'input',
+    multiline = false,
+    slotProps,
+    slots = {},
+    type = 'text',
+    ...other
+  } = props;
+
+  const classes = {}
+
+  const ownerState = {};
+  const inputComponentsProps = { root: { ownerState } as HTMLAttributes<HTMLDivElement> };
+
+  const componentsProps =
+    slotProps ?? componentsPropsProp
+      ? deepmerge(slotProps ?? componentsPropsProp, inputComponentsProps)
+      : inputComponentsProps;
+
+  const RootSlot = slots.root ?? components.Root ?? InputBase;
+  const InputSlot = slots.input ?? components.Input ?? InputBase;
+  return (
+    <InputBase
+      slots={{ root: RootSlot, input: InputSlot }}
+      slotProps={componentsProps}
+      fullWidth={fullWidth}
+      inputComponent={inputComponent}
+      multiline={multiline}
+      ref={ref}
+      type={type}
+      {...other}
+      classes={classes}
+    />
+  )
+})
+
+export const TextInput = forwardRef((props: any, ref) => {
+  const {
+    autoComplete,
+    autoFocus = false,
+    children,
+    className,
+    color = 'primary',
+    defaultValue,
+    disabled = false,
+    error = false,
+    FormHelperTextProps,
+    fullWidth = false,
+    helperText,
+    id: idOverride,
+    InputLabelProps,
+    inputProps,
+    InputProps,
+    inputRef,
+    label,
+    maxRows,
+    minRows,
+    multiline = false,
+    name,
+    onBlur,
+    onChange,
+    onFocus,
+    placeholder,
+    required = false,
+    rows,
+    select = false,
+    SelectProps,
+    type,
+    value,
+    variant = 'outlined',
+    ...other
+  } = props;
+
+  const ownerState = {
+    ...props,
+    autoFocus,
+    color,
+    disabled,
+    error,
+    fullWidth,
+    multiline,
+    required,
+    select,
+    variant,
+  };
+
+  const InputMore: {
+    [key: string]: any;
+  } = {};
+
+  if (variant === 'outlined') {
+    if (InputLabelProps && typeof InputLabelProps.shrink !== 'undefined') {
+      InputMore.notched = InputLabelProps.shrink;
+    }
+    InputMore.label = label;
+  }
+  if (select) {
+    // unset defaults from textbox inputs
+    if (!SelectProps || !SelectProps.native) {
+      InputMore.id = undefined;
+    }
+    InputMore['aria-describedby'] = undefined;
+  }
+
+  const variantComponent = {
+    standard: Input,
+    filled: Input,
+    outlined: Input,
+  };
+  const id = idOverride ?? useId();
+  const helperTextId = helperText && id ? `${id}-helper-text` : undefined;
+  const inputLabelId = label && id ? `${id}-label` : undefined;
+  const InputComponent = variantComponent[variant];
+  const InputElement = (
+    <InputComponent
+      aria-describedby={helperTextId}
+      autoComplete={autoComplete}
+      autoFocus={autoFocus}
+      defaultValue={defaultValue}
+      fullWidth={fullWidth}
+      multiline={multiline}
+      name={name}
+      rows={rows}
+      maxRows={maxRows}
+      minRows={minRows}
+      type={type}
+      value={value}
+      id={id}
+      inputRef={inputRef}
+      onBlur={onBlur}
+      onChange={onChange}
+      onFocus={onFocus}
+      placeholder={placeholder}
+      inputProps={inputProps}
+      {...InputMore}
+      {...InputProps}
+    />
+  );
+  return (
+    <FormControl
+      className={clsx(className)}
+      disabled={disabled}
+      error={error}
+      fullWidth={fullWidth}
+      ref={ref}
+      required={required}
+      color={color}
+      variant={variant}
+      ownerState={ownerState}
+      {...other}
+    >
+      {label != null && label !== '' && (
+        <InputLabel htmlFor={id} id={inputLabelId} {...InputLabelProps}>
+          {label}
+        </InputLabel>
+      )}
+
+
+      {select ? (
+        <select
+          aria-describedby={helperTextId}
+          id={id}
+          labelId={inputLabelId}
+          value={value}
+          input={InputElement}
+          {...SelectProps}
+        >
+          {children}
+        </select>
+      ) : (
+        InputElement
+      )}
+
+      {helperText && (
+        <p id={helperTextId} className="rw-helper-text" {...FormHelperTextProps}>
+          {helperText}
+        </p>
+      )}
+    </FormControl>
+  )
+})
 
 export const ColorInput = () => {
   const [color, setColor] = useState("#000000");
