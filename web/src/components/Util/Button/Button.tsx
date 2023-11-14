@@ -146,6 +146,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       disableRipple,
       type = "button",
       permission,
+      ...other
     } = props;
 
     if (permission) {
@@ -177,22 +178,6 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         large: `p-3 text-3xl [&>svg]:w-6 [&>svg]:h-6`,
       },
     };
-    // const theme = useTheme();
-    // const colors2 = {
-    //   text: `text-${theme.palette[color].light} hover:bg-${theme.palette[color].light} hover:bg-opacity-10`,
-    //   contained: `bg-${theme.palette[color].light} hover:bg-${theme.palette[
-    //     color
-    //   ].light.replace(
-    //     /\d+/g,
-    //     `${parseInt(theme.palette[color].light.replace(/[^0-9.]/g, "")) + 100}`
-    //   )} ${
-    //     theme.palette[color].contrastText
-    //       ? `text-${theme.palette[color].contrastText}`
-    //       : "dark:text-black/90 text-white"
-    //   } shadow-sm hover:shadow-md`,
-    //   outlined: `text-${theme.palette[color].light} border border-${theme.palette[color].light} border-opacity-50 hover:border-opacity-100 hover:bg-${theme.palette[color].light} hover:bg-opacity-10`,
-    //   icon: `text-${theme.palette[color].light} hover:bg-${theme.palette[color].light} hover:bg-opacity-100`,
-    // };
     const colors = {
       text: {
         primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",
@@ -240,8 +225,8 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       icon: `pointer-events-none cursor-default dark:text-white/30 text-black/30`,
     };
     const base = `inline-flex items-center justify-center box-border relative cursor-pointer select-none appearance-none font-medium uppercase tracking-wide transition-colors duration-[250ms] ${variant === "icon"
-        ? "[&>svg]:inline-block aspect-square rounded-[50%] text-center [&>svg]:fill-current flex-[0_0_auto] [&>svg]:shrink-0 overflow-visible"
-        : "rounded min-w-[4rem]"
+      ? "[&>svg]:inline-block aspect-square rounded-[50%] text-center [&>svg]:fill-current flex-[0_0_auto] [&>svg]:shrink-0 overflow-visible"
+      : "rounded min-w-[4rem]"
       }`;
     const classNames = clsx(
       contextProps.className,
@@ -282,7 +267,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     const Root: ElementType = props.href || props.to ? "a" : "button";
 
     const componentProps = {
-      ...props, // TODO: find solution for this
+      ...other, // TODO: find solution for this
       className: classNames,
       disabled,
       ref,

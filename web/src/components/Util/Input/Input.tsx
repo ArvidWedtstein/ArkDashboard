@@ -9,12 +9,12 @@ import {
   useErrorStyles,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { CSSProperties, Fragment, HTMLAttributes, LabelHTMLAttributes, ReactNode, forwardRef, useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
+import { CSSProperties, Fragment, ReactNode, forwardRef, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { debounce, isEmpty } from "src/lib/formatters";
 type InputProps = {
   name?: string;
   helperText?: string;
-  label?: string;
+  label?: ReactNode;
   inputClassName?: string;
   fullWidth?: boolean;
   color?: 'primary' | 'secondary' | 'warning' | 'success' | 'error';
@@ -154,7 +154,14 @@ export const InputOutlined = ({
         {...(name ? { name: name } : {})}
         htmlFor={`input-${name}`}
       >
-        {label ?? name} {required && " *"}
+        {required ? (
+          <Fragment>
+            {label ?? name}
+            &thinsp;{'*'}
+          </Fragment>
+        ) : (
+          label ?? name
+        )}
       </LabelComponent>
       <div
         className={clsx(
@@ -232,7 +239,14 @@ export const InputOutlined = ({
             )}
           >
             <span className="visible inline-block px-1 opacity-0">
-              {label ?? name} {required && " *"}
+              {required ? (
+                <Fragment>
+                  {label ?? name}
+                  &thinsp;{'*'}
+                </Fragment>
+              ) : (
+                label ?? name
+              )}
             </span>
           </legend>
         </fieldset>
@@ -317,7 +331,7 @@ export interface FormControlOwnProps {
    */
   variant?: 'standard' | 'outlined' | 'filled';
 
-  label?: string;
+  label?: ReactNode;
 }
 interface OverridableTypeMap {
   props: {};
@@ -357,7 +371,8 @@ type ContextFromPropsKey =
   | 'margin'
   | 'required'
   | 'size'
-  | 'variant';
+  | 'variant'
+  | 'label';
 
 type FormControlProps<
   RootComponent extends React.ElementType = FormControlTypeMap['defaultComponent'],
@@ -539,7 +554,6 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, 
     children,
   } = props;
 
-
   const labelSize = {
     outlined: {
       small: { close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-[9px] scale-100`, open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto` },
@@ -562,10 +576,11 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, 
     error: `text-red-500`,
     warning: `text-amber-400`,
     primary: `text-white/70`,
-    secondary: `text-white/70`
+    secondary: `text-zinc-500`
   }
 
   const formControl = useFormControl();
+  formControl.label = children;
 
   let shrink = shrinkProp;
   if (typeof shrink === 'undefined' && formControl) {
@@ -594,17 +609,26 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, 
     variant: fcs.variant || variant,
     error: fcs.error,
   }
+
+  const { size, focused } = state;
+
+  const textColor = state.error ? "text-red-500" : focused ? colors[fcs.color || color] : 'text-white/70';
   return (
     <label
       data-shrink={shrink}
-      className={clsx(labelClasses[state.variant], labelSize[state.variant][state.size][state.focused || shrink ? 'open' : 'close'], className, state.error ? "text-red-500" : state.focused ? colors[fcs.color || color] : 'text-white/70')}
+      className={clsx(
+        labelClasses[state.variant],
+        labelSize[state.variant][size][focused || shrink ? 'open' : 'close'],
+        className,
+        textColor,
+      )}
       ref={ref}
       children={
         state.required ? (
-          <React.Fragment>
+          <Fragment>
             {children}
             &thinsp;{'*'}
-          </React.Fragment>
+          </Fragment>
         ) : (
           children
         )
@@ -664,6 +688,7 @@ type InputBaseProps = {
   margin?: 'dense' | 'normal' | 'none';
   multiline?: boolean;
   name?: string;
+  label?: ReactNode;
   onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
   onFocus?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
@@ -973,11 +998,17 @@ export const InputBase = forwardRef((props: InputBaseProps, ref) => {
     filled: `pt-[25px] px-3 pb-2`
   }
 
-  const inputBaseClass = `relative box-border inline-flex cursor-text items-center text-base font-normal leading-6 dark:text-white text-black`
+  const borders = {
+    primary: `after:border-blue-300`,
+    secondary: `after:border-zinc-500`,
+    success: `after:border-pea-500`,
+    error: `after:border-red-500`,
+    warning: `after:border-amber-400`,
+  }
   const inputBaseClasses = {
     outlined: `rounded`,
     filled: `bg-white/10 rounded-t transition-colors`,
-    standard: ``,
+    standard: `mt-4`,
   }
   const inputBaseClassesBefore = {
     outlined: ``,
@@ -986,16 +1017,18 @@ export const InputBase = forwardRef((props: InputBaseProps, ref) => {
   }
   const inputBaseClassesAfter = {
     outlined: ``,
-    filled: `after:content-[''] after:border-b-2 after:border-blue-500 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform`,
-    standard: `after:content-[''] after:border-b-2 after:border-pea-500 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform`,
+    filled: `after:content-[''] after:border-b-2 ${borders[ownerState.color]} after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform`,
+    standard: `after:content-[''] after:border-b-2 ${borders[ownerState.color]} after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform`,
   }
-  const classes = { root: '', input: `font-[inherit] leading-[inherit] m-0 h-6 min-w-0 w-full box-content block focus:outline-none disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${inputSize[ownerState.variant]}` };
+  const classes = {
+    root: 'relative box-border inline-flex cursor-text items-center text-base font-normal leading-6 dark:text-white text-black',
+    input: `font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0 w-full box-content block focus:outline-none disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${inputSize[ownerState.variant]}`
+  };
   const Root = slots.root || components.Root || 'div';
   const rootProps = slotProps.root || componentsProps.root || { ownerState: null };
 
   const Input = slots.input || components.Input || InputComponent;
   inputProps = { ...inputProps, ...(slotProps.input ?? componentsProps.input) };
-  console.log(fcs, rootProps)
   return (
     <Fragment>
       <Root
@@ -1008,22 +1041,29 @@ export const InputBase = forwardRef((props: InputBaseProps, ref) => {
         {...other}
         className={clsx(
           classes.root,
-          inputBaseClass,
           inputBaseClasses[ownerState.variant],
           inputBaseClassesBefore[ownerState.variant],
           inputBaseClassesAfter[ownerState.variant],
           {
             'pointer-events-none': readOnly,
             "before:border-red-500 after:border-red-500": (fcs.error) && (ownerState.variant === 'filled' || ownerState.variant === 'standard'),
-            "after:border-red-500": ownerState.color === 'error' && (ownerState.variant === 'filled' || ownerState.variant === 'standard'),
             "after:scale-x-100": ownerState.focused && (ownerState.variant === 'filled' || ownerState.variant === 'standard'),
-            "after:border-pea-500": (ownerState.variant === 'filled' || ownerState.variant === 'standard') && ownerState.color === 'success',
+            "pl-3.5": ownerState.variant === 'outlined' && startAdornment,
+            "pl-3": ownerState.variant === 'filled' && startAdornment,
+            "pr-3.5": ownerState.variant === 'outlined' && endAdornment,
+            "pr-3": ownerState.variant === 'filled' && endAdornment,
           },
           rootProps.className,
           className,
         )}
       >
-        {startAdornment}
+        {startAdornment && (
+          <div className={clsx("mr-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap", {
+            "mt-4": ownerState.variant === 'filled'
+          })}>
+            {startAdornment}
+          </div>
+        )}
         <FormControlContext.Provider value={null}>
           <Input
             ownerState={ownerState}
@@ -1053,41 +1093,28 @@ export const InputBase = forwardRef((props: InputBaseProps, ref) => {
             className={clsx(
               classes.input,
               "animate-auto-fill-cancel",
-              inputProps.className,
+              inputProps.className, {
+              "pl-0": (ownerState.variant === 'filled' || ownerState.variant === 'outlined') && startAdornment,
+              "pr-0": (ownerState.variant === 'filled' || ownerState.variant === 'outlined') && endAdornment,
+            }
             )}
             onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
           />
         </FormControlContext.Provider>
-        {endAdornment}
-        <fieldset aria-hidden className={clsx("text-left absolute bottom-0 right-0 hover:border-white px-2 rounded-[inherit] min-w-0 overflow-hidden border border-black/20 dark:border-white/20 pointer-events-none m-0 left-0 -top-[5px]", {
-          "!border-pea-500 border-2": color === 'success' && fcs.focused,
-          "!border-red-500 border-2": color === 'error' && fcs.focused,
-          "!border-amber-400 border-2": color === 'warning' && fcs.focused,
-        })}>
-          <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-            "max-w-full": fcs.focused || fcs.filled,
-            "max-w-[0.01px]": !fcs.focused && !fcs.filled
-          })}>
-            <span className={"px-[5px] inline-block opacity-0 visible"}>
-              {fcs.required ? (
-                <React.Fragment>
-                  {fcs.label}
-                  &thinsp;{'*'}
-                </React.Fragment>
-              ) : (
-                fcs.label
-              )}
-            </span>
-          </legend>
-        </fieldset>
-        {/* {renderSuffix ? (
+        {endAdornment && (
+          <div className="ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70">
+            {endAdornment}
+          </div>
+        )}
+
+        {renderSuffix ? (
           renderSuffix({
             ...fcs,
             startAdornment
           })
-        ) : null} */}
+        ) : null}
       </Root>
     </Fragment>
   )
@@ -1138,10 +1165,10 @@ function deepmerge<T>(
 
   return output;
 }
-interface iInputProps extends InputBaseProps {
+
+type iInputProps = {
   sx?: CSSProperties;
-  [key: string]: any
-}
+} & InputBaseProps;
 export const Input = forwardRef((props: iInputProps, ref) => {
   const {
     components = {},
@@ -1153,48 +1180,49 @@ export const Input = forwardRef((props: iInputProps, ref) => {
     slots = {},
     type = 'text',
     color,
+    label,
     ...other
   } = props;
 
+  const formControl = useFormControl();
   const classes = {}
   const ownerState = {};
-  const inputComponentsProps = { root: { ownerState } as HTMLAttributes<HTMLDivElement> };
+  const inputComponentsProps = { root: { ownerState } };
 
   const componentsProps =
     slotProps ?? componentsPropsProp
       ? deepmerge(slotProps ?? componentsPropsProp, inputComponentsProps)
       : inputComponentsProps;
 
-  const RootSlot = slots.root ?? components.Root ?? InputBase;
-  const InputSlot = slots.input ?? components.Input ?? InputBase;
+  const RootSlot = slots.root ?? components.Root ?? 'div';
+  const InputSlot = slots.input ?? components.Input ?? 'input';
 
-
-  console.log(componentsProps)
   return (
     <InputBase
-      slots={{ root: RootSlot, input: InputSlot }}
+      // slots={{ root: RootSlot, input: InputSlot }}
       renderSuffix={(state) => (
-        <fieldset aria-hidden className={clsx("text-left absolute bottom-0 right-0 hover:border-white px-2 rounded-[inherit] min-w-0 overflow-hidden border border-black/20 dark:border-white/20 pointer-events-none m-0 left-0 -top-[5px]", {
+        formControl.variant === 'outlined' && (<fieldset aria-hidden className={clsx("text-left absolute bottom-0 right-0 hover:border-white px-2 rounded-[inherit] min-w-0 overflow-hidden border border-black/20 dark:border-white/20 pointer-events-none m-0 left-0 -top-[5px]", {
           "!border-pea-500 border-2": color === 'success' && state.focused,
           "!border-red-500 border-2": color === 'error' && state.focused,
           "!border-amber-400 border-2": color === 'warning' && state.focused,
         })}>
           <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-            "max-w-full": state.focused || state.filled,
+            "max-w-full": state.focused || state.filled || state.startAdornment,
             "max-w-[0.01px]": !state.focused && !state.filled
           })}>
             <span className={"px-[5px] inline-block opacity-0 visible"}>
               {state.required ? (
                 <React.Fragment>
-                  {"test1234"}
+                  {formControl.label || label}
                   &thinsp;{'*'}
                 </React.Fragment>
               ) : (
-                "test1234"
+                formControl.label || label
               )}
             </span>
           </legend>
         </fieldset>
+        )
       )}
       slotProps={componentsProps}
       fullWidth={fullWidth}
@@ -1203,7 +1231,10 @@ export const Input = forwardRef((props: iInputProps, ref) => {
       ref={ref}
       type={type}
       {...other}
-      classes={classes}
+      classes={{
+        ...classes,
+        notchedOutline: null,
+      }}
     />
   )
 })
@@ -1276,7 +1307,6 @@ export const TextInput = forwardRef((props: any, ref) => {
     }
     InputMore['aria-describedby'] = undefined;
   }
-  // console.log('NOTCHED', InputLabelProps, InputMore, label != null && label !== '' && required, InputProps, required, label, `&thinsp;{'*'}`)
 
 
   const id = idOverride ?? useId();
