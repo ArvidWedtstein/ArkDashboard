@@ -56,18 +56,15 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         </Button>
 
         <FormControl variant="outlined">
-          <InputLabel variant="outlined" color="warning">
+          <InputLabel color="secondary">
             test
           </InputLabel>
-          <Input variant="outlined" defaultValue={'test'} />
+          <Input defaultValue={'test'} />
         </FormControl>
+        {/*
+        <TextInput variant="outlined" color="success" label="test" required>
 
-        <TextInput variant="outlined" color="success" label="test">
-          <option>test1</option>
-          <option>test2</option>
-          <option>test3</option>
-          <option>test4</option>
-        </TextInput>
+        </TextInput> */}
       </header>
 
       <Gantt
