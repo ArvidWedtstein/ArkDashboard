@@ -342,14 +342,17 @@ const getStyles = (
   return btnMap[button].join(' ');
 };
 
+// TODO: implement color size
 export const ButtonGroup = ({
   children,
   variant,
   orientation = "horizontal",
+  color = "primary"
 }: {
   children: React.ReactNode;
   variant?: "text" | "outlined" | "contained" | "icon";
   orientation?: 'horizontal' | 'vertical';
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
 }) => {
   const classes = {
     firstButton: getStyles(orientation, variant, 'first'),
@@ -384,7 +387,7 @@ export const ButtonGroup = ({
         disableFocusRipple: false,
         disableRipple: false,
         fullWidth: false,
-        size: 'small',
+        size: 'medium',
         variant,
       }}>
         {validChildren.map((child, index) => (

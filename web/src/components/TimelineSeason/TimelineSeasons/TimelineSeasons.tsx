@@ -101,7 +101,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
           </InputLabel>
           <Input defaultValue={'test'} />
         </FormControl>
-        <ButtonGroup variant="outlined" orientation="vertical">
+        <ButtonGroup variant="contained" color="warning" orientation="vertical">
           <Button color="primary">button</Button>
           <Button color="primary">button</Button>
           <Button color="primary">button</Button>
