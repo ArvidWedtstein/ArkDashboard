@@ -234,7 +234,6 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       sizes[variant][size],
       buttonGroupButtonContextPositionClassName,
       colors[variant][color],
-      // colors2[variant],
       {
         [disabledClasses[variant]]: disabled,
       },
@@ -244,7 +243,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
 
     const startIcon = startIconProp && variant !== "icon" && (
       <span
-        className="[&>svg]shrink-0 mr-2 -ml-1 select-none transition-colors duration-200 [&>svg]:inline-block [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-current"
+        className="[&>svg]:shrink-0 mr-2 -ml-1 select-none transition-colors duration-200 [&>svg]:inline-block [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-current"
         style={{
           display: "inherit",
         }}
@@ -295,7 +294,111 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
 );
 
 export default Button;
+// https://github.com/mui/material-ui/tree/a13c0c026692aafc303756998a78f1d6c2dd707d/packages/mui-material/src/ButtonGroup
 
+const getValidKids = (children: React.ReactNode) => {
+  return React.Children.toArray(children).filter((child) =>
+    React.isValidElement(child),
+  ) as React.ReactElement[];
+};
+
+const getStyles = (
+  orientation: 'horizontal' | 'vertical',
+  variant: 'contained' | 'outlined' | 'text' | 'icon',
+  button: 'first' | 'middle' | 'last'
+) => {
+  const isHorizontal = orientation === 'horizontal';
+
+  const btnMap = {
+    first: [isHorizontal ? `rounded-r-none` : `rounded-b-none`],
+    middle: [isHorizontal ? `rounded-r-none rounded-l-none` : `rounded-b-none rounded-t-none`],
+    last: [isHorizontal ? `rounded-l-none` : `rounded-t-none`],
+  };
+  const BORDER_COLOR = 'border-blue-500';
+  const BORDER_OPACITY = 'border-opacity-50';
+  switch (variant) {
+    case "text":
+      if (button === 'first' || button === 'middle') {
+        btnMap[button].push(isHorizontal ? `border-r` : `border-b`, BORDER_COLOR, BORDER_OPACITY);
+      }
+      break;
+    case "outlined":
+      if (button === 'first' || button === 'middle') {
+        btnMap[button].push(isHorizontal ? `border-r-transparent hover:border-r-current` : `border-b-transparent hover:border-b-current`);
+      }
+      if (button === 'middle' || button === 'last') {
+        btnMap[button].push(`-m${isHorizontal ? 'l' : 't'}-px`);
+      }
+      break;
+    case "contained":
+      if (button === 'first' || button === 'middle') {
+        btnMap[button].push(isHorizontal ? `border-r` : `border-b`, BORDER_COLOR);
+      }
+      break;
+    default:
+      break;
+  }
+
+  return btnMap[button].join(' ');
+};
+
+export const ButtonGroup = ({
+  children,
+  variant,
+  orientation = "horizontal",
+}: {
+  children: React.ReactNode;
+  variant?: "text" | "outlined" | "contained" | "icon";
+  orientation?: 'horizontal' | 'vertical';
+}) => {
+  const classes = {
+    firstButton: getStyles(orientation, variant, 'first'),
+    middleButton: getStyles(orientation, variant, 'middle'),
+    lastButton: getStyles(orientation, variant, 'last'),
+  };
+
+  const validChildren = getValidKids(children);
+  const childrenCount = validChildren.length;
+
+  const getButtonPositionClassName = (index) => {
+    const isFirstButton = index === 0;
+    const isLastButton = index === childrenCount - 1;
+
+    if (isFirstButton && isLastButton) {
+      return '';
+    }
+    if (isFirstButton) {
+      return classes.firstButton;
+    }
+    if (isLastButton) {
+      return classes.lastButton;
+    }
+    return classes.middleButton;
+  };
+
+  return (
+    <div className={clsx("inline-flex rounded", { "flex-col": orientation === "vertical" })} role="group">
+      <ButtonGroupContext.Provider value={{
+        color: 'error',
+        disabled: false,
+        disableFocusRipple: false,
+        disableRipple: false,
+        fullWidth: false,
+        size: 'small',
+        variant,
+      }}>
+        {validChildren.map((child, index) => (
+          <ButtonGroupButtonContext.Provider
+            key={index}
+            value={getButtonPositionClassName(index)}
+          >
+            {child}
+          </ButtonGroupButtonContext.Provider>
+        ))}
+      </ButtonGroupContext.Provider>
+    </div>
+  );
+};
 // {
 //   (
 //     <div className="flex flex-col space-y-2">

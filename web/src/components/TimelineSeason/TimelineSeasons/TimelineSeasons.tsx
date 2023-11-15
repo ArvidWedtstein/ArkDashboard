@@ -1,7 +1,8 @@
 import { routes } from "@redwoodjs/router";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import Gantt from "src/components/Util/Gantt/Gantt";
 import { FormControl, Input, InputLabel, TextInput } from "src/components/Util/Input/Input";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 import type { FindTimelineSeasons } from "types/graphql";
 
@@ -74,14 +75,14 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
             </svg>
           } />
         </FormControl>
-        <FormControl variant="filled" color="success">
+        <FormControl variant="filled" color="warning" size="medium">
           <InputLabel>
-            test
+            testabc
           </InputLabel>
           <Input defaultValue={'test'} startAdornment={
             <svg
               aria-hidden="true"
-              className="h-4 w-4 inline-block"
+              className="h-4 w-4 inline-block "
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -94,28 +95,18 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
             </svg>
           } />
         </FormControl>
-        <FormControl variant="standard">
+        <FormControl size="medium" variant="standard" color="warning" error>
           <InputLabel>
             test1233
           </InputLabel>
-          <Input defaultValue={'test'} startAdornment={
-            <svg
-              aria-hidden="true"
-              className="h-4 w-4 inline-block shrink-0"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z"
-                clipRule="evenodd"
-              />
-            </svg>
-          } />
+          <Input defaultValue={'test'} />
         </FormControl>
-
-        <TextInput variant="outlined" color="success" label="test" InputProps={{
+        <ButtonGroup variant="outlined" orientation="vertical">
+          <Button color="primary">button</Button>
+          <Button color="primary">button</Button>
+          <Button color="primary">button</Button>
+        </ButtonGroup>
+        <TextInput variant="outlined" id="test12345" size="small" color="success" label="test" helperText="test" InputProps={{
           endAdornment: (
             <svg
               aria-hidden="true"
@@ -132,6 +123,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
             </svg>
           )
         }} />
+        <Lookup options={["test"]} size="small" />
       </header>
 
       <Gantt
