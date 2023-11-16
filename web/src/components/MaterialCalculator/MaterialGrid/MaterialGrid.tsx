@@ -587,9 +587,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   <TextInput
                     color="primary"
                     value={value}
-                    inputProps={{
-                      className: 'text-center'
-                    }}
                     onChange={(e) => {
                       setRecipes({
                         type: "CHANGE_AMOUNT",
@@ -604,37 +601,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                     }}
                     InputProps={{
                       className: 'max-w-[10rem] w-fit',
-                      startAdornment: (
-                        <Button
-                          variant="icon"
-                          color="secondary"
-                          disabled={value === 1}
-                          onClick={() =>
-                            setRecipes({
-                              type: "CHANGE_AMOUNT",
-                              payload: {
-                                index: rowIndex,
-                                amount:
-                                  value - row.yields < 1
-                                    ? row.yields
-                                    : value - row.yields,
-                              },
-                            })
-                          }
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                            className="h-3.5 w-3.5"
-                            fill="currentColor"
-                          >
-                            <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
-                          </svg>
-                        </Button>
-                      ),
                       endAdornment: (
                         <Fragment>
-                          {/* <Button
+                          <Button
                             variant="icon"
                             color="secondary"
                             disabled={value === 1}
@@ -659,7 +628,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                             >
                               <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
                             </svg>
-                          </Button> */}
+                          </Button>
+                          <span className="w-px h-8 bg-current opacity-30 mx-1" />
                           <Button
                             variant="icon"
                             color="secondary"
