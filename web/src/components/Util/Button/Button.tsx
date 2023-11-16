@@ -1,125 +1,68 @@
 import clsx from "clsx";
 import Ripple from "../Ripple/Ripple";
 import {
+  CSSProperties,
+  Children,
+  ComponentPropsWithRef,
+  Context,
   ElementType,
   LinkHTMLAttributes,
+  ReactElement,
+  ReactNode,
   createContext,
   forwardRef,
+  isValidElement,
   useContext,
+  useMemo,
 } from "react";
 import { permission } from "types/graphql";
 import { useAuth } from "src/auth";
 
-interface ButtonGroupOwnProps {
-  /**
-   * The content of the component.
-   */
+type ButtonGroupOwnProps = {
   children?: React.ReactNode;
   /**
-   * The color of the component.
-   * It supports both default and custom theme colors, which can be added as shown in the
-   * [palette customization guide](https://mui.com/material-ui/customization/palette/#custom-colors).
    * @default 'primary'
    */
-  color?: "primary" | "secondary" | "error" | "info" | "success" | "warning";
-  /**
-   * If `true`, the component is disabled.
-   * @default false
-   */
+  color?: "primary" | "secondary" | "success" | "warning" | "error";
   disabled?: boolean;
-  /**
-   * If `true`, the button ripple effect is disabled.
-   * @default false
-   */
   disableRipple?: boolean;
-  /**
-   * If `true`, the buttons will take up the full width of its container.
-   * @default false
-   */
   fullWidth?: boolean;
   /**
-   * The component orientation (layout flow direction).
    * @default 'horizontal'
    */
   orientation?: "vertical" | "horizontal";
   /**
-   * The size of the component.
-   * `small` is equivalent to the dense button styling.
    * @default 'medium'
    */
   size?: "small" | "medium" | "large";
   /**
-   * The variant to use.
    * @default 'outlined'
    */
   variant?: "text" | "outlined" | "contained" | "icon";
 }
-interface OverridableTypeMap {
-  props: {};
-  defaultComponent: React.ElementType;
-}
-interface CommonProps {
-  className?: string;
-  style?: React.CSSProperties;
-}
-type DistributiveOmit<T, K extends keyof any> = T extends any
-  ? Omit<T, K>
-  : never;
-
-type BaseProps<TypeMap extends OverridableTypeMap> = TypeMap["props"] &
-  CommonProps;
-
-type OverrideProps<
-  TypeMap extends OverridableTypeMap,
-  RootComponent extends React.ElementType
-> = BaseProps<TypeMap> &
-  DistributiveOmit<
-    React.ComponentPropsWithRef<RootComponent>,
-    keyof BaseProps<TypeMap>
-  >;
-
-interface ButtonGroupTypeMap<
-  AdditionalProps = {},
-  RootComponent extends React.ElementType = "div"
-> {
-  props: AdditionalProps & ButtonGroupOwnProps;
-  defaultComponent: RootComponent;
-}
-
-type ButtonGroupProps<
-  RootComponent extends React.ElementType = ButtonGroupTypeMap["defaultComponent"],
-  AdditionalProps = {}
-> = OverrideProps<
-  ButtonGroupTypeMap<AdditionalProps, RootComponent>,
-  RootComponent
-> & {
-  component?: React.ElementType;
-};
 
 type IButtonGroupContext = {
   className?: string;
-  color?: ButtonGroupProps["color"];
+  color?: "primary" | "secondary" | "success" | "warning" | "error";
   disabled?: boolean;
-  disableElevation?: boolean;
-  disableFocusRipple?: boolean;
   disableRipple?: boolean;
   fullWidth?: boolean;
-  size?: ButtonGroupProps["size"];
-  variant?: ButtonGroupProps["variant"];
+  size?: "small" | "medium" | "large";
+  variant?: "text" | "contained" | "outlined" | "icon";
 };
-const ButtonGroupContext = createContext<IButtonGroupContext>({});
 
-const ButtonGroupButtonContext = createContext<string | undefined>(undefined);
+const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
+const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
 
 type ButtonProps = {
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
   color?: "primary" | "secondary" | "success" | "warning" | "error";
   variant?: "text" | "contained" | "outlined" | "icon";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   fullWidth?: boolean;
-  children?: React.ReactNode;
+  children?: ReactNode;
   disableRipple?: boolean;
   /**
    * Will not render if user does not have permission or user is not logged in and permission is defined
@@ -131,19 +74,22 @@ type ButtonProps = {
 
 const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (props: ButtonProps, ref) => {
-    const contextProps = useContext(ButtonGroupContext);
+    const { variant: contextVariant, size: contextSize, color: contextColor, disabled: contextDisabled, fullWidth: contextFullWidth, className: contextClassName, disableRipple: contextDisableRipple, ...contextRestProps } = useContext(ButtonGroupContext);
+
     const buttonGroupButtonContextPositionClassName = useContext(
       ButtonGroupButtonContext
     );
+
     const {
       children,
-      variant = props.variant || contextProps.variant || "text",
-      size = props.size || contextProps.size || "medium",
-      color = props.color || contextProps.color || "primary",
-      disabled = props.disabled || contextProps.disabled || false,
+      variant = contextVariant || "text",
+      size = contextSize || "medium",
+      color = contextColor || "primary",
+      disabled = contextDisabled || false,
       startIcon: startIconProp,
       endIcon: endIconProp,
-      disableRipple,
+      disableRipple = contextDisableRipple,
+      fullWidth = contextFullWidth || false,
       type = "button",
       permission,
       ...other
@@ -155,7 +101,6 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         return;
       }
     }
-
     const sizes = {
       text: {
         small: `text-xs leading-7 py-1 px-1.5`,
@@ -182,21 +127,21 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       text: {
         primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",
         secondary: "text-zinc-400 hover:bg-zinc-400 hover:bg-opacity-10",
-        success: "text-pea-400 hover:bg-pea-400 hover:bg-opacity-10",
-        warning: "text-amber-400 hover:bg-amber-400 hover:bg-opacity-10",
+        success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
+        warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",
         error: "text-red-500 hover:bg-red-500 hover:bg-opacity-10",
       },
       contained: {
         primary:
-          "bg-blue-400 hover:bg-blue-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
+          "bg-blue-400 border-blue-500 hover:bg-blue-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         secondary:
-          "bg-zinc-500 hover:bg-zinc-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
+          "bg-zinc-500 border-zinc-600 hover:bg-zinc-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         success:
-          "bg-pea-500 hover:bg-pea-600 text-white shadow-sm hover:shadow-md",
+          "bg-green-500 border-green-600 hover:bg-green-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         warning:
-          "bg-amber-400 hover:bg-orange-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
+          "bg-orange-400 border-orange-500 hover:bg-orange-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         error:
-          "bg-red-500 hover:bg-red-600 text-white shadow-sm hover:shadow-md",
+          "bg-red-500 border-red-600 hover:bg-red-600 text-white shadow-sm hover:shadow-md",
       },
       outlined: {
         primary:
@@ -204,32 +149,34 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         secondary:
           "text-zinc-400 border border-zinc-400 border-opacity-50 hover:border-opacity-100 hover:bg-zinc-400 hover:bg-opacity-10",
         success:
-          "text-pea-400 border border-pea-400 border-opacity-50 hover:border-opacity-100 hover:bg-pea-400 hover:bg-opacity-10",
+          "text-green-500 border border-green-500 border-opacity-50 hover:border-opacity-100 hover:bg-green-500 hover:bg-opacity-10",
         warning:
-          "text-amber-400 border border-amber-400 border-opacity-50 hover:border-opacity-100 hover:bg-amber-400 hover:bg-opacity-10",
+          "text-orange-400 border border-orange-400 border-opacity-50 hover:border-opacity-100 hover:bg-orange-400 hover:bg-opacity-10",
         error:
           "text-red-500 border border-red-500 border-opacity-50 hover:border-opacity-100 hover:bg-red-500 hover:bg-opacity-10",
       },
       icon: {
         primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",
         secondary: "text-zinc-400 hover:bg-zinc-400 hover:bg-opacity-10",
-        success: "text-pea-400 hover:bg-pea-400 hover:bg-opacity-10",
-        warning: "text-amber-400 hover:bg-amber-400 hover:bg-opacity-10",
+        success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
+        warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",
         error: "text-red-500 hover:bg-red-500 hover:bg-opacity-10",
       },
     };
+
     const disabledClasses = {
       text: `pointer-events-none cursor-default dark:text-white/30 text-black/30`,
       contained: `shadow-none pointer-events-none cursor-default dark:text-white/30 dark:bg-white/[.12] bg-black/[.12] text-black/30`,
       outlined: `pointer-events-none cursor-default dark:text-white/30 dark:border-white/[.12] text-black/30 border-black/[.12]`,
       icon: `pointer-events-none cursor-default dark:text-white/30 text-black/30`,
     };
-    const base = `inline-flex items-center justify-center box-border relative cursor-pointer select-none appearance-none font-medium uppercase tracking-wide transition-colors duration-[250ms] ${variant === "icon"
+    const base = `inline-flex items-center justify-center box-border relative cursor-pointer select-none appearance-none font-medium uppercase tracking-wide ${variant === "icon"
       ? "[&>svg]:inline-block aspect-square rounded-[50%] text-center [&>svg]:fill-current flex-[0_0_auto] [&>svg]:shrink-0 overflow-visible"
       : "rounded min-w-[4rem]"
       }`;
+
     const classNames = clsx(
-      contextProps.className,
+      contextClassName,
       base,
       sizes[variant][size],
       buttonGroupButtonContextPositionClassName,
@@ -237,36 +184,29 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       {
         [disabledClasses[variant]]: disabled,
       },
-      props.className,
-      buttonGroupButtonContextPositionClassName
+      props.className
     );
 
-    const startIcon = startIconProp && variant !== "icon" && (
-      <span
-        className="[&>svg]:shrink-0 mr-2 -ml-1 select-none transition-colors duration-200 [&>svg]:inline-block [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-current"
-        style={{
-          display: "inherit",
-        }}
-      >
-        {startIconProp}
-      </span>
-    );
+    const renderIcon = (iconProp: ReactNode, side: 'start' | 'end' = 'start') => {
+      return iconProp && variant !== 'icon' && (
+        <span
+          className={`[&>svg]:shrink-0 select-none [&>svg]:inline-block [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-current ${side === 'start' ? 'mr-2 -ml-1' : 'ml-2 -mr-1'}`}
+          style={{
+            display: "inherit",
+          }}
+        >
+          {iconProp}
+        </span>
+      )
+    }
 
-    const endIcon = endIconProp && variant !== "icon" && (
-      <span
-        className="ml-2 -mr-1 shrink-0 select-none transition-colors duration-200 [&>svg]:inline-block [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-current"
-        style={{
-          display: "inherit",
-        }}
-      >
-        {endIconProp}
-      </span>
-    );
+    const startIcon = renderIcon(startIconProp, 'start');
+    const endIcon = renderIcon(endIconProp, 'end');
 
     const Root: ElementType = props.href || props.to ? "a" : "button";
 
     const componentProps = {
-      ...other, // TODO: find solution for this
+      ...other,
       className: classNames,
       disabled,
       ref,
@@ -282,7 +222,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
           ref as React.LegacyRef<HTMLButtonElement> &
           React.LegacyRef<HTMLAnchorElement>
         }
-        {...contextProps}
+        {...contextRestProps}
       >
         {startIcon}
         {children}
@@ -294,13 +234,6 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
 );
 
 export default Button;
-// https://github.com/mui/material-ui/tree/a13c0c026692aafc303756998a78f1d6c2dd707d/packages/mui-material/src/ButtonGroup
-
-const getValidKids = (children: React.ReactNode) => {
-  return React.Children.toArray(children).filter((child) =>
-    React.isValidElement(child),
-  ) as React.ReactElement[];
-};
 
 const getStyles = (
   orientation: 'horizontal' | 'vertical',
@@ -314,12 +247,10 @@ const getStyles = (
     middle: [isHorizontal ? `rounded-r-none rounded-l-none` : `rounded-b-none rounded-t-none`],
     last: [isHorizontal ? `rounded-l-none` : `rounded-t-none`],
   };
-  const BORDER_COLOR = 'border-blue-500';
-  const BORDER_OPACITY = 'border-opacity-50';
   switch (variant) {
     case "text":
       if (button === 'first' || button === 'middle') {
-        btnMap[button].push(isHorizontal ? `border-r` : `border-b`, BORDER_COLOR, BORDER_OPACITY);
+        btnMap[button].push(isHorizontal ? `border-r` : `border-b`);
       }
       break;
     case "outlined":
@@ -327,12 +258,12 @@ const getStyles = (
         btnMap[button].push(isHorizontal ? `border-r-transparent hover:border-r-current` : `border-b-transparent hover:border-b-current`);
       }
       if (button === 'middle' || button === 'last') {
-        btnMap[button].push(`-m${isHorizontal ? 'l' : 't'}-px`);
+        btnMap[button].push(isHorizontal ? '-ml-px' : '-mt-px');
       }
       break;
     case "contained":
       if (button === 'first' || button === 'middle') {
-        btnMap[button].push(isHorizontal ? `border-r` : `border-b`, BORDER_COLOR);
+        btnMap[button].push(isHorizontal ? `border-r` : `border-b`);
       }
       break;
     default:
@@ -342,25 +273,38 @@ const getStyles = (
   return btnMap[button].join(' ');
 };
 
-// TODO: implement color size
-export const ButtonGroup = ({
-  children,
-  variant,
-  orientation = "horizontal",
-  color = "primary"
-}: {
-  children: React.ReactNode;
+type ButtonGroupProps = {
+  children?: ReactNode;
+  color?: "primary" | "secondary" | "success" | "warning" | "error";
+  disabled?: boolean;
+  disableRipple?: boolean;
+  fullWidth?: boolean;
+  orientation?: "vertical" | "horizontal";
+  size?: "small" | "medium" | "large";
   variant?: "text" | "outlined" | "contained" | "icon";
-  orientation?: 'horizontal' | 'vertical';
-  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
-}) => {
-  const classes = {
-    firstButton: getStyles(orientation, variant, 'first'),
-    middleButton: getStyles(orientation, variant, 'middle'),
-    lastButton: getStyles(orientation, variant, 'last'),
-  };
+  className?: string;
+  style?: CSSProperties;
+} & React.HTMLAttributes<HTMLDivElement>;
 
-  const validChildren = getValidKids(children);
+export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>((props, ref) => {
+  const {
+    children,
+    className,
+    color = 'primary',
+    disabled = false,
+    disableRipple = false,
+    fullWidth = false,
+    orientation = 'horizontal',
+    size = 'medium',
+    variant = 'outlined',
+    style,
+    ...otherProps
+  } = props;
+
+  const validChildren = Children.toArray(children).filter((child) =>
+    isValidElement(child),
+  );
+
   const childrenCount = validChildren.length;
 
   const getButtonPositionClassName = (index) => {
@@ -371,29 +315,33 @@ export const ButtonGroup = ({
       return '';
     }
     if (isFirstButton) {
-      return classes.firstButton;
+      return getStyles(orientation, variant, 'first');
     }
     if (isLastButton) {
-      return classes.lastButton;
+      return getStyles(orientation, variant, 'last');
     }
-    return classes.middleButton;
+    return getStyles(orientation, variant, 'middle');
   };
 
   return (
-    <div className={clsx("inline-flex rounded", { "flex-col": orientation === "vertical" })} role="group">
+    <div
+      className={clsx("inline-flex rounded", { "flex-col": orientation === "vertical", "w-full": fullWidth })}
+      role="group"
+      ref={ref}
+    >
       <ButtonGroupContext.Provider value={{
-        color: 'error',
-        disabled: false,
-        disableFocusRipple: false,
-        disableRipple: false,
-        fullWidth: false,
-        size: 'medium',
+        color,
+        disabled,
+        disableRipple,
+        fullWidth,
+        size,
         variant,
       }}>
         {validChildren.map((child, index) => (
           <ButtonGroupButtonContext.Provider
             key={index}
             value={getButtonPositionClassName(index)}
+            {...otherProps}
           >
             {child}
           </ButtonGroupButtonContext.Provider>
@@ -401,27 +349,10 @@ export const ButtonGroup = ({
       </ButtonGroupContext.Provider>
     </div>
   );
-};
+});
 // {
 //   (
 //     <div className="flex flex-col space-y-2">
-//     <div className="flex flex-row space-x-2">
-//       <ButtonGroup variant="outlined">
-//         <Button color="primary">button</Button>
-//         <Button color="primary">button</Button>
-//         <Button color="primary">button</Button>
-//       </ButtonGroup>
-//       <ButtonGroup variant="contained">
-//         <Button color="primary">button</Button>
-//         <Button color="primary">button</Button>
-//         <Button color="primary">button</Button>
-//       </ButtonGroup>
-//       <ButtonGroup variant="text">
-//         <Button color="primary">button</Button>
-//         <Button color="primary">button</Button>
-//         <Button color="primary">button</Button>
-//       </ButtonGroup>
-//     </div>
 //     <div className="flex flex-row space-x-2">
 //       <Button variant="text" color="secondary">button</Button>
 //       <Button variant="contained" color="secondary">button</Button>

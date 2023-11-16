@@ -43,15 +43,15 @@ type TableColumn<Row extends TableDataRow> = {
    * Indicates type of column
    */
   datatype?:
-    | "number"
-    | "boolean"
-    | "date"
-    | "symbol"
-    | "function"
-    | "string"
-    | "bigint"
-    | "undefined"
-    | "object";
+  | "number"
+  | "boolean"
+  | "date"
+  | "symbol"
+  | "function"
+  | "string"
+  | "bigint"
+  | "undefined"
+  | "object";
   /**
    * The CSS class name for the column.
    */
@@ -220,7 +220,7 @@ const Table = <Row extends Record<string, any>>({
 
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-      mergedSettings.pagination.pageSizeOptions[0]
+    mergedSettings.pagination.pageSizeOptions[0]
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -440,7 +440,7 @@ const Table = <Row extends Record<string, any>>({
         key={`headcell-${columnIndex}-${label}`}
         id={`headcell-${other.field}`}
         className={clsx(
-          "line-clamp-1 bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800",
+          "table-cell sticky leading-6 z-10 min-w-[50px] line-clamp-1 bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800",
           other.headerClassName
         )}
         aria-sort="none"
@@ -500,7 +500,7 @@ const Table = <Row extends Record<string, any>>({
     const rowSelected = isSelected(rowData.row_id);
     const cellClassName = clsx(
       className,
-      "px-3 py-2 bg-zinc-100 dark:bg-zinc-600",
+      "table-cell p-4 bg-zinc-100 dark:bg-zinc-600 align-middle",
       {
         truncate: !render && !valueFormatter,
         "dark:!bg-zinc-700 !bg-zinc-300": rowSelected,
@@ -526,23 +526,23 @@ const Table = <Row extends Record<string, any>>({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-          value: cellData,
-          row: rowData,
-          columnIndex,
-        })
+        value: cellData,
+        row: rowData,
+        columnIndex,
+      })
       : isNaN(cellData)
-      ? cellData?.amount || cellData
-      : cellData;
+        ? cellData?.amount || cellData
+        : cellData;
 
     const content = render
       ? render({
-          columnIndex,
-          rowIndex,
-          value: valueFormatted,
-          field: field,
-          header,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: valueFormatted,
+        field: field,
+        header,
+        row: rowData,
+      })
       : valueFormatted;
 
     return (
@@ -565,7 +565,7 @@ const Table = <Row extends Record<string, any>>({
   }) => {
     return (
       <td
-        className={clsx("w-4 p-2", {
+        className={clsx("table-cell p-4", {
           "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
           "bg-zinc-100 dark:bg-zinc-600": !header,
           "!bg-zinc-300 dark:!bg-zinc-700":
@@ -584,8 +584,8 @@ const Table = <Row extends Record<string, any>>({
               checked={
                 header
                   ? PaginatedData.every((row) =>
-                      selectedRows.includes(row.row_id.toString())
-                    )
+                    selectedRows.includes(row.row_id.toString())
+                  )
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -602,12 +602,27 @@ const Table = <Row extends Record<string, any>>({
         ) : (
           !header &&
           datarow.collapseContent && (
-            <button
-              className="rw-button rw-button-small rw-button-gray"
-              onClick={() => handleRowCollapse(datarow.row_id)}
-            >
-              {isRowOpen(datarow.row_id) ? "-" : "+"}
-            </button>
+            <Button color="secondary" onClick={() => handleRowCollapse(datarow.row_id)} variant="icon" size="small">
+              {isRowOpen(datarow.row_id) ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="h-3.5 w-3.5"
+                  fill="currentColor"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="h-3.5 w-3.5"
+                  fill="currentColor"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              )}
+            </Button>
           )
         )}
       </td>
@@ -694,6 +709,7 @@ const Table = <Row extends Record<string, any>>({
               mergedSettings.borders.vertical,
           }
         )}
+        role="checkbox"
       >
         {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
@@ -733,8 +749,8 @@ const Table = <Row extends Record<string, any>>({
                   {datatype === "number"
                     ? formatNumber(aggregatedValue)
                     : index === 0
-                    ? "Total"
-                    : ""}
+                      ? "Total"
+                      : ""}
                 </td>
               );
             }
@@ -797,7 +813,7 @@ const Table = <Row extends Record<string, any>>({
       } else if (
         dir === "next" &&
         currentPage <
-          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -950,30 +966,30 @@ const Table = <Row extends Record<string, any>>({
 
   return (
     <div
-      className={clsx("relative overflow-y-hidden sm:rounded-lg", className)}
+      className={clsx("relative !overflow-x-hidden overflow-y-auto sm:rounded-lg", className)}
     >
       <div className="rw-button-group">
         {mergedSettings.filter && (
           <>
             {/* Filter Button */}
 
-              <Button className="rounded-r-none" ref={anchorRef} variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
-                <span className="sr-only">Filter</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 640 512"
-                  className="pointer-events-none w-8 h-8"
-                  fill="currentColor"
-                  stroke="currentColor"
-                >
-                  {filters.length > 0 ? (
-                    <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
-                  ) : (
-                    <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
-                  )}
-                </svg>
-              </Button>
-              <Popper anchorEl={anchorRef.current} open={open}>
+            <Button className="rounded-r-none" ref={anchorRef} variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
+              <span className="sr-only">Filter</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 640 512"
+                className="pointer-events-none w-8 h-8"
+                fill="currentColor"
+                stroke="currentColor"
+              >
+                {filters.length > 0 ? (
+                  <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
+                ) : (
+                  <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
+                )}
+              </svg>
+            </Button>
+            <Popper anchorEl={anchorRef.current} open={open}>
               <ClickAwayListener onClickAway={(event) => {
                 if (
                   anchorRef?.current &&
@@ -982,8 +998,8 @@ const Table = <Row extends Record<string, any>>({
                   return;
                 }
                 setOpen(false);
-            }}
-            >
+              }}
+              >
                 <Form<Filter<Row>>
                   className="z-10 flex flex-col rounded-lg border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
                   method="dialog"
@@ -1112,8 +1128,8 @@ const Table = <Row extends Record<string, any>>({
                     </button>
                   </div>
                 </Form>
-            </ClickAwayListener>
-              </Popper>
+              </ClickAwayListener>
+            </Popper>
           </>
         )}
         {mergedSettings.select && mergedSettings.export && (
@@ -1137,9 +1153,9 @@ const Table = <Row extends Record<string, any>>({
         )}
         {mergedSettings.search && (
           <>
-                 <InputOutlined
-                 className="-ml-px"
-                 margin="none"
+            <InputOutlined
+              className="-ml-px"
+              margin="none"
               fullWidth
               id="table-search"
               type="search"
@@ -1151,18 +1167,18 @@ const Table = <Row extends Record<string, any>>({
                 },
                 startAdornment: (
                   <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                />
-              </svg>
+                    className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 ),
                 endAdornment: (
                   <Submit
@@ -1211,12 +1227,12 @@ const Table = <Row extends Record<string, any>>({
         ))}
       </div>
       <div
-        className={"relative overflow-x-auto rounded-lg border border-zinc-500"}
+        className={"w-full overflow-x-auto rounded-lg border border-zinc-500"}
       >
-        <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
-          <thead className="text-sm uppercase">
+        <table className="table w-full border-collapse border-spacing-0 text-left text-sm text-zinc-700 dark:text-zinc-300">
+          <thead className="table-header-group text-sm uppercase">
             <tr
-              className={clsx({
+              className={clsx("table-row text-inherit outline-none align-middle", {
                 "divide-x divide-gray-400 dark:divide-zinc-800":
                   mergedSettings.borders.vertical,
                 hidden: !mergedSettings.header,
@@ -1239,20 +1255,18 @@ const Table = <Row extends Record<string, any>>({
             </tr>
           </thead>
           <tbody
-            className={
-              mergedSettings.borders.horizontal &&
-              "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
-            }
+            className={clsx("table-row-group", {
+              "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-800": mergedSettings.borders.horizontal
+            })}
           >
             {dataRows &&
               PaginatedData.map((datarow, i) => (
                 <React.Fragment key={datarow.row_id.toString()}>
                   <tr
-                    className={`z-10 overflow-x-auto ${
-                      mergedSettings.borders.vertical
-                        ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
-                        : ""
-                    }`}
+                    className={clsx(`table-row outline-none align-middle text-inherit`, {
+                      "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800": mergedSettings.borders.vertical
+                    })}
+                    role="checkbox"
                   >
                     {dataRows.some((row) => row.collapseContent) &&
                       tableSelect({
@@ -1296,15 +1310,14 @@ const Table = <Row extends Record<string, any>>({
                   </tr>
                   {datarow?.collapseContent && (
                     <tr
-                      className={`transition ease-in ${
-                        isRowOpen(datarow.row_id.toString())
-                          ? "table-row"
-                          : "hidden"
-                      }`}
+                      className={`transition ease-in ${isRowOpen(datarow.row_id.toString())
+                        ? "table-row"
+                        : "hidden"
+                        }`}
                     >
                       <td
                         colSpan={100}
-                        className="bg-zinc-100 dark:bg-zinc-600"
+                        className="table-cell bg-zinc-100 dark:bg-zinc-600"
                       >
                         {datarow.collapseContent}
                       </td>
@@ -1313,7 +1326,7 @@ const Table = <Row extends Record<string, any>>({
                 </React.Fragment>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <tr className={"bg-zinc-100 dark:bg-zinc-600"}>
+              <tr className={"table-row bg-zinc-100 dark:bg-zinc-600"}>
                 <td
                   headers=""
                   className={clsx("p-4 text-center", {

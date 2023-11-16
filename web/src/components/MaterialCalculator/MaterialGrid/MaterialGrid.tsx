@@ -1,5 +1,6 @@
 import { RWGqlError } from "@redwoodjs/forms";
 import {
+  Fragment,
   memo,
   useCallback,
   useDeferredValue,
@@ -28,6 +29,8 @@ import UserRecipesCell, {
 import ItemList from "src/components/Util/ItemList/ItemList";
 import { useLazyQuery } from "@apollo/client";
 import Switch from "src/components/Util/Switch/Switch";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import { TextInput } from "src/components/Util/Input/Input";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -376,8 +379,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ...itemfound,
                 ItemRecipeItem: data.itemRecipeItemsByIds
                   ? data.itemRecipeItemsByIds.filter(
-                      (iri) => iri.item_recipe_id === item_recipe_id
-                    )
+                    (iri) => iri.item_recipe_id === item_recipe_id
+                  )
                   : [],
               },
               amount: amount,
@@ -390,6 +393,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
   return (
     <div className="mx-1 flex w-full max-w-full flex-col gap-3">
+      {/* TODO: replace with card */}
       <UserRecipesCell onSelect={onRecipeSelect} />
 
       <section className="flex h-full w-full flex-col gap-3 sm:flex-row">
@@ -450,28 +454,28 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
             onSelect={(_, item) => {
               onAdd({ itemId: item.id });
             }}
           />
         </div>
-        <div className="w-full">
+        <div className="w-full overflow-hidden">
           <div className="my-3 space-y-3">
             <Switch
               offLabel="Mortar And Pestle"
@@ -518,6 +522,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           </div>
 
           <Table
+            className="animate-fade-in !divide-opacity-50 whitespace-nowrap"
             rows={recipes.map((recipe, i) => {
               return {
                 ...recipe,
@@ -539,7 +544,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ),
               };
             })}
-            className="animate-fade-in !divide-opacity-50 whitespace-nowrap"
             settings={{
               columnSelector: true,
               borders: {
@@ -551,25 +555,26 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               {
                 field: "Item_ItemRecipe_crafted_item_idToItem",
                 header: "Name",
-                className: "w-0",
                 render: ({ rowIndex, value: { name, image } }) => (
-                  <button
-                    type="button"
+                  <Button
+                    variant="icon"
+                    color="error"
+                    size="large"
+                    title={`Remove ${name}`}
                     onClick={() => {
                       setRecipes({
                         type: "REMOVE",
                         payload: { index: rowIndex },
                       });
                     }}
-                    className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
-                    title={`Remove ${name}`}
                   >
-                    <img
-                      className="h-8 w-8"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                      loading="lazy"
-                    />
-                  </button>
+                    <div className="h-8 w-8">
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                        loading="lazy"
+                      />
+                    </div>
+                  </Button>
                 ),
               },
               {
@@ -577,78 +582,111 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 header: "Amount",
                 datatype: "number",
                 aggregate: "sum",
-                className: "w-0 text-center",
+                className: "text-center",
                 render: ({ rowIndex, value, row }) => (
-                  <div
-                    className="flex w-fit flex-row items-center gap-x-2 self-center"
-                    key={`materialcalculator-${rowIndex}}`}
-                  >
-                    <button
-                      type="button"
-                      disabled={value === 1}
-                      className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() =>
-                        setRecipes({
-                          type: "CHANGE_AMOUNT",
-                          payload: {
-                            index: rowIndex,
-                            amount:
-                              value - row.yields < 1
-                                ? row.yields
-                                : value - row.yields,
-                          },
-                        })
-                      }
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                        className="h-3.5 w-3.5"
-                        fill="currentColor"
-                      >
-                        <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
-                      </svg>
-                    </button>
-                    <input
-                      type="text"
-                      value={value}
-                      className="rw-input w-20 p-3 text-center"
-                      onChange={(e) => {
-                        setRecipes({
-                          type: "CHANGE_AMOUNT",
-                          payload: {
-                            index: rowIndex,
-                            amount:
-                              parseInt(e.target.value) > 0
-                                ? parseInt(e.target.value)
-                                : 1,
-                          },
-                        });
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() =>
-                        setRecipes({
-                          type: "CHANGE_AMOUNT",
-                          payload: {
-                            index: rowIndex,
-                            amount: value + row.yields,
-                          },
-                        })
-                      }
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                        className="h-3.5 w-3.5"
-                        fill="currentColor"
-                      >
-                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-                      </svg>
-                    </button>
-                  </div>
+                  <TextInput
+                    color="primary"
+                    value={value}
+                    inputProps={{
+                      className: 'text-center'
+                    }}
+                    onChange={(e) => {
+                      setRecipes({
+                        type: "CHANGE_AMOUNT",
+                        payload: {
+                          index: rowIndex,
+                          amount:
+                            parseInt(e.target.value) > 0
+                              ? parseInt(e.target.value)
+                              : 1,
+                        },
+                      });
+                    }}
+                    InputProps={{
+                      className: 'max-w-[10rem] w-fit',
+                      startAdornment: (
+                        <Button
+                          variant="icon"
+                          color="secondary"
+                          disabled={value === 1}
+                          onClick={() =>
+                            setRecipes({
+                              type: "CHANGE_AMOUNT",
+                              payload: {
+                                index: rowIndex,
+                                amount:
+                                  value - row.yields < 1
+                                    ? row.yields
+                                    : value - row.yields,
+                              },
+                            })
+                          }
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            className="h-3.5 w-3.5"
+                            fill="currentColor"
+                          >
+                            <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                          </svg>
+                        </Button>
+                      ),
+                      endAdornment: (
+                        <Fragment>
+                          {/* <Button
+                            variant="icon"
+                            color="secondary"
+                            disabled={value === 1}
+                            onClick={() =>
+                              setRecipes({
+                                type: "CHANGE_AMOUNT",
+                                payload: {
+                                  index: rowIndex,
+                                  amount:
+                                    value - row.yields < 1
+                                      ? row.yields
+                                      : value - row.yields,
+                                },
+                              })
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 448 512"
+                              className="h-3.5 w-3.5"
+                              fill="currentColor"
+                            >
+                              <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                            </svg>
+                          </Button> */}
+                          <Button
+                            variant="icon"
+                            color="secondary"
+                            disabled={value >= 10000}
+                            onClick={() =>
+                              setRecipes({
+                                type: "CHANGE_AMOUNT",
+                                payload: {
+                                  index: rowIndex,
+                                  amount: value + row.yields,
+                                },
+                              })
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 448 512"
+                              className="h-3.5 w-3.5"
+                              fill="currentColor"
+                            >
+                              <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                            </svg>
+                          </Button>
+                        </Fragment>
+                      )
+                    }}
+                  />
                 ),
               },
               {

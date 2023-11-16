@@ -5,11 +5,7 @@ const MaterialCalculatorPage = () => {
   return (
     <>
       <MetaTags title="MaterialCalculator" description="Ark Survival Evolved Material Calculator" />
-      <div className="rounded-lg">
-        <div className="p-4 rounded-b-lg">
-          <MaterialCalculatorCell />
-        </div>
-      </div>
+      <MaterialCalculatorCell />
     </>
   )
 }

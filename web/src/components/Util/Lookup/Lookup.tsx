@@ -2,6 +2,7 @@ import {
   CSSProperties,
   ChangeEvent,
   Fragment,
+  HTMLAttributes,
   KeyboardEvent,
   MouseEvent,
   MouseEventHandler,
@@ -22,7 +23,8 @@ import {
   useEventCallback,
 } from "src/lib/formatters";
 import Ripple from "../Ripple/Ripple";
-import { FormControl, Input, InputBase, InputLabel } from "../Input/Input";
+import { FormControl, Input, InputBase, InputLabel, TextInput } from "../Input/Input";
+import Button from "../Button/Button";
 
 function stripDiacritics(string) {
   return typeof string.normalize !== "undefined"
@@ -139,21 +141,21 @@ interface FilterOptionsState<Value> {
   getOptionLabel: (option: Value) => string;
 }
 
-export type LookupInputChangeReason = "input" | "reset" | "clear";
-export type LookupValue<Value, Multiple, DisableClearable> =
+type LookupInputChangeReason = "input" | "reset" | "clear";
+type LookupValue<Value, Multiple, DisableClearable> =
   Multiple extends true
   ? Array<Value | never>
   : DisableClearable extends true
   ? NonNullable<Value | never>
   : Value | null | never;
 
-interface LookupGroupedOption<Value = string> {
-  key: number;
-  index: number;
-  group: string;
-  options: Value[];
-}
-// TODO: comment with default value
+// interface LookupGroupedOption<Value = string> {
+//   key: number;
+//   index: number;
+//   group: string;
+//   options: Value[];
+// }
+
 type SelectProps<
   Value,
   Multiple extends boolean | undefined,
@@ -167,7 +169,6 @@ type SelectProps<
   defaultValue?: number | string; //LookupValue<Value, Multiple, DisableClearable>;
   value?: LookupValue<Value, Multiple, DisableClearable>;
   /**
-   * If `true`, the component is disabled.
    * @default false
    */
   disabled?: boolean;
@@ -190,6 +191,7 @@ type SelectProps<
    */
   noOptionsText?: React.ReactNode;
   helperText?: string;
+  HelperTextProps?: Partial<HTMLAttributes<HTMLParagraphElement>>
   disableClearable?: DisableClearable;
   readOnly?: boolean;
   open?: boolean;
@@ -214,7 +216,9 @@ type SelectProps<
   componentName?: string;
   validation?: RegisterOptions;
   margin?: "none" | "dense" | "normal";
-  size?: "small" | "medium";
+  size?: "small" | "medium" | "large";
+  color?: "primary" | "secondary" | "success" | "warning" | "error";
+  variant?: 'filled' | 'outlined' | 'standard'
   valueKey?: keyof Value;
   InputProps?: {
     style?: CSSProperties;
@@ -287,6 +291,7 @@ export const Lookup = <
     placeholder,
     inputValue: inputValueProp,
     helperText,
+    HelperTextProps,
     validation,
     // TODO: remove this crap
     valueKey = options && options.length > 0
@@ -300,6 +305,8 @@ export const Lookup = <
     noOptionsText = "No options",
     margin = "normal",
     size = "medium",
+    color,
+    variant = "outlined",
     selectOnFocus = false,
     autoSelect = false,
     openOnFocus = false,
@@ -571,8 +578,6 @@ export const Lookup = <
           (nextFocus - 1 + filteredOptions.length) % filteredOptions.length;
       }
 
-      // We end up with initial index, that means we don't have available options.
-      // All of them are disabled
       if (nextFocus === index) {
         return -1;
       }
@@ -600,10 +605,6 @@ export const Lookup = <
           `data-option-${index}`
         );
       }
-
-      // if (onHighlightChange) {
-      //   onHighlightChange(event, index === -1 ? null : filteredOptions[index], reason);
-      // }
 
       if (!listboxRef.current) {
         return;
@@ -1022,14 +1023,6 @@ export const Lookup = <
     if (closeOnSelect && (!event || (!event.ctrlKey && !event.metaKey))) {
       handleClose(event, reason);
     }
-
-    // if (
-    //   blurOnSelect === true ||
-    //   (blurOnSelect === 'touch' && isTouch.current) ||
-    //   (blurOnSelect === 'mouse' && !isTouch.current)
-    // ) {
-    //   inputRef.current.blur();
-    // }
   };
 
   function validTagIndex(index, direction) {
@@ -1641,7 +1634,6 @@ export const Lookup = <
     });
   };
 
-  // TODO: replace directly with TextInput
   return (
     <div
       className={clsx(
@@ -1660,7 +1652,92 @@ export const Lookup = <
         }
       }}
     >
-      <div
+      <FormControl
+        ref={anchorEl}
+        margin={margin}
+        disabled={disabled}
+        size={size}
+        variant={variant}
+        color={color}
+        required={required}
+        className={btnClassName}
+      >
+        <InputLabel
+          children={label ?? name}
+          shrink={popupOpen ||
+            inputValue.length > 0 ||
+            (Array.isArray(value) && value.length > 0)}
+        />
+
+        <Input
+          inputRef={inputRef}
+          value={inputValue}
+          placeholder={placeholder}
+          inputProps={{
+            role: "combobox",
+            spellCheck: false,
+            "aria-activedescendant": popupOpen ? "" : null,
+            "aria-autocomplete": autoComplete ? 'both' : 'list',
+            "aria-controls": listboxAvailable ? `${id}-listbox` : undefined,
+            "aria-expanded": listboxAvailable,
+            onMouseDown: handleInputMouseDown,
+            onChange: handleInputChange,
+            onFocus: handleFocus,
+            onBlur: handleBlur,
+          }}
+          endAdornmentProps={{
+            className: "absolute top-[calc(50%-12px)] right-2"
+          }}
+          endAdornment={(
+            <Fragment>
+              {(!disableClearable && !readOnly) && (
+                <Button variant="icon" className={clsx("-mr-0.5 !p-1", {
+                  "opacity-100 visible": !disabled && dirty,
+                  "opacity-0 invisible": !(!disabled && dirty),
+                })} onClick={handleClear} size={size}>
+                  <svg
+                    className="h-4 w-4 shrink-0 select-none !fill-white"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    focusable="false"
+                  >
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                  </svg>
+                </Button>
+              )}
+              <Button variant="icon" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
+                <svg
+                  className={clsx(
+                    "h-4 w-4 stroke-white !fill-none transition-transform duration-75 will-change-transform",
+                    {
+                      "shrink-0": !popupOpen,
+                      "shrink-0 rotate-180": popupOpen,
+                    }
+                  )}
+                  fill="transparent"
+                  stroke="currentColor"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d={"M19 9l-7 7-7-7"}
+                  />
+                </svg>
+              </Button>
+            </Fragment>
+          )}
+        />
+        {helperText && (
+          <p id={helperText && id ? `${id}-helper-text` : undefined} className="rw-helper-text" {...HelperTextProps}>
+            {helperText}
+          </p>
+        )}
+      </FormControl>
+      {/* <div
         className={clsx(
           "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top",
           {
@@ -1702,7 +1779,6 @@ export const Lookup = <
             }
           )}
         >
-          {/* Chips */}
           {renderChips()}
 
           <input
@@ -1811,15 +1887,17 @@ export const Lookup = <
         </div>
 
         {!!name && <FieldError name={name} className="rw-field-error" />}
-        {helperText && (
-          <p
-            id={`${name}-helper-text`}
-            className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-5 tracking-wide text-black/70 dark:text-white/70"
-          >
-            {helperText}
-          </p>
-        )}
-      </div>
+        {
+          helperText && (
+            <p
+              id={`${name}-helper-text`}
+              className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-5 tracking-wide text-black/70 dark:text-white/70"
+            >
+              {helperText}
+            </p>
+          )
+        }
+      </div> */}
 
       {/* Dropdown Menu */}
       <Popper anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>
@@ -1858,7 +1936,7 @@ export const Lookup = <
           </div>
         </ClickAwayListener>
       </Popper>
-    </div>
+    </div >
   );
 };
 

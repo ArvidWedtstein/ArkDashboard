@@ -125,7 +125,7 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
     <span
       aria-label="ripple"
       ref={(el) => (node = el)}
-      className="absolute inset-0 h-full w-full overflow-hidden rounded-[inherit]"
+      className="absolute inset-0 h-full w-full overflow-hidden rounded-[inherit] z-0"
     >
       {[...new Map(ripples.map((item) => [item["id"], item])).values()].map(
         (ripple) => {
@@ -140,7 +140,7 @@ const Ripple = ({ center = false }: { center?: boolean }) => {
             borderRadius: ripple.radius ? `${ripple.radius}px` : "50%",
             animationFillMode: "forwards",
             animationDuration: `${ripple.duration}ms`,
-            transition: "opacity transform 0.3s cubic-bezier(0, 0, 0.2, 1)",
+            transition: "opacity 0.3s cubic-bezier(0, 0, 0.2, 1), transform 0.3s cubic-bezier(0, 0, 0.2, 1)",
           };
 
           return (
