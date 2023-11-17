@@ -130,7 +130,7 @@
     @apply py-3 px-8 text-base;
   }
 
-  @keyframes ripple-enter {
+  @keyframes rippleenter {
     0% {
       transform: scale(0);
       opacity: 0.1;
@@ -141,7 +141,7 @@
       opacity: 0.3;
     }
   }
-  @keyframes ripple-exit {
+  @keyframes rippleexit {
     0% {
       opacity: 1;
     }
@@ -150,7 +150,7 @@
       opacity: 0;
     }
   }
-  @keyframes ripple-pulsate {
+  @keyframes ripplepulsate {
     0% {
       transform: scale(1);
     }
