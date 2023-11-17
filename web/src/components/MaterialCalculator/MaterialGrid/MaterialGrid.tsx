@@ -393,7 +393,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
   return (
     <div className="mx-1 flex w-full max-w-full flex-col gap-3">
-      {/* TODO: replace with card */}
       <UserRecipesCell onSelect={onRecipeSelect} />
 
       <section className="flex h-full w-full flex-col gap-3 sm:flex-row">

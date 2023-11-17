@@ -3,7 +3,6 @@ import clsx from "clsx";
 import {
   AnchorHTMLAttributes,
   CSSProperties,
-  ElementType,
   HTMLAttributes,
   ImgHTMLAttributes,
   MouseEventHandler,
@@ -14,9 +13,8 @@ import Ripple from "../Ripple/Ripple";
 type CardProps = {
   sx?: CSSProperties;
   children?: ReactNode | ReactNode[];
-  className?: HTMLAttributes<HTMLDivElement>["className"];
-};
-export const Card = ({ sx, children, className }: CardProps) => {
+} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+export const Card = ({ sx, children, className, ...props }: CardProps) => {
   return (
     <div
       className={clsx(
@@ -29,6 +27,7 @@ export const Card = ({ sx, children, className }: CardProps) => {
           ? sx?.backgroundImage
           : `linear-gradient(#ffffff0d, #ffffff0d)`,
       }}
+      {...props}
     >
       {children}
     </div>
@@ -105,11 +104,11 @@ type CardMediaDiv = CardMediaBaseProps & {
 type CardMediaProps = CardMediaDiv | CardMediaImg;
 export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
   if (component === "img") {
-    const { alt, height, className, ...imgprops } = props as CardMediaImg;
+    const { alt, height, className, image, ...imgprops } = props as CardMediaImg;
     return (
       <img
         className={className}
-        src={props.image}
+        src={image}
         style={props.sx}
         title={props.title}
         alt={alt}

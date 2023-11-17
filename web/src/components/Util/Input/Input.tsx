@@ -78,8 +78,6 @@ export const InputOutlined = ({
   InputProps,
   ...props
 }: InputProps) => {
-  // TODO: add variants, colors, sizing, make base component
-  // https://github.com/mui/material-ui/blob/master/packages/mui-material/src/InputBase/InputBase.js#L245
   const [focus, setFocus] = useState(false);
   const { field } = !!name
     ? useController({

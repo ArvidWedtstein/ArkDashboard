@@ -67,7 +67,7 @@ type ButtonProps = {
   /**
    * Will not render if user does not have permission or user is not logged in and permission is defined
    */
-  permission?: permission;
+  permission?: permission | boolean;
   to?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement> &
   LinkHTMLAttributes<HTMLAnchorElement>;
@@ -172,7 +172,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     };
     const base = `inline-flex items-center justify-center box-border relative cursor-pointer select-none appearance-none font-medium uppercase tracking-wide ${variant === "icon"
       ? "[&>svg]:inline-block aspect-square rounded-[50%] text-center [&>svg]:fill-current flex-[0_0_auto] [&>svg]:shrink-0 overflow-visible"
-      : "rounded min-w-[4rem]"
+      : "rounded"
       }`;
 
     const classNames = clsx(
