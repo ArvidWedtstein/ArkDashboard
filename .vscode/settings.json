@@ -15,7 +15,12 @@
     }
   },
   "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass"],
   "tailwindCSS.experimental.classRegex": [
-    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["Classes \\=([^;]*);", "[\"']([^\"']*)[\"']"],
+    ["Class \\=([^;]*);", "[\"']([^\"']*)[\"']"],
+    ["Classes \\=([^;]*);", "`([^`]*)`"],
+    ["Class \\=([^;]*);", "`([^`]*)`"]
   ]
 }
