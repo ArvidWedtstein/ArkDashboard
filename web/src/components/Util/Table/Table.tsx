@@ -968,73 +968,127 @@ const Table = <Row extends Record<string, any>>({
     <div
       className={clsx("relative !overflow-x-hidden overflow-y-auto sm:rounded-lg", className)}
     >
-      <div className="rw-button-group">
-        {mergedSettings.filter && (
-          <>
-            {/* Filter Button */}
+      {(mergedSettings.select || mergedSettings.export || mergedSettings.filter || mergedSettings.search || toolbar.length > 0) && (
+        <div className="rw-button-group">
+          {mergedSettings.filter && (
+            <>
+              {/* Filter Button */}
 
-            <Button className="rounded-r-none" ref={anchorRef} variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
-              <span className="sr-only">Filter</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 640 512"
-                className="pointer-events-none w-8 h-8"
-                fill="currentColor"
-                stroke="currentColor"
-              >
-                {filters.length > 0 ? (
-                  <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
-                ) : (
-                  <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
-                )}
-              </svg>
-            </Button>
-            <Popper anchorEl={anchorRef.current} open={open}>
-              <ClickAwayListener onClickAway={(event) => {
-                if (
-                  anchorRef?.current &&
-                  (anchorRef?.current?.contains(event.target as HTMLElement) || anchorRef?.current?.element.contains(event.target as HTMLElement))
-                ) {
-                  return;
-                }
-                setOpen(false);
-              }}
-              >
-                <Form<Filter<Row>>
-                  className="z-10 flex flex-col rounded-lg border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
-                  method="dialog"
-                  onSubmit={(e) => {
-                    addFilter(e);
-                  }}
+              <Button className="rounded-r-none" ref={anchorRef} variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
+                <span className="sr-only">Filter</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 640 512"
+                  className="pointer-events-none w-8 h-8"
+                  fill="currentColor"
+                  stroke="currentColor"
                 >
-                  {filters.map(({ column, operator, value }, index) => (
-                    <div
-                      className="rw-button-group my-1 justify-start"
-                      key={`filter-${index}`}
-                    >
-                      <select
+                  {filters.length > 0 ? (
+                    <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
+                  ) : (
+                    <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
+                  )}
+                </svg>
+              </Button>
+              <Popper anchorEl={anchorRef.current} open={open}>
+                <ClickAwayListener onClickAway={(event) => {
+                  if (
+                    anchorRef?.current &&
+                    (anchorRef?.current?.contains(event.target as HTMLElement) || anchorRef?.current?.element.contains(event.target as HTMLElement))
+                  ) {
+                    return;
+                  }
+                  setOpen(false);
+                }}
+                >
+                  <Form<Filter<Row>>
+                    className="z-10 flex flex-col rounded-lg border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
+                    method="dialog"
+                    onSubmit={(e) => {
+                      addFilter(e);
+                    }}
+                  >
+                    {filters.map(({ column, operator, value }, index) => (
+                      <div
+                        className="rw-button-group my-1 justify-start"
+                        key={`filter-${index}`}
+                      >
+                        <select
+                          name="column"
+                          className="rw-input rw-input-small"
+                          defaultValue={column}
+                          disabled
+                        >
+                          {columns &&
+                            columnSettings
+                              .filter((col) => !col.hidden)
+                              .map((column, idx) => (
+                                <option
+                                  key={`filter-${index}-column-${idx}`}
+                                  value={column.field}
+                                >
+                                  {column.field}
+                                </option>
+                              ))}
+                        </select>
+                        <select
+                          name="operator"
+                          className="rw-input rw-input-small"
+                          defaultValue={operator}
+                          disabled
+                        >
+                          <option value="=">=</option>
+                          <option value="!=">!=</option>
+                          <option value=">">&gt;</option>
+                          <option value=">=">&gt;=</option>
+                          <option value="<">&lt;</option>
+                          <option value="<=">&lt;=</option>
+                          <option value="like">like</option>
+                          <option value="ilike">ilike</option>
+                          <option value="in">in</option>
+                          <option value="not_in">not in</option>
+                          <option value="regex">regex</option>
+                        </select>
+                        <input
+                          name="value"
+                          className="rw-input rw-input-small"
+                          defaultValue={value}
+                          readOnly
+                        />
+                        <button
+                          className="rw-button rw-button-small rw-button-red"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setFilters((prev) =>
+                              prev.filter((_, idx) => idx !== index)
+                            );
+                          }}
+                        >
+                          -
+                        </button>
+                      </div>
+                    ))}
+                    <div className="rw-button-group justify-start">
+                      <SelectField
                         name="column"
                         className="rw-input rw-input-small"
-                        defaultValue={column}
-                        disabled
                       >
                         {columns &&
                           columnSettings
                             .filter((col) => !col.hidden)
-                            .map((column, idx) => (
+                            .map((column, index) => (
                               <option
-                                key={`filter-${index}-column-${idx}`}
+                                key={`column-option-${index}`}
                                 value={column.field}
                               >
                                 {column.field}
                               </option>
                             ))}
-                      </select>
-                      <select
+                      </SelectField>
+                      <SelectField
                         name="operator"
                         className="rw-input rw-input-small"
-                        defaultValue={operator}
-                        disabled
                       >
                         <option value="=">=</option>
                         <option value="!=">!=</option>
@@ -1047,112 +1101,58 @@ const Table = <Row extends Record<string, any>>({
                         <option value="in">in</option>
                         <option value="not_in">not in</option>
                         <option value="regex">regex</option>
-                      </select>
-                      <input
+                      </SelectField>
+                      <TextField
                         name="value"
                         className="rw-input rw-input-small"
-                        defaultValue={value}
-                        readOnly
                       />
+                      <Submit className="rw-button rw-button-small rw-button-green">
+                        +
+                      </Submit>
+                    </div>
+                    <div className="rw-button-group justify-end">
                       <button
-                        className="rw-button rw-button-small rw-button-red"
+                        className="rw-button rw-button-small rw-button-gray"
                         type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setFilters((prev) =>
-                            prev.filter((_, idx) => idx !== index)
-                          );
-                        }}
+                        onClick={() => setOpen(false)}
                       >
-                        -
+                        Cancel
+                      </button>
+                      <button
+                        className="rw-button rw-button-small rw-button-green"
+                        id="confirmBtn"
+                        formMethod="dialog"
+                        type="button"
+                        onClick={() => setOpen(false)}
+                      >
+                        Confirm
                       </button>
                     </div>
-                  ))}
-                  <div className="rw-button-group justify-start">
-                    <SelectField
-                      name="column"
-                      className="rw-input rw-input-small"
-                    >
-                      {columns &&
-                        columnSettings
-                          .filter((col) => !col.hidden)
-                          .map((column, index) => (
-                            <option
-                              key={`column-option-${index}`}
-                              value={column.field}
-                            >
-                              {column.field}
-                            </option>
-                          ))}
-                    </SelectField>
-                    <SelectField
-                      name="operator"
-                      className="rw-input rw-input-small"
-                    >
-                      <option value="=">=</option>
-                      <option value="!=">!=</option>
-                      <option value=">">&gt;</option>
-                      <option value=">=">&gt;=</option>
-                      <option value="<">&lt;</option>
-                      <option value="<=">&lt;=</option>
-                      <option value="like">like</option>
-                      <option value="ilike">ilike</option>
-                      <option value="in">in</option>
-                      <option value="not_in">not in</option>
-                      <option value="regex">regex</option>
-                    </SelectField>
-                    <TextField
-                      name="value"
-                      className="rw-input rw-input-small"
-                    />
-                    <Submit className="rw-button rw-button-small rw-button-green">
-                      +
-                    </Submit>
-                  </div>
-                  <div className="rw-button-group justify-end">
-                    <button
-                      className="rw-button rw-button-small rw-button-gray"
-                      type="button"
-                      onClick={() => setOpen(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="rw-button rw-button-small rw-button-green"
-                      id="confirmBtn"
-                      formMethod="dialog"
-                      type="button"
-                      onClick={() => setOpen(false)}
-                    >
-                      Confirm
-                    </button>
-                  </div>
-                </Form>
-              </ClickAwayListener>
-            </Popper>
-          </>
-        )}
-        {mergedSettings.select && mergedSettings.export && (
-          <button
-            className="rw-button rw-button-gray"
-            title="Export"
-            disabled={selectedRows.length === 0}
-            onClick={copyToClipboard}
-          >
-            <span className="sr-only">Export</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="pointer-events-none h-5"
-              viewBox="0 0 576 512"
-              fill="currentColor"
-              stroke="currentColor"
+                  </Form>
+                </ClickAwayListener>
+              </Popper>
+            </>
+          )}
+          {mergedSettings.select && mergedSettings.export && (
+            <button
+              className="rw-button rw-button-gray"
+              title="Export"
+              disabled={selectedRows.length === 0}
+              onClick={copyToClipboard}
             >
-              <path d="M208 112c-4.094 0-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l80 80c6.25 6.25 16.38 6.25 22.62 0l80-80c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 169.4V16C304 7.156 296.8 0 288 0S272 7.156 272 16v153.4L219.3 116.7C216.2 113.6 212.1 112 208 112zM512 0h-144C359.2 0 352 7.162 352 16C352 24.84 359.2 32 368 32H512c17.67 0 32 14.33 32 32v192H32V64c0-17.67 14.33-32 32-32h144C216.8 32 224 24.84 224 16C224 7.162 216.8 0 208 0H64C28.65 0 0 28.65 0 64v288c0 35.35 28.65 64 64 64h149.7l-19.2 64H144C135.2 480 128 487.2 128 496S135.2 512 144 512h288c8.836 0 16-7.164 16-16S440.8 480 432 480h-50.49l-19.2-64H512c35.35 0 64-28.65 64-64V64C576 28.65 547.3 0 512 0zM227.9 480l19.2-64h81.79l19.2 64H227.9zM544 352c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288h512V352z" />
-            </svg>
-          </button>
-        )}
-        {mergedSettings.search && (
-          <>
+              <span className="sr-only">Export</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="pointer-events-none h-5"
+                viewBox="0 0 576 512"
+                fill="currentColor"
+                stroke="currentColor"
+              >
+                <path d="M208 112c-4.094 0-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l80 80c6.25 6.25 16.38 6.25 22.62 0l80-80c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 169.4V16C304 7.156 296.8 0 288 0S272 7.156 272 16v153.4L219.3 116.7C216.2 113.6 212.1 112 208 112zM512 0h-144C359.2 0 352 7.162 352 16C352 24.84 359.2 32 368 32H512c17.67 0 32 14.33 32 32v192H32V64c0-17.67 14.33-32 32-32h144C216.8 32 224 24.84 224 16C224 7.162 216.8 0 208 0H64C28.65 0 0 28.65 0 64v288c0 35.35 28.65 64 64 64h149.7l-19.2 64H144C135.2 480 128 487.2 128 496S135.2 512 144 512h288c8.836 0 16-7.164 16-16S440.8 480 432 480h-50.49l-19.2-64H512c35.35 0 64-28.65 64-64V64C576 28.65 547.3 0 512 0zM227.9 480l19.2-64h81.79l19.2 64H227.9zM544 352c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288h512V352z" />
+              </svg>
+            </button>
+          )}
+          {mergedSettings.search && (
             <InputOutlined
               className="-ml-px"
               margin="none"
@@ -1196,36 +1196,12 @@ const Table = <Row extends Record<string, any>>({
                 ),
               }}
             />
-            {/* <label htmlFor="table-search" className="sr-only">
-              Search
-            </label>
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <input
-              id="table-search"
-              onChange={handleSearch}
-              className="rw-input m-0 pl-10"
-              placeholder="Search for items"
-            /> */}
-          </>
-        )}
-        {toolbar.map((item, index) => (
-          <div key={`toolbar-${index}`}>{item}</div>
-        ))}
-      </div>
+          )}
+          {toolbar.map((item, index) => (
+            <div key={`toolbar-${index}`}>{item}</div>
+          ))}
+        </div>
+      )}
       <div
         className={"w-full overflow-x-auto rounded-lg border border-zinc-500"}
       >

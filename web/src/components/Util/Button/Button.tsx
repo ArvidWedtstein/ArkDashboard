@@ -14,9 +14,11 @@ import {
   isValidElement,
   useContext,
   useMemo,
+  useRef,
 } from "react";
 import { permission } from "types/graphql";
 import { useAuth } from "src/auth";
+import { useRipple } from "src/components/useRipple";
 
 type ButtonGroupOwnProps = {
   children?: React.ReactNode;
@@ -67,7 +69,7 @@ type ButtonProps = {
   /**
    * Will not render if user does not have permission or user is not logged in and permission is defined
    */
-  permission?: permission | boolean;
+  permission?: permission | 'authenticated';
   to?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement> &
   LinkHTMLAttributes<HTMLAnchorElement>;
@@ -96,8 +98,8 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     } = props;
 
     if (permission) {
-      const { currentUser } = useAuth();
-      if (currentUser && !currentUser?.permissions.some((perm) => perm === permission)) {
+      const { currentUser, isAuthenticated } = useAuth();
+      if (currentUser && (permission === 'authenticated' ? !isAuthenticated : !currentUser?.permissions.some((perm) => perm === permission))) {
         return;
       }
     }
@@ -200,6 +202,13 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       )
     }
 
+    const rippleRef = useRef(null);
+    const { enableRipple, getRippleHandlers } = useRipple({
+      disabled,
+      disableRipple,
+      rippleRef
+    })
+
     const startIcon = renderIcon(startIconProp, 'start');
     const endIcon = renderIcon(endIconProp, 'end');
 
@@ -223,11 +232,14 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
           React.LegacyRef<HTMLAnchorElement>
         }
         {...contextRestProps}
+        {...getRippleHandlers(props)}
       >
         {startIcon}
         {children}
         {endIcon}
-        {!disableRipple && <Ripple center={variant === "icon"} />}
+        {enableRipple ? (
+          <Ripple ref={rippleRef} center={variant === "icon"} />
+        ) : null}
       </Root>
     );
   }
