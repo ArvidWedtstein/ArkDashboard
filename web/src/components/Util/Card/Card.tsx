@@ -5,10 +5,15 @@ import {
   CSSProperties,
   HTMLAttributes,
   ImgHTMLAttributes,
+  LegacyRef,
   MouseEventHandler,
   ReactNode,
+  Ref,
+  forwardRef,
+  useRef,
 } from "react";
 import Ripple from "../Ripple/Ripple";
+import { useRipple } from "src/components/useRipple";
 
 type CardProps = {
   sx?: CSSProperties;
@@ -163,6 +168,7 @@ export const CardActions = ({ children, className, sx }: CardActionsProps) => {
 
 type CardActionAreaBaseProps = CardActionsProps & {
   disabled?: boolean;
+  disableRipple?: boolean
   component?: "link" | "button";
 };
 
@@ -174,13 +180,19 @@ type LinkProps = CardActionAreaBaseProps &
   };
 
 type CardActionAreaProps = ButtonProps | LinkProps;
-export const CardActionArea = ({
-  children,
-  sx,
-  className,
-  component = "button",
-  ...props
-}: CardActionAreaProps) => {
+export const CardActionArea = forwardRef((props: CardActionAreaProps, ref) => {
+  const { children,
+    sx,
+    className,
+    component = "button",
+    ...other
+  } = props;
+  const rippleRef = useRef(null);
+  const { enableRipple, getRippleHandlers } = useRipple({
+    disabled: other.disabled,
+    disableRipple: other.disableRipple,
+    rippleRef
+  })
   if (component === "button" && (!(props as LinkProps).href && !(props as LinkProps).to)) {
     return (
       <button
@@ -191,10 +203,12 @@ export const CardActionArea = ({
         tabIndex={0}
         type="button"
         style={sx}
-        {...(props as ButtonProps)}
+        ref={ref as Ref<HTMLButtonElement>}
+        {...getRippleHandlers(props)}
+        {...(other as ButtonProps)}
       >
         {children}
-        <Ripple />
+        {enableRipple ? <Ripple ref={rippleRef} /> : null}
       </button>
     );
   }
@@ -207,10 +221,12 @@ export const CardActionArea = ({
       )}
       tabIndex={0}
       style={sx}
-      {...(props as LinkProps)}
+      ref={ref as Ref<HTMLAnchorElement>}
+      {...getRippleHandlers(props)}
+      {...(other as LinkProps)}
     >
       {children}
-      <Ripple />
+      {enableRipple ? <Ripple ref={rippleRef} /> : null}
     </Link>
   );
-};
+});

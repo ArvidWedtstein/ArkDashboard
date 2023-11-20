@@ -132,11 +132,21 @@ const Ripple = forwardRef(
             top: 0,
           };
 
-        const { clientX, clientY } = (event as React.MouseEvent);
-        let rippleX = Math.round(clientX - rect.left);
-        let rippleY = Math.round(clientY - rect.top);
+        let rippleX: number;
+        let rippleY: number;
         let rippleSize: number;
-
+        if (
+          center ||
+          ((event as React.MouseEvent)?.clientX === 0 &&
+            (event as React.MouseEvent)?.clientY === 0)
+        ) {
+          rippleX = Math.round(rect.width / 2);
+          rippleY = Math.round(rect.height / 2);
+        } else {
+          const { clientX, clientY } = (event as React.MouseEvent)
+          rippleX = Math.round(clientX - rect.left);
+          rippleY = Math.round(clientY - rect.top);
+        }
 
         if (center) {
           rippleSize = Math.sqrt((2 * rect.width ** 2 + rect.height ** 2) / 3);

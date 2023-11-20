@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import Ripple from "../Ripple/Ripple";
-import { Children, cloneElement, forwardRef, isValidElement } from "react";
+import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";
+import Button from "../Button/Button";
+import { useRipple } from "src/components/useRipple";
 
 type ToggleButtonProps = {
   value?: string;
@@ -18,7 +20,10 @@ type ToggleButtonProps = {
 
 export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
   (
-    {
+    props,
+    ref
+  ) => {
+    const {
       className,
       checkedIcon,
       disabled,
@@ -29,11 +34,10 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
       disableRipple,
       selected,
       size = "medium",
-      ...props
-    }: ToggleButtonProps,
-    ref
-  ) => {
-    const handleChange = (event: React.MouseEvent<HTMLButtonElement>) => {
+      fullWidth,
+      ...other
+    } = props
+    const handleChange = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       if (onClick) {
         onClick(event, value);
         if (event.defaultPrevented) {
@@ -46,6 +50,12 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
       }
     };
 
+    const rippleRef = useRef(null);
+    const { enableRipple, getRippleHandlers } = useRipple({
+      disabled,
+      disableRipple,
+      rippleRef,
+    })
     return (
       <button
         ref={ref}
@@ -55,12 +65,13 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
         value={value}
         disabled={disabled}
         tabIndex={0}
-        {...props}
+        {...getRippleHandlers(props)}
+        {...other}
         className={clsx(
           `relative box-border inline-flex cursor-pointer select-none appearance-none items-center justify-center rounded border !border-black/[.12] font-medium uppercase text-black dark:!border-white/[.12] dark:text-white`,
           className,
           {
-            "w-full": props.fullWidth,
+            "w-full": fullWidth,
             "bg-black/[.16] hover:bg-black/[.24] dark:bg-white/[.16] dark:hover:bg-white/[.24]":
               selected,
             "hover:bg-black/[.08] dark:hover:bg-white/[.08]": !selected,
@@ -85,7 +96,7 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
         )}
 
         {children}
-        {!disableRipple && <Ripple />}
+        {enableRipple ? <Ripple ref={rippleRef} /> : null}
       </button>
     );
   }

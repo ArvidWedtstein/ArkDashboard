@@ -18,6 +18,7 @@ import type {
 } from "types/graphql";
 import Toast from "src/components/Util/Toast/Toast";
 import Ripple from "src/components/Util/Ripple/Ripple";
+import Button from "src/components/Util/Button/Button";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -189,20 +190,16 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         <section className="relative col-span-5 row-span-2 !w-full flex-auto flex-grow rounded-lg border border-zinc-500 bg-white font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">Basespots</p>
-            <button
-              type="button"
-              className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-              onClick={() => setOpenModal("timelineseasonbasespot")}
-            >
+            <Button variant="outlined" onClick={() => setOpenModal("timelineseasonbasespot")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
+                fill="currentColor"
+                className="h-5 w-5 transition-transform ease-in-out"
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
-              {/* <Ripple center /> */}
-            </button>
+            </Button>
           </div>
 
           <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
@@ -211,20 +208,16 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         <section className="relative col-span-1 row-span-4 w-full flex-auto space-y-3 text-black dark:text-white">
           <div className="mt-3 flex items-center justify-between">
             <p>Events</p>
-            <button
-              type="button"
-              className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-              onClick={() => setOpenModal("timelineseasonevent")}
-            >
+            <Button variant="outlined" onClick={() => setOpenModal("timelineseasonevent")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
+                fill="currentColor"
+                className="h-5 w-5 transition-transform ease-in-out"
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
-              {/* <Ripple center /> */}
-            </button>
+            </Button>
           </div>
 
           <TimelineSeasonEventsCell
@@ -241,20 +234,16 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             <p className="flex-1 underline underline-offset-8">
               Persons in this season
             </p>
-            <button
-              type="button"
-              className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-              onClick={() => setOpenModal("timelineseasonperson")}
-            >
+            <Button variant="outlined" onClick={() => setOpenModal("timelineseasonperson")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
+                fill="currentColor"
+                className="h-5 w-5 transition-transform ease-in-out"
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
-              {/* <Ripple center /> */}
-            </button>
+            </Button>
           </div>
           <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
         </section>

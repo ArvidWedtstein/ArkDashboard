@@ -56,16 +56,18 @@ type IButtonGroupContext = {
 const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
 const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
 
+// TODO: fix button events handlers for link and button
 type ButtonProps = {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
-  color?: "primary" | "secondary" | "success" | "warning" | "error";
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | 'DEFAULT';
   variant?: "text" | "contained" | "outlined" | "icon";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   fullWidth?: boolean;
   children?: ReactNode;
   disableRipple?: boolean;
+  centerRipple?: boolean;
   /**
    * Will not render if user does not have permission or user is not logged in and permission is defined
    */
@@ -91,6 +93,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       startIcon: startIconProp,
       endIcon: endIconProp,
       disableRipple = contextDisableRipple,
+      centerRipple: centerRippleProp = (props.variant || contextVariant || "text") === 'icon',
       fullWidth = contextFullWidth || false,
       type = "button",
       permission,
@@ -132,6 +135,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
         warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",
         error: "text-red-500 hover:bg-red-500 hover:bg-opacity-10",
+        DEFAULT: "dark:text-white text-black hover:bg-black dark:hover:bg-white hover:bg-opacity-10"
       },
       contained: {
         primary:
@@ -144,6 +148,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
           "bg-orange-400 border-orange-500 hover:bg-orange-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         error:
           "bg-red-500 border-red-600 hover:bg-red-600 text-white shadow-sm hover:shadow-md",
+        DEFAULT: "dark:bg-white dark:border-white dark:hover:bg-zinc-100 dark:text-black bg-zinc-900 border-zinc-900 hover:bg-black text-white shadow-sm hover:shadow-md"
       },
       outlined: {
         primary:
@@ -156,6 +161,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
           "text-orange-400 border border-orange-400 border-opacity-50 hover:border-opacity-100 hover:bg-orange-400 hover:bg-opacity-10",
         error:
           "text-red-500 border border-red-500 border-opacity-50 hover:border-opacity-100 hover:bg-red-500 hover:bg-opacity-10",
+        DEFAULT: "dark:text-white border text-black dark:border-white border-black dark:border-opacity-50 border-opacity-50 hover:border-opacity-100 hover:bg-black dark:hover:bg-white hover:bg-opacity-10 dark:hover:bg-opacity-10"
       },
       icon: {
         primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",
@@ -163,6 +169,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
         warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",
         error: "text-red-500 hover:bg-red-500 hover:bg-opacity-10",
+        DEFAULT: "text-black dark:text-white hover:bg-black dark:hover:bg-white hover:bg-opacity-10"
       },
     };
 
@@ -238,7 +245,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         {children}
         {endIcon}
         {enableRipple ? (
-          <Ripple ref={rippleRef} center={variant === "icon"} />
+          <Ripple ref={rippleRef} center={centerRippleProp} />
         ) : null}
       </Root>
     );
