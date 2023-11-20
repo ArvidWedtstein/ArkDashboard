@@ -29,21 +29,9 @@ module.exports = {
         "fill-up":
           "fillProgess 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         fill: "fill 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
-        ripple: "ripple 0.6s linear infinite",
-        "ripple-hover": "ripple 0.6s linear forwards",
         "auto-fill-cancel": "auto-fill-cancel 10ms",
       },
       keyframes: {
-        ripple: {
-          "0%": {
-            "box-shadow":
-              "0 0 0 0 rgba(255,255,255, 0.1), 0 0 0 20px rgba(255,255,255, 0.1), 0 0 0 40px rgba(255,255,255, 0.1), 0 0 0 60px rgba(255,255,255, 0.1)",
-          },
-          "100%": {
-            "box-shadow":
-              "0 0 0 20px rgba(255,255,255, 0.1), 0 0 0 40px rgba(255,255,255, 0.1), 0 0 0 60px rgba(255,255,255, 0.1), 0 0 0 80px rgba(255,255,255, 0)",
-          },
-        },
         progress: {
           "0%": {
             "stroke-dasharray": "0 100",
