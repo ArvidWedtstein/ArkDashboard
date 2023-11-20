@@ -23,7 +23,7 @@ type iModal = {
  *
  * @returns a modal
  */
-export const Modal = ({ image, title, content, mimetype }: iModal) => {
+export const Modal = ({ content, image, title, mimetype }: iModal) => {
   const { modalOpen, closeModal } = useModal();
 
   return ReactDOM.createPortal(
@@ -45,9 +45,9 @@ export const Modal = ({ image, title, content, mimetype }: iModal) => {
     >
       <div
         className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
-        // onClick={(e) => {
-        //   e.stopPropagation();
-        // }}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       >
         <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
@@ -80,7 +80,7 @@ export const Modal = ({ image, title, content, mimetype }: iModal) => {
             </button>
           </div>
           <div className="space-y-6 p-6">
-            {image && mimetype?.startsWith("image") ? (
+            {image || mimetype ? mimetype?.startsWith("image") ? (
               <img src={image} className="w-full rounded" />
             ) : (
               <video
@@ -90,7 +90,7 @@ export const Modal = ({ image, title, content, mimetype }: iModal) => {
                 controlsList="nodownload"
                 controls
               />
-            )}
+            ) : null}
             {content &&
               (typeof content == "string" ? (
                 <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
@@ -211,8 +211,8 @@ type ModalContextValue = {
 };
 
 const ModalContext = createContext<ModalContextValue>({
-  openModal: () => {},
-  closeModal: () => {},
+  openModal: () => { },
+  closeModal: () => { },
   modalOpen: false,
 });
 

@@ -1673,6 +1673,7 @@ export const Lookup = <
           inputRef={inputRef}
           value={inputValue}
           placeholder={placeholder}
+          className={className}
           inputProps={{
             role: "combobox",
             spellCheck: false,

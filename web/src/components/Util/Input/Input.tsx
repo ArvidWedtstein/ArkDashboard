@@ -127,6 +127,16 @@ export const InputOutlined = ({
     name,
   }) : { className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`, style: {} }
 
+  const borders = {
+    primary: `border-blue-400`,
+    secondary: `border-zinc-500`,
+    success: `border-pea-500`,
+    error: `border-red-500`,
+    warning: `border-amber-400`,
+    disabled: `dark:border-white/30 border-black/30`,
+    DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
+  }
+  const fieldsetClass = `border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || field.disabled ? 'disabled' : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`;
   return (
     <div
       className={clsx(
@@ -162,7 +172,7 @@ export const InputOutlined = ({
       </LabelComponent>
       <div
         className={clsx(
-          "relative box-content inline-flex cursor-text items-center rounded text-base font-normal leading-6",
+          "group relative box-content inline-flex cursor-text items-center rounded text-base font-normal leading-6",
           inputClassName,
           {
             "pl-3.5": !!InputProps?.startAdornment,
@@ -219,22 +229,17 @@ export const InputOutlined = ({
             } as CSSProperties
           }
           className={clsx(
-            "!peer-invalid:border-red-500 pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+            fieldsetClass,
+            // "!peer-invalid:border-red-500 pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
               "top-0": focus || !isEmpty(field?.value) || !!props?.placeholder,
             }
           )}
         >
-          <legend
-            style={{ float: "unset", height: "11px" }}
-            className={clsx(
-              "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
-              {
-                "!max-w-full":
-                  focus || !isEmpty(field?.value) || !!props?.placeholder,
-              }
-            )}
-          >
+          <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
+            "max-w-full": focus || !isEmpty(field?.value) || !!props?.placeholder,
+            "max-w-[0.01px]": !(focus || !isEmpty(field?.value) || !!props?.placeholder)
+          })}>
             <span className="visible inline-block px-1 opacity-0">
               {required ? (
                 <Fragment>
@@ -970,8 +975,8 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>((props, ref)
   }
   const inputBaseClassesAfter = {
     outlined: ``,
-    filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform ${ownerState.focused ? 'after:transform after:scale-x-100 after:translate-x-0' : ''} ${fcs.error ? `before:!border-red-500 after:border-red-500` : borders[ownerState.color ?? 'DEFAULT']}`,
-    standard: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:scale-x-0 after:transition-transform ${ownerState.focused ? 'after:transform after:scale-x-100 after:translate-x-0' : ''} ${fcs.error ? `before:!border-red-500 hover:before:border-b after:border-red-500` : borders[ownerState.color ?? 'DEFAULT']}`,
+    filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused ? 'after:transform after:scale-x-100 after:translate-x-0' : 'after:scale-x-0 '} ${fcs.error ? `before:!border-red-500 after:border-red-500` : borders[ownerState.color ?? 'DEFAULT']}`,
+    standard: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused ? 'after:transform after:scale-x-100 after:translate-x-0' : 'after:scale-x-0'} ${fcs.error ? `before:!border-red-500 hover:before:border-b after:border-red-500` : borders[ownerState.color ?? 'DEFAULT']}`,
   }
 
   const classes = {

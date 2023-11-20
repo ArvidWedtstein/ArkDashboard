@@ -580,6 +580,11 @@
     @apply mt-1 block text-xs font-semibold uppercase text-red-600;
   }
 
+  /* || Divider */
+  .rw-divider {
+    @apply relative m-[initial] shrink-0 list-none self-stretch [border:medium] [inline-size:1px] [margin-inline:initial] [block-size:initial];
+  }
+
   /* || Badge Colors */
 
   /* Red Badge */

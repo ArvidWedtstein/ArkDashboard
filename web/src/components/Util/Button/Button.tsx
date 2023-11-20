@@ -143,7 +143,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         secondary:
           "bg-zinc-500 border-zinc-600 hover:bg-zinc-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         success:
-          "bg-green-500 border-green-600 hover:bg-green-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
+          "bg-green-600 border-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md",
         warning:
           "bg-orange-400 border-orange-500 hover:bg-orange-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         error:
@@ -199,7 +199,11 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     const renderIcon = (iconProp: ReactNode, side: 'start' | 'end' = 'start') => {
       return iconProp && variant !== 'icon' && (
         <span
-          className={`[&>svg]:shrink-0 select-none [&>svg]:inline-block [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-current ${side === 'start' ? 'mr-2 -ml-1' : 'ml-2 -mr-1'}`}
+          className={clsx(`[&>svg]:shrink-0 select-none [&>svg]:inline-block [&>svg]:fill-current ${side === 'start' ? 'mr-2 -ml-1' : 'ml-2 -mr-1'}`, {
+            "[&>svg]:h-3 [&>svg]:w-3": size === 'small',
+            "[&>svg]:h-4 [&>svg]:w-4": size === 'medium',
+            "[&>svg]:h-5 [&>svg]:w-5": size === 'large',
+          })}
           style={{
             display: "inherit",
           }}
