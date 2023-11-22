@@ -23,7 +23,7 @@ import {
   useEventCallback,
 } from "src/lib/formatters";
 import Ripple from "../Ripple/Ripple";
-import { FormControl, Input, InputBase, InputLabel, TextInput } from "../Input/Input";
+import { FormControl, InputBase, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
 
 function stripDiacritics(string) {
@@ -1534,6 +1534,16 @@ export const Lookup = <
     return selectedOptions;
   };
 
+  const borders = {
+    primary: `border-blue-400`,
+    secondary: `border-zinc-500`,
+    success: `border-pea-500`,
+    error: `border-red-500`,
+    warning: `border-amber-400`,
+    disabled: `dark:border-white/30 border-black/30`,
+    DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
+  }
+
   const renderOption = (
     option: Value,
     index: number,
@@ -1555,6 +1565,7 @@ export const Lookup = <
       "first:rounded-t-lg": index == 0 && !groupBy,
       "cursor-not-allowed text-zinc-500/50": disabled,
     });
+
     return (
       <li
         data-option-index={index}
@@ -1668,8 +1679,32 @@ export const Lookup = <
             inputValue.length > 0 ||
             (Array.isArray(value) && value.length > 0)}
         />
+        {renderChips()}
 
-        <Input
+        <InputBase
+          renderSuffix={(state) => (
+            variant === 'outlined' ? (
+              <fieldset aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`)}>
+                <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
+                  "max-w-full": state.focused || state.filled,
+                  "max-w-[0.01px]": !state.focused && !state.filled
+                })}>
+                  {label && label !== "" && (
+                    <span className={"px-[5px] inline-block opacity-0 visible"}>
+                      {state.required ? (
+                        <React.Fragment>
+                          {label}
+                          &thinsp;{'*'}
+                        </React.Fragment>
+                      ) : (
+                        label
+                      )}
+                    </span>
+                  )}
+                </legend>
+              </fieldset>
+            ) : null
+          )}
           inputRef={inputRef}
           value={inputValue}
           placeholder={placeholder}
@@ -1732,172 +1767,13 @@ export const Lookup = <
             </Fragment>
           )}
         />
+
         {helperText && (
           <p id={helperText && id ? `${id}-helper-text` : undefined} className="rw-helper-text" {...HelperTextProps}>
             {helperText}
           </p>
         )}
       </FormControl>
-      {/* <div
-        className={clsx(
-          "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top",
-          {
-            "pointer-events-none text-black/50 dark:text-white/50": disabled,
-            "mt-2 mb-1": margin === "dense",
-            "mt-4 mb-2": margin === "normal",
-            "mt-0 mb-0": margin == "none",
-          }
-        )}
-        ref={anchorEl}
-      >
-
-        <label
-          className={clsx(
-            "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200",
-            {
-              "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-                open ||
-                inputValue.length > 0 ||
-                (Array.isArray(value) && value.length > 0),
-              "translate-y-1 text-sm": size == "small",
-              "translate-y-4 text-base": size == "medium",
-            }
-          )}
-          htmlFor={`input-${name || id}`}
-        >
-          {label ?? name} {required && " *"}
-        </label>
-
-        <div
-          className={clsx(
-            "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded font-normal leading-6",
-            btnClassName,
-            {
-              "pr-10": !disableClearable && open,
-              // "pr-12": !disableClearable && (open || inputValue.length > 0),
-              "text-sm": size == "small",
-              "text-base": size == "medium",
-            }
-          )}
-        >
-          {renderChips()}
-
-          <input
-            id={`input-${name || id}`}
-            type="text"
-            className={clsx(
-              "peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded-[inherit] border-0 bg-transparent font-[inherit] focus:outline-none disabled:pointer-events-none",
-              {
-                "py-1 pl-2 pr-1 text-sm": size == "small",
-                "py-4 px-3 text-base": size === "medium",
-              }
-            )}
-            disabled={disabled}
-            value={inputValue}
-            placeholder={placeholder}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            onChange={handleInputChange}
-            onMouseDown={handleInputMouseDown}
-            ref={inputRef}
-            spellCheck={false}
-            aria-activedescendant={popupOpen ? "" : null}
-            aria-autocomplete={autoComplete ? "both" : "list"}
-            aria-controls={listboxAvailable ? `${id}-listbox` : undefined}
-            aria-expanded={listboxAvailable}
-            role="combobox"
-          />
-
-          <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
-            {!disableClearable && !disabled && dirty && !readOnly && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="relative -mr-0.5 box-border inline-flex appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10 peer-hover:visible peer-focus:visible"
-              >
-                <svg
-                  className="h-4 w-4 shrink-0 select-none fill-current"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  focusable="false"
-                >
-                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                </svg>
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={handlePopupIndicator}
-              className="relative -mr-0.5 inline-flex select-none appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10"
-            >
-              <svg
-                className={clsx(
-                  "h-4 w-4 transition-transform duration-75 will-change-transform",
-                  {
-                    "shrink-0": !popupOpen,
-                    "shrink-0 rotate-180": popupOpen,
-                  }
-                )}
-                fill="none"
-                stroke="currentColor"
-                focusable="false"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d={"M19 9l-7 7-7-7"}
-                />
-              </svg>
-            </button>
-          </div>
-          <fieldset
-            aria-hidden="true"
-            style={{
-              ...InputProps?.style,
-              inset: "-5px 0px 0px",
-            }}
-            className={clsx(
-              "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 group-hover:border-2 group-hover:border-zinc-300 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
-              {
-                "top-0":
-                  open || filteredOptions.length > 0 || inputValue.length > 0,
-              }
-            )}
-          >
-            <legend
-              style={{ float: "unset", height: "11px" }}
-              className={clsx(
-                "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap !p-0 !text-xs transition-all duration-75",
-                {
-                  "!max-w-full":
-                    open || filteredOptions.length > 0 || inputValue.length > 0,
-                }
-              )}
-            >
-              {(label ?? name) && (
-                <span className="visible inline-block px-1 opacity-0">
-                  {label ?? name} {required && " *"}
-                </span>
-              )}
-            </legend>
-          </fieldset>
-        </div>
-
-        {!!name && <FieldError name={name} className="rw-field-error" />}
-        {
-          helperText && (
-            <p
-              id={`${name}-helper-text`}
-              className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-5 tracking-wide text-black/70 dark:text-white/70"
-            >
-              {helperText}
-            </p>
-          )
-        }
-      </div> */}
 
       {/* Dropdown Menu */}
       <Popper anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>

@@ -12,8 +12,9 @@ import debounce from "lodash.debounce";
 import { toast } from "@redwoodjs/web/dist/toast";
 import FibonacciSphere from "src/components/Util/FibonacciSphere/FibonacciSphere";
 import { SimplexNoise3D, clamp, useControlled, useEventCallback } from "src/lib/formatters";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { InputOutlined, TextInput } from "src/components/Util/Input/Input";
 import clsx from "clsx";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 function trackFinger(
   event: TouchEvent | MouseEvent | React.MouseEvent,
@@ -1421,18 +1422,23 @@ const GtwPage = (props: GTWPageProps) => {
             listClassName="rw-form-error-list"
           />
 
-          <InputOutlined
+          <TextInput
             type="text"
+            variant="outlined"
             name="scrambledWord"
             label="Scrambled Dino Word"
             placeholder="Scrambled Word:"
-            onInput={(event) => {
-              debouncedChangeHandler(event);
+            color="success"
+            InputLabelProps={{
+              shrink: true
+            }}
+            inputProps={{
+              onInput: (event) => debouncedChangeHandler(event)
             }}
           />
         </Form>
 
-        <Slider />
+        {/* <Slider /> */}
         {/* <canvas ref={ref}></canvas> */}
       </div>
     </>
