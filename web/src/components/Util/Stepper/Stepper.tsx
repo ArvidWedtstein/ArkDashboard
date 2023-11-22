@@ -1,3 +1,4 @@
+import { Form, FormProps, Submit, useForm } from "@redwoodjs/forms";
 import { CheckmarkIcon } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
 import { useState } from "react";
@@ -10,9 +11,11 @@ interface Step {
   icon?: React.ReactNode;
   className?: string;
 }
-interface IStepperProps {
+interface IStepperProps<FieldValues> {
   children?: React.ReactNode;
   completion?: boolean;
+  currentStep?: number;
+  onStepChange?: (step: number, direction: 'prev' | 'next') => void
 }
 
 export const Step = ({ title, description, optional, children, className }: Step) => {
@@ -21,15 +24,15 @@ export const Step = ({ title, description, optional, children, className }: Step
   </div>;
 };
 
-const Stepper = ({ children, completion = false }: IStepperProps) => {
-  const [currentStep, setCurrentStep] = useState(0);
+const Stepper = <TFieldValues extends Record<string, any>>({ children, completion = false, onStepChange, currentStep: currentStepProp = 0 }: IStepperProps<TFieldValues>) => {
+  const [currentStep, setCurrentStep] = useState(currentStepProp);
   const [completedSteps, setCompletedSteps] = useState([]);
 
   const completeStep = (step: number) => {
     setCompletedSteps((prev) => [...prev, step]);
     nextStep();
   };
-
+  // https://claritydev.net/blog/advanced-multistep-forms-with-react
   const prevStep = () => {
     if (
       completedSteps.includes(currentStep != 0 ? currentStep - 1 : currentStep)
@@ -39,6 +42,8 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
       );
     }
     setCurrentStep((prev) => (prev != 0 ? prev - 1 : prev));
+
+    onStepChange?.(currentStep != 0 ? currentStep - 1 : currentStep, 'prev')
   };
 
   const nextStep = () => {
@@ -46,8 +51,15 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
       currentStep <
       (Array.isArray(children) ? children : [children]).length - 1
     ) {
+      onStepChange?.(currentStep + 1, 'next')
       return setCurrentStep((prev) => prev + 1);
     }
+
+    onStepChange?.(completedSteps.findIndex((step) => step == currentStep) !== -1
+      ? completedSteps.findIndex((step) => step == currentStep)
+      : currentStep == (Array.isArray(children) ? children : [children]).length - 1
+        ? Math.max(...completedSteps) + 1
+        : currentStep, 'next')
     return setCurrentStep((prev) =>
       completedSteps.findIndex((step) => step == prev) !== -1
         ? completedSteps.findIndex((step) => step == prev)
@@ -56,6 +68,7 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
           : prev
     );
   };
+
   return (
     <div>
       <div className="flex flex-row items-center justify-between space-x-2 dark:text-zinc-300">
@@ -70,7 +83,10 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
                     completedSteps.length || !completion
                   }
                   className="font-montserrat flex items-center space-x-2"
-                  onClick={() => setCurrentStep(index)}
+                  onClick={() => {
+                    onStepChange?.(index, index < currentStep ? 'prev' : 'next');
+                    setCurrentStep(index);
+                  }}
                 >
                   <span
                     className={clsx(
@@ -122,53 +138,59 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
       <div className="my-3">
         {(Array.isArray(children) ? children : [children]).map(
           ({ props: step }, index) => {
-            if (index === currentStep) return <Step {...step} />;
+            return (
+              <Step {...step} className={clsx(step.className, {
+                "block": index === currentStep,
+                "hidden": index !== currentStep
+              })}>
+                {step.children}
+              </Step>
+            );
           }
         )}
-      </div>
-
-      <div className="flex items-center justify-between">
-        {completedSteps.length !==
-          (Array.isArray(children) ? children : [children]).length && (
-            <>
-              <button
-                type="button"
-                className="rw-button rw-button-gray-outline rw-button-medium"
-                disabled={currentStep == 0}
-                onClick={() => prevStep()}
-              >
-                Back
-              </button>
-              <div className="inline-flex items-center space-x-3">
-                {completion && (
-                  <button
-                    type="button"
-                    className="rw-button rw-button-gray-outline rw-button-medium"
-                    onClick={() => nextStep()}
-                  >
-                    Next
-                  </button>
-                )}
+        <div className="flex items-center justify-between">
+          {completedSteps.length !==
+            (Array.isArray(children) ? children : [children]).length && (
+              <>
                 <button
-                  type="button"
+                  type={'button'}
                   className="rw-button rw-button-gray-outline rw-button-medium"
-                  disabled={completedSteps.includes(currentStep) && completion}
-                  onClick={() => {
-                    completeStep(currentStep);
-                  }}
+                  disabled={currentStep == 0}
+                  onClick={() => prevStep()}
                 >
-                  {completedSteps.length ==
-                    (Array.isArray(children) ? children : [children]).length - 1
-                    ? "Finish"
-                    : completion
-                      ? "Complete"
-                      : "Next"}
+                  Back
                 </button>
-              </div>
-            </>
-          )}
+                <div className="inline-flex items-center space-x-3">
+                  {completion && (
+                    <button
+                      type={'button'}
+                      className="rw-button rw-button-gray-outline rw-button-medium"
+                      onClick={() => nextStep()}
+                    >
+                      Next
+                    </button>
+                  )}
+                  <button
+                    type={'button'}
+                    className="rw-button rw-button-gray-outline rw-button-medium"
+                    disabled={completedSteps.includes(currentStep) && completion}
+                    onClick={() => {
+                      completeStep(currentStep);
+                    }}
+                  >
+                    {completedSteps.length ==
+                      (Array.isArray(children) ? children : [children]).length - 1
+                      ? "Finish"
+                      : completion
+                        ? "Complete"
+                        : "Next"}
+                  </button>
+                </div>
+              </>
+            )}
+        </div>
       </div>
-    </div>
+    </div >
   );
 };
 

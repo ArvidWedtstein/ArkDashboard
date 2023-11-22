@@ -1278,29 +1278,29 @@ const GtwPage = (props: GTWPageProps) => {
   const [word, setWord] = useState("");
   const handlechange = (e) => {
     setWord(e.target.value);
-
+    console.log(e.target.value)
     if (getWord(e.target.value)[0] === undefined) return;
     toast.success("Copied to clipboard");
     navigator.clipboard.writeText(getWord(e.target.value)[0]);
   };
 
-  function hasLetters(word: string, letters: string): boolean {
-    // Convert the word and letters to lowercase to make the comparison case-insensitive
-    word = word.toLowerCase();
-    letters = letters.toLowerCase();
-
-    // Loop through each letter in the letters string
-    for (let i = 0; i < letters.length; i++) {
-      // If the letter is not found in the word, return false
-      if (word.indexOf(letters[i]) === -1) {
-        return false;
-      }
-    }
-
-    // If all letters are found in the word, return true
-    return true;
-  }
   const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
+  // function hasLetters(word: string, letters: string): boolean {
+  //   // Convert the word and letters to lowercase to make the comparison case-insensitive
+  //   word = word.toLowerCase();
+  //   letters = letters.toLowerCase();
+
+  //   // Loop through each letter in the letters string
+  //   for (let i = 0; i < letters.length; i++) {
+  //     // If the letter is not found in the word, return false
+  //     if (word.indexOf(letters[i]) === -1) {
+  //       return false;
+  //     }
+  //   }
+
+  //   // If all letters are found in the word, return true
+  //   return true;
+  // }
 
   // MATRIX GRID
   // const ref = useRef<HTMLCanvasElement>(null);

@@ -8,8 +8,6 @@ import {
   TextAreaFieldProps,
   useController,
   useErrorStyles,
-  useForm,
-  useFormContext,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { CSSProperties, Children, ComponentPropsWithRef, ElementType, Fragment, HTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, ReactNode, RefCallback, SelectHTMLAttributes, createContext, forwardRef, isValidElement, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
@@ -139,7 +137,7 @@ export const InputOutlined = ({
     disabled: `dark:border-white/30 border-black/30`,
     DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
   }
-  const fieldsetClass = `border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || field.disabled ? 'disabled' : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`;
+  const fieldsetClass = `border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || field?.disabled ? 'disabled' : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`;
   return (
     <div
       className={clsx(
@@ -356,7 +354,6 @@ interface FormControlContextValue extends Pick<FormControlProps, ContextFromProp
   onFocus: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onEmpty: () => void;
   onFilled: () => void;
-  registerEffect: undefined | (() => () => void);
   setAdornedStart: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -377,6 +374,7 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>((props, 
     size = 'medium',
     variant = 'outlined',
     label,
+    shrink,
     ...other
   } = props;
 
@@ -391,6 +389,7 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>((props, 
     size,
     label,
     variant,
+    shrink,
   };
 
   const [adornedStart, setAdornedStart] = useState(() => {
@@ -459,7 +458,7 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>((props, 
       required,
       variant,
       label,
-      shrink: false,
+      shrink,
       onBlur: () => {
         setFocused(false);
       },
@@ -471,9 +470,6 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>((props, 
       },
       onFocus: () => {
         setFocused(true);
-      },
-      registerEffect: () => {
-        return () => { }
       },
     };
   }, [
@@ -803,8 +799,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>((props, ref)
   });
 
   fcs.focused = formControl ? formControl.focused : focused;
-  // The blur won't fire when the disabled state is set on a focused input.
-  // We need to book keep the focused state manually.
+
   useEffect(() => {
     if (!formControl && disabled && focused) {
       setFocused(false);
@@ -1087,7 +1082,6 @@ type TextInputProps = {
   InputLabelProps?: Partial<InputLabelProps>;
   inputProps?: InputBaseProps['inputProps'];
   InputProps?: Partial<InputBaseProps>;
-  SelectProps?: Partial<SelectHTMLAttributes<HTMLSelectElement>> & { native?: boolean; };
   SuffixProps?: Partial<HTMLAttributes<HTMLFieldSetElement>>;
   inputRef?: React.Ref<any>;
   label?: ReactNode;
@@ -1136,8 +1130,6 @@ export const TextInput = forwardRef<HTMLDivElement, TextInputProps>((props, ref)
     placeholder,
     required = false,
     rows,
-    select = false,
-    SelectProps,
     SuffixProps,
     type,
     value,
@@ -1155,7 +1147,6 @@ export const TextInput = forwardRef<HTMLDivElement, TextInputProps>((props, ref)
     fullWidth,
     multiline,
     required,
-    select,
     variant,
   };
 
@@ -1170,13 +1161,7 @@ export const TextInput = forwardRef<HTMLDivElement, TextInputProps>((props, ref)
     }
     InputMore.label = label;
   }
-  if (select) {
-    // unset defaults from textbox inputs
-    if (!SelectProps || !SelectProps.native) {
-      InputMore.id = undefined;
-    }
-    InputMore['aria-describedby'] = undefined;
-  }
+
   const borders = {
     primary: `border-blue-400`,
     secondary: `border-zinc-500`,
@@ -1210,66 +1195,55 @@ export const TextInput = forwardRef<HTMLDivElement, TextInputProps>((props, ref)
         </InputLabel>
       )}
 
-      {/* TODO: test select */}
-      {select ? (
-        <select
-          aria-describedby={helperTextId}
-          id={id}
-          name={inputLabelId}
-          value={value}
-          {...SelectProps}
-        >
-          {children}
-        </select>
-      ) : (
-        <InputBase
-          label={label}
-          renderSuffix={(state) => (
-            variant === 'outlined' ? (
-              <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, SuffixProps?.className)}>
-                <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-                  "max-w-full": state.focused || state.filled || props.InputLabelProps.shrink,
-                  "max-w-[0.01px]": !state.focused && !state.filled && !props.InputLabelProps.shrink
-                })}>
-                  {label && label !== "" && (
-                    <span className={"px-[5px] inline-block opacity-0 visible"}>
-                      {state.required ? (
-                        <React.Fragment>
-                          {label}
-                          &thinsp;{'*'}
-                        </React.Fragment>
-                      ) : (
-                        label
-                      )}
-                    </span>
-                  )}
-                </legend>
-              </fieldset>
-            ) : null
-          )}
-          aria-describedby={helperTextId}
-          autoComplete={autoComplete}
-          autoFocus={autoFocus}
-          defaultValue={defaultValue}
-          fullWidth={fullWidth}
-          multiline={multiline}
-          name={name}
-          rows={rows}
-          maxRows={maxRows}
-          minRows={minRows}
-          type={type}
-          value={value}
-          id={id}
-          inputRef={inputRef}
-          onBlur={onBlur}
-          onChange={onChange}
-          onFocus={onFocus}
-          placeholder={placeholder}
-          inputProps={inputProps}
-          {...InputMore}
-          {...InputProps}
-        />
-      )}
+      <InputBase
+        label={label}
+        renderSuffix={(state) => (
+          variant === 'outlined' ? (
+            <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
+              "border-2": state.focused
+            }, SuffixProps?.className)}>
+              <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
+                "max-w-full": state.focused || state.filled || props.InputLabelProps.shrink,
+                "max-w-[0.01px]": !state.focused && !state.filled && !props.InputLabelProps.shrink
+              })}>
+                {label && label !== "" && (
+                  <span className={"px-[5px] inline-block opacity-0 visible"}>
+                    {state.required ? (
+                      <React.Fragment>
+                        {label}
+                        &thinsp;{'*'}
+                      </React.Fragment>
+                    ) : (
+                      label
+                    )}
+                  </span>
+                )}
+              </legend>
+            </fieldset>
+          ) : null
+        )}
+        aria-describedby={helperTextId}
+        autoComplete={autoComplete}
+        autoFocus={autoFocus}
+        defaultValue={defaultValue}
+        fullWidth={fullWidth}
+        multiline={multiline}
+        name={name}
+        rows={rows}
+        maxRows={maxRows}
+        minRows={minRows}
+        type={type}
+        value={value}
+        id={id}
+        inputRef={inputRef}
+        onBlur={onBlur}
+        onChange={onChange}
+        onFocus={onFocus}
+        placeholder={placeholder}
+        inputProps={inputProps}
+        {...InputMore}
+        {...InputProps}
+      />
 
       {helperText && (
         <p id={helperTextId} className="rw-helper-text" {...FormHelperTextProps}>

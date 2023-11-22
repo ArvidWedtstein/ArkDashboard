@@ -1722,7 +1722,7 @@ export const Lookup = <
             onBlur: handleBlur,
           }}
           endAdornmentProps={{
-            className: "absolute top-[calc(50%-12px)] right-2"
+            className: multiple ? "absolute top-[calc(50%-12px)] right-2" : ''
           }}
           endAdornment={(
             <Fragment>
