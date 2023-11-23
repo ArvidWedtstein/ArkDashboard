@@ -4,6 +4,7 @@ import {
   FormError,
   Label,
   RWGqlError,
+  Submit,
   TextField,
 } from "@redwoodjs/forms";
 import { MetaTags } from "@redwoodjs/web";
@@ -12,9 +13,10 @@ import debounce from "lodash.debounce";
 import { toast } from "@redwoodjs/web/dist/toast";
 import FibonacciSphere from "src/components/Util/FibonacciSphere/FibonacciSphere";
 import { SimplexNoise3D, clamp, useControlled, useEventCallback } from "src/lib/formatters";
-import { InputOutlined, TextInput } from "src/components/Util/Input/Input";
+import { Input, InputOutlined } from "src/components/Util/Input/Input";
 import clsx from "clsx";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 function trackFinger(
   event: TouchEvent | MouseEvent | React.MouseEvent,
@@ -1422,7 +1424,7 @@ const GtwPage = (props: GTWPageProps) => {
             listClassName="rw-form-error-list"
           />
 
-          <TextInput
+          <Input
             type="text"
             variant="outlined"
             name="scrambledWord"

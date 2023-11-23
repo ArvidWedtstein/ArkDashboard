@@ -29,7 +29,7 @@ import ItemList from "src/components/Util/ItemList/ItemList";
 import { useLazyQuery } from "@apollo/client";
 import Switch from "src/components/Util/Switch/Switch";
 import Button from "src/components/Util/Button/Button";
-import { TextInput } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -567,7 +567,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 aggregate: "sum",
                 className: "text-center",
                 render: ({ rowIndex, value, row }) => (
-                  <TextInput
+                  <Input
                     color="primary"
                     value={value}
                     onChange={(e) => {

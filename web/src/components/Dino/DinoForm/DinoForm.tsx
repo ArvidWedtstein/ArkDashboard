@@ -19,11 +19,12 @@ import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input, InputOutlined } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
 import NewDinoStat from "src/components/DinoStat/NewDinoStat/NewDinoStat";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
+import TagInput from "src/components/Util/TagInput/TagInput";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -257,6 +258,11 @@ const DinoForm = (props: DinoFormProps) => {
                 helperText="Dinos name"
               />
 
+              {/* TODO: TagInput or Lookup */}
+              {/* <TagInput
+                name="synonyms"
+              /> */}
+              {/* <Lookup multiple options={[]} /> */}
               <InputOutlined
                 label="Synonyms"
                 margin="normal"
@@ -274,20 +280,30 @@ const DinoForm = (props: DinoFormProps) => {
               />
 
               <FileUpload
-                name="image"
                 label="Image"
-                defaultValue={props?.dino?.image}
-                storagePath={`arkimages/Dino`}
+                name="image"
+                secondaryName="icon"
+                defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
+                defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
+                storagePath={`arkimages`}
+                valueFormatter={(filename) => filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
               />
-              <FileUpload
+              {/* <FileUpload
                 name="icon"
                 label="Icon"
                 defaultValue={props?.dino?.icon}
-                storagePath={"arkimages/Dino"}
-              />
+                storagePath={"arkimages/DinoIcon"}
+              /> */}
             </div>
-
             <div className="flex flex-row items-start space-x-3">
+              <Input
+                name="description"
+                defaultValue={props.dino?.description}
+                color="DEFAULT"
+                label="Description"
+                rows={5}
+                multiline
+              />
               <InputOutlined
                 label="Description"
                 margin="normal"

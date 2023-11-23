@@ -10,6 +10,7 @@ interface TagInputProps {
   inputClassName?: string;
   tagClassName?: string;
 }
+// TODO: eliminate this component
 const TagInput = ({ name, defaultValue = "", placeholder = " ", className, inputClassName = "rw-float-input peer", tagClassName = "inline-flex items-center rounded border border-zinc-500 bg-gray-100 px-2 py-1 text-sm font-medium text-gray-800 dark:bg-zinc-700 dark:text-gray-300" }: TagInputProps) => {
   const [isFadingOut, setIsFadingOut] = useState<number>(-1);
   const [tags, setTags] = useState<string[]>(
@@ -26,7 +27,9 @@ const TagInput = ({ name, defaultValue = "", placeholder = " ", className, input
 
   const handleKeyDown = (e) => {
     if (e.target.value.includes(',') || e.key === "Enter") {
-      setTags([...tags, e.target.value.replace(',', '')]);
+      if (e.target.value.trim().length > 0) {
+        setTags([...tags, e.target.value.replace(',', '').trim()]);
+      }
       e.target.value = "";
     }
   };

@@ -12,6 +12,7 @@ import Button from "../Button/Button";
 interface FileUploadProps {
   onUpload?: (url: string) => void;
   onFileAdded?: (file: File) => void;
+  valueFormatter?: (filename: string | null) => string;
   className?: string;
   label?: string;
   multiple?: boolean;
@@ -34,6 +35,7 @@ interface FileUploadProps {
    * Comma seperated list of mime file types
    */
   accept?: string;
+  // TODO: remove and replace with secondary
   thumbnail?: boolean;
   /**
    * Max size in bytes
@@ -50,6 +52,7 @@ type iFile = {
     type: string;
   };
   thumbnail?: boolean;
+  [key: string]: unknown;
   preview: boolean;
   state: "newfile" | "uploading" | "uploaded" | "newuploaded";
   url: string;
@@ -59,12 +62,14 @@ type iFile = {
   };
 }
 // TODO: add seperate secondaryAction
+// TODO: add support for array of names, and defaultValues
 const FileUpload = ({
   storagePath,
   accept = "image/png, image/jpg, image/jpeg, image/webp",
   maxSize,
   onUpload,
   onFileAdded,
+  valueFormatter = (e) => e,
   thumbnail = false,
   className,
   name,
@@ -84,6 +89,7 @@ const FileUpload = ({
   }>({ element: null, file: null, open: false });
   // TODO: add support for mulitple file uploads
   const { field } = !!name && useController({ name: name });
+  const { field: secondaryField } = !!secondaryName ? useController({ name: secondaryName }) : { field: null };
 
   const imageUrlToFile = async (imageUrl: string, fileName: string) => {
     try {
@@ -100,7 +106,7 @@ const FileUpload = ({
 
   useEffect(() => {
     const fetchImages = async () => {
-      if (!defaultValue) return;
+      if (!defaultValue && (secondaryName && !defaultSecondaryValue)) return;
 
       try {
         const { data, error } = await supabase.storage
@@ -139,6 +145,7 @@ const FileUpload = ({
             url: signedUrl,
             state: "uploaded",
             preview: false,
+            ...(secondaryName && { [secondaryName]: defaultSecondaryValue.split(",").map((img) => img.trim()).some((f) => f.includes(file.name)) }),
             error,
           };
         });
@@ -156,7 +163,11 @@ const FileUpload = ({
     };
 
     if (!!name) {
-      field.onChange(defaultValue);
+      field.onChange(defaultValue ? valueFormatter(defaultValue) : null);
+    }
+
+    if (!!secondaryName) {
+      secondaryField.onChange(defaultSecondaryValue ? valueFormatter(defaultSecondaryValue) : null)
     }
     fetchImages();
   }, []);
@@ -178,6 +189,7 @@ const FileUpload = ({
             url: fileloader.target.result.toString(),
             state: "newfile",
             preview: false,
+            [secondaryName]: defaultSecondaryValue.split(",").map((img) => img.trim()).some((f) => f.includes(file.name)),
             error:
               maxSize && file.size > maxSize
                 ? {
@@ -225,8 +237,12 @@ const FileUpload = ({
   };
 
   const handleUpload = () => {
-    if (name && field) {
-      field.onChange(files.map((f) => f.file.name).join(","))
+    if (name) {
+      field.onChange(files.map((f) => valueFormatter(f.file.name)).join(","))
+    }
+
+    if (secondaryName) {
+      secondaryField.onChange(files.filter((f) => f[secondaryName] === true).map((f) => valueFormatter(f.file.name)).join(','))
     }
 
     files
@@ -285,8 +301,12 @@ const FileUpload = ({
         ? await supabase.storage.from(`${storagePath}`).remove([file.file.name])
         : { error: null };
 
-    if (error) toast.error(error.message);
-    else setFiles((prev) => prev.filter((f) => f.url !== file.url));
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setFiles((prev) => prev.filter((f) => f.url !== file.url));
+    }
+
     if (name && field) {
       field.onChange(
         files
@@ -443,9 +463,9 @@ const FileUpload = ({
               <div className="table-cell truncate p-2">
                 {new Date(file.file.lastModified).toDateString()}
               </div>
-              <div className="table-cell p-2">
+              <div className="table-cell align-middle relative">
                 <button
-                  className="relative"
+                  className="relative inline-flex items-center justify-center p-2"
                   type="button"
                   onClick={(e) => {
                     setAnchorRef((prev) => ({
@@ -463,6 +483,7 @@ const FileUpload = ({
                   >
                     <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
                   </svg>
+                  <span className="sr-only">Menu</span>
                 </button>
               </div>
               {thumbnail && (
@@ -477,18 +498,23 @@ const FileUpload = ({
                   onChange={() => { }}
                 />
               )}
-              {secondaryName && (
+              {/* {secondaryName && (
                 <input
-                  type="radio"
+                  type="checkbox"
                   className="hidden"
                   title={secondaryName}
                   name={secondaryName}
                   id={`${secondaryName}-${index}`}
-                  checked={file[secondaryName]}
+                  // aria-label={file}
+                  // aria-checked={file[secondaryName] || false}
+                  checked={file[secondaryName] === true}
+                  // defaultChecked={Boolean(file[secondaryName]) || false}
                   value={file.file.name}
                   onChange={() => { }}
+                  readOnly
+                // hidden
                 />
-              )}
+              )} */}
             </div>
           ))}
         </div>
@@ -528,11 +554,10 @@ const FileUpload = ({
         Upload
       </Button>
 
-      <Popper anchorEl={anchorRef?.element} open={anchorRef.open} disablePortal>
+      <Popper anchorEl={anchorRef?.element} open={anchorRef.open}>
         <ClickAwayListener onClickAway={handleClose}>
           <div
             className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
-          // onClick={() => setAnchorRef(null)}
           >
             <ul className="relative m-0 list-none py-2">
               {thumbnail && (
@@ -547,6 +572,7 @@ const FileUpload = ({
                           thumbnail: f.file.name === anchorRef.file.file.name,
                         }))
                       );
+                      setAnchorRef({ element: null, open: false, file: null })
                     }}
                   >
                     <div className="inline-flex min-w-[36px] shrink-0">
@@ -567,7 +593,7 @@ const FileUpload = ({
                 <li>
                   <button
                     type="button"
-                    className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                    className="relative w-full box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
                     onClick={() => {
                       setFiles((prev) =>
                         prev.map((f) => ({
@@ -575,6 +601,8 @@ const FileUpload = ({
                           [secondaryName]: f.file.name === anchorRef.file.file.name
                         }))
                       );
+                      secondaryField.onChange(files.filter((f) => f.file.name === anchorRef.file.file.name).map((f) => valueFormatter(f?.file?.name)).join(','))
+                      setAnchorRef({ element: null, open: false, file: null })
                     }}
                   >
                     <div className="inline-flex min-w-[36px] shrink-0">
@@ -593,7 +621,7 @@ const FileUpload = ({
               )}
               <li>
                 <button
-                  className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                  className="relative w-full box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
                   type="button"
                   onClick={() => {
                     setFiles((prev) =>
@@ -602,6 +630,7 @@ const FileUpload = ({
                         preview: f.file.name === anchorRef?.file?.file?.name,
                       }))
                     );
+                    setAnchorRef({ element: null, open: false, file: null })
                   }}
                 >
                   <div className="inline-flex min-w-[36px] shrink-0">
@@ -619,7 +648,7 @@ const FileUpload = ({
               </li>
               <li>
                 <button
-                  className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                  className="relative w-full box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
                   type="button"
                   onClick={() => {
                     toast.custom(
