@@ -213,6 +213,7 @@ type SelectProps<
   openOnFocus?: boolean;
   autoSelect?: boolean;
   inputValue?: string;
+  // TODO: remove
   componentName?: string;
   validation?: RegisterOptions;
   margin?: "none" | "dense" | "normal";
@@ -1682,6 +1683,7 @@ export const Lookup = <
         {renderChips()}
 
         <InputBase
+          {...InputProps}
           renderSuffix={(state) => (
             variant === 'outlined' ? (
               <fieldset aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`)}>
@@ -1728,8 +1730,8 @@ export const Lookup = <
             <Fragment>
               {(!disableClearable && !readOnly) && (
                 <Button variant="icon" className={clsx("-mr-0.5 !p-1", {
-                  "opacity-100 visible": !disabled && dirty,
-                  "opacity-0 invisible": !(!disabled && dirty),
+                  [`${focused ? 'opacity-100 visible' : 'opacity-0 invisible'} group-hover:opacity-100 group-hover:visible`]: !disabled && dirty,
+                  "opacity-0 invisible": disabled || !dirty || readOnly,
                 })} onClick={handleClear} size={size}>
                   <svg
                     className="h-4 w-4 shrink-0 select-none !fill-white"
@@ -1812,7 +1814,7 @@ export const Lookup = <
           </div>
         </ClickAwayListener>
       </Popper>
-    </div >
+    </div>
   );
 };
 

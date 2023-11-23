@@ -169,7 +169,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
         warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",
         error: "text-red-500 hover:bg-red-500 hover:bg-opacity-10",
-        DEFAULT: "text-black dark:text-white hover:bg-black dark:hover:bg-white hover:bg-opacity-10"
+        DEFAULT: "text-black dark:text-white hover:bg-black dark:hover:bg-white dark:hover:bg-opacity-10 hover:bg-opacity-10"
       },
     };
 

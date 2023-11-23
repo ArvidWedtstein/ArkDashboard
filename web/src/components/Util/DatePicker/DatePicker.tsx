@@ -1,10 +1,12 @@
 import { FieldError } from "@redwoodjs/forms/dist";
 import clsx from "clsx";
-import { CSSProperties, useRef, useState } from "react";
+import { CSSProperties, Fragment, useRef, useState } from "react";
 
 import DateCalendar from "../DateCalendar/DateCalendar";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
+import { FormControl, InputBase, InputLabel } from "../Input/Input";
+import Button from "../Button/Button";
 
 type ViewType = "year" | "month" | "day";
 type InputFieldProps = {
@@ -13,7 +15,7 @@ type InputFieldProps = {
   helperText?: string;
   name?: string;
   required?: boolean;
-  disableClearable?: boolean;
+  placeholder?: string;
   btnClassName?: string;
   InputProps?: {
     style?: CSSProperties;
@@ -29,13 +31,16 @@ type DatePickerProps = {
   defaultValue?: Date;
   onChange?: (date: Date) => void;
   firstDayOfWeek?: number;
+  variant?: 'filled' | 'outlined' | 'standard';
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
+  margin?: "none" | "dense" | "normal";
+  size?: "small" | "medium" | "large";
 } & InputFieldProps;
 
 const DatePicker = ({
   views = ["day", "year"],
   disabled = false,
   readOnly = false,
-  disableClearable,
   defaultValue = new Date(),
   margin = "normal",
   btnClassName,
@@ -44,6 +49,10 @@ const DatePicker = ({
   helperText,
   required,
   InputProps,
+  placeholder,
+  variant = 'outlined',
+  color = "DEFAULT",
+  size = "medium",
   onChange,
 }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
@@ -65,66 +74,32 @@ const DatePicker = ({
     }
   };
 
-  const applyDateMask = (value) => {
-    let maskedValue = value.replace(/\D/g, ""); // Remove non-numeric characters
-
-    if (maskedValue.length >= 2) {
-      maskedValue = maskedValue.slice(0, 2) + "/" + maskedValue.slice(2);
-    }
-    if (maskedValue.length >= 5) {
-      maskedValue = maskedValue.slice(0, 5) + "/" + maskedValue.slice(5);
-    }
-    if (maskedValue.length > 10) {
-      maskedValue = maskedValue.slice(0, 10);
-    }
-
-    return maskedValue;
-  };
-
-  const updateSegment = (inputText: string, segment, newValue) => {
-    const formattedValue = applyDateMask(inputText);
-    const segmentIndex = {
-      month: [0, 2],
-      day: [3, 5],
-      year: [6, 10],
-    }[segment];
-
-    if (segmentIndex) {
-      const chars: string[] = formattedValue.split("");
-      console.log("OLDCHARS", formattedValue, segment, newValue);
-      chars.splice(
-        segmentIndex[0],
-        segmentIndex[1] - segmentIndex[0] + 1,
-        parseInt(newValue) < 10 ? `0${newValue}` : newValue
-      );
-
-      console.log("NEWCHARS", chars.join(""), segment);
-      return chars.join("");
-    }
-
-    return formattedValue;
-  };
+  const borders = {
+    primary: `border-blue-400`,
+    secondary: `border-zinc-500`,
+    success: `border-pea-500`,
+    error: `border-red-500`,
+    warning: `border-amber-400`,
+    disabled: `dark:border-white/30 border-black/30`,
+    DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
+  }
 
   const handleInputChange = (e) => {
     const inputText: string = e.target.value;
 
     const parsedDate = new Date(inputText);
-    let updatedValue = applyDateMask(inputText);
 
-    let updatedVal = updateSegment(
-      inputText,
-      activeSegment,
-      e.nativeEvent.data
-    );
-    setInternalValue(updatedValue);
-    // setInternalValue(updatedValue);
-    console.log(updatedVal, updatedValue);
+    setInternalValue(inputText);
     if (
       parsedDate &&
       parsedDate instanceof Date &&
       !isNaN(parsedDate.getTime())
     ) {
-      console.log("parsedDate", parsedDate);
+      setInternalValue(parsedDate.toLocaleDateString(navigator && navigator.language, {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      }))
       setSelectedDate(parsedDate);
     }
   };
@@ -136,28 +111,28 @@ const DatePicker = ({
   };
 
   const handleClick = (e) => {
-    if (internalValue.length === 0) {
-      setInternalValue("MM/DD/YYYY");
-      setActiveSegment("month");
-      e.target.setSelectionRange(0, 2);
+    // if (internalValue.length === 0) {
+    //   setInternalValue("MM/DD/YYYY");
+    //   setActiveSegment("month");
+    //   e.target.setSelectionRange(0, 2);
 
-      return;
-    }
-    const position = e.target.selectionStart;
+    //   return;
+    // }
+    // const position = e.target.selectionStart;
 
-    if (position < 2) {
-      setActiveSegment("month");
-      e.target.setSelectionRange(0, 2);
-    } else if (position >= 3 && position <= 5) {
-      setActiveSegment("day");
-      e.target.setSelectionRange(3, 5);
-    } else if (position >= 6 && position < 10) {
-      setActiveSegment("year");
-      e.target.setSelectionRange(6, 10);
-    } else {
-      setActiveSegment("month");
-      e.target.setSelectionRange(0, 2);
-    }
+    // if (position < 2) {
+    //   setActiveSegment("month");
+    //   e.target.setSelectionRange(0, 2);
+    // } else if (position >= 3 && position <= 5) {
+    //   setActiveSegment("day");
+    //   e.target.setSelectionRange(3, 5);
+    // } else if (position >= 6 && position < 10) {
+    //   setActiveSegment("year");
+    //   e.target.setSelectionRange(6, 10);
+    // } else {
+    //   setActiveSegment("month");
+    //   e.target.setSelectionRange(0, 2);
+    // }
   };
 
   const handleClose = (event) => {
@@ -171,46 +146,124 @@ const DatePicker = ({
     setOpen(false);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "ArrowLeft") {
-      const { selectionStart, selectionEnd, value } = e.target;
-      console.log("position left", selectionStart, selectionEnd);
-      if (selectionStart <= 3) {
-        setActiveSegment("month");
-        e.target.setSelectionRange(0, 2);
-      } else if (selectionStart > 3 && selectionStart <= 6) {
-        setActiveSegment("day");
-        e.target.setSelectionRange(3, 5);
-      } else if (selectionStart >= 6 && selectionStart < 10) {
-        setActiveSegment("year");
-        e.target.setSelectionRange(6, 10);
-      } else {
-        setActiveSegment("month");
-        e.target.setSelectionRange(0, 2);
-      }
-    } else if (e.key === "ArrowRight") {
-      const { selectionStart, selectionEnd, value } = e.target;
-      console.log("position right", selectionStart, selectionEnd);
-
-      console.log(e);
-      if (selectionStart <= 2) {
-        setActiveSegment("month");
-        e.target.setSelectionRange(3, 5);
-      } else if (selectionStart >= 3 && selectionStart <= 5) {
-        setActiveSegment("day");
-        e.target.setSelectionRange(6, 10);
-      } else if (selectionStart >= 6 && selectionStart < 10) {
-        setActiveSegment("year");
-        e.target.setSelectionRange(6, 10);
-      } else {
-        setActiveSegment("month");
-        e.target.setSelectionRange(0, 2);
-      }
-    }
-  };
-
   return (
     <>
+      <div
+        className={"group relative flex w-fit min-w-[10rem] items-center text-black dark:text-white"}
+      >
+        <FormControl
+          ref={anchorRef}
+          margin={margin}
+          disabled={disabled}
+          size={size}
+          variant={variant}
+          color={color}
+          required={required}
+          className={btnClassName}
+        // onClick={handleClick}
+        >
+          <InputLabel
+            children={label ?? name}
+            shrink={open
+              ||
+              internalValue.length > 0
+              // || (Array.isArray(value) && value.length > 0)
+            }
+          />
+
+          <InputBase
+            {...InputProps}
+            renderSuffix={(state) => (
+              variant === 'outlined' ? (
+                <fieldset aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`)}>
+                  <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
+                    "max-w-full": state.focused || state.filled,
+                    "max-w-[0.01px]": !state.focused && !state.filled
+                  })}>
+                    {label && label !== "" && (
+                      <span className={"px-[5px] inline-block opacity-0 visible"}>
+                        {state.required ? (
+                          <React.Fragment>
+                            {label}
+                            &thinsp;{'*'}
+                          </React.Fragment>
+                        ) : (
+                          label
+                        )}
+                      </span>
+                    )}
+                  </legend>
+                </fieldset>
+              ) : null
+            )}
+            value={internalValue}
+            placeholder={placeholder}
+            inputProps={{
+              spellCheck: false,
+              "aria-activedescendant": open ? "" : null,
+              onChange: handleInputChange,
+              onBlur: handleBlur,
+            }}
+            endAdornment={(
+              <Button
+                variant="icon"
+                color={"DEFAULT"}
+                className="-mr-0.5 !p-2"
+                tabIndex={0}
+                onClick={(e) => toggleOpen(e)}
+                aria-label={`Choose date${selectedDate
+                  ? `, selected date is ${selectedDate.toLocaleDateString(
+                    navigator && navigator.language,
+                    {
+                      dateStyle: "long",
+                    }
+                  )}`
+                  : ""
+                  }`}
+                disabled={disabled}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-4">
+                  <path d="M384 64h-32V16C352 7.164 344.8 0 336 0S320 7.164 320 16V64H128V16C128 7.164 120.8 0 112 0S96 7.164 96 16V64H64C28.65 64 0 92.65 0 128v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V128C448 92.65 419.3 64 384 64zM32 224h96v64H32V224zM160 288V224h128v64H160zM288 320v64H160v-64H288zM32 320h96v64H32V320zM64 480c-17.67 0-32-14.33-32-32v-31.1h96V480H64zM160 480v-63.1h128V480H160zM416 448c0 17.67-14.33 32-32 32h-64v-63.1h96V448zM416 384h-96v-64h96V384zM416 288h-96V224h96V288zM416 192H32V128c0-17.67 14.33-32 32-32h320c17.67 0 32 14.33 32 32V192z" />
+                </svg>
+              </Button>
+            )}
+          />
+
+          {/* {helperText && (
+            <p id={helperText && id ? `${id}-helper-text` : undefined} className="rw-helper-text" {...HelperTextProps}>
+              {helperText}
+            </p>
+          )} */}
+        </FormControl>
+
+        {/* Menu */}
+        <Popper anchorEl={anchorRef?.current} open={open} paddingToAnchor={4}>
+          <ClickAwayListener
+            onClickAway={handleClose}
+          >
+            <div
+              className={
+                "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800"
+              }
+            >
+              <DateCalendar
+                views={views}
+                onChange={(date) => {
+                  console.log(date)
+                  setSelectedDate(date);
+                  // TODO: format date
+                  setInternalValue(date.toLocaleDateString(navigator && navigator.language, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  }));
+                  setOpen(false);
+                }}
+              />
+            </div>
+          </ClickAwayListener>
+        </Popper>
+      </div >
       <div
         className={clsx(
           "relative flex w-fit min-w-[10rem] items-center text-black dark:text-white"
@@ -226,7 +279,7 @@ const DatePicker = ({
               "mt-0 mb-0": margin == "none",
             }
           )}
-          ref={anchorRef}
+        // ref={anchorRef}
         >
           {(label || name) && (
             <label
@@ -234,12 +287,11 @@ const DatePicker = ({
                 "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis text-base font-normal leading-6 transition duration-200",
                 {
                   "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-                    open,
-                  // ||
-                  // lookupOptions.filter((o) => o != null && o.selected).length >
-                  //   0 ||
-                  // searchTerm.length > 0 ||
-                  // internalValue.length > 0,
+                    open ||
+                    // lookupOptions.filter((o) => o != null && o.selected).length >
+                    //   0 ||
+                    // searchTerm.length > 0 ||
+                    internalValue.length > 0,
                 }
               )}
               htmlFor={`input-${name}`}
@@ -253,7 +305,6 @@ const DatePicker = ({
               btnClassName
             )}
           >
-            {/* TODO: fix date section editing */}
             <input
               aria-invalid="false"
               id={`input-${name}`}
@@ -263,7 +314,7 @@ const DatePicker = ({
               onBlur={handleBlur}
               onChange={handleInputChange}
               onClick={handleClick}
-              onKeyDown={handleKeyDown}
+              // onKeyDown={handleKeyDown}
               placeholder={`MM/DD/YYYY`}
               className={
                 "peer m-0 box-content block h-6 w-full min-w-0 grow rounded border-0 bg-transparent py-4 pr-0 pl-3.5 font-[inherit] text-base text-current focus:outline-none disabled:pointer-events-none"
@@ -274,7 +325,7 @@ const DatePicker = ({
               autoComplete="off"
             />
 
-            {!disableClearable && internalValue != "" && (
+            {internalValue != "" && (
               <div
                 aria-details="InputAdornment-End"
                 className="ml-2 -mr-2 flex h-[0.01em] max-h-8 items-center whitespace-nowrap text-black dark:text-white"
@@ -311,16 +362,15 @@ const DatePicker = ({
                 type="button"
                 tabIndex={0}
                 onClick={toggleOpen}
-                aria-label={`Choose date${
-                  selectedDate
-                    ? `, selected date is ${selectedDate.toLocaleDateString(
-                        navigator && navigator.language,
-                        {
-                          dateStyle: "long",
-                        }
-                      )}`
-                    : ""
-                }`}
+                aria-label={`Choose date${selectedDate
+                  ? `, selected date is ${selectedDate.toLocaleDateString(
+                    navigator && navigator.language,
+                    {
+                      dateStyle: "long",
+                    }
+                  )}`
+                  : ""
+                  }`}
                 disabled={disabled}
                 className="relative -mr-3 box-border inline-flex flex-[0_0_auto] select-none appearance-none items-center justify-center rounded-full p-2 hover:bg-white/10"
               >
@@ -387,7 +437,7 @@ const DatePicker = ({
         </div>
 
         {/* Dropdown Menu */}
-        <Popper anchorEl={anchorRef.current} open={open}>
+        {/* <Popper anchorEl={anchorRef.current} open={open}>
           <ClickAwayListener onClickAway={handleClose}>
             <div
               className={
@@ -404,176 +454,10 @@ const DatePicker = ({
               />
             </div>
           </ClickAwayListener>
-        </Popper>
+        </Popper> */}
       </div>
     </>
   );
 };
 
 export default DatePicker;
-
-export const CustomDatePicker = () => {
-  const [date, setDate] = useState("DD/MM/YYYY"); // Set the default value
-  const inputRef = useRef(null);
-
-  const handleInputChange = (event) => {
-    const inputValue = event.target.value.replace(/[^0-9/]/g, "");
-    let formattedDate = inputValue;
-
-    if (inputValue.length >= 2) {
-      formattedDate = `${inputValue.slice(0, 2)}`;
-    }
-
-    if (inputValue.length >= 4) {
-      formattedDate = `${inputValue.slice(0, 2)}/${inputValue.slice(2, 4)}`;
-    }
-
-    if (inputValue.length > 4) {
-      formattedDate = `${inputValue.slice(0, 2)}/${inputValue.slice(
-        2,
-        4
-      )}/${inputValue.slice(4, 8)}`;
-    }
-
-    setDate(formattedDate);
-
-    // Automatically move to the next section
-    const segmentLengths = [2, 2, 4]; // DD, MM, YYYY
-    const currentSegment = Math.min(
-      segmentLengths.length - 1,
-      formattedDate.split("/").length - 1
-    );
-    const cursorPosition = formattedDate
-      .split("/")
-      .slice(0, currentSegment + 1)
-      .join("/").length;
-    const nextCursorPosition = cursorPosition + segmentLengths[currentSegment];
-
-    if (nextCursorPosition <= formattedDate.length) {
-      inputRef.current.setSelectionRange(
-        nextCursorPosition,
-        nextCursorPosition
-      );
-    }
-  };
-
-  return (
-    <div>
-      <input
-        type="text"
-        ref={inputRef}
-        value={date}
-        onChange={handleInputChange}
-      />
-    </div>
-  );
-};
-
-// OLD CODE
-// const DatePicker = () => {
-//   const [currentDate, setCurrentDate] = useState(new Date());
-//   const getNextMonth = () => {
-//     const nextDate = new Date(currentDate);
-//     nextDate.setMonth(nextDate.getMonth() + 1);
-//     setCurrentDate(nextDate);
-//   };
-
-//   const getPrevMonth = () => {
-//     const prevDate = new Date(currentDate);
-//     prevDate.setMonth(prevDate.getMonth() - 1);
-//     setCurrentDate(prevDate);
-//   };
-
-//   const renderCalendar = () => {
-//     const year = currentDate.getFullYear();
-//     const month = currentDate.getMonth();
-
-//     const startOfMonth = new Date(year, month, 1);
-//     const endOfMonth = new Date(year, month + 1, 0);
-//     const daysInMonth = endOfMonth.getDate();
-
-//     const weeks = [];
-//     let week = [];
-//     let day = new Date(startOfMonth);
-
-//     // Add empty cells for the days before the start of the month
-//     // add empty cells for the days before the start of the year (if the week starts on a sunday)
-//     if (startOfMonth.getDay() === 0) {
-//       for (let i = 0; i < 6; i++) {
-//         week.push(<div key={`empty-${i}`} className="flex-1 h-10"></div>);
-//       }
-//     } else {
-//       for (let i = 0; i < startOfMonth.getDay() - 1; i++) {
-//         week.push(<div key={`empty-${i}`} className="flex-1 h-10"></div>);
-//       }
-//     }
-
-//     // Render the days of the month
-//     for (let i = 1; i <= daysInMonth; i++) {
-//       const weekday = new Date(year, month, i).toLocaleDateString('en-US', { weekday: 'short' });
-//       week.push(
-//         <div key={`day-${i}`} className="flex-1 flex flex-col items-center">
-//           <div className="text-xs text-gray-500">{weekday}</div>
-//           <div className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-zinc-300 select-none">
-//             {i}
-//           </div>
-//         </div>
-//       );
-
-//       // Start a new week when reaching the end of the current week
-//       if (day.getDay() === 0) {
-//         weeks.push(<div key={`week-${day}`} className="flex">{week}</div>);
-//         week = [];
-//       }
-
-//       day.setDate(day.getDate() + 1);
-//     }
-
-//     // Add empty cells for the days after the end of the month
-//     // add empty cells for the days after the end of the year (if the week ends on a sunday)
-
-//     if (endOfMonth.getDay() !== 0) {
-//       for (let i = endOfMonth.getDay(); i < 7; i++) {
-//         week.push(
-//           <div key={`empty-${i}`} className="flex-1 h-10"></div>
-//         );
-//       }
-//     } else {
-//       for (let i = 0; i < 6; i++) {
-//         week.push(<div key={`empty-${i}`} className="flex-1 h-10"></div>);
-//       }
-//     }
-
-//     weeks.push(<div key={`week-${day}`} className="flex">{week}</div>);
-
-//     return weeks;
-//   };
-
-//   const monthYear = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-
-//   return (
-//     <div className="max-w-md mx-auto">
-//       <div className="flex justify-between mb-4">
-//         <button className="rw-button rw-button-medium rw-button-green-outline" onClick={getPrevMonth}>
-//           Previous Month
-//         </button>
-//         <div className="text-lg text-white">{monthYear}</div>
-//         <button className="rw-button rw-button-medium rw-button-green-outline" onClick={getNextMonth}>
-//           Next Month
-//         </button>
-//       </div>
-//       <div className="bg-gray-200 p-4">
-//         <div className="flex mb-2">
-//           <div className="flex-1 text-center">Mon</div>
-//           <div className="flex-1 text-center">Tue</div>
-//           <div className="flex-1 text-center">Wed</div>
-//           <div className="flex-1 text-center">Thu</div>
-//           <div className="flex-1 text-center">Fri</div>
-//           <div className="flex-1 text-center">Sat</div>
-//           <div className="flex-1 text-center">Sun</div>
-//         </div>
-//         {renderCalendar()}
-//       </div>
-//     </div>
-//   );
-// };

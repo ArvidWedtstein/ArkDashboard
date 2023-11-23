@@ -83,6 +83,7 @@ const DateCalendar = ({
   const onSelectDate = (e: MouseEvent<HTMLButtonElement>, date: Date) => {
     if (readOnly) return;
     setSelectedDate(date);
+    onChange?.(date);
 
     if (date.getMonth() !== Number(period.substring(5)) - 1) {
       if (date.getMonth() < Number(period.substring(5)) - 1) {
@@ -92,7 +93,6 @@ const DateCalendar = ({
       }
     }
 
-    onChange?.(date);
   };
 
   const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek);
@@ -161,8 +161,8 @@ const DateCalendar = ({
             currentView === "year" || currentView === "month"
               ? selectView("day")
               : views.includes("year") || views.includes("month")
-              ? selectView(views.includes("year") ? "year" : "month")
-              : selectView("day")
+                ? selectView(views.includes("year") ? "year" : "month")
+                : selectView("day")
           }
         >
           <div className="relative block">
@@ -182,8 +182,8 @@ const DateCalendar = ({
                 currentView === "year" || currentView === "month"
                   ? selectView("day")
                   : views.includes("year") || views.includes("month")
-                  ? selectView(views.includes("year") ? "year" : "month")
-                  : selectView("day")
+                    ? selectView(views.includes("year") ? "year" : "month")
+                    : selectView("day")
               }
               className="relative mr-auto box-border inline-flex cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-1 text-center align-middle text-lg"
               aria-label={
@@ -498,9 +498,9 @@ const DateCalendar = ({
                                   toLocaleISODate(day),
                                 "bg-pea-300/10":
                                   toLocaleISODate(selectedRange[0]) <=
-                                    toLocaleISODate(day) &&
+                                  toLocaleISODate(day) &&
                                   toLocaleISODate(selectedRange[1]) >=
-                                    toLocaleISODate(day),
+                                  toLocaleISODate(day),
                               }
                             )}
                             title={`${toLocaleISODate(
@@ -517,12 +517,12 @@ const DateCalendar = ({
                                   invisible:
                                     !showDaysOutsideCurrentMonth &&
                                     day.getMonth() !==
-                                      Number(period.substring(5)) - 1,
+                                    Number(period.substring(5)) - 1,
                                   "border border-white/70":
                                     toLocaleISODate(new Date()) ===
-                                      toLocaleISODate(day) &&
+                                    toLocaleISODate(day) &&
                                     toLocaleISODate(day) !=
-                                      toLocaleISODate(selectedDate),
+                                    toLocaleISODate(selectedDate),
                                   "bg-pea-400 hover:!bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
                                     toLocaleISODate(day) ===
                                     toLocaleISODate(selectedDate),
@@ -542,7 +542,7 @@ const DateCalendar = ({
                               onClick={(e) => onSelectDate(e, day)}
                               aria-current={
                                 toLocaleISODate(new Date()) ===
-                                toLocaleISODate(day)
+                                  toLocaleISODate(day)
                                   ? "date"
                                   : undefined
                               }

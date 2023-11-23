@@ -24,7 +24,7 @@ import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
 import NewDinoStat from "src/components/DinoStat/NewDinoStat/NewDinoStat";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import TagInput from "src/components/Util/TagInput/TagInput";
+import DatePicker from "src/components/Util/DatePicker/DatePicker";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -278,25 +278,26 @@ const DinoForm = (props: DinoFormProps) => {
                   },
                 }}
               />
+            </div>
 
-              <FileUpload
-                label="Image"
-                name="image"
-                secondaryName="icon"
-                defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
-                defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
-                storagePath={`arkimages`}
-                valueFormatter={(filename) => filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
-              />
-              {/* <FileUpload
+            <FileUpload
+              label="Image"
+              name="image"
+              secondaryName="icon"
+              defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
+              defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
+              storagePath={`arkimages`}
+              valueFormatter={(filename) => filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
+            />
+            {/* <FileUpload
                 name="icon"
                 label="Icon"
                 defaultValue={props?.dino?.icon}
                 storagePath={"arkimages/DinoIcon"}
               /> */}
-            </div>
+
             <div className="flex flex-row items-start space-x-3">
-              <Input
+              {/* <Input
                 name="description"
                 defaultValue={props.dino?.description}
                 color="DEFAULT"
@@ -304,54 +305,64 @@ const DinoForm = (props: DinoFormProps) => {
                 rows={5}
                 multiline
               />
-              <InputOutlined
-                label="Description"
-                margin="normal"
+              <Input
+                label="Admin Note"
+                name="admin_note"
+                defaultValue={props.dino?.admin_note}
+                color="DEFAULT"
+                rows={5}
+                multiline
+                helperText="Some admin related info about this dino"
+              /> */}
+              <Input
                 name="description"
                 defaultValue={props.dino?.description}
-                rows={3}
-                type="textarea"
+                color="DEFAULT"
+                label="Description"
+                variant="filled"
+                rows={5}
+                multiline
               />
-
-              <InputOutlined
+              <Input
                 label="Admin Note"
-                margin="normal"
                 name="admin_note"
-                defaultValue={props.dino?.taming_notice}
-                rows={3}
+                defaultValue={props.dino?.admin_note}
+                color="DEFAULT"
+                variant="filled"
+                rows={5}
+                multiline
                 helperText="Some admin related info about this dino"
-                type="textarea"
               />
             </div>
 
-            <Switch
-              name="x_variant"
-              onLabel="X Variant"
-              defaultChecked={props.dino?.x_variant}
-              helperText="Does this dino have a x-variant?"
-            />
-            <FieldError name="x_variant" className="rw-field-error" />
+            <div className="flex flex-col space-y-2">
+              <Switch
+                name="x_variant"
+                onLabel="X Variant"
+                defaultChecked={props.dino?.x_variant}
+                helperText="Does this dino have a x-variant?"
+              />
 
-            <Switch
-              name="ridable"
-              onLabel="Ridable"
-              defaultChecked={props.dino?.ridable}
-              helperText="Is this dino ridable?"
-            />
+              <Switch
+                name="ridable"
+                onLabel="Ridable"
+                defaultChecked={props.dino?.ridable}
+                helperText="Is this dino ridable?"
+              />
 
-            <Switch
-              name="mounted_weaponry"
-              onLabel="Mounted Weaponry"
-              defaultChecked={props.dino?.mounted_weaponry}
-              helperText="Can you use weapons while riding this dino?"
-            />
+              <Switch
+                name="mounted_weaponry"
+                onLabel="Mounted Weaponry"
+                defaultChecked={props.dino?.mounted_weaponry}
+                helperText="Can you use weapons while riding this dino?"
+              />
 
-            <Switch
-              name="disable_mult"
-              onLabel="Disable multipliers"
-              className="mt-5"
-              defaultChecked={props.dino?.disable_mult}
-            />
+              <Switch
+                name="disable_mult"
+                onLabel="Disable multipliers"
+                defaultChecked={props.dino?.disable_mult}
+              />
+            </div>
 
             <CheckboxGroup
               name="type"
@@ -473,15 +484,26 @@ const DinoForm = (props: DinoFormProps) => {
               ]}
             />
 
-            <InputOutlined
+
+            <Input
               label="Release Date"
-              margin="normal"
-              name="released"
-              defaultValue={props.dino?.released || null}
-              placeholder="YYYY-MM-DD"
+              variant="filled"
+              color="success"
               type="date"
+              name="released"
+              placeholder="YYYY-MM-DD"
+              defaultValue={props.dino?.released || null}
+              validation={{
+                valueAsDate: true
+              }}
+              InputLabelProps={{
+                shrink: true
+              }}
             />
 
+            <DatePicker
+              label="Release Date"
+            />
             <br />
 
             <InputOutlined
