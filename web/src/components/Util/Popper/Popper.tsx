@@ -34,7 +34,6 @@ const Popper = ({
     }
     // Flip dropdown to top if it goes off screen bottom. Account for scroll
     if (top + popperRect.height + paddingToAnchor > (window.innerHeight || document.documentElement.clientHeight) + window.scrollY) {
-      // top = anchorEl.scrollTop + popperRect.height - paddingToAnchor; // scrollTop = offsetTop?
       top = (triggerRect.bottom + window.scrollY) - triggerRect.height - popperRect.height - paddingToAnchor;
     }
 
