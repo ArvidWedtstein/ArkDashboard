@@ -46,12 +46,16 @@ type CardHeaderProps = {
   title?: ReactNode;
   subheader?: ReactNode;
   className?: HTMLAttributes<HTMLDivElement>["className"];
+  titleProps?: HTMLAttributes<HTMLSpanElement>;
+  subheaderProps?: HTMLAttributes<HTMLSpanElement>;
 };
 export const CardHeader = ({
   sx,
   avatar,
   title,
+  titleProps,
   subheader,
+  subheaderProps,
   action,
   className,
 }: CardHeaderProps) => {
@@ -67,12 +71,12 @@ export const CardHeader = ({
       {(title || subheader) && (
         <div className="flex-[1_1_auto]">
           {title && (
-            <span className="font-montserrat m-0 block text-sm font-normal leading-[1.43]">
+            <span {...titleProps} className={clsx("font-montserrat m-0 block text-sm font-normal leading-[1.43]", titleProps?.className)}>
               {title}
             </span>
           )}
           {subheader && (
-            <span className="font-montserrat m-0 block text-sm font-normal leading-[1.43] text-black/70 dark:text-white/70">
+            <span {...subheaderProps} className={clsx("font-montserrat m-0 block text-sm font-normal leading-[1.43] text-black/70 dark:text-white/70", subheaderProps?.className)}>
               {subheader}
             </span>
           )}

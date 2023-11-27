@@ -4,8 +4,8 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useState } from "react";
 import { useAuth } from "src/auth";
+import { Card, CardHeader } from "src/components/Util/Card/Card";
 import Map from "src/components/Util/Map/Map";
-import StatCard from "src/components/Util/StatCard/StatCard";
 
 import { getWordType } from "src/lib/formatters";
 
@@ -139,20 +139,51 @@ const Item = ({ item }: Props) => {
           </div>
 
           <div className="grid w-fit grid-cols-3 gap-2 justify-self-end">
-            <StatCard stat={"Max Stack"} value={item.max_stack} chart={false} />
-            <StatCard
-              stat={"Weight"}
-              value={item.weight}
-              iconBackground="relative border border-zinc-500"
-              icon={
-                <img
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp`}
-                />
-              }
-              chart={false}
-            />
-            <StatCard stat={"Type"} value={item.type} chart={false} />
-            <StatCard stat={"Category"} value={item.category} chart={false} />
+            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+              <CardHeader
+                title={`Max Stack`}
+                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                subheader={item.max_stack}
+                subheaderProps={{ className: 'text-xl !font-bold' }}
+              />
+            </Card>
+            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+              <CardHeader
+                title={`Weight`}
+                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                subheader={item.weight}
+                subheaderProps={{ className: 'font-montserrat text-xl !font-bold uppercase' }}
+                action={
+                  <div className="relative w-auto flex-initial">
+                    <div
+                      className={`inline-flex h-12 w-12 items-center justify-center rounded-full p-3 text-center text-white shadow-lg relative border border-zinc-500`}
+                    >
+                      <div className="h-4 w-4 text-current">
+                        <img
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                }
+              />
+            </Card>
+            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+              <CardHeader
+                title={`Type`}
+                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                subheader={item.type}
+                subheaderProps={{ className: 'text-xl !font-bold' }}
+              />
+            </Card>
+            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+              <CardHeader
+                title={`Category`}
+                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                subheader={item.category}
+                subheaderProps={{ className: 'text-xl !font-bold' }}
+              />
+            </Card>
           </div>
 
           {item.stats && (item?.stats as { id: number, value: number }[]).filter(f => f.id != 1).length > 0 && (

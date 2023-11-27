@@ -24,7 +24,6 @@ const DELETE_MAP_REGION_MUTATION = gql`
 `;
 
 const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
-  const { currentUser } = useAuth();
 
   let canvasWidth = 500;
   let canvasHeight = 500;

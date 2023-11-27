@@ -1,8 +1,9 @@
 import { MetaTags, useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
+import { Card, CardContent, CardHeader } from "src/components/Util/Card/Card";
 import Chart from "src/components/Util/Chart/Chart";
-import StatCard from "src/components/Util/StatCard/StatCard";
 import Table from "src/components/Util/Table/Table";
 import Toast from "src/components/Util/Toast/Toast";
 import {
@@ -177,72 +178,187 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
 
       <div className="container-xl m-4 overflow-hidden p-3 text-center">
         <div className="mb-3 flex flex-col-reverse space-x-3 md:flex-row">
-          <StatCard
-            stat={"Finsihed Basespots"}
-            value={formatNumber(
-              (optimizedBasespots.filter((b) => b.progress == 100).length /
-                optimizedBasespots.length) *
+          <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md flex items-start text-left">
+            <CardHeader
+              title={`Finished Basespots`}
+              titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+              subheader={`${formatNumber(
+                (optimizedBasespots.filter((b) => b.progress == 100).length /
+                  optimizedBasespots.length) *
                 100,
-              { maximumSignificantDigits: 3 }
-            )}
-            valueDisplay="percent"
-          />
-          <StatCard
-            stat={"Goal: 20 basespots per map"}
-            value={(
-              Object.entries(groupBy(optimizedBasespots, "map_id"))
-                .map(([k, v]) => ({
-                  map_id: k,
-                  map_name: v[0].Map.name,
-                  basespots: v.length,
-                  percent: (v.slice(0, 20).length / 20) * 100,
-                }))
-                // .filter((g) => g.map_id === "12")
-                .reduce((acc, curr) => {
-                  return acc + curr.percent;
-                }, 0) / 12
-            ).toPrecision(3)}
-          />
-          <StatCard stat={"Test"} value={10} />
-
-          <div className="rounded-lg border border-transparent bg-gray-200 text-black shadow-lg transition ease-in-out dark:bg-zinc-700 dark:text-white">
-            <Chart
-              margin={{
-                top: 40,
-                left: 40,
-                right: 40,
-              }}
-              type="line"
-              height={200}
-              dataset={Object.entries(
-                groupDatesByMonth(
-                  profiles
-                    .map((p) => new Date(p.created_at))
-                    .sort((a, b) => a.getTime() - b.getTime())
-                )
-              ).map(([k, v]: [k: string, v: unknown[]]) => ({
-                month: new Date(k).toLocaleDateString("en-GB", {
-                  month: "short",
-                }),
-                newUsers: v.length,
-              }))}
-              series={[
-                {
-                  area: true,
-                  color: "#34b364",
-                  dataKey: "newUsers",
-                },
-              ]}
-              xAxis={[
-                {
-                  scaleType: "point",
-                  dataKey: "month",
-                  label: "New Users in the last months",
-                },
-              ]}
-              // title={"New Users in the last months"}
+                { maximumSignificantDigits: 3 }
+              ).toString()} / 100`}
+              subheaderProps={{ className: 'text-xl !font-bold !text-white' }}
             />
-          </div>
+            <CardContent>
+              <div className="relative w-auto flex-initial">
+                <svg
+                  viewBox="0 0 36 36"
+                  className="inline-flex h-20 w-20 items-center justify-center text-center text-white"
+                >
+                  <path
+                    className="stroke-pea-800 fill-none stroke-1"
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <path
+                    className={clsx(
+                      "animate-circle-progress fill-none stroke-2",
+                      "stroke-pea-500"
+                    )}
+                    strokeLinecap="round"
+                    strokeDasharray={`${formatNumber(
+                      (optimizedBasespots.filter((b) => b.progress == 100).length /
+                        optimizedBasespots.length) *
+                      100,
+                      { maximumSignificantDigits: 3 }
+                    )}, 100`}
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <text
+                    textAnchor="middle"
+                    x="18"
+                    y="19.35"
+                    dominantBaseline="middle"
+                    fontSize={8}
+                    className="fill-black text-center font-normal dark:fill-white"
+                  >
+                    {formatNumber(
+                      (optimizedBasespots.filter((b) => b.progress == 100).length /
+                        optimizedBasespots.length) *
+                      100,
+                      { maximumSignificantDigits: 3 }
+                    )}%
+                  </text>
+                </svg>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md flex items-start text-left">
+            <CardHeader
+              title={`Goal: 20 basespots per map`}
+              titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+              subheader={(
+                Object.entries(groupBy(optimizedBasespots, "map_id"))
+                  .map(([k, v]) => ({
+                    map_id: k,
+                    map_name: v[0].Map.name,
+                    basespots: v.length,
+                    percent: (v.slice(0, 20).length / 20) * 100,
+                  }))
+                  // .filter((g) => g.map_id === "12")
+                  .reduce((acc, curr) => {
+                    return acc + curr.percent;
+                  }, 0) / 12
+              ).toPrecision(3)}
+              subheaderProps={{ className: 'text-xl !font-bold !text-white' }}
+            />
+            <CardContent>
+              <div className="relative w-auto flex-initial">
+                <svg
+                  viewBox="0 0 36 36"
+                  className="inline-flex h-20 w-20 items-center justify-center text-center text-white"
+                >
+                  <path
+                    className="stroke-pea-800 fill-none stroke-1"
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <path
+                    className={clsx(
+                      "animate-circle-progress fill-none stroke-2",
+                      "stroke-pea-500"
+                    )}
+                    strokeLinecap="round"
+                    strokeDasharray={`${(
+                      Object.entries(groupBy(optimizedBasespots, "map_id"))
+                        .map(([k, v]) => ({
+                          map_id: k,
+                          map_name: v[0].Map.name,
+                          basespots: v.length,
+                          percent: (v.slice(0, 20).length / 20) * 100,
+                        }))
+                        // .filter((g) => g.map_id === "12")
+                        .reduce((acc, curr) => {
+                          return acc + curr.percent;
+                        }, 0) / 12
+                    ).toPrecision(3)}, 100`}
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <text
+                    textAnchor="middle"
+                    x="18"
+                    y="19.35"
+                    dominantBaseline="middle"
+                    fontSize={8}
+                    className="fill-black text-center font-normal dark:fill-white"
+                  >
+                    {(
+                      Object.entries(groupBy(optimizedBasespots, "map_id"))
+                        .map(([k, v]) => ({
+                          map_id: k,
+                          map_name: v[0].Map.name,
+                          basespots: v.length,
+                          percent: (v.slice(0, 20).length / 20) * 100,
+                        }))
+                        // .filter((g) => g.map_id === "12")
+                        .reduce((acc, curr) => {
+                          return acc + curr.percent;
+                        }, 0) / 12
+                    ).toPrecision(3)}%
+                  </text>
+                </svg>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md grow">
+            <CardContent>
+              <Chart
+                margin={{
+                  top: 40,
+                  left: 40,
+                  right: 40,
+                }}
+                type="line"
+                height={200}
+                dataset={Object.entries(
+                  groupDatesByMonth(
+                    profiles
+                      .map((p) => new Date(p.created_at))
+                      .sort((a, b) => a.getTime() - b.getTime())
+                  )
+                ).map(([k, v]: [k: string, v: unknown[]]) => ({
+                  month: new Date(k).toLocaleDateString("en-GB", {
+                    month: "short",
+                  }),
+                  newUsers: v.length,
+                }))}
+                series={[
+                  {
+                    area: true,
+                    color: "#34b364",
+                    dataKey: "newUsers",
+                  },
+                ]}
+                xAxis={[
+                  {
+                    scaleType: "point",
+                    dataKey: "month",
+                    label: "New Users in the last months",
+                  },
+                ]}
+              // title={"New Users in the last months"}
+              />
+            </CardContent>
+          </Card>
         </div>
 
         <Table
@@ -403,7 +519,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   input: {
                                     banned_until: new Date(
                                       new Date().getTime() +
-                                        1000 * 60 * 60 * 24 * 7
+                                      1000 * 60 * 60 * 24 * 7
                                     ),
                                   },
                                 },
@@ -468,13 +584,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${
-                          row.username
-                        }'s role from ${
-                          roles.find((r) => r.id == value)?.name
-                        } to ${
-                          roles.find((r) => r.id == e.target.value)?.name
-                        }?`}
+                        message={`Are you sure you want to change ${row.username
+                          }'s role from ${roles.find((r) => r.id == value)?.name
+                          } to ${roles.find((r) => r.id == e.target.value)?.name
+                          }?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(

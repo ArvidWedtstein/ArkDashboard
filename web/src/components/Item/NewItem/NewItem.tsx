@@ -1,8 +1,6 @@
 import { navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useAuth } from "src/auth";
-
 import ItemForm from "src/components/Item/ItemForm";
 
 import type { CreateItemInput } from "types/graphql";
@@ -20,7 +18,7 @@ const NewItem = () => {
   const [createItem, { loading, error }] = useMutation(CREATE_ITEM_MUTATION, {
     onCompleted: ({ createItem }) => {
       toast.success("Item created");
-      navigate(routes.items());
+      navigate(routes.item({ id: createItem.id }));
     },
     onError: (error) => {
       toast.error(error.message);
