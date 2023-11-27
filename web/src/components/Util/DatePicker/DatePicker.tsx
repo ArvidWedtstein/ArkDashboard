@@ -1,4 +1,4 @@
-import { FieldError } from "@redwoodjs/forms/dist";
+import { FieldError, RegisterOptions } from "@redwoodjs/forms/dist";
 import clsx from "clsx";
 import { CSSProperties, Fragment, HTMLAttributes, useRef, useState } from "react";
 
@@ -37,6 +37,7 @@ type DatePickerProps = {
   color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
   margin?: "none" | "dense" | "normal";
   size?: "small" | "medium" | "large";
+  // validation?: RegisterOptions;
 } & InputFieldProps;
 
 
@@ -358,7 +359,6 @@ const DatePicker = ({
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
 
-  const [activeSegment, setActiveSegment] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     defaultValue ? new Date(defaultValue) : null
   );
@@ -402,6 +402,8 @@ const DatePicker = ({
       }))
       setSelectedDate(parsedDate);
     }
+
+    onChange?.(e)
   };
 
   const handleBlur = (e) => {
@@ -450,6 +452,7 @@ const DatePicker = ({
         />
 
         <InputBase
+          readOnly={readOnly}
           {...InputProps}
           renderSuffix={(state) => (
             variant === 'outlined' ? (

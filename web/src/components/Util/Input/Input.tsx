@@ -665,6 +665,8 @@ type InputBaseProps = {
     startAdornment?: React.ReactNode;
   }) => ReactNode;
   rows?: number;
+  min?: string | number;
+  max?: string | number;
   maxRows?: string | number;
   minRows?: string | number;
   size?: 'small' | 'medium' | 'large';
@@ -722,6 +724,8 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>((props, ref)
     type = 'text',
     value: valueProp,
     variant,
+    min,
+    max,
     ...other
   } = props;
 
@@ -982,13 +986,10 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>((props, ref)
     standard: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused ? 'after:transform after:scale-x-100 after:translate-x-0' : 'after:scale-x-0'} ${fcs.error ? `before:!border-red-500 hover:before:border-b after:border-red-500` : borders[ownerState.color ?? 'DEFAULT']}`,
   }
   const classes = {
-    root: 'relative box-border inline-flex cursor-text items-center text-base font-normal leading-6',
+    root: 'relative box-border inline-flex w-fit cursor-text items-center text-base font-normal leading-6',
     input: `font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0 ${((formControl.label || props.label)?.toString().length > 0 && !(formControl.filled || formControl.focused || formControl.adornedStart || formControl.shrink)) || (formControl.filled || formControl.adornedStart) || type === 'date' || type === 'datetime' ? 'placeholder:opacity-0' : 'placeholder:opacity-100'} focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${inputSize[ownerState.variant][ownerState.size]} ${ownerState.variant === 'filled' || ownerState.variant === 'outlined' ? startAdornment ? 'pl-0' : endAdornment ? 'pr-0' : '' : ''}`
   };
 
-  // const rootProps = slotProps.root || {};
-
-  // inputProps = { ...inputProps, ...slotProps.input };
   inputProps = { ...inputProps };
   return (
     <Fragment>
@@ -1040,6 +1041,8 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>((props, ref)
             onKeyDown={onKeyDown}
             onKeyUp={onKeyUp}
             type={type}
+            min={min}
+            max={max}
             ref={handleInputRef}
             {...inputProps}
             className={clsx(
@@ -1106,7 +1109,10 @@ type InputProps = {
   size?: 'small' | 'medium' | 'large';
   type?: InputHTMLAttributes<unknown>['type'];
   value?: string | number | readonly string[];
-  validation?: RegisterOptions;
+  validation?: RegisterOptions & {
+    valueAsBoolean?: boolean;
+    valueAsJSON?: boolean;
+  };
 }
 
 // TODO: implement custom for date
@@ -1188,7 +1194,6 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const inputLabelId = label && id ? `${id}-label` : undefined;
 
   // TODO: fix error styles
-
   const InputComp = (field?: ControllerRenderProps<FieldValues, string>) => {
     return (
       <InputBase
@@ -1197,7 +1202,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         autoComplete={autoComplete}
         autoFocus={autoFocus}
         defaultValue={defaultValue}
-        fullWidth={fullWidth}
+        fullWidth={fullWidth || false}
         multiline={multiline}
         name={name}
         rows={rows}
@@ -1222,7 +1227,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         {...InputProps}
         renderSuffix={(state) => (
           variant === 'outlined' ? (
-            <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
+            <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULTNOFOCUS']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
               "border-2": state.focused
             }, SuffixProps?.className)}>
               <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {

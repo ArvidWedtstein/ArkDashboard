@@ -166,7 +166,8 @@ type SelectProps<
   name?: string;
   className?: string;
   btnClassName?: string;
-  defaultValue?: number | string; //LookupValue<Value, Multiple, DisableClearable>;
+  // defaultValue?: number | string; //LookupValue<Value, Multiple, DisableClearable>;
+  defaultValue?: number | string | string[]; //LookupValue<Value, Multiple, DisableClearable>;
   value?: LookupValue<Value, Multiple, DisableClearable>;
   /**
    * @default false
