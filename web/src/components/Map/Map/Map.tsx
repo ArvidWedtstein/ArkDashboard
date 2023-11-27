@@ -257,7 +257,7 @@ const Map = ({ map }: Props) => {
       resourceData.filter((d) => d.item_id !== null),
       "item_id"
     );
-    const notes = mapData?.MapNote ?? [];
+    const notes = mapData?.MapResource?.filter(r => r.type === 'note') ?? [];
 
     const categorizedTypes = Object.entries({
       notes: notes.map((f) => ({
@@ -330,8 +330,8 @@ const Map = ({ map }: Props) => {
               </p>
               <p className="-mt-0.5 whitespace-nowrap text-sm font-medium leading-none">
                 {map.other_Map && map.other_Map.length > 0
-                  ? map.other_Map[realm]?.MapNote.length ?? 0
-                  : map?.MapNote.length ?? 0}{" "}
+                  ? map.other_Map[realm]?.MapResource.filter(r => r.type === 'note').length ?? 0
+                  : map?.MapResource.filter(r => r.type === 'note').length ?? 0}{" "}
                 {map.id == 11 || map?.parent_map_id == 11 ? "Runes" : "Notes"}
               </p>
             </div>
@@ -388,8 +388,8 @@ const Map = ({ map }: Props) => {
                 coords: noterun
                   .map((b) => {
                     const mapData = map.other_Map ? map.other_Map[realm] : map;
-                    if (mapData?.MapNote && mapData?.MapNote.length > 0) {
-                      let note = (mapData?.MapNote).find(
+                    if (mapData?.MapResource.filter(r => r.type === 'note') && mapData?.MapResource.filter(r => r.type === 'note').length > 0) {
+                      let note = (mapData?.MapResource.filter(r => r.type === 'note')).find(
                         (j) => j.note_index === b
                       );
                       if (note) {
@@ -421,7 +421,7 @@ const Map = ({ map }: Props) => {
               />
 
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 my-4">
-              <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+                <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
                   <CardActionArea
                     to={routes.basespots({ map: map.name })}
                     sx={{

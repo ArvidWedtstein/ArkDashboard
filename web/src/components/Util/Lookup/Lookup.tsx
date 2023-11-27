@@ -1677,6 +1677,7 @@ export const Lookup = <
       >
         <InputLabel
           children={label ?? name}
+          required={required || Boolean(validation?.required)}
           shrink={popupOpen ||
             inputValue.length > 0 ||
             (Array.isArray(value) && value.length > 0)}

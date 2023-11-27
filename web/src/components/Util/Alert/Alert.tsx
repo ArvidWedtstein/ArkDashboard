@@ -83,7 +83,7 @@ const Alert = ({ severity = "error", variant = "outlined", children, className, 
   }
 
   return (
-    <div className={clsx("rounded shadow-none py-1.5 px-4 flex text-sm", className, {
+    <div className={clsx("flex items-center rounded shadow-none py-1.5 px-4 text-sm w-fit", className, {
       [severityClasses[severity][variant]]: severity,
     })}>
       <div className={clsx("mr-2 py-2 flex text-base opacity-90", {
@@ -91,7 +91,7 @@ const Alert = ({ severity = "error", variant = "outlined", children, className, 
       })}>
         {icon[severity]}
       </div>
-      <div className="py-2 min-w-0 overflow-auto">
+      <div className="py-2 min-w-0 overflow-auto align-middle">
         <div className="text-base -mt-0.5 font-medium">{title}</div>
         {children && children}
       </div>

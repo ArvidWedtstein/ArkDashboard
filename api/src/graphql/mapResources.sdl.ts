@@ -7,7 +7,11 @@ export const schema = gql`
     item_id: BigInt
     latitude: Float
     longitude: Float
+    x: Float
+    y: Float
+    z: Float
     type: String
+    note_index: BigInt
     Item: Item
     Map: Map!
   }
@@ -25,7 +29,11 @@ export const schema = gql`
     item_id: BigInt
     latitude: Float
     longitude: Float
+    x: Float
+    y: Float
+    z: Float
     type: String
+    note_index: BigInt
   }
 
   input UpdateMapResourceInput {
@@ -35,7 +43,11 @@ export const schema = gql`
     item_id: BigInt
     latitude: Float
     longitude: Float
+    x: Float
+    y: Float
+    z: Float
     type: String
+    note_index: BigInt
   }
 
   type Mutation {
