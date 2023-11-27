@@ -22,16 +22,7 @@ export const QUERY = gql`
       cord_shift_lon
       cord_mult_lat
       cord_mult_lon
-      MapResource {
-        latitude
-        longitude
-        type
-      }
-      MapNote {
-        latitude
-        longitude
-        note_index
-      }
+      parent_map_id
     }
   }
 `;

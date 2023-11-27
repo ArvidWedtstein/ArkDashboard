@@ -17,8 +17,11 @@ import type {
   UseFormRegister,
 } from "@redwoodjs/forms";
 import Map from "src/components/Util/Map/Map";
-import { InputLabel, InputOutlined } from "src/components/Util/Input/Input";
+import { Input, InputLabel, InputOutlined } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
+import Alert from "src/components/Util/Alert/Alert";
+import Button from "src/components/Util/Button/Button";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 type FormMap = NonNullable<EditMapById["map"]>;
 
@@ -152,65 +155,137 @@ const MapForm = (props: MapFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <InputOutlined
-          name="name"
+        <Input
           label="Name"
+          name="name"
+          color="DEFAULT"
           defaultValue={props.map?.name}
+          helperText="Name of this map"
         />
-          <br />
-        <InputOutlined
-          name="description"
-          label="Description"
-          type="textarea"
-          margin="normal"
-          defaultValue={props.map?.description}
-          rows={5}
-        />
+
         <br />
 
-        <InputOutlined
-          name="cord_shift_lat"
-          label="Cordinates Shift Latitude"
-          inputClassName="!rounded-r-none"
-          type="number"
-          margin="normal"
-          defaultValue={props.map?.cord_shift_lat}
+        <Input
+          label="Description"
+          name="description"
+          color="DEFAULT"
+          multiline
+          rows={5}
+          defaultValue={props.map?.description}
+          helperText="Description of this map"
         />
-        <InputOutlined
-          name="cord_shift_lon"
-          label="Cordinates Shift Longitude"
-          inputClassName="!rounded-l-none -ml-px"
+
+        <br />
+
+        <Lookup
+          label="Parent Map"
+          name="parent_map_id"
+          helperText="Parent Map, if this map is a child of another map"
+          defaultValue={props.map?.parent_map_id}
+          getOptionLabel={(val) => val.label}
+          isOptionEqualToValue={(val, opt) => val.id === opt.id}
+          options={[
+            { label: 'Valguero', id: 1 },
+            { label: 'The Island', id: 2 },
+            { label: 'The Center', id: 3 },
+            { label: 'Ragnarok', id: 4 },
+            { label: 'Aberration', id: 4 },
+            { label: 'Extinction', id: 6 },
+            { label: 'Scorched Earth', id: 7 },
+            { label: 'Genesis 1', id: 8 },
+            { label: 'Genesis 2', id: 9 },
+            { label: 'Crystal Isles', id: 10 },
+            { label: 'Fjordur', id: 11 },
+            { label: 'Lost Island', id: 12 },
+            { label: 'Jotunheim', id: 13 },
+            { label: 'Vanaheim', id: 14 },
+            { label: 'Asgard', id: 15 },
+            { label: 'Midgard', id: 16 },
+          ]}
+        />
+
+        <br />
+        <Input
+          label="Coordinates Shift Latitude"
+          name="cord_shift_lat"
+          color="DEFAULT"
           type="number"
-          margin="normal"
+          defaultValue={props.map?.cord_shift_lat}
+          SuffixProps={{
+            style: {
+              borderRadius: "0.375rem 0 0 0.375rem",
+              marginRight: '-0.5px'
+            }
+          }}
+        />
+        <Input
+          label="Coordinates Shift Longitude"
+          name="cord_shift_lon"
+          color="DEFAULT"
+          type="number"
           defaultValue={props.map?.cord_shift_lon}
+          SuffixProps={{
+            style: {
+              borderRadius: "0 0.375rem 0.375rem 0",
+              marginLeft: '-0.5px'
+            }
+          }}
         />
         <br />
-        <InputOutlined
+        <Input
+          label="Coordinates Multiplier Latitude"
           name="cord_mult_lat"
-          label="Cordinates Multiplier Latitude"
-          inputClassName="!rounded-r-none"
+          color="DEFAULT"
           type="number"
-          margin="normal"
           defaultValue={props.map?.cord_mult_lat}
+          SuffixProps={{
+            style: {
+              borderRadius: "0.375rem 0 0 0.375rem",
+              marginRight: '-0.5px'
+            }
+          }}
         />
-        <InputOutlined
+        <Input
+          label="Coordinates Multiplier Longitude"
           name="cord_mult_lon"
-          label="Cordinates Multiplier Longitude"
-          inputClassName="!rounded-l-none -ml-px"
+          color="DEFAULT"
           type="number"
-          margin="normal"
           defaultValue={props.map?.cord_mult_lon}
+          SuffixProps={{
+            style: {
+              borderRadius: "0 0.375rem 0.375rem 0",
+              marginLeft: '-0.5px'
+            }
+          }}
         />
-        <br/>
-      {/* TODO: add boundaries */}
+        <Alert variant="outlined" className="w-fit" severity="info" title={"Info"}>
+          Unsed to calculate coordinates on map
+        </Alert>
+
+        <hr className="rw-divider mt-3 w-full fill-white bg-zinc-500 h-px" />
+
+        <Input
+          label="Boundaries"
+          name="boundaries"
+          color="DEFAULT"
+          multiline
+          rows={5}
+          defaultValue={JSON.stringify(props.map?.boundaries, null, 2)}
+        />
+        <Alert variant="outlined" className="w-fit" severity="info" title={"Info"}>
+          Boundaries are used to calculate map, when main map has submaps and these submaps go outside main map
+        </Alert>
+        <br />
+
         <Label
           name="img"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
-          >
+        >
           Image
         </Label>
 
+        {/* TODO: Add option for topographic map too */}
         <FileUpload
           name="image"
           secondaryName="icon"
@@ -220,49 +295,26 @@ const MapForm = (props: MapFormProps) => {
           storagePath={`arkimages`}
         />
 
-{/* TODO: remove */}
-        <MapInput name="oil_veins" register={register} control={control} />
-
-        <MapInput name="water_veins" register={register} control={control} />
-
-        <MapInput name="wyvern_nests" register={register} control={control} />
-
-        <MapInput
-          name="ice_wyvern_nests"
-          register={register}
-          control={control}
-        />
-
-        <MapInput name="gas_veins" register={register} control={control} />
-
-        <MapInput
-          name="deinonychus_nests"
-          register={register}
-          control={control}
-        />
-
-        <MapInput name="charge_nodes" register={register} control={control} />
-
-        <MapInput name="plant_z_nodes" register={register} control={control} />
-
-        <MapInput name="drake_nests" register={register} control={control} />
-
-        <MapInput name="glitches" register={register} control={control} />
-
-        <MapInput
-          name="magmasaur_nests"
-          register={register}
-          control={control}
-        />
-
-        <MapInput name="mutagen_bulbs" register={register} control={control} />
-
-        <MapInput name="notes" register={register} control={control} />
 
         <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
+          <Button
+            type="submit"
+            variant="outlined"
+            color="success"
+            disabled={props.loading}
+            endIcon={(
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="w-4 pointer-events-none"
+                fill="currentColor"
+              >
+                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+              </svg>
+            )}
+          >
             Save
-          </Submit>
+          </Button>
         </div>
       </Form>
     </div>

@@ -61,7 +61,6 @@ type iFile = {
     message: string;
   };
 }
-// TODO: add seperate secondaryAction
 // TODO: add support for array of names, and defaultValues
 const FileUpload = ({
   storagePath,
@@ -109,14 +108,20 @@ const FileUpload = ({
       if (!defaultValue && (secondaryName && !defaultSecondaryValue)) return;
 
       try {
+        let paths = defaultValue.split(",").map((img) => img.trim()) || [];
+
+        if (defaultSecondaryValue) {
+          paths.push(...defaultSecondaryValue?.split(",").map((img) => img.trim()))
+        }
         const { data, error } = await supabase.storage
           .from(storagePath)
           .createSignedUrls(
-            [...defaultValue.split(",").map((img) => img.trim()), ...defaultSecondaryValue.split(",").map((img) => img.trim())],
+            paths,
             60 * 60 * 24 * 365 * 10
           );
 
         if (error) {
+          console.error(error)
           toast.error(error.message);
           return;
         }
