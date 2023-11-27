@@ -15,13 +15,14 @@ import { useEffect, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
-import { ColorInput, InputOutlined } from "src/components/Util/Input/Input";
+import { ColorInput, Input, InputOutlined } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Switch from "src/components/Util/Switch/Switch";
 import EditItemRecipeCell from "src/components/ItemRecipe/EditItemRecipeCell";
 import ItemRecipesList from "src/components/ItemRecipe/ItemRecipes/ItemRecipes";
 import ItemRecipesCell from "src/components/ItemRecipe/ItemRecipesCell";
 import NewItemRecipe from "src/components/ItemRecipe/NewItemRecipe/NewItemRecipe";
+import Button from "src/components/Util/Button/Button";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 
@@ -122,7 +123,22 @@ const ItemForm = (props: ItemFormProps) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <div className="flex flex-col">
-            <InputOutlined
+            <Input
+              label="Name"
+              name="name"
+              defaultValue={props.item?.name}
+              color="DEFAULT"
+              helperText="Item name"
+              validation={{
+                required: true,
+                minLength: 3,
+                pattern: {
+                  value: /^[a-zA-Z0-9 ]*$/i,
+                  message: "Invalid name",
+                },
+              }}
+            />
+            {/* <InputOutlined
               name="name"
               label="Name"
               defaultValue={props.item?.name}
@@ -136,16 +152,24 @@ const ItemForm = (props: ItemFormProps) => {
                   message: "Invalid name",
                 },
               }}
-            />
+            /> */}
 
-            <InputOutlined
+            <Input
+              label="Description"
+              name="description"
+              rows={4}
+              multiline
+              defaultValue={props.item?.description}
+              color="DEFAULT"
+            />
+            {/* <InputOutlined
               name="description"
               label="Description"
               margin="normal"
               rows={4}
               type="textarea"
               defaultValue={props.item?.description}
-            />
+            /> */}
             <InputOutlined
               name="color"
               label="Color"
@@ -160,7 +184,7 @@ const ItemForm = (props: ItemFormProps) => {
                 },
               }}
             />
-            {/* TODO: test */}
+            {/* TODO: test, fix conversion to HWB */}
             {/* <ColorInput /> */}
           </div>
           <FileUpload
@@ -172,7 +196,24 @@ const ItemForm = (props: ItemFormProps) => {
         </div>
 
         <div className="flex flex-wrap space-x-1">
-          <InputOutlined
+          <Input
+            label="Weight"
+            name="weight"
+            defaultValue={props.item?.weight || 0}
+            color="DEFAULT"
+            type="number"
+            validation={{ valueAsNumber: true, setValueAs: (v) => Number(v) }}
+            InputProps={{
+              min: 0,
+              endAdornment: (
+                <img
+                  src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                  className="w-5"
+                />
+              ),
+            }}
+          />
+          {/* <InputOutlined
             name="weight"
             label="Weight"
             margin="normal"
@@ -187,22 +228,44 @@ const ItemForm = (props: ItemFormProps) => {
                 />
               ),
             }}
+          /> */}
+
+          <Input
+            label="Max Stack"
+            name="max_stack"
+            defaultValue={props.item?.max_stack || 1}
+            color="DEFAULT"
+            type="number"
+            validation={{ valueAsNumber: true }}
+            InputProps={{
+              min: 0,
+            }}
           />
-          <InputOutlined
+          {/* <InputOutlined
             name="max_stack"
             label="Max Stack"
             margin="normal"
             type="number"
             defaultValue={props.item?.max_stack || 1}
             validation={{ valueAsNumber: true }}
-          />
+          /> */}
 
-          <InputOutlined
+          <Input
+            label="Blueprint"
+            name="blueprint"
+            defaultValue={props.item?.blueprint}
+            color="DEFAULT"
+            validation={{ valueAsNumber: true }}
+            InputProps={{
+              min: 0,
+            }}
+          />
+          {/* <InputOutlined
             name="blueprint"
             label="Blueprint"
             margin="normal"
             defaultValue={props.item?.blueprint}
-          />
+          /> */}
         </div>
         <div className="flex flex-wrap space-x-1">
           <InputOutlined
@@ -246,29 +309,35 @@ const ItemForm = (props: ItemFormProps) => {
           />
         </div>
         <div className="flex flex-wrap">
-          <InputOutlined
-            name="torpor"
+          <Input
             label="Torpor"
-            margin="normal"
-            type="number"
+            name="torpor"
             defaultValue={props.item?.torpor}
+            color="DEFAULT"
+            type="number"
             validation={{ valueAsNumber: true }}
             InputProps={{
+              min: 0,
+            }}
+            SuffixProps={{
               style: {
                 borderRadius: "0.375rem 0 0 0.375rem",
                 marginRight: "-0.5px",
               },
             }}
           />
-          <InputOutlined
-            name="torpor_duration"
+          <Input
             label="Torpor Duration"
-            margin="normal"
+            name="torpor_duration"
+            defaultValue={props.item?.torpor_duration}
+            color="DEFAULT"
             type="number"
             validation={{ valueAsNumber: true }}
-            defaultValue={props.item?.torpor_duration}
             InputProps={{
+              min: 0,
               endAdornment: "s",
+            }}
+            SuffixProps={{
               style: {
                 borderRadius: "0 0.375rem 0.375rem 0",
                 marginLeft: "-0.5px",
@@ -848,9 +917,26 @@ const ItemForm = (props: ItemFormProps) => {
         <FieldError name="stats" className="rw-field-error" />
 
         <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
+          <Button
+            color="success"
+            variant="outlined"
+            permission="basespot_create"
+            disabled={props.loading}
+            type="submit"
+            name="save"
+            endIcon={(
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className=" pointer-events-none"
+                fill="currentColor"
+              >
+                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+              </svg>
+            )}
+          >
             Save
-          </Submit>
+          </Button>
         </div>
       </Form>
     </div>
