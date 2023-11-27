@@ -9,6 +9,7 @@ import {
   toLocalPeriod,
   toLocaleISODate,
 } from "src/lib/formatters";
+import Button from "../Button/Button";
 
 type ViewType = "year" | "month" | "day";
 type DateCalendarProps = {
@@ -147,6 +148,7 @@ const DateCalendar = ({
   const selectView = (view: ViewType) => {
     setCurrentView(view);
   };
+
   return (
     <div
       className="flex h-fit max-h-[360px] w-80 flex-col overflow-hidden"
@@ -211,8 +213,9 @@ const DateCalendar = ({
           )}
         </div>
         <div className="flex opacity-100 transition-opacity duration-200">
-          <button
-            className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl hover:bg-black/10 dark:hover:bg-white/10"
+          <Button
+            variant="icon"
+            color="DEFAULT"
             aria-label="Previous month"
             onClick={() => navigateMonth(-1)}
             disabled={disabled}
@@ -226,10 +229,11 @@ const DateCalendar = ({
             >
               <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
             </svg>
-          </button>
-          <div className="w-6" />
-          <button
-            className="relative -ml-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl hover:bg-black/10 dark:hover:bg-white/10"
+          </Button>
+
+          <Button
+            variant="icon"
+            color="DEFAULT"
             aria-label="Next month"
             onClick={() => navigateMonth(1)}
             disabled={disabled}
@@ -243,7 +247,7 @@ const DateCalendar = ({
             >
               <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
       <div className="relative block">
@@ -253,10 +257,10 @@ const DateCalendar = ({
             style={{ alignContent: "stretch" }}
             role="radiogroup"
           >
-            {years.map((year) => (
+            {years.map((year, yearIndex) => (
               <div
                 className="flex basis-1/4 items-center justify-center"
-                key={year}
+                key={`year-${year}-${yearIndex}`}
               >
                 <button
                   role="radio"
@@ -287,7 +291,7 @@ const DateCalendar = ({
             {months.map((month, index) => (
               <div
                 className="flex basis-1/3 items-center justify-center"
-                key={index}
+                key={`month-${index}`}
               >
                 <button
                   role="radio"
@@ -359,120 +363,12 @@ const DateCalendar = ({
                 className={"absolute top-0 right-0 left-0 overflow-hidden "}
                 role="rowgroup"
               >
-                {/* {daysOfMonth.map((week, index) => {
-                  return week.map((day, j) => {
-                    return (
-                      <button
-                        className={clsx(
-                          "py-1.5 cursor-pointer",
-                          {
-                            "text-gray-400 bg-zinc-100":
-                              day.getMonth() !==
-                              Number(period.substring(5)) - 1,
-                            "bg-white": day.getMonth() ===
-                              Number(period.substring(5)) - 1,
-                            invisible:
-                              !showDaysOutsideCurrentMonth &&
-                              day.getMonth() !==
-                              Number(period.substring(5)) - 1,
-                            "border border-white/70":
-                              toLocaleISODate(new Date()) ===
-                              toLocaleISODate(day) &&
-                              toLocaleISODate(day) !=
-                              toLocaleISODate(selectedDate),
-                            "bg-pea-400 hover:!bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
-                              toLocaleISODate(day) ===
-                              toLocaleISODate(selectedDate),
-                            "rounded-tl-lg": j === 0 && index === 0,
-                            "rounded-tr-lg": j === 6 && index === 0,
-                            "rounded-bl-lg": j === 0 && index === daysOfMonth.length - 1,
-                            "rounded-br-lg": j === 6 && index === daysOfMonth.length - 1,
-                          }
-                        )}
-                        type="button"
-                        role="gridcell"
-                        aria-disabled="false"
-                        tabIndex={-1}
-                        aria-colindex={j + 1}
-                        disabled={disabled}
-                        aria-selected={
-                          toLocaleISODate(selectedDate) ===
-                          toLocaleISODate(day)
-                        }
-                        data-timestamp={day.getTime()}
-                        onClick={(e) => onSelectDate(e, day)}
-                        aria-current={
-                          toLocaleISODate(new Date()) ===
-                            toLocaleISODate(day)
-                            ? "date"
-                            : undefined
-                        }
-                      >
-                        <time className="mx-auto flex h-7 w-7 items-center justify-center rounded-full">
-                          {day.getDate()}
-                        </time>
-                      </button>
-                    );
-                  });
-                })} */}
-                {/* <div
-                          className={clsx("relative py-2 px-3", {
-                            "bg-zinc-100 text-gray-400":
-                              date.getMonth() !==
-                              Number(period.substring(5)) - 1,
-                            "bg-white":
-                              date.getMonth() ===
-                              Number(period.substring(5)) - 1,
-                          })}
-                          key={`week-${weekIndex}-day-${dayIndex}`}
-                        >
-                          <time
-                            dateTime={date.toDateString()}
-                            className={clsx({
-                              "bg-pea-500 flex h-6 w-6 items-center justify-center rounded-full font-semibold text-white":
-                                toLocaleISODate(date) ===
-                                toLocaleISODate(new Date()),
-                            })}
-                          >
-                            {date.toLocaleDateString(
-                              navigator && navigator.language,
-                              { day: "numeric" }
-                            )}
-                          </time>
-                          <ol className="mt-2 list-none p-0">
-                            {ganttTasks
-                              .filter(
-                                (tasks) =>
-                                  toLocaleISODate(tasks.start) ===
-                                  toLocaleISODate(date)
-                              )
-                              .map((task, i) => (
-                                <li key={`task-${i}`}>
-                                  <a className="flex text-inherit hover:text-indigo-600">
-                                    <p className="flex-auto overflow-hidden overflow-ellipsis whitespace-nowrap font-medium">
-                                      {task.name}
-                                    </p>
-                                    <time
-                                      dateTime={task.start.toLocaleTimeString()}
-                                      className="ml-3 block flex-none"
-                                    >
-                                      {task.start.toLocaleTimeString(
-                                        navigator && navigator.language,
-                                        {
-                                          timeStyle: "short",
-                                        }
-                                      )}
-                                    </time>
-                                  </a>
-                                </li>
-                              ))}
-                          </ol>
-                        </div> */}
                 {daysOfMonth.map((week, index) => {
                   return (
                     <div
                       className="my-0.5 mx-0 flex justify-center"
                       role="row"
+                      key={`row-${index + 1}`}
                       aria-rowindex={index + 1}
                     >
                       {displayWeekNumber && (
@@ -487,6 +383,7 @@ const DateCalendar = ({
                       {week.map((day, j) => {
                         return (
                           <div
+                            key={`day-${day.toISOString()}-${j}`}
                             className={clsx(
                               "relative mx-0.5 inline-flex shrink-0",
                               {
@@ -496,11 +393,11 @@ const DateCalendar = ({
                                 "rounded-r-full":
                                   toLocaleISODate(selectedRange[1]) ===
                                   toLocaleISODate(day),
-                                "bg-pea-300/10":
-                                  toLocaleISODate(selectedRange[0]) <=
-                                  toLocaleISODate(day) &&
-                                  toLocaleISODate(selectedRange[1]) >=
-                                  toLocaleISODate(day),
+                                // "bg-pea-300/10":
+                                //   toLocaleISODate(selectedRange[0]) <=
+                                //   toLocaleISODate(day) &&
+                                //   toLocaleISODate(selectedRange[1]) >=
+                                //   toLocaleISODate(day),
                               }
                             )}
                             title={`${toLocaleISODate(
@@ -514,7 +411,7 @@ const DateCalendar = ({
                                   "text-white/70":
                                     day.getMonth() !==
                                     Number(period.substring(5)) - 1,
-                                  invisible:
+                                  "invisible":
                                     !showDaysOutsideCurrentMonth &&
                                     day.getMonth() !==
                                     Number(period.substring(5)) - 1,
