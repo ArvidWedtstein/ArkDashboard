@@ -2,8 +2,10 @@ import { MetaTags, useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
+import Button from "src/components/Util/Button/Button";
 import { Card, CardContent, CardHeader } from "src/components/Util/Card/Card";
 import Chart from "src/components/Util/Chart/Chart";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Table from "src/components/Util/Table/Table";
 import Toast from "src/components/Util/Toast/Toast";
 import {
@@ -178,17 +180,19 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
 
       <div className="container-xl m-4 overflow-hidden p-3 text-center">
         <div className="mb-3 flex flex-col-reverse space-x-3 md:flex-row">
-          <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md flex items-start text-left">
+          <Card className="flex items-start bg-zinc-200 text-left shadow-md dark:bg-zinc-700">
             <CardHeader
               title={`Finished Basespots`}
-              titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+              titleProps={{
+                className: "!text-xs !font-semibold uppercase font-poppins",
+              }}
               subheader={`${formatNumber(
                 (optimizedBasespots.filter((b) => b.progress == 100).length /
                   optimizedBasespots.length) *
-                100,
+                  100,
                 { maximumSignificantDigits: 3 }
               ).toString()} / 100`}
-              subheaderProps={{ className: 'text-xl !font-bold !text-white' }}
+              subheaderProps={{ className: "text-xl !font-bold !text-white" }}
             />
             <CardContent>
               <div className="relative w-auto flex-initial">
@@ -209,9 +213,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     )}
                     strokeLinecap="round"
                     strokeDasharray={`${formatNumber(
-                      (optimizedBasespots.filter((b) => b.progress == 100).length /
+                      (optimizedBasespots.filter((b) => b.progress == 100)
+                        .length /
                         optimizedBasespots.length) *
-                      100,
+                        100,
                       { maximumSignificantDigits: 3 }
                     )}, 100`}
                     d="M18 2.0845
@@ -227,21 +232,25 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     className="fill-black text-center font-normal dark:fill-white"
                   >
                     {formatNumber(
-                      (optimizedBasespots.filter((b) => b.progress == 100).length /
+                      (optimizedBasespots.filter((b) => b.progress == 100)
+                        .length /
                         optimizedBasespots.length) *
-                      100,
+                        100,
                       { maximumSignificantDigits: 3 }
-                    )}%
+                    )}
+                    %
                   </text>
                 </svg>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md flex items-start text-left">
+          <Card className="flex items-start bg-zinc-200 text-left shadow-md dark:bg-zinc-700">
             <CardHeader
               title={`Goal: 20 basespots per map`}
-              titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+              titleProps={{
+                className: "!text-xs !font-semibold uppercase font-poppins",
+              }}
               subheader={(
                 Object.entries(groupBy(optimizedBasespots, "map_id"))
                   .map(([k, v]) => ({
@@ -255,7 +264,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     return acc + curr.percent;
                   }, 0) / 12
               ).toPrecision(3)}
-              subheaderProps={{ className: 'text-xl !font-bold !text-white' }}
+              subheaderProps={{ className: "text-xl !font-bold !text-white" }}
             />
             <CardContent>
               <div className="relative w-auto flex-initial">
@@ -312,14 +321,15 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                         .reduce((acc, curr) => {
                           return acc + curr.percent;
                         }, 0) / 12
-                    ).toPrecision(3)}%
+                    ).toPrecision(3)}
+                    %
                   </text>
                 </svg>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md grow">
+          <Card className="grow bg-zinc-200 shadow-md dark:bg-zinc-700">
             <CardContent>
               <Chart
                 margin={{
@@ -355,7 +365,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     label: "New Users in the last months",
                   },
                 ]}
-              // title={"New Users in the last months"}
+                // title={"New Users in the last months"}
               />
             </CardContent>
           </Card>
@@ -501,9 +511,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               render: ({ value, row }) => (
                 <div className="inline-flex gap-x-2">
                   {/* Bans for one week */}
-                  <button
+                  <Button
+                    className="group"
+                    color="error"
                     disabled={loading}
-                    className="rw-button rw-button-small rw-button-red-outline group"
                     onClick={() => {
                       toast.custom((t) => (
                         <Toast
@@ -519,7 +530,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   input: {
                                     banned_until: new Date(
                                       new Date().getTime() +
-                                      1000 * 60 * 60 * 24 * 7
+                                        1000 * 60 * 60 * 24 * 7
                                     ),
                                   },
                                 },
@@ -545,7 +556,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     >
                       <path d="M512 208.3c0-9.103-7.43-16-15.99-16c-4.091 0-8.183 1.562-11.31 4.688l-12.7 12.7L302.4 40l12.68-12.69C318.2 24.19 319.8 20.09 319.8 16c0-9.103-7.43-16-15.99-16c-4.091 0-8.183 1.562-11.31 4.688l-143.9 144C145.5 151.8 143.9 155.9 143.9 160c0 9.103 7.43 16 15.99 16c4.091 0 8.183-1.562 11.31-4.688l12.68-12.69l73.39 73.44l-75.46 78.11L172.4 300.7c-8.456-8.437-19.56-12.67-30.64-12.67c-11.13 0-22.26 4.234-30.73 12.67l-98.31 98.38C4.232 407.6 0 418.7 0 429.8s4.232 22.23 12.7 30.7l38.76 38.78C59.65 507.5 70.55 512 82.14 512c11.6 0 22.5-4.5 30.69-12.72l98.31-98.34c8.464-8.469 12.7-19.59 12.7-30.7S219.6 348 211.1 339.5l-6.711-6.719l75.47-78.12l73.56 73.6l-12.66 12.67c-3.123 3.125-4.685 7.219-4.685 11.31c0 9.103 7.43 16 15.99 16c4.092 0 8.183-1.562 11.31-4.688l143.9-144C510.4 216.5 512 212.4 512 208.3zM191.9 370.2c0 2.922-1.113 5.844-3.338 8.078l-98.32 98.34c-2.139 2.156-5.095 3.234-8.054 3.234c-2.959 0-5.923-1.078-8.078-3.234l-38.76-38.78c-2.225-2.234-3.338-5.156-3.338-8.078s1.113-5.844 3.338-8.078l98.31-98.38c2.218-2.219 5.138-3.312 8.074-3.312c2.92 0 5.856 1.094 8.089 3.344l38.74 38.78C190.7 364.4 191.9 367.3 191.9 370.2zM206.5 136l73.33-73.38l169.6 169.7l-73.33 73.38L206.5 136z" />
                     </svg>
-                  </button>
+                  </Button>
                 </div>
               ),
             },
@@ -575,26 +586,33 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               field: "role_id",
               sortable: true,
               render: ({ value, row }) => (
-                <select
-                  className="rw-input rw-input-small"
+                <Lookup
+                  label="Role"
                   disabled={loading}
+                  margin="none"
+                  getOptionLabel={(option) => option.name}
                   defaultValue={value}
-                  onChange={(e) => {
+                  valueKey="id"
+                  isOptionEqualToValue={(val, opt) => opt.id === val.id}
+                  options={roles || []}
+                  onChange={(e, val) => {
+                    if (!val || val.id === value) return;
                     toast.custom((t) => (
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${row.username
-                          }'s role from ${roles.find((r) => r.id == value)?.name
-                          } to ${roles.find((r) => r.id == e.target.value)?.name
-                          }?`}
+                        message={`Are you sure you want to change ${
+                          row.username
+                        }'s role from ${
+                          roles.find((r) => r.id == value)?.name
+                        } to ${val?.name}?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(
                             updateUser({
                               variables: {
                                 id: row.id,
-                                input: { role_id: e.target.value },
+                                input: { role_id: val.id },
                               },
                             }),
                             {
@@ -609,14 +627,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       />
                     ));
                   }}
-                >
-                  {roles &&
-                    roles.map((role) => (
-                      <option key={role.id} value={role.id}>
-                        {role.name}
-                      </option>
-                    ))}
-                </select>
+                  size="small"
+                />
               ),
             },
           ]}

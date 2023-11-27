@@ -334,7 +334,6 @@ const ItemsList = ({
             </button>
 
             <InputOutlined
-              fullWidth
               name="search"
               type="search"
               label="Search"

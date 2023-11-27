@@ -14,17 +14,39 @@ import {
 } from "react";
 import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
+import { IntRange } from "src/lib/formatters";
 
 type CardProps = {
   sx?: CSSProperties;
   children?: ReactNode | ReactNode[];
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-export const Card = ({ sx, children, className, ...props }: CardProps) => {
+  variant?: "standard" | "outlined" | "elevation";
+  elevation?: IntRange<0, 7>;
+} & React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+export const Card = ({
+  sx,
+  children,
+  className,
+  variant = "standard",
+  elevation = variant === "elevation" ? 1 : 0,
+  ...props
+}: CardProps) => {
   return (
     <div
       className={clsx(
         "relative overflow-hidden rounded bg-zinc-300 text-black dark:bg-zinc-800 dark:text-white",
-        className
+        className,
+        {
+          "border border-black/30 dark:border-white/30": variant === "outlined",
+          "shadow-sm": variant === "elevation" && elevation === 1,
+          shadow: variant === "elevation" && elevation === 2,
+          "shadow-md": variant === "elevation" && elevation === 3,
+          "shadow-lg": variant === "elevation" && elevation === 4,
+          "shadow-xl": variant === "elevation" && elevation === 5,
+          "shadow-2xl": variant === "elevation" && elevation === 6,
+        }
       )}
       style={{
         ...sx,
@@ -71,12 +93,24 @@ export const CardHeader = ({
       {(title || subheader) && (
         <div className="flex-[1_1_auto]">
           {title && (
-            <span {...titleProps} className={clsx("font-montserrat m-0 block text-sm font-normal leading-[1.43]", titleProps?.className)}>
+            <span
+              {...titleProps}
+              className={clsx(
+                "font-montserrat m-0 block text-sm font-normal leading-[1.43]",
+                titleProps?.className
+              )}
+            >
               {title}
             </span>
           )}
           {subheader && (
-            <span {...subheaderProps} className={clsx("font-montserrat m-0 block text-sm font-normal leading-[1.43] text-black/70 dark:text-white/70", subheaderProps?.className)}>
+            <span
+              {...subheaderProps}
+              className={clsx(
+                "font-montserrat m-0 block text-sm font-normal leading-[1.43] text-black/70 dark:text-white/70",
+                subheaderProps?.className
+              )}
+            >
               {subheader}
             </span>
           )}
@@ -113,7 +147,8 @@ type CardMediaDiv = CardMediaBaseProps & {
 type CardMediaProps = CardMediaDiv | CardMediaImg;
 export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
   if (component === "img") {
-    const { alt, height, className, image, ...imgprops } = props as CardMediaImg;
+    const { alt, height, className, image, ...imgprops } =
+      props as CardMediaImg;
     return (
       <img
         className={className}
@@ -172,7 +207,7 @@ export const CardActions = ({ children, className, sx }: CardActionsProps) => {
 
 type CardActionAreaBaseProps = CardActionsProps & {
   disabled?: boolean;
-  disableRipple?: boolean
+  disableRipple?: boolean;
   component?: "link" | "button";
 };
 
@@ -185,19 +220,18 @@ type LinkProps = CardActionAreaBaseProps &
 
 type CardActionAreaProps = ButtonProps | LinkProps;
 export const CardActionArea = forwardRef((props: CardActionAreaProps, ref) => {
-  const { children,
-    sx,
-    className,
-    component = "button",
-    ...other
-  } = props;
+  const { children, sx, className, component = "button", ...other } = props;
   const rippleRef = useRef(null);
   const { enableRipple, getRippleHandlers } = useRipple({
     disabled: other.disabled,
     disableRipple: other.disableRipple,
-    rippleRef
-  })
-  if (component === "button" && (!(props as LinkProps).href && !(props as LinkProps).to)) {
+    rippleRef,
+  });
+  if (
+    component === "button" &&
+    !(props as LinkProps).href &&
+    !(props as LinkProps).to
+  ) {
     return (
       <button
         className={clsx(

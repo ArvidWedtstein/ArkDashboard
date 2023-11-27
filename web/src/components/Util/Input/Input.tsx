@@ -13,7 +13,29 @@ import {
   useErrorStyles,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { CSSProperties, Children, ComponentPropsWithRef, ElementType, Fragment, HTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, ReactNode, RefCallback, SelectHTMLAttributes, createContext, forwardRef, isValidElement, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  CSSProperties,
+  Children,
+  ComponentPropsWithRef,
+  ElementType,
+  Fragment,
+  HTMLAttributes,
+  InputHTMLAttributes,
+  LabelHTMLAttributes,
+  ReactNode,
+  RefCallback,
+  SelectHTMLAttributes,
+  createContext,
+  forwardRef,
+  isValidElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { debounce, isEmpty } from "src/lib/formatters";
 type InputOutlinedProps = {
   name?: string;
@@ -21,32 +43,32 @@ type InputOutlinedProps = {
   label?: ReactNode;
   inputClassName?: string;
   fullWidth?: boolean;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'DEFAULT';
-  variant?: 'outlined' | 'contained' | 'filled' | 'standard'
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
+  variant?: "outlined" | "contained" | "filled" | "standard";
   margin?: "none" | "dense" | "normal";
   type?:
-  | "number"
-  | "button"
-  | "time"
-  | "image"
-  | "text"
-  | "hidden"
-  | "color"
-  | "search"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "file"
-  | "month"
-  | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "submit"
-  | "tel"
-  | "url"
-  | "week"
-  | "textarea";
+    | "number"
+    | "button"
+    | "time"
+    | "image"
+    | "text"
+    | "hidden"
+    | "color"
+    | "search"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "file"
+    | "month"
+    | "password"
+    | "radio"
+    | "range"
+    | "reset"
+    | "submit"
+    | "tel"
+    | "url"
+    | "week"
+    | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -85,11 +107,11 @@ export const InputOutlined = ({
   const [focus, setFocus] = useState(false);
   const { field } = !!name
     ? useController({
-      name: name,
-      rules: validation,
-      defaultValue: defaultValue || value || "",
-      ...props,
-    })
+        name: name,
+        rules: validation,
+        defaultValue: defaultValue || value || "",
+        ...props,
+      })
     : { field: null };
 
   const handleFocus = (
@@ -117,19 +139,33 @@ export const InputOutlined = ({
 
   const LabelComponent: ElementType = !!name ? Label : "label";
 
-  const InputComponent: ElementType = !!name ? type === 'textarea' ? TextAreaField : InputField : "input";
+  const InputComponent: ElementType = !!name
+    ? type === "textarea"
+      ? TextAreaField
+      : InputField
+    : "input";
 
-  const { className: labelClassName, style: labelStyle } = name ? useErrorStyles({
-    className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
-    errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition-transform duration-200 text-base !text-red-600`,
-    name,
-  }) : { className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`, style: {} };
+  const { className: labelClassName, style: labelStyle } = name
+    ? useErrorStyles({
+        className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
+        errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition-transform duration-200 text-base !text-red-600`,
+        name,
+      })
+    : {
+        className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
+        style: {},
+      };
 
-  const { className: inputClassNames, style: inputStyle } = name ? useErrorStyles({
-    className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
-    errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded-[inherit] border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
-    name,
-  }) : { className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`, style: {} }
+  const { className: inputClassNames, style: inputStyle } = name
+    ? useErrorStyles({
+        className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
+        errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded-[inherit] border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
+        name,
+      })
+    : {
+        className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
+        style: {},
+      };
 
   const borders = {
     primary: `border-blue-400`,
@@ -138,9 +174,11 @@ export const InputOutlined = ({
     error: `border-red-500`,
     warning: `border-amber-400`,
     disabled: `dark:border-white/30 border-black/30`,
-    DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
-  }
-  const fieldsetClass = `border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || field?.disabled ? 'disabled' : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`;
+    DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`,
+  };
+  const fieldsetClass = `border transition-colors ease-in duration-75 absolute text-left ${
+    borders[disabled || field?.disabled ? "disabled" : "DEFAULT"]
+  } bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`;
   return (
     <div
       className={clsx(
@@ -168,7 +206,7 @@ export const InputOutlined = ({
         {required ? (
           <Fragment>
             {label ?? name}
-            &thinsp;{'*'}
+            &thinsp;{"*"}
           </Fragment>
         ) : (
           label ?? name
@@ -214,11 +252,10 @@ export const InputOutlined = ({
             }
             props.onInput?.(e);
           }}
-          {...(name ? { 'aria-multiline': true, name: name } : {})}
+          {...(name ? { "aria-multiline": true, name: name } : {})}
           aria-describedby={helperText ? `${name}-helper-text` : null}
           {...props}
-        >
-        </InputComponent>
+        ></InputComponent>
         {InputProps?.endAdornment && (
           <div className="ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70">
             {InputProps?.endAdornment}
@@ -240,15 +277,25 @@ export const InputOutlined = ({
             }
           )}
         >
-          <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-            "max-w-full": focus || !isEmpty(field?.value) || !!props?.placeholder,
-            "max-w-[0.01px]": !(focus || !isEmpty(field?.value) || !!props?.placeholder)
-          })}>
+          <legend
+            className={clsx(
+              "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
+              {
+                "max-w-full":
+                  focus || !isEmpty(field?.value) || !!props?.placeholder,
+                "max-w-[0.01px]": !(
+                  focus ||
+                  !isEmpty(field?.value) ||
+                  !!props?.placeholder
+                ),
+              }
+            )}
+          >
             <span className="visible inline-block px-1 opacity-0">
               {required ? (
                 <Fragment>
                   {label ?? name}
-                  &thinsp;{'*'}
+                  &thinsp;{"*"}
                 </Fragment>
               ) : (
                 label ?? name
@@ -270,14 +317,13 @@ export const InputOutlined = ({
   );
 };
 
-
 function formControlState({ props, states, formControl }) {
   // for every prop in `states` that is undefined, set it with the value from formControlContext
   return states.reduce((acc, state) => {
     acc[state] = props[state];
 
     if (formControl) {
-      if (typeof props[state] === 'undefined') {
+      if (typeof props[state] === "undefined") {
         acc[state] = formControl[state];
       }
     }
@@ -287,15 +333,15 @@ function formControlState({ props, states, formControl }) {
 }
 interface FormControlOwnProps {
   children?: React.ReactNode;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'DEFAULT';
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
   disabled?: boolean;
   error?: boolean;
   fullWidth?: boolean;
   focused?: boolean;
-  margin?: 'dense' | 'normal' | 'none';
+  margin?: "dense" | "normal" | "none";
   required?: boolean;
-  size?: 'small' | 'medium' | 'large';
-  variant?: 'standard' | 'outlined' | 'filled';
+  size?: "small" | "medium" | "large";
+  variant?: "standard" | "outlined" | "filled";
   label?: ReactNode;
   shrink?: boolean;
   ownerState?: any;
@@ -314,7 +360,7 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
 
 interface FormControlTypeMap<
   AdditionalProps = {},
-  RootComponent extends React.ElementType = 'div',
+  RootComponent extends React.ElementType = "div"
 > {
   props: AdditionalProps & FormControlOwnProps;
   ownerState?: {};
@@ -332,183 +378,223 @@ type OverrideProps<
     keyof BaseProps<TypeMap>
   >;
 type ContextFromPropsKey =
-  | 'color'
-  | 'disabled'
-  | 'error'
-  | 'fullWidth'
-  | 'margin'
-  | 'required'
-  | 'size'
-  | 'variant'
-  | 'label'
-  | 'shrink';
+  | "color"
+  | "disabled"
+  | "error"
+  | "fullWidth"
+  | "margin"
+  | "required"
+  | "size"
+  | "variant"
+  | "label"
+  | "shrink";
 
 type FormControlProps<
-  RootComponent extends ElementType = FormControlTypeMap['defaultComponent'],
-  AdditionalProps = {},
-> = OverrideProps<FormControlTypeMap<AdditionalProps, RootComponent>, RootComponent> & {
+  RootComponent extends ElementType = FormControlTypeMap["defaultComponent"],
+  AdditionalProps = {}
+> = OverrideProps<
+  FormControlTypeMap<AdditionalProps, RootComponent>,
+  RootComponent
+> & {
   component?: ElementType;
 };
-interface FormControlContextValue extends Pick<FormControlProps, ContextFromPropsKey> {
+interface FormControlContextValue
+  extends Pick<FormControlProps, ContextFromPropsKey> {
   adornedStart: boolean;
   filled: boolean;
   focused: boolean;
-  onBlur: (event?: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  onFocus: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onBlur: (
+    event?: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onFocus: (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   onEmpty: () => void;
   onFilled: () => void;
   setAdornedStart: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FormControlContext = createContext<FormControlContextValue | undefined>(undefined);
-const useFormControl = (): FormControlContextValue | undefined => useContext(FormControlContext);
+const FormControlContext = createContext<FormControlContextValue | undefined>(
+  undefined
+);
+const useFormControl = (): FormControlContextValue | undefined =>
+  useContext(FormControlContext);
 
-export const FormControl = forwardRef<HTMLDivElement, FormControlProps>((props, ref) => {
-  const {
-    children,
-    className,
-    color = 'DEFAULT',
-    disabled = false,
-    error = false,
-    focused: visuallyFocused,
-    fullWidth = false,
-    margin = 'none',
-    required = false,
-    size = 'medium',
-    variant = 'outlined',
-    label,
-    shrink,
-    ownerState: ownerStateProp,
-    ...other
-  } = props;
+export const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
+  (props, ref) => {
+    const {
+      children,
+      className,
+      color = "DEFAULT",
+      disabled = false,
+      error = false,
+      focused: visuallyFocused,
+      fullWidth = false,
+      margin = "none",
+      required = false,
+      size = "medium",
+      variant = "outlined",
+      label,
+      shrink,
+      ownerState: ownerStateProp,
+      ...other
+    } = props;
 
-  const ownerState = {
-    ...props,
-    color,
-    disabled,
-    error,
-    fullWidth,
-    margin,
-    required,
-    size,
-    label,
-    variant,
-    shrink,
-  };
+    const ownerState = {
+      ...props,
+      color,
+      disabled,
+      error,
+      fullWidth,
+      margin,
+      required,
+      size,
+      label,
+      variant,
+      shrink,
+    };
 
-  const [adornedStart, setAdornedStart] = useState(() => {
-    let initialAdornedStart = false;
+    const [adornedStart, setAdornedStart] = useState(() => {
+      let initialAdornedStart = false;
 
-    if (children) {
-      Children.forEach(children, (child) => {
-        if (!isValidElement(child)) {
-          return;
-        }
+      if (children) {
+        Children.forEach(children, (child) => {
+          if (!isValidElement(child)) {
+            return;
+          }
 
-        const input = isValidElement(child) ? child.props.input : child;
+          const input = isValidElement(child) ? child.props.input : child;
 
-        if (input && input.props.startAdornment) {
-          initialAdornedStart = true;
-        }
-      });
+          if (input && input.props.startAdornment) {
+            initialAdornedStart = true;
+          }
+        });
+      }
+      return initialAdornedStart;
+    });
+
+    const [filled, setFilled] = useState(() => {
+      // We need to iterate through the children and find the Input in order
+      // to fully support server-side rendering.
+      let initialFilled = false;
+
+      if (children) {
+        Children.forEach(children, (child) => {
+          if (!isValidElement(child)) {
+            return;
+          }
+
+          if (
+            (child.props &&
+              ((child.props.value != null &&
+                !(
+                  Array.isArray(child.props.value) &&
+                  child.props.value.length === 0
+                ) &&
+                child.props.value !== "") ||
+                (child.props.defaultValue != null &&
+                  !(
+                    Array.isArray(child.props.defaultValue) &&
+                    child.props.defaultValue.length === 0
+                  ) &&
+                  child.props.defaultValue !== ""))) ||
+            (child.props.inputProps &&
+              ((child.props.inputProps.value != null &&
+                !(
+                  Array.isArray(child.props.inputProps.value) &&
+                  child.props.inputProps.value.length === 0
+                ) &&
+                child.props.inputProps.value !== "") ||
+                (child.props.inputProps.defaultValue != null &&
+                  !(
+                    Array.isArray(child.props.inputProps.defaultValue) &&
+                    child.props.inputProps.defaultValue.length === 0
+                  ) &&
+                  child.props.inputProps.defaultValue !== "")))
+          ) {
+            initialFilled = true;
+          }
+        });
+      }
+
+      return initialFilled;
+    });
+
+    const [focusedState, setFocused] = useState(false);
+    if (disabled && focusedState) {
+      setFocused(false);
     }
-    return initialAdornedStart;
-  });
 
-  const [filled, setFilled] = useState(() => {
-    // We need to iterate through the children and find the Input in order
-    // to fully support server-side rendering.
-    let initialFilled = false;
+    const focused =
+      visuallyFocused !== undefined && !disabled
+        ? visuallyFocused
+        : focusedState;
 
-    if (children) {
-      Children.forEach(children, (child) => {
-        if (!isValidElement(child)) {
-          return;
-        }
-
-        if ((child.props &&
-          (((child.props.value != null && !(Array.isArray(child.props.value) && child.props.value.length === 0)) && child.props.value !== '') ||
-            ((child.props.defaultValue != null && !(Array.isArray(child.props.defaultValue) && child.props.defaultValue.length === 0)) && child.props.defaultValue !== ''))) || (
-            child.props.inputProps &&
-            (((child.props.inputProps.value != null && !(Array.isArray(child.props.inputProps.value) && child.props.inputProps.value.length === 0)) && child.props.inputProps.value !== '') ||
-              ((child.props.inputProps.defaultValue != null && !(Array.isArray(child.props.inputProps.defaultValue) && child.props.inputProps.defaultValue.length === 0)) && child.props.inputProps.defaultValue !== ''))
-          )) {
-          initialFilled = true;
-        }
-      });
-    }
-
-    return initialFilled;
-  });
-
-  const [focusedState, setFocused] = useState(false);
-  if (disabled && focusedState) {
-    setFocused(false);
-  }
-
-  const focused = visuallyFocused !== undefined && !disabled ? visuallyFocused : focusedState;
-
-  const childContext = useMemo(() => {
-    return {
+    const childContext = useMemo(() => {
+      return {
+        adornedStart,
+        setAdornedStart,
+        color,
+        disabled,
+        error,
+        filled,
+        focused,
+        fullWidth,
+        size,
+        required,
+        variant,
+        label,
+        shrink,
+        onBlur: () => {
+          setFocused(false);
+        },
+        onEmpty: () => {
+          setFilled(false);
+        },
+        onFilled: () => {
+          setFilled(true);
+        },
+        onFocus: () => {
+          setFocused(true);
+        },
+      };
+    }, [
       adornedStart,
-      setAdornedStart,
       color,
       disabled,
       error,
       filled,
       focused,
       fullWidth,
-      size,
       required,
+      size,
       variant,
-      label,
-      shrink,
-      onBlur: () => {
-        setFocused(false);
-      },
-      onEmpty: () => {
-        setFilled(false);
-      },
-      onFilled: () => {
-        setFilled(true);
-      },
-      onFocus: () => {
-        setFocused(true);
-      },
-    };
-  }, [
-    adornedStart,
-    color,
-    disabled,
-    error,
-    filled,
-    focused,
-    fullWidth,
-    required,
-    size,
-    variant,
-  ]);
+    ]);
 
-  return (
-    <FormControlContext.Provider value={childContext}>
-      <div
-        className={clsx("relative mx-0 inline-flex min-w-0 flex-col p-0 align-top text-black dark:text-white", {
-          "w-full": fullWidth,
-          "mt-4 mb-2": ownerState.margin === 'normal',
-          "mt-2 mb-1": ownerState.margin === 'dense',
-        })}
-        ref={ref}
-        {...other}
-      >
-        {children}
-      </div>
-    </FormControlContext.Provider>
-  )
-})
+    return (
+      <FormControlContext.Provider value={childContext}>
+        <div
+          className={clsx(
+            "relative mx-0 inline-flex min-w-0 flex-col p-0 align-top text-black dark:text-white",
+            {
+              "w-full": fullWidth,
+              "mt-4 mb-2": ownerState.margin === "normal",
+              "mt-2 mb-1": ownerState.margin === "dense",
+            }
+          )}
+          ref={ref}
+          {...other}
+        >
+          {children}
+        </div>
+      </FormControlContext.Provider>
+    );
+  }
+);
 
 type InputLabelProps = {
-  color?: 'primary' | 'secondary' | 'warning' | 'success' | 'error' | 'DEFAULT';
-  variant?: 'outlined' | 'filled' | 'standard';
+  color?: "primary" | "secondary" | "warning" | "success" | "error" | "DEFAULT";
+  variant?: "outlined" | "filled" | "standard";
   className?: string;
   shrink?: boolean;
   disabled?: boolean;
@@ -516,116 +602,154 @@ type InputLabelProps = {
   disableAnimation?: boolean;
   children?: ReactNode;
 } & LabelHTMLAttributes<HTMLLabelElement>;
-export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => {
-  const {
-    disableAnimation = false,
-    shrink: shrinkProp,
-    variant,
-    required,
-    className,
-    color,
-    children,
-    ...other
-  } = props;
+export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
+  (props, ref) => {
+    const {
+      disableAnimation = false,
+      shrink: shrinkProp,
+      variant,
+      required,
+      className,
+      color,
+      children,
+      ...other
+    } = props;
 
-  const labelSize = {
-    outlined: {
-      small: { close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-2 scale-100`, open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto` },
-      medium: { close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100`, open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto` },
-      large: { close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-6 scale-100`, open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto` },
-    },
-    filled: {
-      small: { close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-3 scale-100`, open: `scale-75 translate-x-3 translate-y-1 max-w-[calc(133%-24px)] pointer-events-auto` },
-      medium: { close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-4 scale-100`, open: `scale-75 translate-x-3 translate-y-[7px] max-w-[calc(133%-24px)] pointer-events-auto` },
-      large: { close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-5 scale-100`, open: `scale-75 translate-x-3 translate-y-3 max-w-[calc(133%-24px)] pointer-events-auto` },
-    },
-    standard: {
-      small: { close: `max-w-[100%] translate-x-0 translate-y-4 scale-100`, open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]` },
-      medium: { close: `max-w-[100%] translate-x-0 translate-y-5 scale-100`, open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]` },
-      large: { close: `max-w-[100%] translate-x-0 translate-y-6 scale-100`, open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]` },
+    const labelSize = {
+      outlined: {
+        small: {
+          close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-2 scale-100`,
+          open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto`,
+        },
+        medium: {
+          close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100`,
+          open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto`,
+        },
+        large: {
+          close: `max-w-[calc(100%-24px)] translate-x-3.5 translate-y-6 scale-100`,
+          open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto`,
+        },
+      },
+      filled: {
+        small: {
+          close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-3 scale-100`,
+          open: `scale-75 translate-x-3 translate-y-1 max-w-[calc(133%-24px)] pointer-events-auto`,
+        },
+        medium: {
+          close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-4 scale-100`,
+          open: `scale-75 translate-x-3 translate-y-[7px] max-w-[calc(133%-24px)] pointer-events-auto`,
+        },
+        large: {
+          close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-5 scale-100`,
+          open: `scale-75 translate-x-3 translate-y-3 max-w-[calc(133%-24px)] pointer-events-auto`,
+        },
+      },
+      standard: {
+        small: {
+          close: `max-w-[100%] translate-x-0 translate-y-4 scale-100`,
+          open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]`,
+        },
+        medium: {
+          close: `max-w-[100%] translate-x-0 translate-y-5 scale-100`,
+          open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]`,
+        },
+        large: {
+          close: `max-w-[100%] translate-x-0 translate-y-6 scale-100`,
+          open: `scale-75 translate-x-0 -translate-y-[1.5px] max-w-[133%]`,
+        },
+      },
+    };
+    const colors = {
+      primary: `text-blue-400`,
+      secondary: `text-zinc-500`,
+      success: `text-green-500`,
+      error: `text-red-500`,
+      warning: `text-amber-400`,
+      disabled: `dark:text-white/50 text-black/50`,
+      DEFAULT: `dark:text-white text-black`,
+      DEFAULTNOFOCUS: `dark:text-white/70 text-black/70`,
+    };
+
+    const labelClasses = {
+      outlined: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
+      filled: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
+      standard: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 transition-transform`,
+    };
+
+    const formControl = useFormControl();
+
+    let shrink = shrinkProp;
+    if (typeof shrink === "undefined" && formControl) {
+      shrink =
+        formControl.filled || formControl.focused || formControl.adornedStart;
     }
+
+    const fcs = formControlState({
+      props,
+      formControl,
+      states: ["size", "variant", "required", "focused", "error", "color"],
+    });
+
+    const state = {
+      ...props,
+      disableAnimation,
+      formControl,
+      shrink,
+      size: formControl.size || "medium",
+      disabled: formControl.disabled || props.disabled,
+      required: formControl.required || required,
+      focused: formControl.focused,
+      variant: formControl.variant || variant,
+      error: formControl.error,
+    };
+
+    const kids = state.required ? (
+      <Fragment>
+        {children}
+        &thinsp;{"*"}
+      </Fragment>
+    ) : (
+      children
+    );
+
+    formControl.label = kids;
+    formControl.shrink = shrink;
+
+    const { size, focused, disabled } = state;
+
+    return (
+      <label
+        data-shrink={shrink}
+        aria-disabled={disabled}
+        className={clsx(
+          labelClasses[state.variant],
+          labelSize[state.variant][size][focused || shrink ? "open" : "close"],
+          className,
+          colors[
+            disabled
+              ? "disabled"
+              : state.error
+              ? "error"
+              : focused
+              ? fcs.color || color
+              : "DEFAULTNOFOCUS"
+          ]
+        )}
+        ref={ref}
+        children={kids}
+        {...other}
+      />
+    );
   }
-  const colors = {
-    primary: `text-blue-400`,
-    secondary: `text-zinc-500`,
-    success: `text-green-500`,
-    error: `text-red-500`,
-    warning: `text-amber-400`,
-    disabled: `dark:text-white/50 text-black/50`,
-    DEFAULT: `dark:text-white text-black`,
-    DEFAULTNOFOCUS: `dark:text-white/70 text-black/70`,
-  }
-
-  const labelClasses = {
-    outlined: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
-    filled: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
-    standard: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 transition-transform`,
-  }
-
-  const formControl = useFormControl();
-
-  let shrink = shrinkProp;
-  if (typeof shrink === 'undefined' && formControl) {
-    shrink = formControl.filled || formControl.focused || formControl.adornedStart;
-  }
-
-  const fcs = formControlState({
-    props,
-    formControl,
-    states: ["size", "variant", "required", "focused", "error", "color"]
-  })
-
-  const state = {
-    ...props,
-    disableAnimation,
-    formControl,
-    shrink,
-    size: formControl.size || "medium",
-    disabled: formControl.disabled || props.disabled,
-    required: formControl.required || required,
-    focused: formControl.focused,
-    variant: formControl.variant || variant,
-    error: formControl.error,
-  }
-
-  const kids = state.required ? (
-    <Fragment>
-      {children}
-      &thinsp;{'*'}
-    </Fragment>
-  ) : (
-    children
-  )
-
-  formControl.label = kids;
-  formControl.shrink = shrink;
-
-  const { size, focused, disabled } = state;
-
-  return (
-    <label
-      data-shrink={shrink}
-      aria-disabled={disabled}
-      className={clsx(
-        labelClasses[state.variant],
-        labelSize[state.variant][size][focused || shrink ? 'open' : 'close'],
-        className,
-        colors[disabled ? 'disabled' : state.error ? 'error' : focused ? (fcs.color || color) : 'DEFAULTNOFOCUS'],
-      )}
-      ref={ref}
-      children={kids}
-      {...other}
-    />
-  )
-})
+);
 
 type InputBaseProps = {
   className?: string;
-  'aria-describedby'?: string;
+  "aria-describedby"?: string;
   autoComplete?: string;
   autoFocus?: boolean;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'DEFAULT';
-  variant?: 'outlined' | 'filled' | 'standard';
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
+  variant?: "outlined" | "filled" | "standard";
   defaultValue?: string | number | readonly string[];
   disabled?: boolean;
   endAdornment?: React.ReactNode;
@@ -641,14 +765,16 @@ type InputBaseProps = {
     [arbitrary: string]: any;
   };
   inputRef?: React.Ref<any>;
-  margin?: 'dense' | 'normal' | 'none';
+  margin?: "dense" | "normal" | "none";
   multiline?: boolean;
   name?: string;
   label?: ReactNode;
   onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
   onFocus?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<
+    HTMLTextAreaElement | HTMLInputElement
+  >;
   onKeyUp?: React.KeyboardEventHandler<HTMLTextAreaElement | HTMLInputElement>;
   onClick?: React.MouseEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   onInvalid?: React.FormEventHandler<HTMLInputElement | HTMLTextAreaElement>;
@@ -660,7 +786,7 @@ type InputBaseProps = {
     error?: boolean;
     filled?: boolean;
     focused?: boolean;
-    margin?: 'dense' | 'none' | 'normal';
+    margin?: "dense" | "none" | "normal";
     required?: boolean;
     startAdornment?: React.ReactNode;
   }) => ReactNode;
@@ -669,7 +795,7 @@ type InputBaseProps = {
   max?: string | number;
   maxRows?: string | number;
   minRows?: string | number;
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
   /**
    * You can override the existing props or add new ones.
    *
@@ -683,404 +809,475 @@ type InputBaseProps = {
   startAdornmentProps?: HTMLAttributes<HTMLDivElement>;
   type?: string;
   value?: unknown;
-}
-export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>((props, ref) => {
-  const {
-    'aria-describedby': ariaDescribedby,
-    autoComplete,
-    autoFocus,
-    className,
-    color,
-    defaultValue,
-    disabled,
-    endAdornment,
-    endAdornmentProps,
-    error,
-    fullWidth = false,
-    id,
-    inputProps: inputPropsProp = {},
-    inputRef: inputRefProp,
-    margin,
-    maxRows,
-    minRows,
-    multiline = false,
-    name,
-    onBlur,
-    onChange,
-    onClick,
-    onFocus,
-    onKeyDown,
-    onKeyUp,
-    onInvalid,
-    placeholder,
-    readOnly,
-    required,
-    renderSuffix,
-    rows,
-    size,
-    // slotProps = {},
-    startAdornment,
-    startAdornmentProps,
-    type = 'text',
-    value: valueProp,
-    variant,
-    min,
-    max,
-    ...other
-  } = props;
+};
+export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
+  (props, ref) => {
+    const {
+      "aria-describedby": ariaDescribedby,
+      autoComplete,
+      autoFocus,
+      className,
+      color,
+      defaultValue,
+      disabled,
+      endAdornment,
+      endAdornmentProps,
+      error,
+      fullWidth = false,
+      id,
+      inputProps: inputPropsProp = {},
+      inputRef: inputRefProp,
+      margin,
+      maxRows,
+      minRows,
+      multiline = false,
+      name,
+      onBlur,
+      onChange,
+      onClick,
+      onFocus,
+      onKeyDown,
+      onKeyUp,
+      onInvalid,
+      placeholder,
+      readOnly,
+      required,
+      renderSuffix,
+      rows,
+      size,
+      // slotProps = {},
+      startAdornment,
+      startAdornmentProps,
+      type = "text",
+      value: valueProp,
+      variant,
+      min,
+      max,
+      ...other
+    } = props;
 
+    const inputRef = useRef();
+    const [focused, setFocused] = useState(false);
+    const formControl = useFormControl();
 
-  const inputRef = useRef();
-  const [focused, setFocused] = useState(false);
-  const formControl = useFormControl();
+    const value =
+      inputPropsProp.value != null ? inputPropsProp.value : valueProp;
+    const { current: isControlled } = useRef(value != null);
 
-  const value = inputPropsProp.value != null ? inputPropsProp.value : valueProp;
-  const { current: isControlled } = useRef(value != null);
+    const onFilled = formControl && formControl.onFilled;
+    const onEmpty = formControl && formControl.onEmpty;
 
-  const onFilled = formControl && formControl.onFilled;
-  const onEmpty = formControl && formControl.onEmpty;
-
-  const checkDirty = useCallback(
-    (obj) => {
-      if (obj &&
-        ((obj.value != null && !(Array.isArray(obj.value) && obj.value.length === 0)) && obj.value !== '')) {
-        if (onFilled) {
-          onFilled();
+    const checkDirty = useCallback(
+      (obj) => {
+        if (
+          obj &&
+          obj.value != null &&
+          !(Array.isArray(obj.value) && obj.value.length === 0) &&
+          obj.value !== ""
+        ) {
+          if (onFilled) {
+            onFilled();
+          }
+        } else if (onEmpty) {
+          onEmpty();
         }
-      } else if (onEmpty) {
-        onEmpty();
-      }
-    },
-    [onFilled, onEmpty],
-  );
+      },
+      [onFilled, onEmpty]
+    );
 
-
-  const handleInputRefWarning = useCallback((instance) => {
-    if (process.env.NODE_ENV !== 'production') {
-      if (instance && instance.nodeName !== 'INPUT' && !instance.focus) {
-        console.error(
-          [
-            'ArkDashboard: You have provided a `inputComponent` to the input component',
-            'that does not correctly handle the `ref` prop.',
-            'Make sure the `ref` prop is called with a HTMLInputElement.',
-          ].join('\n'),
-        );
-      }
-    }
-  }, []);
-
-  const handleInputRef = useMemo(() => {
-    if ([
-      inputRef,
-      inputRefProp,
-      inputPropsProp.ref,
-      handleInputRefWarning,
-    ].every((ref) => ref == null)) {
-      return null;
-    }
-
-
-    return (instance) => {
-      [
-        inputRef,
-        inputRefProp,
-        inputPropsProp.ref,
-        handleInputRefWarning
-      ].forEach((ref) => {
-        if (typeof ref === 'function') {
-          ref(instance);
-        } else if (ref) {
-          ref.current = instance;
+    const handleInputRefWarning = useCallback((instance) => {
+      if (process.env.NODE_ENV !== "production") {
+        if (instance && instance.nodeName !== "INPUT" && !instance.focus) {
+          console.error(
+            [
+              "ArkDashboard: You have provided a `inputComponent` to the input component",
+              "that does not correctly handle the `ref` prop.",
+              "Make sure the `ref` prop is called with a HTMLInputElement.",
+            ].join("\n")
+          );
         }
-      });
+      }
+    }, []);
+
+    const handleInputRef = useMemo(() => {
+      if (
+        [
+          inputRef,
+          inputRefProp,
+          inputPropsProp.ref,
+          handleInputRefWarning,
+        ].every((ref) => ref == null)
+      ) {
+        return null;
+      }
+
+      return (instance) => {
+        [
+          inputRef,
+          inputRefProp,
+          inputPropsProp.ref,
+          handleInputRefWarning,
+        ].forEach((ref) => {
+          if (typeof ref === "function") {
+            ref(instance);
+          } else if (ref) {
+            ref.current = instance;
+          }
+        });
+      };
+    }, [inputRef, inputRefProp, inputPropsProp.ref, handleInputRefWarning]);
+
+    const fcs = formControlState({
+      props,
+      formControl,
+      states: [
+        "color",
+        "disabled",
+        "error",
+        "size",
+        "required",
+        "filled",
+        "variant",
+        "label",
+      ],
+    });
+
+    fcs.focused = formControl ? formControl.focused : focused;
+
+    useEffect(() => {
+      if (!formControl && disabled && focused) {
+        setFocused(false);
+        if (onBlur) {
+          onBlur(undefined);
+        }
+      }
+    }, [formControl, disabled, focused, onBlur]);
+
+    useEffect(() => {
+      if (isControlled) {
+        checkDirty({ value });
+      }
+    }, [value, checkDirty, isControlled]);
+
+    const handleFocus = (event) => {
+      if (fcs.disabled) {
+        event.stopPropagation();
+        return;
+      }
+
+      if (onFocus) {
+        onFocus(event);
+      }
+      if (inputPropsProp.onFocus) {
+        inputPropsProp.onFocus(event);
+      }
+
+      if (formControl && formControl.onFocus) {
+        formControl.onFocus(event);
+      } else {
+        setFocused(true);
+      }
     };
-  }, [
-    inputRef,
-    inputRefProp,
-    inputPropsProp.ref,
-    handleInputRefWarning
-  ]);
 
-
-  const fcs = formControlState({
-    props,
-    formControl,
-    states: ['color', 'disabled', 'error', 'size', 'required', 'filled', 'variant', 'label'],
-  });
-
-  fcs.focused = formControl ? formControl.focused : focused;
-
-  useEffect(() => {
-    if (!formControl && disabled && focused) {
-      setFocused(false);
+    const handleBlur = (event) => {
       if (onBlur) {
-        onBlur(undefined);
-      }
-    }
-  }, [formControl, disabled, focused, onBlur]);
-
-
-  useEffect(() => {
-    if (isControlled) {
-      checkDirty({ value });
-    }
-  }, [value, checkDirty, isControlled]);
-
-
-  const handleFocus = (event) => {
-    if (fcs.disabled) {
-      event.stopPropagation();
-      return;
-    }
-
-    if (onFocus) {
-      onFocus(event);
-    }
-    if (inputPropsProp.onFocus) {
-      inputPropsProp.onFocus(event);
-    }
-
-    if (formControl && formControl.onFocus) {
-      formControl.onFocus(event);
-    } else {
-      setFocused(true);
-    }
-  };
-
-  const handleBlur = (event) => {
-    if (onBlur) {
-      onBlur(event);
-    }
-
-    if (inputPropsProp.onBlur) {
-      inputPropsProp.onBlur(event);
-    }
-
-    if (formControl && formControl.onBlur) {
-      formControl.onBlur(event);
-    } else {
-      setFocused(false);
-    }
-  };
-
-  const handleChange = (event, ...args) => {
-    if (!isControlled) {
-      const element = event.target || inputRef.current;
-      if (element == null) {
-        throw new Error(
-          'ArkDashboard: Expected valid input target. ' +
-          'Did you use a custom `inputComponent` and forget to forward refs? '
-        );
+        onBlur(event);
       }
 
-      checkDirty({
-        value: element.value,
-      });
-    }
+      if (inputPropsProp.onBlur) {
+        inputPropsProp.onBlur(event);
+      }
 
-    if (inputPropsProp.onChange) {
-      inputPropsProp.onChange(event);
-    }
-
-    if (onChange) {
-      onChange(event);
-    }
-  };
-
-  // Check the input state on mount, in case it was filled by the user
-  useEffect(() => {
-    checkDirty(inputRef.current);
-  }, []);
-
-  const handleClick = (event) => {
-    if (inputRef.current && event.currentTarget === event.target) {
-      (inputRef.current as HTMLInputElement).focus();
-    }
-
-    if (onClick) {
-      onClick(event);
-    }
-  };
-
-  let InputComponent: ElementType<HTMLAttributes<HTMLInputElement | HTMLTextAreaElement>> = 'input';
-  let inputProps = inputPropsProp;
-
-  if (multiline) {
-    inputProps = {
-      type: undefined,
-      rows: rows ? rows : minRows || maxRows,
-      ...inputProps,
+      if (formControl && formControl.onBlur) {
+        formControl.onBlur(event);
+      } else {
+        setFocused(false);
+      }
     };
 
-    InputComponent = 'textarea'
-  }
+    const handleChange = (event, ...args) => {
+      if (!isControlled) {
+        const element = event.target || inputRef.current;
+        if (element == null) {
+          throw new Error(
+            "ArkDashboard: Expected valid input target. " +
+              "Did you use a custom `inputComponent` and forget to forward refs? "
+          );
+        }
 
-  const handleAutoFill = (event) => {
-    checkDirty(event.animationName === 'auto-fill-cancel' ? inputRef.current : { value: 'x' });
-  };
+        checkDirty({
+          value: element.value,
+        });
+      }
 
-  useEffect(() => {
-    if (formControl) {
-      formControl.setAdornedStart(Boolean(startAdornment));
+      if (inputPropsProp.onChange) {
+        inputPropsProp.onChange(event);
+      }
+
+      if (onChange) {
+        onChange(event);
+      }
+    };
+
+    // Check the input state on mount, in case it was filled by the user
+    useEffect(() => {
+      checkDirty(inputRef.current);
+    }, []);
+
+    const handleClick = (event) => {
+      if (inputRef.current && event.currentTarget === event.target) {
+        (inputRef.current as HTMLInputElement).focus();
+      }
+
+      if (onClick) {
+        onClick(event);
+      }
+    };
+
+    let InputComponent: ElementType<
+      HTMLAttributes<HTMLInputElement | HTMLTextAreaElement>
+    > = "input";
+    let inputProps = inputPropsProp;
+
+    if (multiline) {
+      inputProps = {
+        type: undefined,
+        rows: rows ? rows : minRows || maxRows,
+        ...inputProps,
+      };
+
+      InputComponent = "textarea";
     }
-  }, [formControl, startAdornment]);
 
-  const ownerState = {
-    ...props,
-    color: fcs.color as InputBaseProps['color'] || 'primary',
-    disabled: fcs.disabled || disabled,
-    endAdornment,
-    error: fcs.error,
-    focused: fcs.focused,
-    formControl: formControl,
-    fullWidth,
-    multiline,
-    size: fcs.size,
-    variant: fcs.variant || variant,
-    startAdornment,
-    type,
-  };
+    const handleAutoFill = (event) => {
+      checkDirty(
+        event.animationName === "auto-fill-cancel"
+          ? inputRef.current
+          : { value: "x" }
+      );
+    };
 
-  const inputSize = {
-    standard: {
-      small: `pt-px px-0 pb-1`,
-      medium: `pt-1 px-0 pb-1`,
-      large: `pt-2 px-0 pb-1`,
-    },
-    outlined: {
-      small: `py-2 px-3.5`,
-      medium: `py-4 px-3.5`,
-      large: `py-6 px-3.5`,
-    },
-    filled: {
-      small: `pt-5 px-3 pb-1`, // py-2 px-3 without label
-      medium: `py-6 px-3 pb-2`, // py-4 px-3 if no label
-      large: `pt-7 px-3 pb-3`,
-    }
+    useEffect(() => {
+      if (formControl) {
+        formControl.setAdornedStart(Boolean(startAdornment));
+      }
+    }, [formControl, startAdornment]);
+
+    const ownerState = {
+      ...props,
+      color: (fcs.color as InputBaseProps["color"]) || "primary",
+      disabled: fcs.disabled || disabled,
+      endAdornment,
+      error: fcs.error,
+      focused: fcs.focused,
+      formControl: formControl,
+      fullWidth,
+      multiline,
+      size: fcs.size,
+      variant: fcs.variant || variant,
+      startAdornment,
+      type,
+    };
+
+    const inputSize = {
+      standard: {
+        small: `pt-px px-0 pb-1`,
+        medium: `pt-1 px-0 pb-1`,
+        large: `pt-2 px-0 pb-1`,
+      },
+      outlined: {
+        small: `py-2 px-3.5`,
+        medium: `py-4 px-3.5`,
+        large: `py-6 px-3.5`,
+      },
+      filled: {
+        small: `pt-5 px-3 pb-1`, // py-2 px-3 without label
+        medium: `py-6 px-3 pb-2`, // py-4 px-3 if no label
+        large: `pt-7 px-3 pb-3`,
+      },
+    };
+
+    const borders = {
+      primary: `after:border-blue-400`,
+      secondary: `after:border-zinc-500`,
+      success: `after:border-pea-500`,
+      error: `after:border-red-500`,
+      warning: `after:border-amber-400`,
+      DEFAULT: `after:border-black after:dark:border-white`,
+    };
+
+    const inputBaseClasses = {
+      outlined: `rounded ${
+        startAdornment && endAdornment
+          ? "px-3.5"
+          : startAdornment
+          ? "pl-3.5"
+          : endAdornment
+          ? "pr-3.5"
+          : ""
+      }`,
+      filled: `dark:bg-white/10 hover:dark:bg-white/[.13] bg-black/10 hover:bg-black/[.13] rounded-t transition-colors ${
+        startAdornment ? "pl-3" : endAdornment ? "pr-3" : ""
+      }`,
+      standard: `mt-4`,
+    };
+
+    const inputBaseClassesBefore = {
+      outlined: ``,
+      filled: `before:content-[''] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-colors before:ease-in-out before:duration-75 hover:before:border-black hover:before:dark:border-white`,
+      standard: `before:content-['"\\00a0"'] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-all before:ease-in-out before:duration-75 hover:before:border-b-2 hover:before:border-black hover:before:dark:border-white`,
+    };
+    // TODO: add react-form-hook error classes here instead
+    const inputBaseClassesAfter = {
+      outlined: ``,
+      filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${
+        ownerState.focused
+          ? "after:transform after:scale-x-100 after:translate-x-0"
+          : "after:scale-x-0 "
+      } ${
+        fcs.error
+          ? `before:!border-red-500 after:border-red-500`
+          : borders[ownerState.color ?? "DEFAULT"]
+      }`,
+      standard: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${
+        ownerState.focused
+          ? "after:transform after:scale-x-100 after:translate-x-0"
+          : "after:scale-x-0"
+      } ${
+        fcs.error
+          ? `before:!border-red-500 hover:before:border-b after:border-red-500`
+          : borders[ownerState.color ?? "DEFAULT"]
+      }`,
+    };
+    const classes = {
+      root: "relative box-border inline-flex w-auto cursor-text items-center text-base font-normal leading-6",
+      input: `font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0 ${
+        ((formControl.label || props.label)?.toString().length > 0 &&
+          !(
+            formControl.filled ||
+            formControl.focused ||
+            formControl.adornedStart ||
+            formControl.shrink
+          )) ||
+        formControl.filled ||
+        formControl.adornedStart ||
+        type === "date" ||
+        type === "datetime"
+          ? "placeholder:opacity-0"
+          : "placeholder:opacity-100"
+      } focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${
+        inputSize[ownerState.variant][ownerState.size]
+      } ${
+        ownerState.variant === "filled" || ownerState.variant === "outlined"
+          ? startAdornment
+            ? "pl-0"
+            : endAdornment
+            ? "pr-0"
+            : ""
+          : ""
+      }`,
+    };
+
+    inputProps = { ...inputProps };
+    return (
+      <Fragment>
+        <div
+          // {...rootProps}
+          ref={ref}
+          onClick={handleClick}
+          {...other}
+          className={clsx(
+            "group",
+            classes.root,
+            inputBaseClasses[ownerState.variant],
+            inputBaseClassesBefore[ownerState.variant],
+            inputBaseClassesAfter[ownerState.variant],
+            {
+              "pointer-events-none": readOnly,
+              "pointer-events-none cursor-default text-black/50 before:border-dotted dark:text-white/50":
+                ownerState.disabled,
+            },
+            // rootProps.className,
+            className
+          )}
+        >
+          {startAdornment && (
+            <div
+              className={clsx(
+                "mr-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap",
+                startAdornmentProps?.className,
+                {
+                  "mt-4": ownerState.variant === "filled",
+                }
+              )}
+              {...startAdornmentProps}
+            >
+              {startAdornment}
+            </div>
+          )}
+          <FormControlContext.Provider value={null}>
+            <InputComponent
+              aria-invalid={fcs.error}
+              aria-describedby={ariaDescribedby}
+              autoComplete={autoComplete}
+              autoFocus={autoFocus}
+              defaultValue={defaultValue}
+              disabled={fcs.disabled}
+              id={id}
+              onAnimationStart={handleAutoFill}
+              name={name}
+              placeholder={placeholder}
+              readOnly={readOnly}
+              required={fcs.required}
+              rows={rows}
+              value={value}
+              onKeyDown={onKeyDown}
+              onKeyUp={onKeyUp}
+              type={type}
+              min={min}
+              max={max}
+              ref={handleInputRef}
+              {...inputProps}
+              className={clsx(
+                classes.input,
+                "animate-auto-fill-cancel",
+                inputProps.className
+              )}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              onFocus={handleFocus}
+            />
+          </FormControlContext.Provider>
+          {endAdornment && (
+            <div
+              className={clsx(
+                "ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70",
+                endAdornmentProps?.className
+              )}
+              {...endAdornmentProps}
+            >
+              {endAdornment}
+            </div>
+          )}
+
+          {renderSuffix
+            ? renderSuffix({
+                ...fcs,
+                startAdornment,
+              })
+            : null}
+        </div>
+      </Fragment>
+    );
   }
-
-  const borders = {
-    primary: `after:border-blue-400`,
-    secondary: `after:border-zinc-500`,
-    success: `after:border-pea-500`,
-    error: `after:border-red-500`,
-    warning: `after:border-amber-400`,
-    DEFAULT: `after:border-black after:dark:border-white`
-  }
-
-  const inputBaseClasses = {
-    outlined: `rounded ${startAdornment && endAdornment ? 'px-3.5' : startAdornment ? 'pl-3.5' : endAdornment ? 'pr-3.5' : ''}`,
-    filled: `dark:bg-white/10 hover:dark:bg-white/[.13] bg-black/10 hover:bg-black/[.13] rounded-t transition-colors ${startAdornment ? 'pl-3' : endAdornment ? 'pr-3' : ''}`,
-    standard: `mt-4`,
-  }
-
-  const inputBaseClassesBefore = {
-    outlined: ``,
-    filled: `before:content-[''] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-colors before:ease-in-out before:duration-75 hover:before:border-black hover:before:dark:border-white`,
-    standard: `before:content-['"\\00a0"'] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-all before:ease-in-out before:duration-75 hover:before:border-b-2 hover:before:border-black hover:before:dark:border-white`,
-  }
-  // TODO: add react-form-hook error classes here instead
-  const inputBaseClassesAfter = {
-    outlined: ``,
-    filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused ? 'after:transform after:scale-x-100 after:translate-x-0' : 'after:scale-x-0 '} ${fcs.error ? `before:!border-red-500 after:border-red-500` : borders[ownerState.color ?? 'DEFAULT']}`,
-    standard: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused ? 'after:transform after:scale-x-100 after:translate-x-0' : 'after:scale-x-0'} ${fcs.error ? `before:!border-red-500 hover:before:border-b after:border-red-500` : borders[ownerState.color ?? 'DEFAULT']}`,
-  }
-  const classes = {
-    root: 'relative box-border inline-flex w-fit cursor-text items-center text-base font-normal leading-6',
-    input: `font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0 ${((formControl.label || props.label)?.toString().length > 0 && !(formControl.filled || formControl.focused || formControl.adornedStart || formControl.shrink)) || (formControl.filled || formControl.adornedStart) || type === 'date' || type === 'datetime' ? 'placeholder:opacity-0' : 'placeholder:opacity-100'} focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${inputSize[ownerState.variant][ownerState.size]} ${ownerState.variant === 'filled' || ownerState.variant === 'outlined' ? startAdornment ? 'pl-0' : endAdornment ? 'pr-0' : '' : ''}`
-  };
-
-  inputProps = { ...inputProps };
-  return (
-    <Fragment>
-      <div
-        // {...rootProps}
-        ref={ref}
-        onClick={handleClick}
-        {...other}
-        className={clsx(
-          'group',
-          classes.root,
-          inputBaseClasses[ownerState.variant],
-          inputBaseClassesBefore[ownerState.variant],
-          inputBaseClassesAfter[ownerState.variant],
-          {
-            'pointer-events-none': readOnly,
-            "dark:text-white/50 text-black/50 cursor-default before:border-dotted pointer-events-none": ownerState.disabled
-          },
-          // rootProps.className,
-          className,
-        )}
-      >
-        {startAdornment && (
-          <div
-            className={clsx("mr-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap", startAdornmentProps?.className, {
-              "mt-4": ownerState.variant === 'filled'
-            })}
-            {...startAdornmentProps}
-          >
-            {startAdornment}
-          </div>
-        )}
-        <FormControlContext.Provider value={null}>
-          <InputComponent
-            aria-invalid={fcs.error}
-            aria-describedby={ariaDescribedby}
-            autoComplete={autoComplete}
-            autoFocus={autoFocus}
-            defaultValue={defaultValue}
-            disabled={fcs.disabled}
-            id={id}
-            onAnimationStart={handleAutoFill}
-            name={name}
-            placeholder={placeholder}
-            readOnly={readOnly}
-            required={fcs.required}
-            rows={rows}
-            value={value}
-            onKeyDown={onKeyDown}
-            onKeyUp={onKeyUp}
-            type={type}
-            min={min}
-            max={max}
-            ref={handleInputRef}
-            {...inputProps}
-            className={clsx(
-              classes.input,
-              "animate-auto-fill-cancel",
-              inputProps.className
-            )}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            onFocus={handleFocus}
-          />
-        </FormControlContext.Provider>
-        {endAdornment && (
-          <div
-            className={clsx("ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70", endAdornmentProps?.className)}
-            {...endAdornmentProps}
-          >
-            {endAdornment}
-          </div>
-        )}
-
-        {renderSuffix ? (
-          renderSuffix({
-            ...fcs,
-            startAdornment
-          })
-        ) : null}
-      </div>
-    </Fragment>
-  )
-})
+);
 
 type InputProps = {
   autoComplete?: string;
   autoFocus?: boolean;
   children?: ReactNode;
   className?: string;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'DEFAULT';
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
   defaultValue?: string | number | readonly string[];
   disabled?: boolean;
   error?: boolean;
@@ -1089,31 +1286,33 @@ type InputProps = {
   helperText?: ReactNode;
   id?: string;
   InputLabelProps?: Partial<InputLabelProps>;
-  inputProps?: InputBaseProps['inputProps'];
+  inputProps?: InputBaseProps["inputProps"];
   InputProps?: Partial<InputBaseProps>;
   SuffixProps?: Partial<HTMLAttributes<HTMLFieldSetElement>>;
   inputRef?: React.Ref<any>;
   label?: ReactNode;
   multiline?: boolean;
   name?: string;
-  onBlur?: InputBaseProps['onBlur'];
-  onFocus?: InputBaseProps['onFocus'];
-  onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
+  onBlur?: InputBaseProps["onBlur"];
+  onFocus?: InputBaseProps["onFocus"];
+  onChange?: React.ChangeEventHandler<
+    HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
+  >;
   placeholder?: string;
   required?: boolean;
   rows?: number;
   maxRows?: string | number;
   minRows?: string | number;
-  margin?: 'dense' | 'normal' | 'none';
-  variant?: 'standard' | 'filled' | 'outlined';
-  size?: 'small' | 'medium' | 'large';
-  type?: InputHTMLAttributes<unknown>['type'];
+  margin?: "dense" | "normal" | "none";
+  variant?: "standard" | "filled" | "outlined";
+  size?: "small" | "medium" | "large";
+  type?: InputHTMLAttributes<unknown>["type"];
   value?: string | number | readonly string[];
   validation?: RegisterOptions & {
     valueAsBoolean?: boolean;
     valueAsJSON?: boolean;
   };
-}
+};
 
 // TODO: implement custom for date
 export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
@@ -1122,7 +1321,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     autoFocus = false,
     children,
     className,
-    color = 'primary',
+    color = "primary",
     defaultValue,
     disabled = false,
     error = false,
@@ -1147,9 +1346,9 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     SuffixProps,
     type,
     value,
-    variant = 'outlined',
+    variant = "outlined",
     size,
-    margin = 'normal',
+    margin = "normal",
     validation,
     ...other
   } = props;
@@ -1163,14 +1362,14 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     fullWidth,
     multiline,
     variant,
-    ...validation
+    ...validation,
   };
 
   const InputMore: {
     [key: string]: any;
   } = {};
 
-  if (variant === 'outlined') {
+  if (variant === "outlined") {
     InputMore.notched = true;
     if (InputLabelProps) {
       InputMore.notched = InputLabelProps.shrink;
@@ -1186,8 +1385,8 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     warning: `border-amber-400`,
     disabled: `dark:border-white/30 border-black/30`,
     DEFAULT: `border-black dark:border-white`,
-    DEFAULTNOFOCUS: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
-  }
+    DEFAULTNOFOCUS: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`,
+  };
 
   const id = idOverride ?? useId();
   const helperTextId = helperText && id ? `${id}-helper-text` : undefined;
@@ -1225,21 +1424,51 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         placeholder={placeholder}
         inputProps={inputProps}
         {...InputProps}
-        renderSuffix={(state) => (
-          variant === 'outlined' ? (
-            <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULTNOFOCUS']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
-              "border-2": state.focused
-            }, SuffixProps?.className)}>
-              <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-                "max-w-full": state.focused || state.filled || props?.InputLabelProps?.shrink || type === 'date' || type === 'datetime',
-                "max-w-[0.01px]": !state.focused && !state.filled && !props?.InputLabelProps?.shrink && !(type === 'date' || type === 'datetime')
-              })}>
+        renderSuffix={(state) =>
+          variant === "outlined" ? (
+            <fieldset
+              {...SuffixProps}
+              aria-hidden
+              className={clsx(
+                `absolute border text-left transition-colors duration-75 ease-in ${
+                  borders[
+                    disabled || state.disabled
+                      ? "disabled"
+                      : state.focused
+                      ? color
+                      : "DEFAULTNOFOCUS"
+                  ]
+                } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
+                {
+                  "border-2": state.focused,
+                },
+                SuffixProps?.className
+              )}
+            >
+              <legend
+                className={clsx(
+                  "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
+                  {
+                    "max-w-full":
+                      state.focused ||
+                      state.filled ||
+                      props?.InputLabelProps?.shrink ||
+                      type === "date" ||
+                      type === "datetime",
+                    "max-w-[0.01px]":
+                      !state.focused &&
+                      !state.filled &&
+                      !props?.InputLabelProps?.shrink &&
+                      !(type === "date" || type === "datetime"),
+                  }
+                )}
+              >
                 {label && label !== "" && (
-                  <span className={"px-[5px] inline-block opacity-0 visible"}>
+                  <span className={"visible inline-block px-[5px] opacity-0"}>
                     {state.required ? (
                       <React.Fragment>
                         {label}
-                        &thinsp;{'*'}
+                        &thinsp;{"*"}
                       </React.Fragment>
                     ) : (
                       label
@@ -1249,11 +1478,11 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
               </legend>
             </fieldset>
           ) : null
-        )}
-      // {...InputMore}
+        }
+        // {...InputMore}
       />
-    )
-  }
+    );
+  };
   return (
     <FormControl
       className={className}
@@ -1268,8 +1497,13 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       margin={margin}
       {...other}
     >
-      {label != null && label !== '' && (
-        <InputLabel htmlFor={id} id={inputLabelId} required={Boolean(validation?.required)} {...InputLabelProps}>
+      {label != null && label !== "" && (
+        <InputLabel
+          htmlFor={id}
+          id={inputLabelId}
+          required={Boolean(validation?.required)}
+          {...InputLabelProps}
+        >
           {label}
         </InputLabel>
       )}
@@ -1278,23 +1512,25 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
           name={name}
           defaultValue={value}
           rules={validation}
-          render={({ field, fieldState, formState }) => (
-            InputComp(field)
-          )}
+          render={({ field, fieldState, formState }) => InputComp(field)}
         />
       ) : (
         InputComp()
       )}
 
       {helperText && (
-        <p id={helperTextId} className="rw-helper-text" {...FormHelperTextProps}>
+        <p
+          id={helperTextId}
+          className="rw-helper-text"
+          {...FormHelperTextProps}
+        >
           {helperText}
         </p>
       )}
       {name && <FieldError name={name} className="rw-field-error" />}
     </FormControl>
-  )
-})
+  );
+});
 
 export const ColorInput = () => {
   const [color, setColor] = useState("#000000");

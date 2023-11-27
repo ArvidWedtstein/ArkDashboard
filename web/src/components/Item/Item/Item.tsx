@@ -4,6 +4,8 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useState } from "react";
 import { useAuth } from "src/auth";
+import Badge from "src/components/Util/Badge/Badge";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { Card, CardHeader } from "src/components/Util/Card/Card";
 import Map from "src/components/Util/Map/Map";
 
@@ -116,9 +118,16 @@ const Item = ({ item }: Props) => {
         <section className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
           <div className="w-full">
             <div className="inline-flex">
-              <Link className="rw-button rw-button-small rw-button-gray mb-2 h-fit" to={routes.items()}>
+              <Link
+                className="rw-button rw-button-small rw-button-gray mb-2 h-fit"
+                to={routes.items()}
+              >
                 <span className="sr-only">Back</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="rw-button-icon"
+                >
                   <path d="M447.1 256C447.1 264.8 440.8 272 432 272H68.17l135.7 149.3c5.938 6.531 5.453 16.66-1.078 22.59C199.7 446.6 195.8 448 192 448c-4.344 0-8.688-1.75-11.84-5.25l-160-176c-5.547-6.094-5.547-15.41 0-21.5l160-176c5.969-6.562 16.09-7 22.61-1.094c6.531 5.938 7.016 16.06 1.078 22.59L68.17 240H432C440.8 240 447.1 247.2 447.1 256z" />
                 </svg>
               </Link>
@@ -139,24 +148,33 @@ const Item = ({ item }: Props) => {
           </div>
 
           <div className="grid w-fit grid-cols-3 gap-2 justify-self-end">
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+            <Card
+              variant="outlined"
+              className="bg-zinc-200 shadow-md dark:bg-zinc-700"
+            >
               <CardHeader
                 title={`Max Stack`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                titleProps={{
+                  className: "!text-xs !font-semibold uppercase font-poppins",
+                }}
                 subheader={item.max_stack}
-                subheaderProps={{ className: 'text-xl !font-bold' }}
+                subheaderProps={{ className: "text-xl !font-bold" }}
               />
             </Card>
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+            <Card className="bg-zinc-200 shadow-md dark:bg-zinc-700">
               <CardHeader
                 title={`Weight`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                titleProps={{
+                  className: "!text-xs !font-semibold uppercase font-poppins",
+                }}
                 subheader={item.weight}
-                subheaderProps={{ className: 'font-montserrat text-xl !font-bold uppercase' }}
+                subheaderProps={{
+                  className: "font-montserrat text-xl !font-bold uppercase",
+                }}
                 action={
                   <div className="relative w-auto flex-initial">
                     <div
-                      className={`inline-flex h-12 w-12 items-center justify-center rounded-full p-3 text-center text-white shadow-lg relative border border-zinc-500`}
+                      className={`relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-zinc-500 p-3 text-center text-white shadow-lg`}
                     >
                       <div className="h-4 w-4 text-current">
                         <img
@@ -168,47 +186,55 @@ const Item = ({ item }: Props) => {
                 }
               />
             </Card>
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+            <Card className="bg-zinc-200 shadow-md dark:bg-zinc-700">
               <CardHeader
                 title={`Type`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                titleProps={{
+                  className: "!text-xs !font-semibold uppercase font-poppins",
+                }}
                 subheader={item.type}
-                subheaderProps={{ className: 'text-xl !font-bold' }}
+                subheaderProps={{ className: "text-xl !font-bold" }}
               />
             </Card>
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
+            <Card className="bg-zinc-200 shadow-md dark:bg-zinc-700">
               <CardHeader
                 title={`Category`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                titleProps={{
+                  className: "!text-xs !font-semibold uppercase font-poppins",
+                }}
                 subheader={item.category}
-                subheaderProps={{ className: 'text-xl !font-bold' }}
+                subheaderProps={{ className: "text-xl !font-bold" }}
               />
             </Card>
           </div>
 
-          {item.stats && (item?.stats as { id: number, value: number }[]).filter(f => f.id != 1).length > 0 && (
-            <div className="flex flex-col">
-              <div className="py-4 px-8 text-sm font-normal text-gray-700 dark:text-white">
-                <div className="mb-4 inline-block">
-                  {(item?.stats as { id: number, value: number }[]).filter(f => f.id != 1).map(({ id, value }, i) => {
-                    if (!ItemStats[id])
-                      return null;
-                    return (
-                      <p key={`${id}${value}${i}`}>
-                        <strong>{ItemStats[id].name}</strong>: {value}
-                      </p>
-                    );
-                  })}
+          {item.stats &&
+            (item?.stats as { id: number; value: number }[]).filter(
+              (f) => f.id != 1
+            ).length > 0 && (
+              <div className="flex flex-col">
+                <div className="py-4 px-8 text-sm font-normal text-gray-700 dark:text-white">
+                  <div className="mb-4 inline-block">
+                    {(item?.stats as { id: number; value: number }[])
+                      .filter((f) => f.id != 1)
+                      .map(({ id, value }, i) => {
+                        if (!ItemStats[id]) return null;
+                        return (
+                          <p key={`${id}${value}${i}`}>
+                            <strong>{ItemStats[id].name}</strong>: {value}
+                          </p>
+                        );
+                      })}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
         </section>
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-          0 && (
-            <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600 ring-1 ring-zinc-500 ring-inset">
+            0 && (
+            <section className="rounded-lg bg-gray-200 p-4 ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
               <p className="my-1 text-lg">Gather Efficiency</p>
               <div className="flex flex-col">
                 {item.DinoStat.filter((g) => g.type === "gather_efficiency")
@@ -266,8 +292,8 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-          0 && (
-            <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600 ring-1 ring-zinc-500 ring-inset">
+            0 && (
+            <section className="rounded-lg bg-stone-300 p-4 ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
               <p className="my-1 text-lg">Weight Reduction</p>
               <div className="flex flex-col space-y-1">
                 {item.DinoStat.filter((g) => g.type === "weight_reduction")
@@ -278,7 +304,10 @@ const Item = ({ item }: Props) => {
                       className="flex items-center space-x-1"
                       key={`weight-reduction-${i}`}
                     >
-                      <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${wr.Dino.image}`} className="h-8 w-8 rounded-full bg-zinc-500 p-1" />
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${wr.Dino.image}`}
+                        className="h-8 w-8 rounded-full bg-zinc-500 p-1"
+                      />
                       <Link
                         to={routes.dino({ id: wr.Dino.id })}
                         className="w-fit text-sm"
@@ -309,8 +338,10 @@ const Item = ({ item }: Props) => {
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "drops").length > 0 && (
             <section className="rounded-lg">
-              <div className="w-fit rounded-lg bg-stone-300 p-4 dark:bg-zinc-600 shadow-lg ring-1 ring-zinc-500 ring-inset">
-                <p className="my-1 text-lg select-none">Dinos that drop {item.name}</p>
+              <div className="w-fit rounded-lg bg-stone-300 p-4 shadow-lg ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
+                <p className="my-1 select-none text-lg">
+                  Dinos that drop {item.name}
+                </p>
                 <div className="flex flex-col">
                   {item.DinoStat.filter((g) => g.type === "drops")
                     .sort((a, b) => b.value - a.value)
@@ -322,7 +353,10 @@ const Item = ({ item }: Props) => {
                         className="mr-2 w-20 text-sm"
                         title={name}
                       >
-                        <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`} className="h-12 w-12 rounded-full bg-zinc-500 p-1" />
+                        <img
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+                          className="h-12 w-12 rounded-full bg-zinc-500 p-1"
+                        />
                         {name}
                       </Link>
                     ))}
@@ -379,11 +413,10 @@ const Item = ({ item }: Props) => {
                     >
                       <div className="flex flex-row flex-wrap gap-2">
                         {ItemRecipeItem.map(({ Item, amount }, i) => (
-                          <Link
+                          <Button
                             to={routes.item({ id: Item.id })}
-                            className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                            title={Item.name}
-                            key={`recipe-${Item.id}`}
+                            variant="text"
+                            className="animate-fade-in"
                           >
                             <img
                               className="h-10 w-10"
@@ -393,7 +426,7 @@ const Item = ({ item }: Props) => {
                             <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
                               {amount}
                             </div>
-                          </Link>
+                          </Button>
                         ))}
                       </div>
 
@@ -406,21 +439,22 @@ const Item = ({ item }: Props) => {
                         <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
                       </svg>
 
-                      <Link
+                      <Button
                         to={routes.item({ id: item.id })}
-                        className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                        title={item.name}
-                        key={`recipe-${item.id}`}
+                        variant="outlined"
+                        color="DEFAULT"
+                        className="animate-fade-in aspect-square"
                       >
                         <img
-                          className="h-10 w-10"
+                          className="aspect-square h-10 w-10"
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
                           alt={item.name}
                         />
                         <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
                           {yields}
                         </div>
-                      </Link>
+                        {/* <Badge color="secondary" content={"12"} max={10} /> */}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -433,7 +467,7 @@ const Item = ({ item }: Props) => {
           <section className="col-span-full">
             <Map
               className="w-fit"
-              mapFilter={(m) => item.MapResource.some(f => f.map_id === m.id)}
+              mapFilter={(m) => item.MapResource.some((f) => f.map_id === m.id)}
               interactive
               pos={item.MapResource.map((r) => ({
                 lat: r.latitude,
@@ -447,43 +481,34 @@ const Item = ({ item }: Props) => {
         )}
 
         <div className="col-span-full">
-          <nav className="rw-button-group">
-            {currentUser?.permissions.some(
-              (p: permission) => p === "gamedata_update"
-            ) && (
-                <Link
-                  to={routes.editItem({ id: item.id })}
-                  className="rw-button rw-button-blue"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                    className="rw-button-icon-start"
-                  >
-                    <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-                  </svg>
-                  Edit
-                </Link>
-              )}
-            {currentUser?.permissions.some(
-              (p: permission) => p === "gamedata_delete"
-            ) && (
-                <button
-                  type="button"
-                  className="rw-button rw-button-red"
-                  onClick={() => onDeleteClick(item.id)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                    className="rw-button-icon-start"
-                  >
-                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                  </svg>
-                  Delete
-                </button>
-              )}
-          </nav>
+          <ButtonGroup>
+            <Button
+              permission="gamedata_update"
+              color="primary"
+              variant="outlined"
+              to={routes.editItem({ id: item.id })}
+              startIcon={
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                </svg>
+              }
+            >
+              Edit
+            </Button>
+            <Button
+              permission="gamedata_delete"
+              color="error"
+              variant="outlined"
+              onClick={() => onDeleteClick(item.id)}
+              startIcon={
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                </svg>
+              }
+            >
+              Delete
+            </Button>
+          </ButtonGroup>
         </div>
       </div>
 
@@ -535,7 +560,6 @@ const Item = ({ item }: Props) => {
                     ))}
                 </ol>
               </li>
-
 
               {/* TODO: show maps where this item exists */}
               {/* <li className="flex flex-col">
