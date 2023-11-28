@@ -17,7 +17,7 @@ import {
   clamp,
   formatNumber,
 } from "src/lib/formatters";
-import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useReducer } from "react";
 
 import type {
   DeleteDinoMutationVariables,
@@ -41,6 +41,7 @@ import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import List, { ListItem } from "src/components/Util/List/List";
 import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
+import Alert from "src/components/Util/Alert/Alert";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -389,16 +390,16 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         typeof flee_threshold === "number" ? flee_threshold : 0.75;
       const isPossible = torpor_duration
         ? torpor -
-          (state.seconds_between_hits - torpor_duration) *
-            (dino.tdps +
-              Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
+        (state.seconds_between_hits - torpor_duration) *
+        (dino.tdps +
+          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
         : torpor;
 
       let torporPerHit = isPossible
         ? torpor -
-          (state.seconds_between_hits - torpor_duration) *
-            (dino.tdps +
-              Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
+        (state.seconds_between_hits - torpor_duration) *
+        (dino.tdps +
+          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
         : torpor;
 
       const knockOutMultiplier =
@@ -423,47 +424,47 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
       const hitboxes = dino.hitboxes
         ? Object.entries(
-            dino.hitboxes as {
-              [key: string]: number;
-            }
-          ).map(([name, multiplier]) => {
-            const hitboxHits = numHitsRaw / multiplier;
-            const hitsUntilFlee =
-              creatureFleeThreshold === 1
-                ? "-"
-                : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
+          dino.hitboxes as {
+            [key: string]: number;
+          }
+        ).map(([name, multiplier]) => {
+          const hitboxHits = numHitsRaw / multiplier;
+          const hitsUntilFlee =
+            creatureFleeThreshold === 1
+              ? "-"
+              : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
 
-            const totalDamage =
-              damage *
-              Math.ceil(hitboxHits) *
-              totalMultipliers *
-              (userDamage / 100) *
-              multiplier;
-            const propsurvival =
-              totalDamage < baseHealth
-                ? 100
-                : calculatePropability(
-                    state.level - 1,
-                    7,
-                    Math.max(
-                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                      0
-                    )
-                  );
+          const totalDamage =
+            damage *
+            Math.ceil(hitboxHits) *
+            totalMultipliers *
+            (userDamage / 100) *
+            multiplier;
+          const propsurvival =
+            totalDamage < baseHealth
+              ? 100
+              : calculatePropability(
+                state.level - 1,
+                7,
+                Math.max(
+                  Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                  0
+                )
+              );
 
-            const chanceOfDeath = Math.round(100 - propsurvival);
+          const chanceOfDeath = Math.round(100 - propsurvival);
 
-            return {
-              name,
-              multiplier,
-              hitsRaw: hitboxHits,
-              hitsUntilFlee,
-              hits: Math.ceil(hitboxHits),
-              chanceOfDeath,
-              chanceOfDeathHigh: chanceOfDeath > 40,
-              isPossible,
-            };
-          })
+          return {
+            name,
+            multiplier,
+            hitsRaw: hitboxHits,
+            hitsUntilFlee,
+            hits: Math.ceil(hitboxHits),
+            chanceOfDeath,
+            chanceOfDeathHigh: chanceOfDeath > 40,
+            isPossible,
+          };
+        })
         : [];
 
       let bodyChanceOfDeath = 0;
@@ -483,8 +484,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               ? 100
               : state.level - 1 <
                 Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0)
-              ? 0
-              : calculatePropability(
+                ? 0
+                : calculatePropability(
                   state.level - 1,
                   numStats,
                   Math.max(
@@ -508,13 +509,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               totalDamage < baseHealth
                 ? 100
                 : calculatePropability(
-                    state.level - 1,
-                    numStats,
-                    Math.max(
-                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                      0
-                    )
-                  );
+                  state.level - 1,
+                  numStats,
+                  Math.max(
+                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                    0
+                  )
+                );
 
             const chanceOfDeath = Math.round(100 - propsurvival);
             hitbox.chanceOfDeath = chanceOfDeath;
@@ -591,8 +592,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (typeof interval1 === "number" ? interval1 : 0)
+            foodSecondsPer +
+            (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -856,11 +857,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-              affinityLeft /
-                affinityVal /
-                tamingMultiplier /
-                dino.non_violent_food_rate_mult
-            );
+            affinityLeft /
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult
+          );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use;
@@ -868,10 +869,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-            numToUse *
-              affinityVal *
-              tamingMultiplier *
-              dino.non_violent_food_rate_mult;
+          numToUse *
+          affinityVal *
+          tamingMultiplier *
+          dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
@@ -880,14 +881,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              100
+            affinityVal /
+            tamingMultiplier /
+            100
             : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              dino.non_violent_food_rate_mult /
-              100;
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult /
+            100;
 
           totalSecs =
             numUsedTotal == 1
@@ -934,7 +935,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         [`${name.replace(" ", "-")}Min`]: Math.max(
           Math.ceil(
             (totalSecs * torporDepletionPS - totalTorpor) /
-              (torpor + torporDepletionPS * torpor_duration)
+            (torpor + torporDepletionPS * torpor_duration)
           ),
           0
         ),
@@ -1252,36 +1253,33 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           valueFormatter: ({ value }) =>
                             value
                               ? formatNumber(
-                                  Number(parseInt(value.toString()) / 300)
-                                )
+                                Number(parseInt(value.toString()) / 300)
+                              )
                               : "-",
                         },
                         {
                           field: "sprint",
                           header: "Sprint",
-                          className: "text-center",
                           valueFormatter: ({ value }) =>
                             value
                               ? formatNumber(
-                                  Number(parseInt(value.toString()) / 300)
-                                )
+                                Number(parseInt(value.toString()) / 300)
+                              )
                               : "-",
                         },
                         {
                           field: "swim",
                           header: "Swim",
-                          className: "text-center",
                           valueFormatter: ({ value }) =>
                             value
                               ? formatNumber(
-                                  Number(parseInt(value.toString()) / 300)
-                                )
+                                Number(parseInt(value.toString()) / 300)
+                              )
                               : "-",
                         },
                         {
                           field: "format",
                           header: "",
-                          className: "text-center",
                         },
                       ]}
                       rows={Object.entries(dino.movement["w"]).map(
@@ -1567,45 +1565,65 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       toolbar={
                         !dino.type.includes("boss")
                           ? [
-                              <button
-                                type="button"
-                                className="rw-button rw-button-gray"
-                                onClick={() =>
-                                  dispatch({ type: "RANDOMIZE_STAT" })
-                                }
-                              >
-                                Random
-                              </button>,
-                              <button
-                                type="button"
-                                className="rw-button rw-button-gray text-white"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "DISTRIBUTE_STAT",
-                                  })
-                                }
-                              >
-                                Distribute Evenly
-                              </button>,
-                              <button
-                                type="button"
-                                className="rw-button rw-button-red"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "RESET_STAT",
-                                  })
-                                }
-                              >
-                                Clear
-                              </button>,
-                              <p>
-                                {state.level -
-                                  state.base_stats
-                                    .map((b) => b?.points)
-                                    .reduce((a, b) => a + b, 0)}{" "}
-                                points wasted
-                              </p>,
-                            ]
+                            <Button
+                              variant="outlined"
+                              color="secondary"
+                              onClick={() =>
+                                dispatch({ type: "RANDOMIZE_STAT" })
+                              }
+                              style={{
+                                borderRadius: '0.375rem 0 0 0.375rem',
+                                marginLeft: '-0.5px',
+                              }}
+                            >
+                              Random
+                            </Button>,
+                            <Button
+                              variant="outlined"
+                              color="secondary"
+                              onClick={() =>
+                                dispatch({
+                                  type: "DISTRIBUTE_STAT",
+                                })
+                              }
+                              style={{
+                                borderRadius: '0',
+                                marginLeft: '-0.5px',
+                              }}
+                            >
+                              Distribute Evenly
+                            </Button>,
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              onClick={() =>
+                                dispatch({
+                                  type: "RESET_STAT",
+                                })
+                              }
+                              style={{
+                                borderRadius: '0 0.375rem 0.375rem 0',
+                                marginLeft: '-0.5px',
+                              }}
+                            >
+                              Clear
+                            </Button>,
+                            <Button
+                              variant="text"
+                              color="DEFAULT"
+                              disableRipple
+                              style={{
+                                borderRadius: '0 0.375rem 0.375rem 0',
+                                marginLeft: '-0.5px',
+                              }}
+                            >
+                              {state.level -
+                                state.base_stats
+                                  .map((b) => b?.points)
+                                  .reduce((a, b) => a + b, 0)}{" "}
+                              points wasted
+                            </Button>,
+                          ]
                           : []
                       }
                       columns={[
@@ -1657,10 +1675,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           className: "w-fit",
                           datatype: "number",
                           render: ({ value, row, rowIndex }) => (
-                            <input
-                              className="rw-input w-24 text-center"
+                            <Input
+                              margin="none"
+                              size="small"
+                              color="primary"
                               value={value}
-                              name={`${rowIndex}-total`}
                               onChange={(e) => {
                                 dispatch({
                                   type: "CHANGE_STAT",
@@ -1679,59 +1698,79 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           field: "base",
                           header: "",
                           render: ({ row }) => (
-                            <nav className="flex flex-row items-center space-x-2">
-                              <button
-                                type="button"
-                                disabled={
-                                  state.base_stats.find(
-                                    (s) => s.stat === row.stat
-                                  )?.points <= 0 || row.stat === "Torpidity"
-                                }
-                                className="rw-button rw-button-red-outline h-8 w-8 rounded-full p-0 !text-xl"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "CHANGE_STAT",
-                                    payload: {
-                                      stat: row.stat,
-                                      type: "remove",
-                                    },
-                                  })
-                                }
-                              >
-                                -
-                              </button>
-                              <input
-                                type="text"
-                                disabled={true}
-                                className="rw-input w-16 p-3 text-center"
-                                value={
-                                  state.base_stats.find(
-                                    (s) => s.stat === row.stat
-                                  )?.points
-                                }
-                              />
-                              <button
-                                type="button"
-                                disabled={
-                                  state.base_stats
-                                    .map((b) => b.points)
-                                    .reduce((a, b) => a + b, 0) >=
-                                    state.level || row.stat === "Torpidity"
-                                }
-                                className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "CHANGE_STAT",
-                                    payload: {
-                                      stat: row.stat,
-                                      type: "add",
-                                    },
-                                  })
-                                }
-                              >
-                                +
-                              </button>
-                            </nav>
+                            <Input
+                              margin="none"
+                              size="small"
+                              color="DEFAULT"
+                              value={
+                                state.base_stats.find(
+                                  (s) => s.stat === row.stat
+                                )?.points
+                              }
+                              InputProps={{
+                                className: "max-w-[10rem] w-fit",
+                                endAdornment: (
+                                  <Fragment>
+                                    <Button
+                                      variant="icon"
+                                      color="error"
+                                      disabled={
+                                        state.base_stats.find(
+                                          (s) => s.stat === row.stat
+                                        )?.points <= 0 || row.stat === "Torpidity"
+                                      }
+                                      onClick={() =>
+                                        dispatch({
+                                          type: "CHANGE_STAT",
+                                          payload: {
+                                            stat: row.stat,
+                                            type: "remove",
+                                          },
+                                        })
+                                      }
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 448 512"
+                                        className="h-3.5 w-3.5"
+                                        fill="currentColor"
+                                      >
+                                        <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                                      </svg>
+                                    </Button>
+                                    <span className="mx-1 h-8 w-px bg-current opacity-30" />
+                                    <Button
+                                      variant="icon"
+                                      color="success"
+                                      disabled={
+                                        state.base_stats
+                                          .map((b) => b.points)
+                                          .reduce((a, b) => a + b, 0) >=
+                                        state.level || row.stat === "Torpidity"
+                                      }
+                                      onClick={() =>
+                                        dispatch({
+                                          type: "CHANGE_STAT",
+                                          payload: {
+                                            stat: row.stat,
+                                            type: "add",
+                                          },
+                                        })
+                                      }
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 448 512"
+                                        className="h-3.5 w-3.5"
+                                        fill="currentColor"
+                                      >
+                                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                                      </svg>
+                                    </Button>
+                                  </Fragment>
+                                ),
+                              }}
+                            />
                           ),
                         },
                       ]}
@@ -1756,9 +1795,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             disabled={!dino.tamable}
           >
             <section>
-              <p className="my-1 text-sm leading-relaxed">
-                {dino?.taming_notice}
-              </p>
+              {dino?.taming_notice && (
+                <Alert className="my-3" variant="outlined" severity="info">
+                  {dino?.taming_notice}
+                </Alert>
+              )}
 
               {/* Tek Stryder */}
               {dino.id === "a5a9f2bb-7d89-4672-9d1c-567d035e23a7" && (
@@ -1837,6 +1878,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   <Switch onLabel="X Variant" name="x_variant" />
                 )}
 
+                <br />
                 <Label
                   name="selected_food"
                   className="rw-label"
@@ -1920,11 +1962,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                             },
                             {
                               name: "Max after Taming",
-                              sub: `Lvl ${
-                                state.level +
+                              sub: `Lvl ${state.level +
                                 tameData.levelsGained +
                                 (state.x_variant && dino.x_variant ? 88 : 73)
-                              }`,
+                                }`,
                               icon: (
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -1992,7 +2033,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 <p>
                                   {timeFormatL(
                                     tameData.totalTorpor /
-                                      tameData.torporDepletionPS
+                                    tameData.torporDepletionPS
                                   )}{" "}
                                   until unconscious
                                 </p>
@@ -2308,13 +2349,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           </div>
                         </>
                       )}
-
-                      <Link
-                        to={`https://www.youtube.com/results?search_query=ark+${dino.name}+taming`}
-                        className="rw-button rw-button-blue my-3"
-                      >
+                      <Button variant="outlined" className="my-4" to={`https://www.youtube.com/results?search_query=ark+${dino.name}+taming`}>
                         Youtube tutorial on how to tame this dino
-                      </Link>
+                      </Button>
                     </section>
                   </>
                 )}
@@ -2488,173 +2525,177 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           {dino.DinoStat.some(
             (d) => d.type == "bossrecipe" || d.type == "saddle"
           ) && (
-            <Tab label="Recipes">
-              <section className="animate-fade-in">
-                {dino?.DinoStat.some((d) => d.type == "saddle") && (
-                  <>
-                    <h4 className="rw-label">Saddle Crafting Recipe</h4>
-                    {dino.DinoStat.filter((d) => d.type === "saddle").map(
-                      (
-                        {
-                          Item: {
-                            id: itemid,
-                            name,
-                            image,
-                            ItemRecipe_ItemRecipe_crafted_item_idToItem,
+              <Tab label="Recipes">
+                <section className="animate-fade-in">
+                  {dino?.DinoStat.some((d) => d.type == "saddle") && (
+                    <>
+                      <h4 className="rw-label">Saddle Crafting Recipe</h4>
+                      {dino.DinoStat.filter((d) => d.type === "saddle").map(
+                        (
+                          {
+                            Item: {
+                              id: itemid,
+                              name,
+                              image,
+                              ItemRecipe_ItemRecipe_crafted_item_idToItem,
+                            },
                           },
-                        },
-                        idx
-                      ) => (
-                        <div
-                          className="flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600"
-                          key={`Saddle-${idx}`}
-                        >
-                          {ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
-                            (
-                              {
-                                id,
-                                Item_ItemRecipe_crafting_station_idToItem,
-                                ItemRecipeItem,
-                                yields,
-                              },
-                              i
-                            ) => (
-                              <div
-                                key={`saddle-item-${i}`}
-                                className={clsx(
-                                  "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
-                                  {
-                                    "flex-grow":
-                                      state.activeRecipeTabIndex === i,
-                                    "flex-grow-0":
-                                      state.activeRecipeTabIndex !== i,
+                          idx
+                        ) => (
+                          <div
+                            className="flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600"
+                            key={`Saddle-${idx}`}
+                          >
+                            {ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+                              (
+                                {
+                                  id,
+                                  Item_ItemRecipe_crafting_station_idToItem,
+                                  ItemRecipeItem,
+                                  yields,
+                                },
+                                i
+                              ) => (
+                                <div
+                                  key={`saddle-item-${i}`}
+                                  className={clsx(
+                                    "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
+                                    {
+                                      "flex-grow":
+                                        state.activeRecipeTabIndex === i,
+                                      "flex-grow-0":
+                                        state.activeRecipeTabIndex !== i,
+                                    }
+                                  )}
+                                  onClick={() =>
+                                    dispatch({
+                                      type: "RECIPE_TAB_CHANGE",
+                                      payload: {
+                                        value: i,
+                                      },
+                                    })
                                   }
-                                )}
-                                onClick={() =>
-                                  dispatch({
-                                    type: "RECIPE_TAB_CHANGE",
-                                    payload: {
-                                      value: i,
-                                    },
-                                  })
-                                }
-                              >
-                                <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
-                                  <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
-                                    <img
-                                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
-                                      className="h-16 w-16"
-                                    />
-                                  </div>
-
-                                  <div
-                                    className={clsx(
-                                      "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
-                                      {
-                                        hidden:
-                                          state.activeRecipeTabIndex !== i,
-                                        block: state.activeRecipeTabIndex === i,
-                                      }
-                                    )}
-                                  >
-                                    <div className="flex flex-row flex-wrap gap-2">
-                                      {ItemRecipeItem.map(
-                                        ({ Item, amount }, i) => (
-                                          <Link
-                                            to={routes.item({
-                                              id: Item.id,
-                                            })}
-                                            className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                                            title={Item.name}
-                                            key={`recipe-${Item.id}`}
-                                          >
-                                            <img
-                                              className="h-10 w-10"
-                                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                                              alt={Item.name}
-                                            />
-                                            <div className="absolute -bottom-1  inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                                              {amount}
-                                            </div>
-                                          </Link>
-                                        )
-                                      )}
+                                >
+                                  <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
+                                    <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
+                                      <img
+                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
+                                        className="h-16 w-16"
+                                      />
                                     </div>
 
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 448 512"
-                                      fill="currentColor"
-                                      className="h-12 w-12"
+                                    <div
+                                      className={clsx(
+                                        "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
+                                        {
+                                          hidden:
+                                            state.activeRecipeTabIndex !== i,
+                                          block: state.activeRecipeTabIndex === i,
+                                        }
+                                      )}
                                     >
-                                      <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
-                                    </svg>
-
-                                    <Link
-                                      to={routes.item({
-                                        id: itemid,
-                                      })}
-                                      className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                                      title={name}
-                                      key={`recipe-${id}`}
-                                    >
-                                      <img
-                                        className="h-10 w-10"
-                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                        alt={name}
-                                      />
-                                      <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                                        {yields}
+                                      <div className="flex flex-row flex-wrap gap-2">
+                                        {ItemRecipeItem.map(
+                                          ({ Item, amount }, i) => (
+                                            <Button
+                                              className="aspect-square"
+                                              to={routes.item({
+                                                id: Item.id,
+                                              })}
+                                              variant="outlined"
+                                              color="DEFAULT"
+                                              title={Item.name}
+                                              key={`recipe-${Item.id}`}
+                                            >
+                                              <img
+                                                className="h-10 w-10"
+                                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
+                                                alt={Item.name}
+                                              />
+                                              <div className="absolute -bottom-1 right-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                                                {amount}
+                                              </div>
+                                            </Button>
+                                          )
+                                        )}
                                       </div>
-                                    </Link>
+
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 448 512"
+                                        fill="currentColor"
+                                        className="h-12 w-12"
+                                      >
+                                        <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
+                                      </svg>
+
+                                      <Button
+                                        className="aspect-square"
+                                        to={routes.item({
+                                          id: itemid,
+                                        })}
+                                        variant="outlined"
+                                        color="DEFAULT"
+                                        title={name}
+                                        key={`recipe-${id}`}
+                                      >
+                                        <img
+                                          className="h-10 w-10"
+                                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                          alt={name}
+                                        />
+                                        <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                                          {yields}
+                                        </div>
+                                      </Button>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      )
-                    )}
-                  </>
-                )}
+                              )
+                            )}
+                          </div>
+                        )
+                      )}
+                    </>
+                  )}
 
-                {dino.DinoStat.some((d) => d.type == "bossrecipe") && (
-                  <>
-                    <h4 className="rw-label">Recipe for summoning boss</h4>
-                    <Table
-                      className="min-w-fit"
-                      settings={{
-                        header: false,
-                      }}
-                      rows={dino.DinoStat.filter((d) => d.type == "bossrecipe")}
-                      columns={[
-                        {
-                          field: "Item",
-                          header: "",
-                          render: ({ value: { id, name, image } }) => (
-                            <Link
-                              to={routes.item({ id })}
-                              className="mr-3 flex flex-row items-center space-x-2"
-                            >
-                              <img
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                className="h-8 w-8 self-end"
-                              />
-                              <span>{name}</span>
-                            </Link>
-                          ),
-                        },
-                        {
-                          field: "value",
-                          header: "Amount",
-                        },
-                      ]}
-                    />
-                  </>
-                )}
-              </section>
-            </Tab>
-          )}
+                  {dino.DinoStat.some((d) => d.type == "bossrecipe") && (
+                    <>
+                      <h4 className="rw-label">Recipe for summoning boss</h4>
+                      <Table
+                        className="min-w-fit"
+                        settings={{
+                          header: false,
+                        }}
+                        rows={dino.DinoStat.filter((d) => d.type == "bossrecipe")}
+                        columns={[
+                          {
+                            field: "Item",
+                            header: "",
+                            render: ({ value: { id, name, image } }) => (
+                              <Link
+                                to={routes.item({ id })}
+                                className="mr-3 flex flex-row items-center space-x-2"
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                  className="h-8 w-8 self-end"
+                                />
+                                <span>{name}</span>
+                              </Link>
+                            ),
+                          },
+                          {
+                            field: "value",
+                            header: "Amount",
+                          },
+                        ]}
+                      />
+                    </>
+                  )}
+                </section>
+              </Tab>
+            )}
         </Tabs>
       </section>
       <ButtonGroup className="col-span-2">

@@ -220,6 +220,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             color="success"
             variant="outlined"
             disabled={props.loading}
+            permission="gamedata_create"
             startIcon={(
               <svg
                 xmlns="http://www.w3.org/2000/svg"

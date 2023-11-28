@@ -3,45 +3,19 @@ import Ripple from "../Ripple/Ripple";
 import {
   CSSProperties,
   Children,
-  ComponentPropsWithRef,
   Context,
   ElementType,
   LinkHTMLAttributes,
-  ReactElement,
   ReactNode,
   createContext,
   forwardRef,
   isValidElement,
   useContext,
-  useMemo,
   useRef,
 } from "react";
 import { permission } from "types/graphql";
 import { useAuth } from "src/auth";
 import { useRipple } from "src/components/useRipple";
-
-type ButtonGroupOwnProps = {
-  children?: React.ReactNode;
-  /**
-   * @default 'primary'
-   */
-  color?: "primary" | "secondary" | "success" | "warning" | "error";
-  disabled?: boolean;
-  disableRipple?: boolean;
-  fullWidth?: boolean;
-  /**
-   * @default 'horizontal'
-   */
-  orientation?: "vertical" | "horizontal";
-  /**
-   * @default 'medium'
-   */
-  size?: "small" | "medium" | "large";
-  /**
-   * @default 'outlined'
-   */
-  variant?: "text" | "outlined" | "contained" | "icon";
-}
 
 type IButtonGroupContext = {
   className?: string;
@@ -135,7 +109,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
         warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",
         error: "text-red-500 hover:bg-red-500 hover:bg-opacity-10",
-        DEFAULT: "dark:text-white text-black hover:bg-black dark:hover:bg-white hover:bg-opacity-10"
+        DEFAULT: "dark:text-white text-black hover:bg-black dark:hover:bg-white dark:hover:bg-opacity-10 hover:bg-opacity-10"
       },
       contained: {
         primary:

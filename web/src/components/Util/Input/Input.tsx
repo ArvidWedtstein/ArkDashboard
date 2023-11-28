@@ -47,28 +47,28 @@ type InputOutlinedProps = {
   variant?: "outlined" | "contained" | "filled" | "standard";
   margin?: "none" | "dense" | "normal";
   type?:
-    | "number"
-    | "button"
-    | "time"
-    | "image"
-    | "text"
-    | "hidden"
-    | "color"
-    | "search"
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "file"
-    | "month"
-    | "password"
-    | "radio"
-    | "range"
-    | "reset"
-    | "submit"
-    | "tel"
-    | "url"
-    | "week"
-    | "textarea";
+  | "number"
+  | "button"
+  | "time"
+  | "image"
+  | "text"
+  | "hidden"
+  | "color"
+  | "search"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "month"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "submit"
+  | "tel"
+  | "url"
+  | "week"
+  | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -107,11 +107,11 @@ export const InputOutlined = ({
   const [focus, setFocus] = useState(false);
   const { field } = !!name
     ? useController({
-        name: name,
-        rules: validation,
-        defaultValue: defaultValue || value || "",
-        ...props,
-      })
+      name: name,
+      rules: validation,
+      defaultValue: defaultValue || value || "",
+      ...props,
+    })
     : { field: null };
 
   const handleFocus = (
@@ -147,25 +147,25 @@ export const InputOutlined = ({
 
   const { className: labelClassName, style: labelStyle } = name
     ? useErrorStyles({
-        className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
-        errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition-transform duration-200 text-base !text-red-600`,
-        name,
-      })
+      className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
+      errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition-transform duration-200 text-base !text-red-600`,
+      name,
+    })
     : {
-        className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
-        style: {},
-      };
+      className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition-transform left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
+      style: {},
+    };
 
   const { className: inputClassNames, style: inputStyle } = name
     ? useErrorStyles({
-        className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
-        errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded-[inherit] border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
-        name,
-      })
+      className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
+      errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded-[inherit] border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
+      name,
+    })
     : {
-        className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
-        style: {},
-      };
+      className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded-[inherit] border-0 bg-transparent py-4`,
+      style: {},
+    };
 
   const borders = {
     primary: `border-blue-400`,
@@ -176,9 +176,8 @@ export const InputOutlined = ({
     disabled: `dark:border-white/30 border-black/30`,
     DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`,
   };
-  const fieldsetClass = `border transition-colors ease-in duration-75 absolute text-left ${
-    borders[disabled || field?.disabled ? "disabled" : "DEFAULT"]
-  } bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`;
+  const fieldsetClass = `border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || field?.disabled ? "disabled" : "DEFAULT"]
+    } bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`;
   return (
     <div
       className={clsx(
@@ -726,13 +725,13 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
           labelSize[state.variant][size][focused || shrink ? "open" : "close"],
           className,
           colors[
-            disabled
-              ? "disabled"
-              : state.error
+          disabled
+            ? "disabled"
+            : state.error
               ? "error"
               : focused
-              ? fcs.color || color
-              : "DEFAULTNOFOCUS"
+                ? fcs.color || color
+                : "DEFAULTNOFOCUS"
           ]
         )}
         ref={ref}
@@ -1001,7 +1000,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
         if (element == null) {
           throw new Error(
             "ArkDashboard: Expected valid input target. " +
-              "Did you use a custom `inputComponent` and forget to forward refs? "
+            "Did you use a custom `inputComponent` and forget to forward refs? "
           );
         }
 
@@ -1107,18 +1106,16 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
     };
 
     const inputBaseClasses = {
-      outlined: `rounded ${
-        startAdornment && endAdornment
-          ? "px-3.5"
-          : startAdornment
+      outlined: `rounded ${startAdornment && endAdornment
+        ? "px-3.5"
+        : startAdornment
           ? "pl-3.5"
           : endAdornment
-          ? "pr-3.5"
-          : ""
-      }`,
-      filled: `dark:bg-white/10 hover:dark:bg-white/[.13] bg-black/10 hover:bg-black/[.13] rounded-t transition-colors ${
-        startAdornment ? "pl-3" : endAdornment ? "pr-3" : ""
-      }`,
+            ? "pr-3.5"
+            : ""
+        }`,
+      filled: `dark:bg-white/10 hover:dark:bg-white/[.13] bg-black/10 hover:bg-black/[.13] rounded-t transition-colors ${startAdornment ? "pl-3" : endAdornment ? "pr-3" : ""
+        }`,
       standard: `mt-4`,
     };
 
@@ -1130,59 +1127,51 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
     // TODO: add react-form-hook error classes here instead
     const inputBaseClassesAfter = {
       outlined: ``,
-      filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${
-        ownerState.focused
-          ? "after:transform after:scale-x-100 after:translate-x-0"
-          : "after:scale-x-0 "
-      } ${
-        fcs.error
+      filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused
+        ? "after:transform after:scale-x-100 after:translate-x-0"
+        : "after:scale-x-0 "
+        } ${fcs.error
           ? `before:!border-red-500 after:border-red-500`
           : borders[ownerState.color ?? "DEFAULT"]
-      }`,
-      standard: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${
-        ownerState.focused
-          ? "after:transform after:scale-x-100 after:translate-x-0"
-          : "after:scale-x-0"
-      } ${
-        fcs.error
+        }`,
+      standard: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused
+        ? "after:transform after:scale-x-100 after:translate-x-0"
+        : "after:scale-x-0"
+        } ${fcs.error
           ? `before:!border-red-500 hover:before:border-b after:border-red-500`
           : borders[ownerState.color ?? "DEFAULT"]
-      }`,
+        }`,
     };
     const classes = {
       root: "relative box-border inline-flex w-auto cursor-text items-center text-base font-normal leading-6",
-      input: `font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0 ${
-        ((formControl.label || props.label)?.toString().length > 0 &&
-          !(
-            formControl.filled ||
-            formControl.focused ||
-            formControl.adornedStart ||
-            formControl.shrink
-          )) ||
+      input: `font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0 ${((formControl.label || props.label)?.toString().length > 0 &&
+        !(
+          formControl.filled ||
+          formControl.focused ||
+          formControl.adornedStart ||
+          formControl.shrink
+        )) ||
         formControl.filled ||
         formControl.adornedStart ||
         type === "date" ||
         type === "datetime"
-          ? "placeholder:opacity-0"
-          : "placeholder:opacity-100"
-      } focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${
-        inputSize[ownerState.variant][ownerState.size]
-      } ${
-        ownerState.variant === "filled" || ownerState.variant === "outlined"
+        ? "placeholder:opacity-0"
+        : "placeholder:opacity-100"
+        } focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${inputSize[ownerState.variant][ownerState.size]
+        } ${ownerState.variant === "filled" || ownerState.variant === "outlined"
           ? startAdornment
             ? "pl-0"
             : endAdornment
-            ? "pr-0"
-            : ""
+              ? "pr-0"
+              : ""
           : ""
-      }`,
+        }`,
     };
 
     inputProps = { ...inputProps };
     return (
       <Fragment>
         <div
-          // {...rootProps}
           ref={ref}
           onClick={handleClick}
           {...other}
@@ -1197,7 +1186,6 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
               "pointer-events-none cursor-default text-black/50 before:border-dotted dark:text-white/50":
                 ownerState.disabled,
             },
-            // rootProps.className,
             className
           )}
         >
@@ -1250,11 +1238,11 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
           </FormControlContext.Provider>
           {endAdornment && (
             <div
+              {...endAdornmentProps}
               className={clsx(
                 "ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70",
                 endAdornmentProps?.className
               )}
-              {...endAdornmentProps}
             >
               {endAdornment}
             </div>
@@ -1262,9 +1250,9 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
 
           {renderSuffix
             ? renderSuffix({
-                ...fcs,
-                startAdornment,
-              })
+              ...fcs,
+              startAdornment,
+            })
             : null}
         </div>
       </Fragment>
@@ -1430,14 +1418,13 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
               {...SuffixProps}
               aria-hidden
               className={clsx(
-                `absolute border text-left transition-colors duration-75 ease-in ${
-                  borders[
-                    disabled || state.disabled
-                      ? "disabled"
-                      : state.focused
-                      ? color
-                      : "DEFAULTNOFOCUS"
-                  ]
+                `absolute border text-left transition-colors duration-75 ease-in ${borders[
+                disabled || state.disabled
+                  ? "disabled"
+                  : state.focused
+                    ? color
+                    : "DEFAULTNOFOCUS"
+                ]
                 } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
                 {
                   "border-2": state.focused,
@@ -1454,12 +1441,12 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                       state.filled ||
                       props?.InputLabelProps?.shrink ||
                       type === "date" ||
-                      type === "datetime",
+                      type === "datetime" || props.InputProps?.startAdornment,
                     "max-w-[0.01px]":
                       !state.focused &&
                       !state.filled &&
                       !props?.InputLabelProps?.shrink &&
-                      !(type === "date" || type === "datetime"),
+                      !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
                   }
                 )}
               >
@@ -1479,7 +1466,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
             </fieldset>
           ) : null
         }
-        // {...InputMore}
+      // {...InputMore}
       />
     );
   };

@@ -1,12 +1,13 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { ElementType, HTMLAttributes, ReactElement, forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { IntRange, debounce, formatNumber } from "src/lib/formatters";
 import clsx from "clsx";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
-import Button from "../Button/Button";
-import { InputOutlined } from "../Input/Input";
+import Button, { ButtonGroup } from "../Button/Button";
+import { Input, InputOutlined } from "../Input/Input";
+import { Lookup } from "../Lookup/Lookup";
 type Filter<Row extends Record<string, any>> = {
   /**
    * The column name.
@@ -133,6 +134,11 @@ type TableSettings = {
    */
   columnSelector?: boolean;
   /**
+   * Size of table.
+   * @default medium
+   */
+  size?: 'small' | 'medium' | 'large';
+  /**
    * Configuration for table borders.
    */
   borders?: {
@@ -192,6 +198,7 @@ const Table = <Row extends Record<string, any>>({
     header: true,
     select: false,
     filter: false,
+    size: 'medium',
     columnSelector: false,
     borders: {
       vertical: false,
@@ -433,16 +440,42 @@ const Table = <Row extends Record<string, any>>({
   const isRowOpen = (id: TableDataRow["row_id"]) =>
     collapsedRows.indexOf(id) !== -1;
 
+
+  const tableRow = clsx(`table-row text-inherit outline-none align-middle`, {
+    "divide-x divide-gray-400 dark:divide-zinc-800": mergedSettings.borders.vertical
+  })
+  const classes = {
+    table: "table w-full border-collapse border-spacing-0 text-left text-sm text-zinc-700 dark:text-zinc-300",
+    tableHead: "table-header-group text-sm uppercase",
+    tableBody: clsx("table-row-group", {
+      "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-500": mergedSettings.borders.horizontal
+    }),
+    tableHeaderRow: clsx(tableRow, {
+      hidden: !mergedSettings.header,
+    }),
+    tableRow: clsx(tableRow, {
+      "divide-opacity-30": mergedSettings.borders.vertical
+    }),
+    tableHeaderCell: clsx("table-cell sticky leading-6 z-10 min-w-[50px] line-clamp-1 bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800", {
+      "py-1 px-3": mergedSettings.size === 'small',
+      "p-3": mergedSettings.size === 'medium',
+      "py-4 px-5": mergedSettings.size === 'large',
+    }),
+    tableCell: clsx("table-cell bg-zinc-100 dark:bg-zinc-600/80 align-middle", {
+      "py-1 px-3": mergedSettings.size === 'small',
+      "p-4": mergedSettings.size === 'medium',
+      "px-6 py-5": mergedSettings.size === 'large',
+    }),
+  }
+
+
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
       <th
         abbr={other.field}
         key={`headcell-${columnIndex}-${label}`}
         id={`headcell-${other.field}`}
-        className={clsx(
-          "table-cell sticky leading-6 z-10 min-w-[50px] line-clamp-1 bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800",
-          other.headerClassName
-        )}
+        className={clsx(classes.tableHeaderCell, other.headerClassName)}
         aria-sort="none"
         scope="col"
         onClick={() => {
@@ -497,27 +530,6 @@ const Table = <Row extends Record<string, any>>({
     datatype: TableColumn<Row>["datatype"];
     [key: string]: any;
   }) => {
-    const rowSelected = isSelected(rowData.row_id);
-    const cellClassName = clsx(
-      className,
-      "table-cell p-4 bg-zinc-100 dark:bg-zinc-600 align-middle",
-      {
-        truncate: !render && !valueFormatter,
-        "dark:!bg-zinc-700 !bg-zinc-300": rowSelected,
-        "rounded-bl-lg":
-          rowIndex === PaginatedData.length - 1 &&
-          columnIndex === 0 &&
-          !mergedSettings.select &&
-          !columnSettings.some((col) => col.aggregate) &&
-          !dataRows.some((row) => row.collapseContent),
-        "rounded-br-lg":
-          rowIndex === PaginatedData.length - 1 &&
-          columnIndex === columns.length - 1 &&
-          !columnSettings.some((col) => col.aggregate) &&
-          !dataRows.some((row) => row.collapseContent),
-      }
-    );
-
     if (datatype == "number" && !isNaN(cellData) && !render) {
       cellData = formatNumber(parseInt(cellData));
     }
@@ -546,9 +558,21 @@ const Table = <Row extends Record<string, any>>({
       : valueFormatted;
 
     return (
-      <td headers={`headcell-${field}`} key={key} className={cellClassName}>
+      <TableCell key={key} headers={`headcell-${field}`} selected={isSelected(rowData.row_id)} className={clsx(className, {
+        "rounded-bl-lg":
+          rowIndex === PaginatedData.length - 1 &&
+          columnIndex === 0 &&
+          !mergedSettings.select &&
+          !columnSettings.some((col) => col.aggregate) &&
+          !dataRows.some((row) => row.collapseContent),
+        "rounded-br-lg":
+          rowIndex === PaginatedData.length - 1 &&
+          columnIndex === columns.length - 1 &&
+          !columnSettings.some((col) => col.aggregate) &&
+          !dataRows.some((row) => row.collapseContent)
+      })}>
         {content}
-      </td>
+      </TableCell>
     );
   };
 
@@ -564,19 +588,7 @@ const Table = <Row extends Record<string, any>>({
     select?: boolean;
   }) => {
     return (
-      <td
-        className={clsx("table-cell p-4", {
-          "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
-          "bg-zinc-100 dark:bg-zinc-600": !header,
-          "!bg-zinc-300 dark:!bg-zinc-700":
-            !header && isSelected(datarow.row_id),
-          "first:rounded-bl-lg":
-            rowIndex === PaginatedData.length - 1 &&
-            !columnSettings.some((col) => col.aggregate) &&
-            !datarow.collapseContent,
-        })}
-        scope="col"
-      >
+      <TableCell header={header} size={mergedSettings.size} scope="col" selected={isSelected(datarow?.row_id || "")}>
         {select ? (
           <div className="flex items-center">
             <input
@@ -625,7 +637,7 @@ const Table = <Row extends Record<string, any>>({
             </Button>
           )
         )}
-      </td>
+      </TableCell>
     );
   };
 
@@ -702,21 +714,17 @@ const Table = <Row extends Record<string, any>>({
   const tableFooter = () => (
     <tfoot>
       <tr
-        className={clsx(
-          "rounded-b-lg font-semibold text-gray-900 dark:text-white",
-          {
-            "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800":
-              mergedSettings.borders.vertical,
-          }
+        className={clsx(classes.tableRow,
+          "rounded-b-lg font-semibold text-gray-900 dark:text-white"
         )}
         role="checkbox"
       >
         {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
-          <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
+          <td className={clsx(classes.tableCell, "first:rounded-bl-lg")} />
         )}
         {mergedSettings.select && (
-          <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
+          <td className={clsx(classes.tableCell, "first:rounded-bl-lg")} />
         )}
         {columnSettings
           .filter((col) => !col.hidden)
@@ -727,7 +735,7 @@ const Table = <Row extends Record<string, any>>({
             ) => {
               if (!aggregate) {
                 return (
-                  <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
+                  <td className={clsx(classes.tableCell, "first:rounded-bl-lg")} />
                 );
               }
 
@@ -742,7 +750,8 @@ const Table = <Row extends Record<string, any>>({
                 <td
                   key={key}
                   className={clsx(
-                    "bg-zinc-300 px-3 py-4 first:rounded-bl-lg last:rounded-br-lg dark:bg-zinc-800",
+                    classes.tableCell,
+                    "first:rounded-bl-lg last:rounded-br-lg",
                     className
                   )}
                 >
@@ -837,85 +846,49 @@ const Table = <Row extends Record<string, any>>({
     );
 
     const paginationButtons = range.map((page, index) => (
-      <button
+      <Button
         key={`page-${index}`}
-        type="button"
+        variant={currentPage === page ? 'contained' : 'outlined'}
+        color={currentPage === page ? 'success' : 'secondary'}
         disabled={isNaN(page)}
         onClick={() => setCurrentPage(isNaN(page) ? 1 : page)}
-        className={clsx("rw-pagination-item -mx-px", {
-          "rw-pagination-item-active": currentPage === page,
-        })}
       >
         {page}
-      </button>
+      </Button>
     ));
 
     return (
       <nav className="m-2 flex items-center justify-end space-x-2 text-center text-sm text-zinc-800 dark:text-gray-400">
-        Rows per page&nbsp;
-        <select
+        <Lookup
+          margin="none"
+          size="small"
+          label="Rows Per Page"
+          className="max-w-xs w-40"
           disabled={dataRows.length == 0}
-          className="rw-input rw-input-small !m-0"
-          onChange={(e) => {
-            setSelectedPageSizeOption(parseInt(e.target.value));
-          }}
           defaultValue={selectedPageSizeOption}
-        >
-          {!mergedSettings?.pagination?.pageSizeOptions.includes(
-            settings.pagination.rowsPerPage
-          ) && <option>{mergedSettings.pagination.rowsPerPage}</option>}
-          {mergedSettings?.pagination?.pageSizeOptions.map((option) => (
-            <option key={option}>{option}</option>
-          ))}
-        </select>
-        <div
-          className="rw-button-group m-0 leading-tight"
-          aria-label="Page navigation"
-        >
-          <button
-            type="button"
-            disabled={currentPage === 1}
-            onClick={() => changePage("prev")}
-            className="rw-pagination-item"
-          >
+          getOptionLabel={(opt) => opt.toString()}
+          onSelect={setSelectedPageSizeOption}
+          options={mergedSettings?.pagination?.pageSizeOptions}
+        />
+
+        <ButtonGroup>
+          <Button variant="outlined" color="secondary" disabled={currentPage === 1}
+            onClick={() => changePage("prev")}>
             <span className="sr-only">Previous</span>
-            <svg
-              className="h-5 w-5"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="p-0.5 w-4 fill-current"
+              aria-hidden="true">
+              <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
             </svg>
-          </button>
+          </Button>
           {paginationButtons}
-          <button
-            type="button"
-            disabled={currentPage === totalPageCount}
-            onClick={() => changePage("next")}
-            className="rw-pagination-item"
-          >
+          <Button variant="outlined" color="secondary" disabled={currentPage === totalPageCount}
+            onClick={() => changePage("next")}>
             <span className="sr-only">Next</span>
-            <svg
-              className="h-5 w-5"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clipRule="evenodd"
-              ></path>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="p-0.5 w-4 fill-current" aria-hidden="true">
+              <path d="M85.14 475.8c-3.438-3.141-5.156-7.438-5.156-11.75c0-3.891 1.406-7.781 4.25-10.86l181.1-197.1L84.23 58.86c-6-6.5-5.625-16.64 .9062-22.61c6.5-6 16.59-5.594 22.59 .8906l192 208c5.688 6.156 5.688 15.56 0 21.72l-192 208C101.7 481.3 91.64 481.8 85.14 475.8z" />
             </svg>
-          </button>
-        </div>
+          </Button>
+        </ButtonGroup>
         <span className="font-normal">
           Showing{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -1153,18 +1126,20 @@ const Table = <Row extends Record<string, any>>({
             </button>
           )}
           {mergedSettings.search && (
-            <InputOutlined
+            <Input
               className="-ml-px"
-              margin="none"
               fullWidth
-              id="table-search"
-              type="search"
+              color="DEFAULT"
+              margin="none"
               label="Search"
+              type="search"
               onChange={handleSearch}
-              InputProps={{
+              SuffixProps={{
                 style: {
                   borderRadius: "0 0.375rem 0.375rem 0",
                 },
+              }}
+              InputProps={{
                 startAdornment: (
                   <svg
                     className="h-5 w-5 text-gray-500 dark:text-gray-400"
@@ -1181,18 +1156,16 @@ const Table = <Row extends Record<string, any>>({
                   </svg>
                 ),
                 endAdornment: (
-                  <Submit
-                    className="rw-button rw-button-green"
-                  >
+                  <Button type="submit" variant="contained" color="success" startIcon={(
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512"
-                      className="rw-button-icon-start"
                     >
                       <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
                     </svg>
+                  )}>
                     <span className="hidden md:block">Search</span>
-                  </Submit>
+                  </Button>
                 ),
               }}
             />
@@ -1205,14 +1178,10 @@ const Table = <Row extends Record<string, any>>({
       <div
         className={"w-full overflow-x-auto rounded-lg border border-zinc-500"}
       >
-        <table className="table w-full border-collapse border-spacing-0 text-left text-sm text-zinc-700 dark:text-zinc-300">
-          <thead className="table-header-group text-sm uppercase">
+        <table className={classes.table}>
+          <thead className={classes.tableHead}>
             <tr
-              className={clsx("table-row text-inherit outline-none align-middle", {
-                "divide-x divide-gray-400 dark:divide-zinc-800":
-                  mergedSettings.borders.vertical,
-                hidden: !mergedSettings.header,
-              })}
+              className={classes.tableHeaderRow}
             >
               {dataRows.some((row) => row.collapseContent) &&
                 tableSelect({ header: true, rowIndex: -1, select: false })}
@@ -1231,17 +1200,13 @@ const Table = <Row extends Record<string, any>>({
             </tr>
           </thead>
           <tbody
-            className={clsx("table-row-group", {
-              "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-800": mergedSettings.borders.horizontal
-            })}
+            className={classes.tableBody}
           >
             {dataRows &&
               PaginatedData.map((datarow, i) => (
                 <React.Fragment key={datarow.row_id.toString()}>
                   <tr
-                    className={clsx(`table-row outline-none align-middle text-inherit`, {
-                      "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800": mergedSettings.borders.vertical
-                    })}
+                    className={classes.tableRow}
                     role="checkbox"
                   >
                     {dataRows.some((row) => row.collapseContent) &&
@@ -1302,7 +1267,7 @@ const Table = <Row extends Record<string, any>>({
                 </React.Fragment>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <tr className={"table-row bg-zinc-100 dark:bg-zinc-600"}>
+              <tr className={classes.tableRow}>
                 <td
                   headers=""
                   className={clsx("p-4 text-center", {
@@ -1326,5 +1291,34 @@ const Table = <Row extends Record<string, any>>({
     </div>
   );
 };
+
+type TableCellProps = {
+  children?: React.ReactNode;
+  size?: 'small' | 'medium' | 'large';
+  header?: boolean;
+  selected?: boolean;
+} & React.DetailedHTMLProps<React.TdHTMLAttributes<HTMLTableCellElement>, HTMLTableCellElement>
+const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) => {
+  const { children, header = false, selected = false, size = "medium", className, ...other } = props;
+  const classes = clsx("table-cell truncate", {
+    "py-1 px-3": size === 'small' && !header,
+    "p-4": size === 'medium' && !header,
+    "px-6 py-5": size === 'large' && !header,
+    "py-0.5 px-3": size === 'small' && header,
+    "p-3 px-4": size === 'medium' && header,
+    "py-4 px-6": size === 'large' && header,
+    "": selected && header,
+    "bg-zinc-300 dark:bg-zinc-700": selected && !header,
+    "dark:bg-zinc-600/80 bg-zinc-100": !selected && !header,
+  }, header ? `sticky z-10 align-baseline leading-6 bg-zinc-300 dark:bg-zinc-800 min-w-[50px] line-clamp-1 first:rounded-tl-lg last:rounded-tr-lg` : `align-middle`, className)
+
+
+  const Component: ElementType = header ? 'th' : 'td';
+  return (
+    <Component className={classes} ref={ref} {...other}>
+      {children}
+    </Component>
+  )
+})
 
 export default Table;
