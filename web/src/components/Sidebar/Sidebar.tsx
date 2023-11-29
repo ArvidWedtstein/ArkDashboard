@@ -100,8 +100,8 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({}) => {
-  const { currentUser, isAuthenticated, logOut } = useAuth();
+const Sidebar = memo(({ }) => {
+  const { currentUser, isAuthenticated } = useAuth();
   const navigation = [
     {
       name: "Home",
@@ -163,9 +163,8 @@ const Sidebar = memo(({}) => {
             url={
               isAuthenticated && currentUser && currentUser?.avatar_url
                 ? currentUser.avatar_url
-                : `https://ui-avatars.com/api/?name=${
-                    isAuthenticated ? currentUser?.full_name : "Guest"
-                  }`
+                : `https://ui-avatars.com/api/?name=${isAuthenticated ? currentUser?.full_name : "Guest"
+                }`
             }
             storage={
               isAuthenticated && currentUser && currentUser?.avatar_url
@@ -193,6 +192,7 @@ const Sidebar = memo(({}) => {
             <span className="sr-only">Your Profile</span>
           </Link>
         </div>
+
         {navigation.map((item, index) => (
           <NavLink
             key={`sidebar-item-${index}`}
@@ -200,7 +200,7 @@ const Sidebar = memo(({}) => {
             title={item.name}
             activeClassName={`text-white ${item.color}`}
             matchSubPaths={true}
-            className="flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+            className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
           >
             {Icon(item.name)}
             {open && <span className="hidden md:block">{item.name}</span>}

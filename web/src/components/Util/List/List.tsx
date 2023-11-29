@@ -25,11 +25,11 @@ export const ListItem = (props: ListItemProps) => {
   });
   return (
     <li
-      className="relative box-border flex w-full items-center justify-start py-2 px-4 text-left"
+      className="relative box-border flex w-full items-center justify-start py-2 px-4 text-left text-black dark:text-white"
       {...getRippleHandlers()}
     >
       {props?.icon && (
-        <div className="inline-flex min-w-[56px] shrink-0 text-black dark:text-white">
+        <div className="inline-flex shrink-0 min-w-[36px]">
           {props.icon}
         </div>
       )}
