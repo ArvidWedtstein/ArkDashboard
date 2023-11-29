@@ -1277,7 +1277,7 @@ const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) 
     }, !header && !selected ? 'dark:bg-zinc-600/80 bg-zinc-100' : ''),
     standard: clsx()
   }
-  const classes = clsx("table-cell relative truncate ", {
+  const classes = clsx("table-cell relative truncate", {
     "py-1 px-3": size === 'small' && !header,
     "p-4": size === 'medium' && !header,
     "px-6 py-5": size === 'large' && !header,
