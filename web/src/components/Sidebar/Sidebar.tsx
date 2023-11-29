@@ -102,58 +102,6 @@ const Icon = (icon: string) => {
 
 const Sidebar = memo(({ }) => {
   const { currentUser, isAuthenticated } = useAuth();
-  const navigation = [
-    {
-      name: "Home",
-      href: routes.home(),
-      color: "!ring-pea-400 !bg-pea-500",
-    },
-    {
-      name: "Basespot",
-      href: routes.basespots({ page: 1 }),
-      color: "!ring-blue-400 !bg-blue-500",
-    },
-    {
-      name: "Crafting",
-      href: routes.materialCalculator(),
-      color: "!ring-red-400 !bg-red-500",
-    },
-    // {
-    //   name: "GTW",
-    //   href: routes.gtw(),
-    //   color: "!ring-lime-400 !bg-lime-500",
-    // },
-    {
-      name: "Tribes",
-      href: routes.tribes(),
-      color: "!ring-emerald-400 !bg-emerald-500",
-    },
-    {
-      name: "Story",
-      href: routes.timelineSeasons(),
-      color: "!ring-sky-200 !bg-sky-400",
-    },
-    {
-      name: "Dinos",
-      href: routes.dinos({ category: "ground" }),
-      color: "!ring-indigo-400 !bg-indigo-500",
-    },
-    {
-      name: "Items",
-      href: routes.items(),
-      color: "!ring-teal-500 !bg-teal-700",
-    },
-    {
-      name: "Maps",
-      href: routes.maps(),
-      color: "!ring-amber-400 !bg-amber-500",
-    },
-    {
-      name: "Lootcrates",
-      href: routes.lootcrates(),
-      color: "!ring-cyan-400 !bg-cyan-500",
-    },
-  ];
 
   return (
     <aside className="group sticky top-0 bottom-0 z-10 overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4 md:min-w-[12rem]">
@@ -193,19 +141,107 @@ const Sidebar = memo(({ }) => {
           </Link>
         </div>
 
-        {navigation.map((item, index) => (
-          <NavLink
-            key={`sidebar-item-${index}`}
-            to={item.href}
-            title={item.name}
-            activeClassName={`text-white ${item.color}`}
-            matchSubPaths={true}
-            className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
-          >
-            {Icon(item.name)}
-            {open && <span className="hidden md:block">{item.name}</span>}
-          </NavLink>
-        ))}
+        <NavLink
+          to={routes.home()}
+          title={"Home"}
+          activeClassName={`text-white !ring-pea-400 !bg-pea-500`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Home")}
+          <span className="hidden md:block">Home</span>
+        </NavLink>
+        <NavLink
+          to={routes.basespots({ page: 1 })}
+          title={"Basespots"}
+          activeClassName={`text-white !ring-pea-400 !bg-blue-500`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Basespot")}
+          <span className="hidden md:block">Basespots</span>
+        </NavLink>
+        <NavLink
+          to={routes.materialCalculator()}
+          title={"Crafting"}
+          activeClassName={`text-white !ring-red-400 !bg-red-500`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Crafting")}
+          <span className="hidden md:block">Crafting</span>
+        </NavLink>
+        <NavLink
+          to={routes.timelineSeasons()}
+          title={"Timeline"}
+          activeClassName={`text-white !ring-sky-200 !bg-sky-400`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Story")}
+          <span className="hidden md:block">Seasons Timeline</span>
+        </NavLink>
+        <NavLink
+          to={routes.dinos()}
+          title={"Dinos"}
+          activeClassName={`text-white !ring-indigo-400 !bg-indigo-500`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Dinos")}
+          <span className="hidden md:block">Dinos</span>
+        </NavLink>
+        <NavLink
+          to={routes.items()}
+          title={"Items"}
+          activeClassName={`text-white !ring-teal-500 !bg-teal-700`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Items")}
+          <span className="hidden md:block">Items</span>
+        </NavLink>
+        <NavLink
+          to={routes.maps()}
+          title={"Maps"}
+          activeClassName={`text-white !ring-amber-400 !bg-amber-500`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Maps")}
+          <span className="hidden md:block">Maps</span>
+        </NavLink>
+        <NavLink
+          to={routes.lootcrates()}
+          title={"Lootcrates"}
+          activeClassName={`text-white !ring-cyan-400 !bg-cyan-500`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          <svg viewBox="0 0 394 730" xmlns="http://www.w3.org/2000/svg" className="h-6 fill-current">
+            <path d="M194 31a277 277 0 0 1-2 13l-2 8v9c1 2 1 3-1 2l-1 3-1 7-2 8-1 9-1 9v2l1-6 2-4c1-1 1-1 1 2 0 6 0 7-2 11-1 3-1 4-2 2-1-1-2 1-3 11a124 124 0 0 1-3 16l-1 5v1c2-2 2-2 2 0 2 3 1 9-2 13l-2 3-1-2v1l-1 7-1 8-1 2-1 8-1 4v1l2 2 3 1 3 1 3 3 1 4 4 8 8 18 3 9 1 1 1 1 6 14 3 9 7 14 3 8 18 1a4127 4127 0 0 1 49-3c-5 0-5 0-2-1l29-1c5 0 5 1 1 1l-5 1 5 1h6l-1-3-1-10-1-8a107 107 0 0 1-1-16l-1-9a255 255 0 0 0-5-32c0-2 0-3 3-3 4 0 5-2 2-4l-5-8-7-12-3-6 1-1-2-1-1-1-1-2-3-3-4-7-2-4c1-1-1-4-2-4l-1-1-1-1-1-4c-1 1-2 0-3-1l-1-3v-1l-3-2-4-7-12-19-18-29-12-20 5 6a193 193 0 0 0-7-11l1 4-6-10-7-11-17-4-2 3zm-3 41c0 3-2 8-3 8s-1-3 1-8c0-3 2-2 2 0zm-8 45c0 5-2 12-3 12v-4c0-7 2-15 3-15v7zm101 28c1 0 1 1 0 0l-1-1c0-2 1-1 1 1zm-54 131h-3c-1-1 0-1 2-1 1 0 2 0 1 1zm23 0h-2v-1l2 1zm18 0h-2c-1-1 0-1 1-1l1 1zM182 31c-3 2-5 4-7 8l-4 5-1 1c1 1-1 5-2 4v2h-1l-1 1c1 1-2 7-3 6v2h-1l-1 1c1 1-2 7-3 6l-1 1c1 1-2 7-3 6v2h-1l-1 1c1 1-2 7-3 6v2h-1l-1 1c1 1-6 14-7 13v2h-1l-1 1c1 1-2 7-3 6l-1 1c1 1-2 7-3 6v2h-1l-1 1c1 1-2 7-3 6l-1 1c1 1-7 16-8 15l-1 1c1 1-1 5-2 4v1l-2 6-3 5c-1 1-1 2-2 1l-1 1c1 1-7 16-8 15l-1 1c1 1-2 7-3 6l-1 1c1 1-2 7-3 6v2l-1 1h-2l1 1h1l-4 6-1 1 1 2v8a2876 2876 0 0 0-19 63c0-4 2-5 20-5a131 131 0 0 1 22 2h4l-1 4-1 3 23-44c20-42 22-44 25-45 3 0 3-1 4-10l5-28-4 17-2 11c-1 7-1 8-4 8v-2l2-8 1-11 1-1 1-3-1-9c-1-6-1-6 2-13 3-5 3-7 2-10s-1-5 1-11c1-4 2-9 1-11 0-4 2-13 4-17 2-3 3-5 3-10 0-7 0-8 3-12l3-5v8c-1 7-1 7 2-5a163 163 0 0 1 4-23c2-7 2-13 1-13l-5 2zm-1 28h-1l1-2v2z">
+            </path>
+            <path d="m178 83-1 6 1-5 1-6-1 5zm-35 9-1 2 2-2 1-2-2 2zm33 1c0 1 0 2 1 1v-3c-1-1-1 0-1 2zm-2 11h1v-2l-1 2zm-1 5c0 1 0 2 1 1v-3c-1-1-1 0-1 2zm-1 6c0 2 0 3 1 2v-4c-1-1-1 0-1 2zm-1 7h1v-2l-1 2zm-1 5c0 2 0 3 1 2v-4c-1-1-1 0-1 2zm-49 4-1 4 2-4 2-4-3 4zm47 3v5c1 2 1 2 1-2 1-4 0-5-1-3zm7 8 1 1-1-1c-1-1-1-1 0 0zm-8 3c0 1 0 2 1 1v-2c-1-1-1 0-1 1zm7 2v2c1 1 1 1 1-1l1-2-2 1zm-13 48c0 3 0 3 1 0 3-6 3 0 1 8v-1c0-4 0-4-1-3-2 1-4 12-4 20l-2 6v5c-2 2-2 3-1 4v1l-1 2v2l1 2 1 1v2c0 1 0 2-1 1-1-4-1-5-2-3v5c-1 1-2 3 0 5v1l-2 2c-1 2 0 2 1 1 3-2 2 0-1 3-2 2-2 2-1 3 2 2 2 3 1 7 0 5-2 8-3 7v3l1 2c-2 1-4-3-3-5l2-2c2 0 2-2 1-3h-1c0 3-1 1-2-2l1-3 1-3v-4l1-6 1-5 1-8 1-7 2-5a269 269 0 0 1 3-23l1-5c1-5 0-7-2-7l-22 43-22 44 5 23a13627 13627 0 0 0 24 118l6 26 7 35c3 13 3 13 2-1l-2-21-1-11-1-11-1-7 21-40c20-38 22-41 24-41s2 0 1 1l-4 4-14 27-19 37-7 13 2 29 5 51 3 28 3 33 3 32 1 16a2742 2742 0 0 0 10 92c1 2 2 2 6-1l4-2v3c0 3 1 3 3 4l2-1 2-1 4-6 3-7 2-6 2-3 1-1c-1-1-1-1 2-6l1-6 3-4 1-3a101 101 0 0 1 9-20l1-5a605 605 0 0 0 17-41l2-4 3-6a2068 2068 0 0 0 26-67c-1-2-1-5 1-17 1-4 2-9 1-10l1-2c1 1 1 0 1-3v-4l1-3v-4l1-3 1-2a699 699 0 0 1 14-76l2-13 3-16 2-11a6421 6421 0 0 1 15-83l-50-1h-50v3l-2 12-3 19-2 12-3 19-3 18-2-3c-1-5-1-13 1-22a492 492 0 0 0 7-45l2-11-3-11a82 82 0 0 1-6-12 149 149 0 0 1-10-24 169 169 0 0 1-11-26l-4-8-3-6-2-5h-6c-5 0-5 1-6 3zm-4 44-1 1 1-2c0-2 1-1 0 0zm-4 22h-1l1-2v2zm-35 14 1 2v3l-2 3c-1 3-1 3-2 2-1-2-1-6 1-9 1-2 3-3 2-1zm190 9-2 1-2-1 2-1 2 1zm-112 77-3 4 3-7c2-4 3-5 3-3l-3 6zm-16 29v1l-1-1v-1l1 1zm-7 13-2 3 1-3 2-2-1 2zm-3 6-2 2 2-3v1zm-2 4-1 1h-1l1-1h1zm-3 6-3 3v2c-2 0-2-1 1-5s3-4 2 0zm-5 10-5 5 1-2 1-2 3-3v2zm156-234 2 2c1 1 1 1 0 0l-2-2z">
+            </path>
+            <path d="M312 200v4l1 8 3 30c4 29 4 31 4 39l-2 16a1386 1386 0 0 0-12 66 1858 1858 0 0 0-21 117 461 461 0 0 1-7 36v9a1214 1214 0 0 1 28-70 379 379 0 0 0 11-33l5-12 4-8a544 544 0 0 0 7-19l-7 32-2 11-1 5-1 5-1 5-1 3 2 9c3 8 3 7-2 28l-11 43-6 22-4 17a420 420 0 0 1-10 36 561 561 0 0 1-14 56l-4 16c-1 2-2 4-1 5 1 3 7 8 10 6l8-20a720 720 0 0 1 21-57l13-37 39-108c17-44 18-48 18-53l-1-7-4-8-5-12a398 398 0 0 1-19-40c-2-3-2-3 1-10l4-8 7-20c8-20 9-24 7-24-1-1-7-9-6-10l-1-1-1-2-1-2c-1 1-11-15-10-16l-1-1h-1c1-2 0-3-2-5l-1-2v-1l-2-2h-2l1-1h1l-2-2-1-2h-1v-1l-2-3-2-3c0-1 0-2-1-1s-1 0-1-1v-2l-2-2-2-4-1-2-3-5-4-4c0-3-6-5-9-3zm36 144v3l-1-2c0-2 1-3 1 0zm-3 14-1 3v-3l1-3v3zm-5 23v-2l1-1-1 3zm-1 7c-1 1-1 0-1-1l1-1v2zm-2 6v-1l1-1-1 2zm-1 7h-1l1-2v2zm-9 46-1 1h-1l1-1h1zM81 207c-2 1-4 3-8 13l-3 5-2 2-1 3v1l-2 1v2l-2 2-2 4-1 2-1 3-3 3-1 1-3 6-1 1c1 1-1 6-2 6h-1s0 2-2 3l-2 4-2 4-1 3-1 1 1 5 15 51 2 12-2 4-4 6-1 3c1 1 2-1 4-5l4-6 1 3c1 2 0 4-3 9l-5 12 2 29a240 240 0 0 1 2 34 278 278 0 0 1 8 29 294 294 0 0 1 10 29l-2-9c-6-17-10-36-6-26l4 10 4 10 2 10a446 446 0 0 1 4 13 276 276 0 0 1 11 38 372 372 0 0 1 8 36l-9-27-2-7a1163 1163 0 0 0 11 39l4 16a1183 1183 0 0 1 10 36c1 0 1-10-1-18l-3-19a2471 2471 0 0 0-14-99l-4-27c-3-20-3-25-2-22l4 19 1 10a464 464 0 0 1 8 39l6 21 6 29a782 782 0 0 1 13 54l4 18a412 412 0 0 0 9 43c3 17 4 22 8 26l5 5 3-2c2-2 2-3 2-6l-1-10a376 376 0 0 0-3-36 514 514 0 0 0-5-57l-1-12-1-10-2-13a283 283 0 0 1-2-34 399 399 0 0 1-4-44 521 521 0 0 0-7-61l-10-43c-7-28-8-35-7-35h2l20 82 9 109 9 106 11 32 11 32-1-15-4-42a8808 8808 0 0 0-8-85c-3-31-4-33-12-73a58357 58357 0 0 1-43-206c0 3 0 4-3 3a735 735 0 0 0-38-3c-1 0-2-1-2-3l-1-2c-1 0-1 4 2 15l7 36a2346 2346 0 0 0 19 87l1 12c-1 2-1 2-2 1a2454 2454 0 0 1-19-94 1597 1597 0 0 0-13-57 1498 1498 0 0 0 21-75zm-22 68c0 1-1 3-3 3v-2l2-3 1-1v3zm53 73h-2v-1l2 1zm-4 4a1499 1499 0 0 0 8 42l-6-24c-4-18-5-22-3-21l1 3zm28 173h-1l1-2v2zm-35 55h-1l1-2v2z">
+            </path>
+            <path d="m70 222-1 2 2-2 1-2-2 2zm79 44v2c1 0 3-3 2-4l-2 2zm-64 10h7c2-1 0-1-3-1l-4 1zm-14 7h8c2-1 0-1-5-1l-3 1zm21 1h9c2 0 1-1-4-1s-7 0-5 1zm-51 48-2 3-2 8c-2 3-3 8-3 10l-4 14c-6 20-6 19-3 31a323 323 0 0 0 11 37 708 708 0 0 0 18 54c1-1 1-1 0 0s-1 4 2 14a475 475 0 0 1 7 28l1 1v2l1 1c1-1 1-1 1 1v9l9 28 4 16a535 535 0 0 0 15 53c1 8 2 9 8 7 3-2 3-3 0-8l-8-28a556 556 0 0 0-16-65l-4-16a199 199 0 0 0-8-22l5 19 7 25 3 15-3-6a240 240 0 0 0-11-34 558 558 0 0 0-13-46l-1-11-2-14v-3l1 1 5 12-4-15-4-17 2-11v-6l-1-15-1-14-1-13-1-15c-2-20-2-30-1-29l1-1h-8zm0 11c-1 1-1 0-1-2 0-1 0-2 1-1v3zm2 33 1 12-1-13-2-18c0-5 0-5 1 1l1 18zm2 15-1 1-1-1v-1l2 1zm0 11v4l-1-13 1 9zm1 13c-1 1-1 0-1-2l1-2v4zm1 7v4l-1-9 1 5zm274 6c0 1 0 2 1 1v-2c-1-1-1 0-1 1zm-1 7-1 4 1-3v-1zm-2 7c0 1 0 2 1 1v-2c-1-1-1 0-1 1zm3 15c0 1 0 2 1 1v-3c-1-1-1 0-1 1z">
+            </path>
+            <path d="m59 473 7 26v-4l-7-22zm15 21 6 23 4 14 2 5-7-27-5-15zm2 29 4 16 6 20 17 66 5 14 2-2-4-13-30-101zm26 3h1v-2l-1 2zm176 1-1 1h1l1-1h-1zm3 92h1v-2l-1 2zm-125 35 1 3-1-4-1-2 1 3zm116 1h1v-2l-1 2zm-116 8c0 1 0 2 1 1v-2c-1-1-1 0-1 1zm113 4h1v-2l-1 2zm-2 7h1v-2l-1 2zm-53 6c-1 1-1 1 0 0l1-1-1 1z">
+            </path>
+          </svg>
+          <span className="hidden md:block">Lootcrates</span>
+        </NavLink>
+        <NavLink
+          to={routes.tribes()}
+          title={"Tribes"}
+          activeClassName={`text-white !ring-emerald-400 !bg-emerald-500`}
+          matchSubPaths={true}
+          className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+        >
+          {Icon("Tribes")}
+          <span className="hidden md:block">Tribes</span>
+        </NavLink>
       </nav>
     </aside>
   );
