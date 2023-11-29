@@ -691,7 +691,7 @@ const Gantt = <T extends Record<string, unknown>>({
                         >
                           <span>{item[labelKey].toString()}</span>
                           <time>
-                            {formatDate({ dateStyle: "short" }).formatRange(
+                            {(item[dateStartKey] && item[dateEndKey]) && formatDate({ dateStyle: "short" }).formatRange(
                               new Date(item[dateStartKey].toString()),
                               new Date(item[dateEndKey].toString())
                             )}

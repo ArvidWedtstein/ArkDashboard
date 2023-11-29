@@ -296,6 +296,18 @@ yarn rw test
 
 To make the integration even more seamless, Redwood augments Jest with database [scenarios](https://redwoodjs.com/docs/testing.md#scenarios) and [GraphQL mocking](https://redwoodjs.com/docs/testing.md#mocking-graphql-calls).
 
+Debug:
+
+```
+yarn rw build web
+```
+
+and then:
+
+```
+yarn rw prerender --dry-run
+```
+
 <!-- ROADMAP -->
 
 ## Roadmap
