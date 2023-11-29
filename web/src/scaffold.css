@@ -584,6 +584,7 @@
   .rw-divider {
     @apply relative m-[initial] shrink-0 list-none self-stretch [border:medium] [inline-size:1px] [margin-inline:initial] [block-size:initial];
   }
+  /* TODO: remove range */
   .range-input input {
     position: absolute;
     width: 100%;

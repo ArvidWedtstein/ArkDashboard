@@ -70,7 +70,7 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
     );
   };
 
-  const query = '' //error?.mostRecentRequest ? syntaxHighlight(error?.mostRecentRequest?.query) : '';
+  const query = error?.mostRecentRequest ? syntaxHighlight(error?.mostRecentRequest?.query) : '';
   return (
     <div className="flex h-[100vh] items-center text-center">
       <section className="mx-auto max-w-3xl bg-white dark:bg-[#252636]">
