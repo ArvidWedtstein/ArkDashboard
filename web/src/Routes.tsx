@@ -26,7 +26,7 @@ const Routes = () => {
           page={MaterialCalculatorPage}
           name="materialCalculator"
         />
-        <Route path="/" page={HomePage} name="home" prerender />
+        <Route path="/" page={HomePage} name="home" />
 
         <Route path="/gtw" page={GTWPage} name="gtw" />
 

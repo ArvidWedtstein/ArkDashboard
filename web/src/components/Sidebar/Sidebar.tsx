@@ -111,7 +111,7 @@ const Sidebar = memo(({ }) => {
             url={
               isAuthenticated && currentUser && currentUser?.avatar_url
                 ? currentUser.avatar_url
-                : `https://ui-avatars.com/api/?name=${isAuthenticated ? currentUser?.full_name : "Guest"
+                : `https://ui-avatars.com/api/?name=${isAuthenticated ? currentUser?.full_name || "Guest" : "Guest"
                 }`
             }
             storage={

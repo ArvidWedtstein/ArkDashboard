@@ -1,17 +1,12 @@
-import { Form, Submit } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/dist/toast";
-import { useEffect, useRef, useState } from "react";
-import { useAuth } from "src/auth";
+import { useEffect } from "react";
 import Button from "src/components/Util/Button/Button";
 
 // https://codepen.io/tjramage/pen/yOEbyw
 const HomePage = () => {
-  const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
-
   useEffect(() => {
-    window.addEventListener("scroll", () => {
+    document.addEventListener("scroll", () => {
       let Num = window.scrollY / 500;
       let Num2 = window.scrollY * 0.0004; // higher number for more zoom
       let Num2mod = Num2 + 1;
@@ -31,7 +26,7 @@ const HomePage = () => {
     });
 
     return () => {
-      window.removeEventListener("scroll", () => {
+      document.removeEventListener("scroll", () => {
         let Num = window.scrollY / 500;
         let Num2 = window.scrollY * 0.0004; // higher number for more zoom
         let Num2mod = Num2 + 1;
