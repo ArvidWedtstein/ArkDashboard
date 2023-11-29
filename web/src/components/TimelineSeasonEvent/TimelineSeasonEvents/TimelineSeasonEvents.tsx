@@ -9,6 +9,8 @@ import type {
 } from "types/graphql";
 import TimelineSeasonEventForm from "../TimelineSeasonEventForm/TimelineSeasonEventForm";
 import NewTimelineSeasonEventCell from "../NewTimelineSeasonEventCell";
+import { Fragment } from "react";
+import Button from "src/components/Util/Button/Button";
 
 const DELETE_TIMELINE_SEASON_EVENT_MUTATION = gql`
   mutation DeleteTimelineSeasonEventMutation($id: String!) {
@@ -54,7 +56,7 @@ const TimelineSeasonEventsList = ({
         {timelineSeasonEvents &&
           Object.entries(groupBy(timelineSeasonEvents, "created_at")).map(
             ([date, timeGroup], i) => (
-              <React.Fragment key={`date-${i}`}>
+              <Fragment key={`date-${i}`}>
                 <li key={`date-${i}`} className="my-2 ml-3">
                   {new Date(date).toLocaleDateString("en-GB", {
                     dateStyle: "medium",
@@ -160,7 +162,7 @@ const TimelineSeasonEventsList = ({
                     </li>
                   )
                 )}
-              </React.Fragment>
+              </Fragment>
             )
           )}
       </ul>

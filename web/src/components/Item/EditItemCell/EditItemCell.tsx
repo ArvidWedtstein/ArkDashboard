@@ -26,6 +26,14 @@ export const QUERY = gql`
       color
       category
       type
+      blueprint
+      visible
+      affinity
+      food
+      torpor
+      torpor_duration
+      damage
+      health
     }
   }
 `;

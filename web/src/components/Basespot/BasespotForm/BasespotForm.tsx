@@ -20,14 +20,16 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { navigate, routes } from "@redwoodjs/router";
 import Toast from "src/components/Util/Toast/Toast";
 import { useAuth } from "src/auth";
+import Switch from "src/components/Util/Switch/Switch";
+import Button from "src/components/Util/Button/Button";
+import { InputOutlined } from "src/components/Util/Input/Input";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -120,124 +122,109 @@ const BasespotForm = (props: BasespotFormProps) => {
             {props.basespot?.name}
           </h2>
           <div className="flex space-x-2">
-            {(currentUser?.permissions.some(
-              (p: permission) => p === "basespot_delete"
-            ) && props?.basespot?.id) && (
-                <button
-                  type="button"
-                  onClick={() => onDeleteClick(props?.basespot?.id)}
-                  className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
-                >
-                  <svg
+            <Button
+              color="error"
+              variant="outlined"
+              permission="basespot_delete"
+              disabled={!props?.basespot?.id }
+              onClick={() => onDeleteClick(props?.basespot?.id)}
+              startIcon={
+                <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 448 512"
-                    className="rw-button-icon-start"
                   >
                     <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
                   </svg>
-                  Delete
-                </button>
-              )}
-            <button
-              type="button"
-              className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
+              }
+            >
+              Delete
+            </Button>
+            <Button
+              color="error"
+              variant="outlined"
+              permission="basespot_delete"
               onClick={() => history.back()}
             >
               Cancel
-            </button>
+            </Button>
 
-            <Submit
+            {/* TODO: implement publishing/saving */}
+            <Button
+              color="success"
+              variant="outlined"
+              permission="basespot_create"
               disabled={props.loading}
+              type="submit"
+              name="save"
               title={
                 "Save. Unpublished changes will not be visible to the public."
               }
-              className="rw-button rw-button-medium rw-button-gray-outline"
             >
               Save
-            </Submit>
+            </Button>
 
-            <Submit
+            <Button
+              color="success"
+              variant="outlined"
+              permission="basespot_create"
               disabled={props.loading}
+              type="submit"
               name="publish"
-              title={"Publish"}
-              className="rw-button rw-button-medium rw-button-green"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M498.1 5.629C492.7 1.891 486.4 0 480 0c-5.461 0-10.94 1.399-15.88 4.223l-448 255.1C5.531 266.3-.6875 277.8 .0625 289.1s8.375 22.86 19.62 27.55l103.2 43.01l61.85 146.5C186.2 510.6 189.2 512 191.1 512c2.059 0 4.071-.8145 5.555-2.24l85.75-82.4l120.4 50.16c4.293 1.793 8.5 2.472 12.29 2.472c6.615 0 12.11-2.093 15.68-4.097c8.594-4.828 14.47-13.31 15.97-23.05l64-415.1C513.5 24.72 508.3 12.58 498.1 5.629zM32 288l380.1-217.2l-288.2 255.5L32 288zM200.7 462.3L151.1 344.9l229.5-203.4l-169.5 233.1c-2.906 4-3.797 9.094-2.438 13.84c1.374 4.75 4.844 8.594 9.438 10.41l34.4 13.76L200.7 462.3zM416.7 443.3l-167.7-66.56l225.7-310.3L416.7 443.3z" />
+                </svg>
+              }
             >
               Publish
-            </Submit>
+            </Button>
           </div>
         </div>
+
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        <div className="relative">
-          <Label
+        <div className="flex md:flex-col flex-wrap">
+          <InputOutlined
             name="name"
-            className="rw-label"
-            errorClassName="rw-label rw-label-error"
-          >
-            Name
-          </Label>
-
-          <TextField
-            name="name"
+            label="Name"
+            margin="normal"
             defaultValue={props.basespot?.name}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
             validation={{ required: true }}
           />
-          <FieldError name="name" className="rw-field-error" />
+
+          <InputOutlined
+            name="description"
+            label="Description"
+            type="textarea"
+            defaultValue={props.basespot?.description}
+            rows={5}
+            validation={{ required: true }}
+          />
         </div>
 
-        <Label
-          name="description"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Description
-        </Label>
-
-        <TextAreaField
-          name="description"
-          defaultValue={props.basespot?.description}
-          className="rw-input w-full min-w-max"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={""}
-          rows={5}
-          validation={{ required: true }}
-        />
-
-        <FieldError name="description" className="rw-field-error" />
-
-        <Label
+        <Lookup
           name="map_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Map
-        </Label>
-
-        <MultiSelectLookup
-          name="map_id"
+          label="Map"
           disabled={props.loading}
-          defaultValue={[props.basespot?.map_id.toString() || map.toString()]}
-          options={
-            props?.maps.map((map) => ({
-              label: map.name,
-              value: Number(map.id),
-              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-            })) || []
-          }
+          loading={props.loading}
+          defaultValue={props.basespot?.map_id || map}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => option.name}
+          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+          options={props?.maps}
           onSelect={(e) => {
-            if (!e[0] || !e[0].value) return setMap(null);
-            setMap(parseInt(e[0].value.toString()));
+            if (!e) return setMap(null);
+            setMap(e.id);
             // formMethods.setValue("map_id", parseInt(e[0].value.toString()));
           }}
         />
-
-        <FieldError name="map_id" className="rw-field-error" />
 
         <MapPicker
           className="mt-3"
@@ -250,45 +237,24 @@ const BasespotForm = (props: BasespotFormProps) => {
           }}
         />
 
-        <div className="flex flex-row items-start">
-          <div className="group relative z-0 mb-6">
-            <Label
-              name="latitude"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Latitude
-            </Label>
+        <div className="flex flex-row items-start space-x-3">
+          <InputOutlined
+            name="latitude"
+            label="Latitude"
+            margin="normal"
+            emptyAs={null}
+            defaultValue={props?.basespot?.latitude}
+            validation={{ required: true, valueAsNumber: true }}
+          />
 
-            <TextField
-              name="latitude"
-              defaultValue={props?.basespot?.latitude}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              emptyAs={null}
-              validation={{ required: true, valueAsNumber: true }}
-            />
-            <FieldError name="latitude" className="rw-field-error" />
-          </div>
-          <div className="relative z-0 mx-6 mb-6">
-            <Label
-              name="longitude"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Longitude
-            </Label>
-
-            <TextField
-              name="longitude"
-              defaultValue={props?.basespot?.longitude}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              emptyAs={null}
-              validation={{ valueAsNumber: true, required: true }}
-            />
-            <FieldError name="longitude" className="rw-field-error" />
-          </div>
+          <InputOutlined
+            name="longitude"
+            label="Longitude"
+            margin="normal"
+            emptyAs={null}
+            defaultValue={props?.basespot?.longitude}
+            validation={{ required: true, valueAsNumber: true }}
+          />
         </div>
 
         <Label
@@ -458,23 +424,13 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
         <FieldError name="level" className="rw-field-error" />
 
-        <Label
+        <InputOutlined
+          label="Estimated for (n) players"
           name="estimated_for_players"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Estimated for players
-        </Label>
-
-        <TextField
-          name="estimated_for_players"
+          margin="normal"
           defaultValue={props.basespot?.estimated_for_players}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
         />
-
-        <FieldError name="estimated_for_players" className="rw-field-error" />
-
+        <br />
         <Label
           name="base_images"
           className="rw-label"
@@ -491,11 +447,12 @@ const BasespotForm = (props: BasespotFormProps) => {
             ?.split(",")
             .map(
               (f) =>
-                `M${props?.basespot?.map_id}-${props?.basespot?.id
-                }/${f.trim()}`
+                `M${props?.basespot?.map_id}-${props?.basespot?.id}/${f.trim()}`
             )
             .join(",")}
-          storagePath={props.basespot?.id ? `basespotimages` : 'basespotimages/temp'}
+          storagePath={
+            props.basespot?.id ? `basespotimages` : "basespotimages/temp"
+          }
         />
 
         <FieldError name="base_images" className="rw-field-error" />
@@ -508,7 +465,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           Has Air?
         </Label>
 
-        <ToggleButton
+        <Switch
           className=""
           name="has_air"
           offLabel="no air"

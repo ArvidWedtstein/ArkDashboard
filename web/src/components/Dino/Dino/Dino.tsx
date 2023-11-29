@@ -17,7 +17,7 @@ import {
   clamp,
   formatNumber,
 } from "src/lib/formatters";
-import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useReducer } from "react";
 
 import type {
   DeleteDinoMutationVariables,
@@ -30,8 +30,18 @@ import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Counter from "src/components/Util/Counter/Counter";
 import { useAuth } from "src/auth";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
-import StatCard from "src/components/Util/StatCard/StatCard";
 import Toast from "src/components/Util/Toast/Toast";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import List, { ListItem } from "src/components/Util/List/List";
+import { Input } from "src/components/Util/Input/Input";
+import Switch from "src/components/Util/Switch/Switch";
+import Alert from "src/components/Util/Alert/Alert";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -153,7 +163,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
    * - Creature stat: (base value × (1 + stat level wild × Increase per wild-level as % of B × Increase per wild level modifier) × TamedBaseHealthMultiplier × (1 + Imprinting Bonus when tamed × 0.2 × IBM) + Additive taming-bonus × Additive taming-bonus modifier) × (1 + Taming Effectiveness × Multiplicative taming-bonus × Multiplicative taming-bonus modifier) × (1 + player leveled stat × Increase per domesticated level as % of Vpt × Increase per domesticated level modifier)
    * - Melee damage: Weapon Base Damage * Weapon Damage Quality Multiplier * Survivor Melee Damage Multiplier * Server Settings: Player Damage
    * - Oxygen under water:  Oxygen / 3 = time in seconds
-   */
+   *
+   * https://ark.fandom.com/wiki/Module:TamingTable/creatures
+   **/
 
   const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
     toast.custom((t) => (
@@ -1239,26 +1251,35 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           header: "Base",
                           className: "text-center",
                           valueFormatter: ({ value }) =>
-                            value ? formatNumber(Number(parseInt(value.toString()) / 300)) : "-",
+                            value
+                              ? formatNumber(
+                                Number(parseInt(value.toString()) / 300)
+                              )
+                              : "-",
                         },
                         {
                           field: "sprint",
                           header: "Sprint",
-                          className: "text-center",
                           valueFormatter: ({ value }) =>
-                            value ? formatNumber(Number(parseInt(value.toString()) / 300)) : "-",
+                            value
+                              ? formatNumber(
+                                Number(parseInt(value.toString()) / 300)
+                              )
+                              : "-",
                         },
                         {
                           field: "swim",
                           header: "Swim",
-                          className: "text-center",
                           valueFormatter: ({ value }) =>
-                            value ? formatNumber(Number(parseInt(value.toString()) / 300)) : "-",
+                            value
+                              ? formatNumber(
+                                Number(parseInt(value.toString()) / 300)
+                              )
+                              : "-",
                         },
                         {
                           field: "format",
                           header: "",
-                          className: "text-center",
                         },
                       ]}
                       rows={Object.entries(dino.movement["w"]).map(
@@ -1526,7 +1547,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                             >
                               <img
                                 src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                className="h-8 w-8 self-end"
+                                className="w-8 self-end pr-2"
                               />
                               <span>{name}</span>
                             </Link>
@@ -1544,44 +1565,64 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       toolbar={
                         !dino.type.includes("boss")
                           ? [
-                            <button
-                              type="button"
-                              className="rw-button rw-button-gray"
+                            <Button
+                              variant="outlined"
+                              color="secondary"
                               onClick={() =>
                                 dispatch({ type: "RANDOMIZE_STAT" })
                               }
+                              style={{
+                                borderRadius: '0.375rem 0 0 0.375rem',
+                                marginLeft: '-0.5px',
+                              }}
                             >
                               Random
-                            </button>,
-                            <button
-                              type="button"
-                              className="rw-button rw-button-gray text-white"
+                            </Button>,
+                            <Button
+                              variant="outlined"
+                              color="secondary"
                               onClick={() =>
                                 dispatch({
                                   type: "DISTRIBUTE_STAT",
                                 })
                               }
+                              style={{
+                                borderRadius: '0',
+                                marginLeft: '-0.5px',
+                              }}
                             >
                               Distribute Evenly
-                            </button>,
-                            <button
-                              type="button"
-                              className="rw-button rw-button-red"
+                            </Button>,
+                            <Button
+                              variant="outlined"
+                              color="error"
                               onClick={() =>
                                 dispatch({
                                   type: "RESET_STAT",
                                 })
                               }
+                              style={{
+                                borderRadius: '0 0.375rem 0.375rem 0',
+                                marginLeft: '-0.5px',
+                              }}
                             >
                               Clear
-                            </button>,
-                            <p>
+                            </Button>,
+                            <Button
+                              variant="text"
+                              color="DEFAULT"
+                              disableRipple
+                              style={{
+                                borderRadius: '0 0.375rem 0.375rem 0',
+                                marginLeft: '-0.5px',
+                              }}
+                            >
                               {state.level -
                                 state.base_stats
                                   .map((b) => b?.points)
                                   .reduce((a, b) => a + b, 0)}{" "}
                               points wasted
-                            </p>,
+                            </Button>,
                           ]
                           : []
                       }
@@ -1634,10 +1675,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           className: "w-fit",
                           datatype: "number",
                           render: ({ value, row, rowIndex }) => (
-                            <input
-                              className="rw-input w-24 text-center"
+                            <Input
+                              margin="none"
+                              size="small"
+                              color="primary"
                               value={value}
-                              name={`${rowIndex}-total`}
                               onChange={(e) => {
                                 dispatch({
                                   type: "CHANGE_STAT",
@@ -1656,59 +1698,79 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           field: "base",
                           header: "",
                           render: ({ row }) => (
-                            <nav className="flex flex-row items-center space-x-2">
-                              <button
-                                type="button"
-                                disabled={
-                                  state.base_stats.find(
-                                    (s) => s.stat === row.stat
-                                  )?.points <= 0 || row.stat === "Torpidity"
-                                }
-                                className="rw-button rw-button-red-outline h-8 w-8 rounded-full p-0 !text-xl"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "CHANGE_STAT",
-                                    payload: {
-                                      stat: row.stat,
-                                      type: "remove",
-                                    },
-                                  })
-                                }
-                              >
-                                -
-                              </button>
-                              <input
-                                type="text"
-                                disabled={true}
-                                className="rw-input w-16 p-3 text-center"
-                                value={
-                                  state.base_stats.find(
-                                    (s) => s.stat === row.stat
-                                  )?.points
-                                }
-                              />
-                              <button
-                                type="button"
-                                disabled={
-                                  state.base_stats
-                                    .map((b) => b.points)
-                                    .reduce((a, b) => a + b, 0) >=
-                                  state.level || row.stat === "Torpidity"
-                                }
-                                className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "CHANGE_STAT",
-                                    payload: {
-                                      stat: row.stat,
-                                      type: "add",
-                                    },
-                                  })
-                                }
-                              >
-                                +
-                              </button>
-                            </nav>
+                            <Input
+                              margin="none"
+                              size="small"
+                              color="DEFAULT"
+                              value={
+                                state.base_stats.find(
+                                  (s) => s.stat === row.stat
+                                )?.points
+                              }
+                              InputProps={{
+                                className: "max-w-[10rem] w-fit",
+                                endAdornment: (
+                                  <Fragment>
+                                    <Button
+                                      variant="icon"
+                                      color="error"
+                                      disabled={
+                                        state.base_stats.find(
+                                          (s) => s.stat === row.stat
+                                        )?.points <= 0 || row.stat === "Torpidity"
+                                      }
+                                      onClick={() =>
+                                        dispatch({
+                                          type: "CHANGE_STAT",
+                                          payload: {
+                                            stat: row.stat,
+                                            type: "remove",
+                                          },
+                                        })
+                                      }
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 448 512"
+                                        className="h-3.5 w-3.5"
+                                        fill="currentColor"
+                                      >
+                                        <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                                      </svg>
+                                    </Button>
+                                    <span className="mx-1 h-8 w-px bg-current opacity-30" />
+                                    <Button
+                                      variant="icon"
+                                      color="success"
+                                      disabled={
+                                        state.base_stats
+                                          .map((b) => b.points)
+                                          .reduce((a, b) => a + b, 0) >=
+                                        state.level || row.stat === "Torpidity"
+                                      }
+                                      onClick={() =>
+                                        dispatch({
+                                          type: "CHANGE_STAT",
+                                          payload: {
+                                            stat: row.stat,
+                                            type: "add",
+                                          },
+                                        })
+                                      }
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 448 512"
+                                        className="h-3.5 w-3.5"
+                                        fill="currentColor"
+                                      >
+                                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                                      </svg>
+                                    </Button>
+                                  </Fragment>
+                                ),
+                              }}
+                            />
                           ),
                         },
                       ]}
@@ -1733,18 +1795,26 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             disabled={!dino.tamable}
           >
             <section>
-              <p className="my-1 text-sm leading-relaxed">
-                {dino?.taming_notice}
-              </p>
+              {dino?.taming_notice && (
+                <Alert className="my-3" variant="outlined" severity="info">
+                  {dino?.taming_notice}
+                </Alert>
+              )}
 
               {/* Tek Stryder */}
               {dino.id === "a5a9f2bb-7d89-4672-9d1c-567d035e23a7" && (
                 <div className="w-fit">
-                  <StatCard
-                    stat={`Missions for Tek Stryder on level ${state.level}`}
-                    value={Math.floor(1 + 48 * (state.level / 150))}
-                    chart={false}
-                  />
+                  <Card className="bg-zinc-200 shadow-md dark:bg-zinc-700">
+                    <CardHeader
+                      title={`Missions for Tek Stryder on level ${state.level}`}
+                      titleProps={{
+                        className:
+                          "!text-xs !font-semibold uppercase font-poppins",
+                      }}
+                      subheader={Math.floor(1 + 48 * (state.level / 150))}
+                      subheaderProps={{ className: "text-xl !font-bold" }}
+                    />
+                  </Card>
                 </div>
               )}
 
@@ -1775,75 +1845,40 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   });
                 }}
               >
-                <Label
+                <Input
+                  label="Level"
                   name="level"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Level
-                </Label>
-
-                <NumberField
-                  name="level"
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
+                  variant="standard"
+                  color="success"
+                  defaultValue={state.level}
                   validation={{
                     required: true,
                     valueAsNumber: true,
                     min: 1,
                     max: 500,
                   }}
-                  defaultValue={state.level}
+                  type="number"
                 />
-
-                <FieldError name="level" className="rw-field-error" />
-
-                <Label
+                <br />
+                <Input
+                  label="Seconds Between Hits"
                   name="seconds_between_hits"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Seconds between hits
-                </Label>
-
-                <NumberField
-                  name="seconds_between_hits"
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
+                  variant="standard"
+                  color="success"
+                  defaultValue={state.seconds_between_hits}
                   validation={{
                     valueAsNumber: true,
                     min: 1,
                     max: 500,
                   }}
-                  defaultValue={state.seconds_between_hits}
+                  type="number"
                 />
 
-                <FieldError
-                  name="seconds_between_hits"
-                  className="rw-field-error"
-                />
-
-                {dino.x_variant && (
-                  <>
-                    <Label
-                      name="x_variant"
-                      className="rw-label"
-                      errorClassName="rw-label rw-label-error"
-                    >
-                      X Variant
-                    </Label>
-
-                    <CheckboxField
-                      name="x_variant"
-                      className="rw-input"
-                      errorClassName="rw-input rw-input-error"
-                      validation={{ required: false, valueAsBoolean: true }}
-                    />
-
-                    <FieldError name="x_variant" className="rw-field-error" />
-                  </>
+                {dino?.x_variant && (
+                  <Switch onLabel="X Variant" name="x_variant" />
                 )}
 
+                <br />
                 <Label
                   name="selected_food"
                   className="rw-label"
@@ -1870,282 +1905,455 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
                 <FieldError name="selected_food" className="rw-field-error" />
 
-                <Submit className="rw-button rw-button-green my-3">
+                <Button
+                  variant="contained"
+                  color="success"
+                  className="my-3"
+                  type="submit"
+                >
                   Calculate
-                </Submit>
+                </Button>
 
                 {tameData && (
-                  <section>
-                    <p className="rw-label">With selected food:</p>
-                    <div className="rounded-t-md border border-zinc-500 bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
-                      <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-                        {[
-                          {
-                            name: "Current",
-                            sub: `Lvl ${state.level}`,
-                            icon: (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 448 512"
-                              >
-                                <path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" />
-                              </svg>
-                            ),
-                          },
-                          {
-                            name: "Taming Eff.",
-                            sub: `${(tameData.effectiveness
-                              ? tameData.effectiveness
-                              : 0
-                            ).toFixed()}%`,
-                            icon: (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 384 512"
-                              >
-                                <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
-                              </svg>
-                            ),
-                          },
-                          {
-                            name: "With Bonus",
-                            sub: `Lvl ${state.level + tameData.levelsGained}`,
-                            icon: (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 512 512"
-                              >
-                                <path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" />
-                              </svg>
-                            ),
-                          },
-                          {
-                            name: "Max after Taming",
-                            sub: `Lvl ${state.level +
-                              tameData.levelsGained +
-                              (state.x_variant && dino.x_variant ? 88 : 73)
-                              }`,
-                            icon: (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 576 512"
-                              >
-                                <path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" />
-                              </svg>
-                            ),
-                          },
-                        ].map(({ name, sub, icon }, i) => (
-                          <li
-                            key={`taming-stage-${i}`}
-                            className="flex items-center space-x-2.5 [&>*]:border-zinc-500 [&>*]:fill-zinc-500 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
-                          >
-                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border p-1 md:h-12 md:w-12 md:p-3">
-                              {icon}
-                            </span>
-                            <span>
-                              <h3 className="font-medium leading-tight">
-                                {name}
-                              </h3>
-                              <p className="space-x-1 text-sm">
-                                <span>{sub.replace(/[0-9]/g, "")}</span>
-                                <Counter
-                                  className="inline-block"
-                                  startNumber={0}
-                                  endNumber={parseInt(sub.replace(/\D/g, ""))}
-                                  duration={500}
-                                />
-                              </p>
-                            </span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6 rotate-90 transform md:rotate-0"
-                              viewBox="0 0 256 512"
+                  <>
+                    <Card variant="outlined">
+                      {/* TODO: use new light */}
+                      <CardContent className="border-b border-inherit">
+                        <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                          {[
+                            {
+                              name: "Current",
+                              sub: `Lvl ${state.level}`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 448 512"
+                                >
+                                  <path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "Taming Eff.",
+                              sub: `${(tameData.effectiveness
+                                ? tameData.effectiveness
+                                : 0
+                              ).toFixed()}%`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 384 512"
+                                >
+                                  <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "With Bonus",
+                              sub: `Lvl ${state.level + tameData.levelsGained}`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 512 512"
+                                >
+                                  <path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "Max after Taming",
+                              sub: `Lvl ${state.level +
+                                tameData.levelsGained +
+                                (state.x_variant && dino.x_variant ? 88 : 73)
+                                }`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 576 512"
+                                >
+                                  <path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" />
+                                </svg>
+                              ),
+                            },
+                          ].map(({ name, sub, icon }, i) => (
+                            <li
+                              key={`taming-stage-${i}`}
+                              className="flex items-center space-x-2.5 [&>*]:border-zinc-500 [&>*]:fill-zinc-500 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
                             >
-                              <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                            </svg>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-
-                    <div className="rounded-b-md border border-t-0 border-zinc-500 bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
-                      <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
-                        {!!tameData.totalTorpor &&
-                          !!tameData.torporDepletionPS && (
-                            <div className="flex flex-col items-center">
-                              <p className="font-light">
-                                Torpor Drain Rate:{" "}
-                                <span
-                                  className={clsx(`font-bold`, {
-                                    "text-pea-500":
-                                      tameData.torporDepletionPS < 1,
-                                    "text-yellow-500":
-                                      tameData.torporDepletionPS >= 1 &&
-                                      tameData.torporDepletionPS < 2,
-                                    "text-red-500":
-                                      tameData.torporDepletionPS >= 2,
-                                  })}
-                                >
-                                  {tameData.torporDepletionPS.toFixed(1)}/s
-                                </span>
-                              </p>
-
-                              <p>
-                                {timeFormatL(
-                                  tameData.totalTorpor /
-                                  tameData.torporDepletionPS
-                                )}{" "}
-                                until unconscious
-                              </p>
-                            </div>
-                          )}
-                        {Object.entries(tameData)
-                          .filter(([k, _]) =>
-                            [
-                              "NarcoberryMin",
-                              "Bio-ToxinMin",
-                              "NarcoticMin",
-                              "Ascerbic-MushroomMin",
-                            ].includes(k)
-                          )
-                          .map(([name, amount]) => {
-                            const newName = name
-                              .replace("Min", "")
-                              .toLowerCase();
-                            return (
-                              <div
-                                className="flex flex-col items-center"
-                                key={`narcotic-${name}`}
-                              >
-                                <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${newName}.webp`}
-                                  alt="food"
-                                  className="w-8 sm:w-12"
-                                />
-                                <p>{amount.toString()}</p>
-                                <p className="text-xs capitalize">
-                                  {newName.replace("-", " ")}
-                                </p>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-
-                    {state.weapons && (
-                      <>
-                        <h4 className="rw-label">Knock Out</h4>
-                        <div className="max-w-screen relative flex flex-row gap-3 overflow-x-auto rounded-md text-center">
-                          {state.weapons
-                            .sort((a, b) => b.userDamage > a.userDamage)
-                            .map(
-                              ({
-                                id,
-                                name,
-                                visible,
-                                image,
-                                isPossible,
-                                chanceOfDeath,
-                                hits,
-                                hitboxes,
-                                userDamage,
-                                chanceOfDeathHigh,
-                              }) => (
-                                <div
-                                  key={`weapon-${id}`}
-                                  className={clsx(
-                                    `animate-fade-in flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded border border-zinc-500 bg-zinc-200 p-3 dark:bg-zinc-700`,
-                                    {
-                                      shadow: isPossible && chanceOfDeath < 99,
-                                      "rw-img-disable text-gray-500":
-                                        !isPossible || chanceOfDeath >= 99,
-                                    }
-                                  )}
-                                >
-                                  <img
-                                    className="h-16 w-16"
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border p-1 md:h-12 md:w-12 md:p-3">
+                                {icon}
+                              </span>
+                              <span>
+                                <h3 className="font-medium leading-tight">
+                                  {name}
+                                </h3>
+                                <p className="space-x-1 text-sm">
+                                  <span>{sub.replace(/[0-9]/g, "")}</span>
+                                  <Counter
+                                    className="inline-block"
+                                    startNumber={0}
+                                    endNumber={parseInt(sub.replace(/\D/g, ""))}
+                                    duration={500}
                                   />
-                                  <Link
-                                    to={routes.item({ id: id.toString() })}
-                                    className={clsx("w-full", {
-                                      "pointer-events-none": !visible,
+                                </p>
+                              </span>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6 rotate-90 transform md:rotate-0"
+                                viewBox="0 0 256 512"
+                              >
+                                <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                              </svg>
+                            </li>
+                          ))}
+                        </ol>
+                      </CardContent>
+                      <CardContent>
+                        <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
+                          {!!tameData.totalTorpor &&
+                            !!tameData.torporDepletionPS && (
+                              <div className="flex flex-col items-center">
+                                <p className="font-light">
+                                  Torpor Drain Rate:{" "}
+                                  <span
+                                    className={clsx(`font-bold`, {
+                                      "text-pea-500":
+                                        tameData.torporDepletionPS < 1,
+                                      "text-yellow-500":
+                                        tameData.torporDepletionPS >= 1 &&
+                                        tameData.torporDepletionPS < 2,
+                                      "text-red-500":
+                                        tameData.torporDepletionPS >= 2,
                                     })}
                                   >
-                                    {name}
-                                  </Link>
-                                  {isPossible ? (
-                                    <Counter
-                                      startNumber={0}
-                                      endNumber={hits}
-                                      duration={3000 / hits}
-                                    />
-                                  ) : (
-                                    <p>Not Possible</p>
-                                  )}
-                                  {chanceOfDeath > 0 && isPossible && (
-                                    <p
-                                      className={clsx("text-xs", {
-                                        "text-red-300": chanceOfDeathHigh,
-                                      })}
-                                    >
-                                      {chanceOfDeath}% chance of death
-                                    </p>
-                                  )}
-                                  {hitboxes.length > 0 && (
-                                    <span className="rw-badge rw-badge-gray">
-                                      {hitboxes.map(({ name, multiplier }) => (
-                                        <span
-                                          key={`hitbox-${name}`}
-                                        >{`${name} - ${multiplier}x`}</span>
-                                      ))}
-                                    </span>
-                                  )}
+                                    {tameData.torporDepletionPS.toFixed(1)}/s
+                                  </span>
+                                </p>
 
-                                  <div className="relative">
-                                    <input
-                                      type="text"
-                                      className="rw-input rw-input-small w-24 !pr-10"
-                                      placeholder="Percent"
-                                      defaultValue={userDamage}
-                                      disabled={
-                                        !isPossible || chanceOfDeath >= 99
-                                      }
-                                      onChange={debounce((e) => {
-                                        dispatch({
-                                          type: "CALC_WEAPON",
-                                          payload: {
-                                            id,
-                                            value: parseInt(e.target.value),
-                                          },
-                                        });
-                                      }, 300)}
-                                    />
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-4 text-gray-500 dark:text-gray-400"
-                                        viewBox="0 0 384 512"
-                                        fill="currentColor"
-                                      >
-                                        <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
-                                      </svg>
-                                    </div>
-                                  </div>
-                                </div>
-                              )
+                                <p>
+                                  {timeFormatL(
+                                    tameData.totalTorpor /
+                                    tameData.torporDepletionPS
+                                  )}{" "}
+                                  until unconscious
+                                </p>
+                              </div>
                             )}
+                          {Object.entries(tameData)
+                            .filter(([k, _]) =>
+                              [
+                                "NarcoberryMin",
+                                "Bio-ToxinMin",
+                                "NarcoticMin",
+                                "Ascerbic-MushroomMin",
+                              ].includes(k)
+                            )
+                            .map(([name, amount]) => {
+                              const newName = name
+                                .replace("Min", "")
+                                .toLowerCase();
+                              return (
+                                <div
+                                  className="flex flex-col items-center"
+                                  key={`narcotic-${name}`}
+                                >
+                                  <img
+                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${newName}.webp`}
+                                    alt="food"
+                                    className="w-8 sm:w-12"
+                                  />
+                                  <p>{amount.toString()}</p>
+                                  <p className="text-xs capitalize">
+                                    {newName.replace("-", " ")}
+                                  </p>
+                                </div>
+                              );
+                            })}
                         </div>
-                      </>
-                    )}
+                      </CardContent>
+                    </Card>
+                    <section>
+                      {/* <p className="rw-label">With selected food:</p>
+                      <div className="rounded-t-md border border-zinc-500 bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
+                        <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                          {[
+                            {
+                              name: "Current",
+                              sub: `Lvl ${state.level}`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 448 512"
+                                >
+                                  <path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "Taming Eff.",
+                              sub: `${(tameData.effectiveness
+                                ? tameData.effectiveness
+                                : 0
+                              ).toFixed()}%`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 384 512"
+                                >
+                                  <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "With Bonus",
+                              sub: `Lvl ${state.level + tameData.levelsGained}`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 512 512"
+                                >
+                                  <path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "Max after Taming",
+                              sub: `Lvl ${
+                                state.level +
+                                tameData.levelsGained +
+                                (state.x_variant && dino.x_variant ? 88 : 73)
+                              }`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 576 512"
+                                >
+                                  <path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" />
+                                </svg>
+                              ),
+                            },
+                          ].map(({ name, sub, icon }, i) => (
+                            <li
+                              key={`taming-stage-${i}`}
+                              className="flex items-center space-x-2.5 [&>*]:border-zinc-500 [&>*]:fill-zinc-500 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
+                            >
+                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border p-1 md:h-12 md:w-12 md:p-3">
+                                {icon}
+                              </span>
+                              <span>
+                                <h3 className="font-medium leading-tight">
+                                  {name}
+                                </h3>
+                                <p className="space-x-1 text-sm">
+                                  <span>{sub.replace(/[0-9]/g, "")}</span>
+                                  <Counter
+                                    className="inline-block"
+                                    startNumber={0}
+                                    endNumber={parseInt(sub.replace(/\D/g, ""))}
+                                    duration={500}
+                                  />
+                                </p>
+                              </span>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6 rotate-90 transform md:rotate-0"
+                                viewBox="0 0 256 512"
+                              >
+                                <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                              </svg>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                      <div className="rounded-b-md border border-t-0 border-zinc-500 bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
+                        <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
+                          {!!tameData.totalTorpor &&
+                            !!tameData.torporDepletionPS && (
+                              <div className="flex flex-col items-center">
+                                <p className="font-light">
+                                  Torpor Drain Rate:{" "}
+                                  <span
+                                    className={clsx(`font-bold`, {
+                                      "text-pea-500":
+                                        tameData.torporDepletionPS < 1,
+                                      "text-yellow-500":
+                                        tameData.torporDepletionPS >= 1 &&
+                                        tameData.torporDepletionPS < 2,
+                                      "text-red-500":
+                                        tameData.torporDepletionPS >= 2,
+                                    })}
+                                  >
+                                    {tameData.torporDepletionPS.toFixed(1)}/s
+                                  </span>
+                                </p>
 
-                    <Link
-                      to={`https://www.youtube.com/results?search_query=ark+${dino.name}+taming`}
-                      className="rw-button rw-button-blue my-3"
-                    >
-                      Youtube tutorial on how to tame this dino
-                    </Link>
-                  </section>
+                                <p>
+                                  {timeFormatL(
+                                    tameData.totalTorpor /
+                                      tameData.torporDepletionPS
+                                  )}{" "}
+                                  until unconscious
+                                </p>
+                              </div>
+                            )}
+                          {Object.entries(tameData)
+                            .filter(([k, _]) =>
+                              [
+                                "NarcoberryMin",
+                                "Bio-ToxinMin",
+                                "NarcoticMin",
+                                "Ascerbic-MushroomMin",
+                              ].includes(k)
+                            )
+                            .map(([name, amount]) => {
+                              const newName = name
+                                .replace("Min", "")
+                                .toLowerCase();
+                              return (
+                                <div
+                                  className="flex flex-col items-center"
+                                  key={`narcotic-${name}`}
+                                >
+                                  <img
+                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${newName}.webp`}
+                                    alt="food"
+                                    className="w-8 sm:w-12"
+                                  />
+                                  <p>{amount.toString()}</p>
+                                  <p className="text-xs capitalize">
+                                    {newName.replace("-", " ")}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div> */}
+
+                      {state.weapons && (
+                        <>
+                          <h4 className="rw-label">Knock Out</h4>
+                          <div className="max-w-screen relative flex flex-row gap-3 overflow-x-auto rounded-md text-center">
+                            {state.weapons
+                              .sort((a, b) => b.userDamage > a.userDamage)
+                              .map(
+                                ({
+                                  id,
+                                  name,
+                                  visible,
+                                  image,
+                                  isPossible,
+                                  chanceOfDeath,
+                                  hits,
+                                  hitboxes,
+                                  userDamage,
+                                  chanceOfDeathHigh,
+                                }) => (
+                                  <Card
+                                    variant="outlined"
+                                    className={clsx("min-w-[200px]", {
+                                      "rw-img-disable !text-gray-500":
+                                        !isPossible || chanceOfDeath >= 99,
+                                    })}
+                                  >
+                                    <div className="mt-4 inline-flex items-center justify-center">
+                                      <CardMedia
+                                        image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                      />
+                                    </div>
+                                    <CardHeader
+                                      title={
+                                        <Button
+                                          variant="text"
+                                          color="success"
+                                          size="small"
+                                          to={routes.item({ id })}
+                                        >
+                                          {name}
+                                        </Button>
+                                      }
+                                      subheader={
+                                        isPossible ? (
+                                          <Counter
+                                            startNumber={0}
+                                            endNumber={hits}
+                                            duration={3000 / hits}
+                                          />
+                                        ) : (
+                                          <p>Not Possible</p>
+                                        )
+                                      }
+                                    />
+                                    {chanceOfDeath > 0 && isPossible && (
+                                      <p
+                                        className={clsx("rw-badge", {
+                                          "rw-badge-red-outline":
+                                            chanceOfDeathHigh,
+                                          "rw-badge-yellow-outline":
+                                            chanceOfDeath > 30 &&
+                                            chanceOfDeath < 60,
+                                          "rw-badge-blue-outline":
+                                            !chanceOfDeathHigh,
+                                        })}
+                                      >
+                                        {chanceOfDeath}% chance of death
+                                      </p>
+                                    )}
+                                    {hitboxes.length > 0 && (
+                                      <span className="rw-badge rw-badge-gray">
+                                        {hitboxes.map(
+                                          ({ name, multiplier }) => (
+                                            <span
+                                              key={`hitbox-${name}`}
+                                            >{`${name} - ${multiplier}x`}</span>
+                                          )
+                                        )}
+                                      </span>
+                                    )}
+                                    <div className="relative w-full max-w-max px-2">
+                                      <Input
+                                        label="Percent"
+                                        size="small"
+                                        margin="none"
+                                        fullWidth
+                                        defaultValue={userDamage}
+                                        disabled={
+                                          !isPossible || chanceOfDeath >= 99
+                                        }
+                                        InputProps={{
+                                          endAdornment: (
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              className="h-4 text-gray-500 dark:text-gray-400"
+                                              viewBox="0 0 384 512"
+                                              fill="currentColor"
+                                            >
+                                              <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
+                                            </svg>
+                                          ),
+                                        }}
+                                        onChange={debounce((e) => {
+                                          dispatch({
+                                            type: "CALC_WEAPON",
+                                            payload: {
+                                              id,
+                                              value: parseInt(e.target.value),
+                                            },
+                                          });
+                                        }, 300)}
+                                      />
+                                    </div>
+                                  </Card>
+                                )
+                              )}
+                          </div>
+                        </>
+                      )}
+                      <Button variant="outlined" className="my-4" to={`https://www.youtube.com/results?search_query=ark+${dino.name}+taming`}>
+                        Youtube tutorial on how to tame this dino
+                      </Button>
+                    </section>
+                  </>
                 )}
               </Form>
             </section>
@@ -2182,44 +2390,35 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 <>
                   <p className="rw-label !text-center">{dino.name} breeding:</p>
                   <div className="mx-auto flex justify-center">
-                    <div className="relative">
-                      <label
-                        htmlFor="maturation_percent"
-                        className="rw-label sr-only"
-                      >
-                        Maturation Percent
-                      </label>
-                      <input
-                        type="number"
-                        name="maturation_percent"
-                        id="maturation_percent"
-                        className="rw-input w-20 !pr-10"
-                        defaultValue={0}
-                        min={0}
-                        max={100}
-                        maxLength={3}
-                        onInput={debounce((event) => {
-                          dispatch({
-                            type: "SET_MATURATION",
-                            payload: {
-                              value: parseInt(
-                                event.target ? event.target["value"] : 0
-                              ),
-                            },
-                          });
-                        }, 300)}
-                      />
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 text-gray-500 dark:text-gray-400"
-                          viewBox="0 0 384 512"
-                          fill="currentColor"
-                        >
-                          <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
-                        </svg>
-                      </div>
-                    </div>
+                    <Input
+                      color="success"
+                      label="Maturation Percent"
+                      defaultValue={0}
+                      InputProps={{
+                        min: 0,
+                        max: 100,
+                        endAdornment: (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 text-gray-500 dark:text-gray-400"
+                            viewBox="0 0 384 512"
+                            fill="currentColor"
+                          >
+                            <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
+                          </svg>
+                        ),
+                      }}
+                      onChange={debounce((event) => {
+                        dispatch({
+                          type: "SET_MATURATION",
+                          payload: {
+                            value: parseInt(
+                              event.target ? event.target["value"] : 0
+                            ),
+                          },
+                        });
+                      }, 300)}
+                    />
                   </div>
 
                   <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
@@ -2289,13 +2488,15 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 dino.egg_min != null &&
                 dino.egg_max > 0 &&
                 dino.egg_min > 0 && (
-                  <section className="w-fit rounded-lg border border-zinc-500 bg-zinc-700 p-4">
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/dodo-egg.webp`}
-                      alt={dino.name}
+                  <Card
+                    variant="outlined"
+                    className="flex w-fit flex-col items-center justify-center"
+                  >
+                    <CardMedia
+                      image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/dodo-egg.webp`}
                       className="aspect-square p-2"
                     />
-                    <div className="flex flex-col space-y-3">
+                    <CardContent className="flex flex-col space-y-3">
                       <h3 className="rw-label mt-0 font-medium leading-tight">
                         Egg Temperature
                       </h3>
@@ -2316,8 +2517,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           <path d="M160 338.8V144C160 135.1 152.9 128 144 128S128 135.1 128 144v194.8c-18.62 6.625-32 24.38-32 45.25c0 26.5 21.5 48 47.1 48C170.5 432 192 410.5 192 384C192 363.1 178.6 345.4 160 338.8zM240 96c0-53-43-95.1-96-95.1C91 .0001 48 43 48 96v203.4c-19.75 22.38-31.88 51.75-32 84C15.63 453.6 72.75 511.5 143.1 512L144 512c70.75 0 128-57.25 128-128c0-32.5-12.12-62.13-32-84.63V96zM144 480H143.4c-52.75-.375-95.62-43.75-95.37-96.5c.25-39.5 22.5-61.38 32-72V96c0-35.25 28.75-64 63.1-64c35.25 0 64 28.75 64 64v215.5c9.125 10.38 32 32.63 32 72.5C240 436.9 196.9 480 144 480zM336 64h160C504.8 64 512 56.8 512 48C512 39.2 504.8 32 496 32h-160C327.2 32 320 39.2 320 48C320 56.8 327.2 64 336 64zM496 160h-160C327.2 160 320 167.2 320 176C320 184.8 327.2 192 336 192h160C504.8 192 512 184.8 512 176C512 167.2 504.8 160 496 160zM496 288h-128C359.2 288 352 295.2 352 304c0 8.799 7.201 16 16 16h128c8.801 0 16-7.201 16-16C512 295.2 504.8 288 496 288z" />
                         </svg>
                       </p>
-                    </div>
-                  </section>
+                    </CardContent>
+                  </Card>
                 )}
             </section>
           </Tab>
@@ -2396,11 +2597,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                       <div className="flex flex-row flex-wrap gap-2">
                                         {ItemRecipeItem.map(
                                           ({ Item, amount }, i) => (
-                                            <Link
+                                            <Button
+                                              className="aspect-square"
                                               to={routes.item({
                                                 id: Item.id,
                                               })}
-                                              className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                                              variant="outlined"
+                                              color="DEFAULT"
                                               title={Item.name}
                                               key={`recipe-${Item.id}`}
                                             >
@@ -2409,10 +2612,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                                 src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
                                                 alt={Item.name}
                                               />
-                                              <div className="absolute -bottom-1  inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                                              <div className="absolute -bottom-1 right-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
                                                 {amount}
                                               </div>
-                                            </Link>
+                                            </Button>
                                           )
                                         )}
                                       </div>
@@ -2426,11 +2629,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                         <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
                                       </svg>
 
-                                      <Link
+                                      <Button
+                                        className="aspect-square"
                                         to={routes.item({
                                           id: itemid,
                                         })}
-                                        className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                                        variant="outlined"
+                                        color="DEFAULT"
                                         title={name}
                                         key={`recipe-${id}`}
                                       >
@@ -2442,7 +2647,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                         <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
                                           {yields}
                                         </div>
-                                      </Link>
+                                      </Button>
                                     </div>
                                   </div>
                                 </div>
@@ -2493,38 +2698,34 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             )}
         </Tabs>
       </section>
-      <nav className="rw-button-group col-span-2">
-        {currentUser &&
-          currentUser?.permissions.some(
-            (p: permission) => p === "gamedata_update"
-          ) && (
-            <Link
-              to={routes.editDino({ id: dino.id })}
-              className="rw-button rw-button-blue"
-            >
-              Edit
-            </Link>
-          )}
-        {currentUser &&
-          currentUser?.permissions.some(
-            (p: permission) => p === "gamedata_delete"
-          ) && (
-            <button
-              type="button"
-              className="rw-button rw-button-red"
-              onClick={() => onDeleteClick(dino.id)}
-            >
-              Delete
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="rw-button-icon-end"
-              >
-                <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
-              </svg>
-            </button>
-          )}
-      </nav>
+      <ButtonGroup className="col-span-2">
+        <Button
+          permission="gamedata_update"
+          color="primary"
+          variant="outlined"
+          to={routes.editDino({ id: dino.id })}
+          startIcon={
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+            </svg>
+          }
+        >
+          Edit
+        </Button>
+        <Button
+          permission="gamedata_delete"
+          color="error"
+          variant="outlined"
+          onClick={() => onDeleteClick(dino.id)}
+          startIcon={
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+            </svg>
+          }
+        >
+          Delete
+        </Button>
+      </ButtonGroup>
     </article>
   );
 };

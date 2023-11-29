@@ -1,11 +1,19 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import clsx from "clsx";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
+import Table from "src/components/Util/Table/Table";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
-import { combineBySummingKeys, groupBy } from "src/lib/formatters";
+import { combineBySummingKeys } from "src/lib/formatters";
 
 import type {
   DeleteProfileMutationVariables,
@@ -42,6 +50,19 @@ const Profile = ({ profile }: Props) => {
     }
   };
 
+  const arrayToRows = <T extends unknown>(
+    array: T[],
+    columns: number = 1
+  ): T[][] => {
+    const result: T[][] = [];
+
+    for (let i = 0; i < array.length; i += columns) {
+      result.push(array.slice(i, i + columns));
+    }
+
+    return result;
+  };
+
   return (
     <article className="">
       <section className="relative h-[200px]">
@@ -55,7 +76,7 @@ const Profile = ({ profile }: Props) => {
           <span
             id="blackOverlay"
             className="absolute left-0 h-full w-full bg-black opacity-50"
-          ></span>
+          />
         </div>
       </section>
       <section className="relative -mt-32 py-16">
@@ -134,129 +155,269 @@ const Profile = ({ profile }: Props) => {
                 <span className="">{profile.website}</span>
               </div>
             </div>
+
             <Tabs>
               <Tab label="Permissions">
-                <div className="my-3 w-full overflow-x-auto rounded-lg border border-zinc-500 text-left">
-                  <div className="min-w-max overflow-hidden">
-                    <div className="grid grid-cols-4 gap-x-16 rounded-t-lg bg-gray-100 p-4 text-sm font-medium text-gray-900 dark:bg-zinc-700 dark:text-white">
-                      <div className="flex items-center">Permissions</div>
-                      <div>Create</div>
-                      <div>Update</div>
-                      <div>Delete</div>
-                    </div>
-                    {Object.entries(
-                      groupBy(
-                        Object.entries(
-                          combineBySummingKeys(
-                            {
-                              basespot_create: false,
-                              basespot_update: false,
-                              basespot_delete: false,
-                              user_create: false,
-                              user_update: false,
-                              user_delete: false,
-                              timeline_create: false,
-                              timeline_update: false,
-                              timeline_delete: false,
-                              gamedata_create: false,
-                              gamedata_update: false,
-                              gamedata_delete: false,
-                              tribe_create: false,
-                              tribe_update: false,
-                              tribe_delete: false,
-                              role_create: false,
-                              role_update: false,
-                              role_delete: false,
-                            },
-                            profile.role_profile_role_idTorole.permissions.reduce(
-                              (a, v) => ({ ...a, [v]: true }),
-                              {}
-                            )
-                          )
-                        ).map(([p, v]) => ({
-                          perm: p,
-                          for: p.split("_")[0],
-                          type: p.split("_")[1],
-                          hasPermission: v,
-                        })),
-                        "for"
+                <Table
+                  className="my-3 w-full"
+                  columns={[
+                    {
+                      header: "Type",
+                      field: "for",
+                      className: "capitalize",
+                    },
+                    {
+                      header: "Create",
+                      field: "hasPermCreate",
+                      render: ({ value }) =>
+                        value ? (
+                          <svg
+                            className="h-5 w-5 text-green-500"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        ) : (
+                          <svg
+                            className="h-5 w-5 text-red-500"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        ),
+                    },
+                    {
+                      header: "Update",
+                      field: "hasPermUpdate",
+                      render: ({ value }) =>
+                        value ? (
+                          <svg
+                            className="h-5 w-5 text-green-500"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        ) : (
+                          <svg
+                            className="h-5 w-5 text-red-500"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        ),
+                    },
+                    {
+                      header: "Delete",
+                      field: "hasPermDelete",
+                      render: ({ value }) =>
+                        value ? (
+                          <svg
+                            className="h-5 w-5 text-green-500"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        ) : (
+                          <svg
+                            className="h-5 w-5 text-red-500"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        ),
+                    },
+                  ]}
+                  rows={Object.entries(
+                    combineBySummingKeys(
+                      {
+                        basespot_create: false,
+                        basespot_update: false,
+                        basespot_delete: false,
+                        user_create: false,
+                        user_update: false,
+                        user_delete: false,
+                        timeline_create: false,
+                        timeline_update: false,
+                        timeline_delete: false,
+                        gamedata_create: false,
+                        gamedata_update: false,
+                        gamedata_delete: false,
+                        tribe_create: false,
+                        tribe_update: false,
+                        tribe_delete: false,
+                        role_create: false,
+                        role_update: false,
+                        role_delete: false,
+                      },
+                      profile.role_profile_role_idTorole.permissions.reduce(
+                        (a, v) => ({ ...a, [v]: true }),
+                        {}
                       )
-                    ).map(([type, perms], i) => (
-                      <div
-                        key={`${type}-row-${i}`}
-                        className="grid grid-cols-4 gap-x-16 border-b border-gray-200 px-4 py-5 text-sm text-zinc-700 dark:border-zinc-500"
-                      >
-                        <div className="capitalize text-gray-500 dark:text-gray-400">
-                          {type}
-                        </div>
-                        {perms
-                          .sort(
-                            (a, b) =>
-                              ["create", "update", "delete", "read"].indexOf(
-                                a.type
-                              ) -
-                              ["create", "update", "delete", "read"].indexOf(
-                                b.type
-                              )
-                          )
-                          .map((perm) => (
-                            <div key={`${type}-${i}-${perm.perm}`}>
-                              {perm.hasPermission ? (
-                                <svg
-                                  className="h-5 w-5 text-green-500"
-                                  aria-hidden="true"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clipRule="evenodd"
-                                  ></path>
-                                </svg>
-                              ) : (
-                                <svg
-                                  className="h-5 w-5 text-red-500"
-                                  aria-hidden="true"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clipRule="evenodd"
-                                  ></path>
-                                </svg>
-                              )}
-                            </div>
-                          ))}
-                      </div>
-                    ))}
+                    )
+                  )
+                    .map(([p, v]) => ({
+                      perm: p,
+                      for: p.split("_")[0],
+                      type: p.split("_")[1],
+                      hasPermDelete: p.split("_")[1] === "delete" && v,
+                      hasPermUpdate: p.split("_")[1] === "update" && v,
+                      hasPermCreate: p.split("_")[1] === "create" && v,
+                      hasPermission: v,
+                    }))
+                    .sort(
+                      (a, b) =>
+                        a.for.localeCompare(b.for) ||
+                        ["create", "update", "delete", "read"].indexOf(a.type) -
+                          ["create", "update", "delete", "read"].indexOf(b.type)
+                    )
+                    .reduce((result, item) => {
+                      const existingItem = result.find(
+                        (mergedItem) => mergedItem.for === item.for
+                      );
+
+                      if (existingItem) {
+                        // If there's an existing item with the same "for" value, merge the permissions
+                        if (item.hasPermCreate === 1) {
+                          existingItem.hasPermCreate = true;
+                        }
+                        if (item.hasPermUpdate === 1) {
+                          existingItem.hasPermUpdate = true;
+                        }
+                        if (item.hasPermDelete === 1) {
+                          existingItem.hasPermDelete = true;
+                        }
+                      } else {
+                        // If no existing item with the same "for" value, add the item to the result
+                        result.push(item);
+                      }
+
+                      return result;
+                    }, [])}
+                />
+              </Tab>
+              <Tab label="Seasons">
+                <div className="mb-6 px-4 py-5 dark:text-gray-300">
+                  <div className="grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg">
+                    {arrayToRows(profile.TimelineSeasonPerson, 2).map(
+                      (row, i) => {
+                        return row.map((season, sIdx) => (
+                          <Link
+                            to={routes.timelineSeason({
+                              id: season.TimelineSeason.id,
+                            })}
+                            key={`season-${season.TimelineSeason.id}`}
+                            className={clsx(
+                              "hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
+                              {
+                                "rounded-bl-lg":
+                                  arrayToRows(profile.TimelineSeasonPerson, 2)
+                                    .length ===
+                                    i + 1 && sIdx === 0,
+                                "rounded-br-lg":
+                                  arrayToRows(profile.TimelineSeasonPerson, 2)
+                                    .length ===
+                                    i + 1 &&
+                                  sIdx === row.length - 1 &&
+                                  row.length % 2 === 0,
+                                "rounded-tr-lg":
+                                  i === 0 && sIdx === row.length - 1,
+                              }
+                            )}
+                          >
+                            <p>{season.TimelineSeason.tribe_name}</p>
+                            <p>
+                              {season.TimelineSeason.season ? "S" : ""}
+                              {season.TimelineSeason.season}{" "}
+                              <span>{season.TimelineSeason.server}</span>
+                            </p>
+                          </Link>
+                        ));
+                      }
+                    )}
+
+                    {profile.TimelineSeasonPerson.length % 2 === 1 && (
+                      <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
+                    )}
                   </div>
                 </div>
               </Tab>
-              <Tab label="Seasons">
-                <div className="mb-6 grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg px-4 py-5  dark:text-gray-300">
-                  {profile.TimelineSeasonPerson.map((season) => (
-                    <Link
-                      to={routes.timelineSeason({
-                        id: season.TimelineSeason.id,
-                      })}
-                      className="hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out first:rounded-tl-lg"
-                    >
-                      <p>{season.TimelineSeason.tribe_name}</p>
-                      <p>
-                        {season.TimelineSeason.season ? "S" : ""}
-                        {season.TimelineSeason.season}{" "}
-                        <span>{season.TimelineSeason.server}</span>
-                      </p>
-                    </Link>
-                  ))}
-                  {profile.TimelineSeasonPerson.length % 2 === 1 && (
-                    <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
-                  )}
+              <Tab label="Basespots">
+                <div className="mb-6 px-4 py-5 dark:text-gray-300">
+                  <div className="grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg">
+                    {arrayToRows(profile.Basespot, 2).map((row, i) => {
+                      return row.map((basespot, bsIdx) => (
+                        <Link
+                          to={routes.basespot({
+                            id: basespot.id,
+                          })}
+                          key={`basespot-${basespot.id}`}
+                          className={clsx(
+                            "hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
+                            {
+                              "rounded-bl-lg":
+                                arrayToRows(profile.Basespot, 2).length ===
+                                  i + 1 && bsIdx === 0,
+                              "rounded-br-lg":
+                                arrayToRows(profile.Basespot, 2).length ===
+                                  i + 1 &&
+                                bsIdx === row.length - 1 &&
+                                row.length % 2 === 0,
+                              "rounded-tr-lg":
+                                i === 0 && bsIdx === row.length - 1,
+                            }
+                          )}
+                        >
+                          <p>{basespot.name}</p>
+                          <p>{basespot.description}</p>
+                        </Link>
+                      ));
+                    })}
+                    {profile.Basespot.length % 2 === 1 && (
+                      <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
+                    )}
+                  </div>
                 </div>
               </Tab>
             </Tabs>
@@ -268,6 +429,13 @@ const Profile = ({ profile }: Props) => {
                 to={routes.editProfile({ id: profile.id })}
                 className="rw-button rw-button-blue"
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  className="rw-button-icon-start"
+                >
+                  <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                </svg>
                 Edit
               </Link>
               <button
@@ -275,6 +443,13 @@ const Profile = ({ profile }: Props) => {
                 className="rw-button rw-button-red"
                 onClick={() => onDeleteClick(profile.id)}
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="rw-button-icon-start"
+                >
+                  <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                </svg>
                 Delete
               </button>
             </nav>

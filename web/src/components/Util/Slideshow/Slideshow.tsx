@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useCallback, useEffect, useState, useRef } from "react";
-import { BgColor } from "src/lib/formatters";
+import { ArrayElement, BgColor } from "src/lib/formatters";
 
 interface ISlideshowProps {
   className?: string;
@@ -12,12 +12,12 @@ interface ISlideshowProps {
   slide?: number;
   border?: boolean;
   onSlideChange?: (index: number) => void;
+  renderSlide?: (slide: ArrayElement<ISlideshowProps["slides"]>, index: number) => React.ReactNode;
   slides: {
     url?: string;
     content?: React.ReactNode;
     title?: string;
     subtitle?: string;
-    tabColor?: BgColor;
   }[];
 }
 const Slideshow = ({
@@ -29,6 +29,7 @@ const Slideshow = ({
   imageTabs = false,
   delay = 5000,
   onSlideChange,
+  renderSlide,
   slide = 0,
   border = true,
   ...props
@@ -83,37 +84,39 @@ const Slideshow = ({
         className={`whitespace-nowrap w-full transition-transform duration-500 ease-in-out`}
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
       >
-        {slides.map((slide, idx) => (
-          <div
-            className={`relative aspect-auto w-full max-h-[900px] h-fit overflow-y-hidden inline-block rounded-lg ${border ? 'border border-zinc-500' : 'border-none'}`}
-            key={`slide-${idx}`}
-          >
-            {slide && (
-              <>
-                {slide.content && !slide.url ? (
-                  <div className="relative top-0 bottom-0 left-0 right-0 h-full w-full">
-                    {slide.content}
-                  </div>
-                ) : (
-                  <img
-                    src={slide.url}
-                    className="h-full max-h-fit w-full object-cover rounded-lg object-center"
-                    loading="lazy"
-                  />
-                )}
-
-                {(slide.title || slide.subtitle) && (
-                  <div className="absolute top-0 left-0 flex h-full w-full flex-col items-start justify-end">
-                    <div className="relative my-1 mx-3 divide-y rounded-lg bg-zinc-700/60 bg-opacity-40 px-3 py-2 text-gray-300 border border-zinc-500 border-opacity-60">
-                      <p className="text-sm font-medium">{slide.title}</p>
-                      <p className="text-xs font-light">{slide.subtitle}</p>
+        {/* TODO: implement renderSlide */}
+        {renderSlide ? slides.map((slide, idx) => renderSlide(slide, idx)) :
+          slides.map((slide, idx) => (
+            <div
+              className={`relative aspect-auto w-full max-h-[900px] h-fit overflow-y-hidden inline-block rounded-lg ${border ? 'border border-zinc-500' : 'border-none'}`}
+              key={`slide-${idx}`}
+            >
+              {slide && (
+                <>
+                  {slide.content && !slide.url ? (
+                    <div className="relative top-0 bottom-0 left-0 right-0 h-full w-full">
+                      {slide.content}
                     </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        ))}
+                  ) : (
+                    <img
+                      src={slide.url}
+                      className="h-full max-h-fit w-full object-cover rounded-lg object-center"
+                      loading="lazy"
+                    />
+                  )}
+
+                  {(slide.title || slide.subtitle) && (
+                    <div className="absolute top-0 left-0 flex h-full w-full flex-col items-start justify-end">
+                      <div className="relative my-1 mx-3 divide-y rounded-lg bg-zinc-700/60 bg-opacity-40 px-3 py-2 text-gray-300 border border-zinc-500 border-opacity-60">
+                        <p className="text-sm font-medium">{slide.title}</p>
+                        <p className="text-xs font-light">{slide.subtitle}</p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
       </div>
       {arrows && slides.length > 1 && (
         <div className="absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
@@ -141,12 +144,11 @@ const Slideshow = ({
       )}
       {controls && slides.length > 1 && (
         <div className="relative w-full p-3 text-center">
-          {slides.map(({ tabColor }, idx) => (
+          {slides.map(({ title }, idx) => (
             <div
               key={`slide-control-${idx}`}
-              title={tabColor}
-              className={`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer ${tabColor ? tabColor : "bg-white"
-                } bg-clip-padding p-0 transition-opacity ${index === idx ? "opacity-100" : "opacity-50"
+              title={title || `Slide ${idx + 1}`}
+              className={`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer bg-pea-500 bg-clip-padding p-0 transition-opacity ${index === idx ? "opacity-100" : "opacity-50"
                 }`}
               onClick={() => {
                 setIndex(idx);

@@ -27,10 +27,6 @@
     @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
   }
 
-  .rw-segment-main {
-    @apply p-4;
-  }
-
   .rw-segment-header {
     @apply py-3 px-4 text-gray-700 dark:text-stone-200;
   }
@@ -102,7 +98,7 @@
 
   /* || BUTTONS */
   .rw-button {
-    @apply box-border rounded-lg py-2.5 px-4 text-sm font-medium text-gray-900 dark:text-white;
+    @apply relative box-border rounded-lg py-2.5 px-4 text-sm font-medium text-gray-900 dark:text-white;
   }
 
   .rw-button.disabled,
@@ -132,6 +128,52 @@
   }
   .rw-button.rw-button-large {
     @apply py-3 px-8 text-base;
+  }
+
+  /* Ripple */
+  .ripple {
+    opacity: 0;
+    position: absolute;
+  }
+  .ripple-rippleVisible {
+    opacity: 0.12;
+    transform: scale(1);
+    animation-name: rippleenter;
+    animation-duration: 550ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ripple-child {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: currentColor;
+  }
+  .ripple-childLeaving {
+    opacity: 0;
+    animation-name: rippleexit;
+    animation-duration: 550ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes rippleenter {
+    0% {
+      transform: scale(0);
+      opacity: 0.1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0.12;
+    }
+  }
+  @keyframes rippleexit {
+    0% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
   }
 
   /* Button Icon */
@@ -185,6 +227,21 @@
     @apply border-stone-700 ring-1 ring-stone-400 dark:border-stone-500 dark:ring-stone-400;
   }
 
+  /* Gray Gradient Button */
+  .rw-button.rw-button-gray-gradient {
+    @apply bg-gradient-to-br from-zinc-400 to-zinc-600 text-white dark:from-zinc-300 dark:to-zinc-500 dark:text-zinc-900;
+  }
+  .rw-button.rw-button-gray-gradient:not([disabled]):hover {
+    @apply from-zinc-500 to-zinc-700 dark:from-zinc-200 dark:to-zinc-400;
+  }
+  .rw-button.rw-button-gray-gradient:not([disabled]):focus,
+  .rw-button.rw-button-gray-gradient:not([disabled]):active {
+    @apply from-zinc-600 to-zinc-800 ring-0 dark:from-zinc-400 dark:to-zinc-600;
+  }
+  .rw-button.rw-button-gray-gradient:disabled {
+    @apply from-zinc-100 to-zinc-300 text-zinc-700 dark:from-zinc-700 dark:to-zinc-900 dark:text-zinc-100;
+  }
+
   /* Red Button */
   .rw-button.rw-button-red {
     @apply bg-red-500 text-white;
@@ -204,7 +261,22 @@
     @apply bg-red-600 text-white;
   }
   .rw-button.rw-button-red-outline:not([disabled]):focus {
-    @apply outline-none ring-4 ring-red-700;
+    @apply outline-none ring-0 ring-red-700;
+  }
+
+  /* Red Gradient Button */
+  .rw-button.rw-button-red-gradient {
+    @apply bg-gradient-to-br from-red-400 to-red-600 text-white dark:from-red-300 dark:to-red-500 dark:text-red-900;
+  }
+  .rw-button.rw-button-red-gradient:not([disabled]):hover {
+    @apply from-red-500 to-red-700 dark:from-red-200 dark:to-red-400;
+  }
+  .rw-button.rw-button-red-gradient:not([disabled]):focus,
+  .rw-button.rw-button-red-gradient:not([disabled]):active {
+    @apply from-red-600 to-red-800 ring-0 dark:from-red-400 dark:to-red-600;
+  }
+  .rw-button.rw-button-red-gradient:disabled {
+    @apply from-red-100 to-red-300 text-red-700 dark:from-red-700 dark:to-red-900 dark:text-red-100;
   }
 
   /* Green Button */
@@ -263,8 +335,23 @@
   .rw-button.rw-button-blue-outline:not([disabled]):hover {
     @apply bg-blue-600 text-white;
   }
-  .rw-button.rw-button-green-outline:not([disabled]):focus {
+  .rw-button.rw-button-blue-outline:not([disabled]):focus {
     @apply outline-none ring-4 ring-blue-800;
+  }
+
+  /* Blue Gradient Button */
+  .rw-button.rw-button-blue-gradient {
+    @apply bg-gradient-to-br from-blue-400 to-blue-600 text-white dark:from-blue-300 dark:to-blue-500 dark:text-blue-900;
+  }
+  .rw-button.rw-button-blue-gradient:not([disabled]):hover {
+    @apply from-blue-500 to-blue-700 dark:from-blue-200 dark:to-blue-400;
+  }
+  .rw-button.rw-button-blue-gradient:not([disabled]):focus,
+  .rw-button.rw-button-blue-gradient:not([disabled]):active {
+    @apply from-blue-600 to-blue-800 ring-0 dark:from-blue-400 dark:to-blue-600;
+  }
+  .rw-button.rw-button-blue-gradient:disabled {
+    @apply from-blue-100 to-blue-300 text-blue-700 dark:from-blue-700 dark:to-blue-900 dark:text-blue-100;
   }
 
   /* Yellow Button */
@@ -278,27 +365,35 @@
     @apply ring-1 ring-yellow-300 dark:ring-yellow-800;
   }
 
+  /* Yellow Outline Button*/
+  .rw-button.rw-button-yellow-outline {
+    @apply border border-yellow-500 text-yellow-500;
+  }
+  .rw-button.rw-button-yellow-outline:not([disabled]):hover {
+    @apply bg-yellow-600 text-white;
+  }
+  .rw-button.rw-button-yellow-outline:not([disabled]):focus {
+    @apply outline-none ring-4 ring-yellow-800;
+  }
+
+  /* Yellow Gradient Button */
+  .rw-button.rw-button-yellow-gradient {
+    @apply bg-gradient-to-br from-yellow-400 to-yellow-600 text-white dark:from-yellow-300 dark:to-yellow-500 dark:text-yellow-900;
+  }
+  .rw-button.rw-button-yellow-gradient:not([disabled]):hover {
+    @apply from-yellow-500 to-yellow-700 dark:from-yellow-200 dark:to-yellow-400;
+  }
+  .rw-button.rw-button-yellow-gradient:not([disabled]):focus,
+  .rw-button.rw-button-yellow-gradient:not([disabled]):active {
+    @apply from-yellow-600 to-yellow-800 ring-0 dark:from-yellow-400 dark:to-yellow-600;
+  }
+  .rw-button.rw-button-yellow-gradient:disabled {
+    @apply from-yellow-100 to-yellow-300 text-yellow-700 dark:from-yellow-700 dark:to-yellow-900 dark:text-yellow-100;
+  }
+
   /* Button Group */
   .rw-button-group {
     @apply my-3 flex w-fit justify-center rounded-lg;
-  }
-
-  .rw-button-group:not(.rw-button-group-vertical) > .rw-button:not(:last-child),
-  .rw-button-group:not(.rw-button-group-vertical) > .rw-input:not(:last-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-float-input:not(:last-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-input-underline:not(:last-child) {
-    @apply rounded-r-none;
-  }
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-button:not(:first-child),
-  .rw-button-group:not(.rw-button-group-vertical) > .rw-input:not(:first-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-float-input:not(:first-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-input-underline:not(:first-child) {
-    @apply -ml-px rounded-l-none !border-l-transparent;
   }
 
   .rw-button-group.rw-button-group-vertical {
@@ -340,7 +435,7 @@
     .rw-float-input,
   .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
     .rw-button {
-    @apply not-firstlast:!border-l-0 not-only:last:!border-l-0 border border-zinc-500;
+    @apply between:!border-l-0 not-only:last:!border-l-0 border border-zinc-500;
   }
 
   .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-input,
@@ -349,7 +444,7 @@
   .rw-button-group.rw-button-group-vertical.rw-button-group-border
     .rw-float-input,
   .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-button {
-    @apply not-firstlast:border-t-0 not-only:last:border-t-0 border border-zinc-500;
+    @apply between:border-t-0 not-only:last:border-t-0 border border-zinc-500;
   }
 
   /* || INPUT FIELDS */
@@ -443,11 +538,6 @@
     @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];
   }
 
-  /* Toggle */
-  .rw-toggle {
-    @apply h-6 w-11 rounded-full border border-gray-500 bg-zinc-300 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-zinc-500 dark:bg-zinc-600;
-  }
-
   /* Radio */
   .rw-input[type="radio"] {
     @apply text-pea-600 dark:accent-pea-600 accent-pea-500 inline h-4 w-4 border-zinc-500;
@@ -490,6 +580,37 @@
     @apply mt-1 block text-xs font-semibold uppercase text-red-600;
   }
 
+  /* || Divider */
+  .rw-divider {
+    @apply relative m-[initial] shrink-0 list-none self-stretch [border:medium] [inline-size:1px] [margin-inline:initial] [block-size:initial];
+  }
+  .range-input input {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    top: -7px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .range-price {
+    margin: 30px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .range-input input::-moz-range-thumb {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border: 3px solid #1b53c0;
+    background-color: #fff;
+    pointer-events: auto;
+    -moz-appearance: none;
+  }
   /* || Badge Colors */
 
   /* Red Badge */

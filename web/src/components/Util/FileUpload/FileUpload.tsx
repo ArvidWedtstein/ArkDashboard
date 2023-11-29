@@ -2,22 +2,25 @@ import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import { formatBytes } from "src/lib/formatters";
-import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Toast from "../Toast/Toast";
-import {
-  useController,
-} from "@redwoodjs/forms";
+import { useController } from "@redwoodjs/forms";
+import Popper from "../Popper/Popper";
+import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
+import Button from "../Button/Button";
 
-interface IFileUploadProps {
+interface FileUploadProps {
   onUpload?: (url: string) => void;
   onFileAdded?: (file: File) => void;
+  valueFormatter?: (filename: string | null) => string;
   className?: string;
+  label?: string;
   multiple?: boolean;
   /**
    * Comma seperated list of file names
    */
   defaultValue?: string;
+  defaultSecondaryValue?: string;
   storagePath: string;
   sizeLimit?: number;
   /**
@@ -25,9 +28,14 @@ interface IFileUploadProps {
    */
   name?: string;
   /**
+   * Name of the secondary input field e.g Thumbnail, Icon
+   */
+  secondaryName?: string;
+  /**
    * Comma seperated list of mime file types
    */
   accept?: string;
+  // TODO: remove and replace with secondary
   thumbnail?: boolean;
   /**
    * Max size in bytes
@@ -35,7 +43,7 @@ interface IFileUploadProps {
   maxSize?: number;
 }
 
-interface iFile {
+type iFile = {
   file: {
     name: string;
     lastModified: number;
@@ -44,6 +52,7 @@ interface iFile {
     type: string;
   };
   thumbnail?: boolean;
+  [key: string]: unknown;
   preview: boolean;
   state: "newfile" | "uploading" | "uploaded" | "newuploaded";
   url: string;
@@ -52,23 +61,34 @@ interface iFile {
     message: string;
   };
 }
-
+// TODO: add support for array of names, and defaultValues
 const FileUpload = ({
   storagePath,
   accept = "image/png, image/jpg, image/jpeg, image/webp",
   maxSize,
   onUpload,
   onFileAdded,
+  valueFormatter = (e) => e,
   thumbnail = false,
   className,
   name,
+  secondaryName,
+  label,
   defaultValue,
+  defaultSecondaryValue,
   ...props
-}: IFileUploadProps) => {
+}: FileUploadProps) => {
   const { client: supabase } = useAuth();
   const [files, setFiles] = useState<iFile[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [anchorRef, setAnchorRef] = useState<{
+    element: HTMLButtonElement | null;
+    file: iFile;
+    open: boolean;
+  }>({ element: null, file: null, open: false });
+  // TODO: add support for mulitple file uploads
   const { field } = !!name && useController({ name: name });
+  const { field: secondaryField } = !!secondaryName ? useController({ name: secondaryName }) : { field: null };
 
   const imageUrlToFile = async (imageUrl: string, fileName: string) => {
     try {
@@ -85,28 +105,42 @@ const FileUpload = ({
 
   useEffect(() => {
     const fetchImages = async () => {
-      if (!defaultValue) return;
+      if (!defaultValue && (secondaryName && !defaultSecondaryValue)) return;
 
       try {
+        let paths = defaultValue.split(",").map((img) => img.trim()) || [];
+
+        if (defaultSecondaryValue) {
+          paths.push(...defaultSecondaryValue?.split(",").map((img) => img.trim()))
+        }
         const { data, error } = await supabase.storage
           .from(storagePath)
           .createSignedUrls(
-            defaultValue.split(",").map((img) => img.trim()),
-            60 * 60 * 24 * 365 * 10,
+            paths,
+            60 * 60 * 24 * 365 * 10
           );
 
         if (error) {
+          console.error(error)
           toast.error(error.message);
           return;
         }
 
         const promises = data.map(async ({ signedUrl, path }) => {
-          const file = await imageUrlToFile(signedUrl, path.split('/').pop());
+          const file = await imageUrlToFile(signedUrl, path.split("/").pop());
 
           const error =
             maxSize && file.size > maxSize
-              ? { type: "oversized", message: `File is too large. Max size is ${formatBytes(maxSize)}.` }
-              : !accept.split(",").map((a) => a.trim().toUpperCase()).includes(file.type.toUpperCase())
+              ? {
+                type: "oversized",
+                message: `File is too large. Max size is ${formatBytes(
+                  maxSize
+                )}.`,
+              }
+              : !accept
+                .split(",")
+                .map((a) => a.trim().toUpperCase())
+                .includes(file.type.toUpperCase())
                 ? { type: "invalidType", message: "Invalid file type." }
                 : null;
 
@@ -116,23 +150,30 @@ const FileUpload = ({
             url: signedUrl,
             state: "uploaded",
             preview: false,
+            ...(secondaryName && { [secondaryName]: defaultSecondaryValue.split(",").map((img) => img.trim()).some((f) => f.includes(file.name)) }),
             error,
-          }
+          };
         });
 
-        const newFiles = await Promise.all(promises) as iFile[];
-        setFiles((prev) =>
-          [...prev.filter((f) => !newFiles.some(nf => nf.file.name == f.file.name)), ...newFiles]
-        );
+        const newFiles = (await Promise.all(promises)) as iFile[];
+        setFiles((prev) => [
+          ...prev.filter(
+            (f) => !newFiles.some((nf) => nf.file.name == f.file.name)
+          ),
+          ...newFiles,
+        ]);
       } catch (err) {
-        toast.error("Error fetching images: ", err)
+        toast.error("Error fetching images: ", err);
       }
-    }
+    };
 
     if (!!name) {
-      field.onChange(defaultValue);
+      field.onChange(defaultValue ? valueFormatter(defaultValue) : null);
     }
 
+    if (!!secondaryName) {
+      secondaryField.onChange(defaultSecondaryValue ? valueFormatter(defaultSecondaryValue) : null)
+    }
     fetchImages();
   }, []);
 
@@ -153,6 +194,7 @@ const FileUpload = ({
             url: fileloader.target.result.toString(),
             state: "newfile",
             preview: false,
+            [secondaryName]: defaultSecondaryValue.split(",").map((img) => img.trim()).some((f) => f.includes(file.name)),
             error:
               maxSize && file.size > maxSize
                 ? {
@@ -200,11 +242,14 @@ const FileUpload = ({
   };
 
   const handleUpload = () => {
-    !!name &&
-      field.onChange(
-        files
-          .map((f) => f.file.name)
-          .join(","));
+    if (name) {
+      field.onChange(files.map((f) => valueFormatter(f.file.name)).join(","))
+    }
+
+    if (secondaryName) {
+      secondaryField.onChange(files.filter((f) => f[secondaryName] === true).map((f) => valueFormatter(f.file.name)).join(','))
+    }
+
     files
       .filter((f) => f.error == null && f.state === "newfile")
       .forEach(async ({ file }) => {
@@ -261,15 +306,31 @@ const FileUpload = ({
         ? await supabase.storage.from(`${storagePath}`).remove([file.file.name])
         : { error: null };
 
-    if (error) toast.error(error.message);
-    else setFiles((prev) => prev.filter((f) => f.url !== file.url));
-    !!name &&
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setFiles((prev) => prev.filter((f) => f.url !== file.url));
+    }
+
+    if (name && field) {
       field.onChange(
         files
           .filter((f) => f.url !== file.url)
           .map((f) => f.file.name)
           .join(",")
       );
+    }
+  };
+
+  const handleClose = (event: React.MouseEvent<Document>) => {
+    if (
+      anchorRef?.element &&
+      anchorRef.element.contains(event.target as HTMLElement)
+    ) {
+      return;
+    }
+
+    setAnchorRef({ element: null, open: false, file: null });
   };
 
   return (
@@ -308,8 +369,8 @@ const FileUpload = ({
               />
             </svg>
             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
+              <span className="font-semibold">Click to upload {label}</span> or
+              drag and drop
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               {accept &&
@@ -407,78 +468,17 @@ const FileUpload = ({
               <div className="table-cell truncate p-2">
                 {new Date(file.file.lastModified).toDateString()}
               </div>
-              <div className="table-cell p-2">
-                <ContextMenu
-                  type="click"
-                  items={[
-                    thumbnail
-                      ? {
-                        label: "Set as thumbnail",
-                        icon: (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 576 512"
-                            fill="currentColor"
-                          >
-                            <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
-                          </svg>
-                        ),
-                        onClick: () => {
-                          setFiles((prev) =>
-                            prev.map((f) => ({
-                              ...f,
-                              thumbnail: f.file.name === file.file.name,
-                            }))
-                          );
-                        },
-                      }
-                      : null,
-                    {
-                      label: "Preview",
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 576 512"
-                          fill="currentColor"
-                        >
-                          <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
-                        </svg>
-                      ),
-                      onClick: () => {
-                        setFiles((prev) =>
-                          prev.map((f) => ({
-                            ...f,
-                            preview: f.file.name === file.file.name,
-                          }))
-                        );
-                      },
-                    },
-                    {
-                      label: "Delete",
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                        >
-                          <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
-                        </svg>
-                      ),
-                      onClick: () => {
-                        toast.custom(
-                          (t) => (
-                            <Toast
-                              t={t}
-                              variant="error"
-                              title={`You're about to delete ${file.file.name}`}
-                              message="Are you sure you want to delete this file? This action cannot be undone."
-                              primaryAction={() => handleFileDelete(file)}
-                            />
-                          ),
-                          { position: "top-center" }
-                        );
-                      },
-                    },
-                  ]}
+              <div className="table-cell align-middle relative">
+                <button
+                  className="relative inline-flex items-center justify-center p-2"
+                  type="button"
+                  onClick={(e) => {
+                    setAnchorRef((prev) => ({
+                      element: e.currentTarget,
+                      open: !prev.open,
+                      file: file,
+                    }))
+                  }}
                 >
                   <svg
                     className="w-4"
@@ -488,7 +488,8 @@ const FileUpload = ({
                   >
                     <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
                   </svg>
-                </ContextMenu>
+                  <span className="sr-only">Menu</span>
+                </button>
               </div>
               {thumbnail && (
                 <input
@@ -502,6 +503,23 @@ const FileUpload = ({
                   onChange={() => { }}
                 />
               )}
+              {/* {secondaryName && (
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  title={secondaryName}
+                  name={secondaryName}
+                  id={`${secondaryName}-${index}`}
+                  // aria-label={file}
+                  // aria-checked={file[secondaryName] || false}
+                  checked={file[secondaryName] === true}
+                  // defaultChecked={Boolean(file[secondaryName]) || false}
+                  value={file.file.name}
+                  onChange={() => { }}
+                  readOnly
+                // hidden
+                />
+              )} */}
             </div>
           ))}
         </div>
@@ -537,16 +555,140 @@ const FileUpload = ({
         </div>
       )}
 
-      <button
-        onClick={handleUpload}
-        type="button"
-        disabled={files.filter((f) => f.state == "newfile").length < 1}
-        className="rw-button rw-button-gray-outline w-full"
-      >
+      <Button color="success" variant="outlined" onClick={handleUpload} disabled={files.filter((f) => f.state == "newfile").length < 1}>
         Upload
-      </button>
+      </Button>
+
+      <Popper anchorEl={anchorRef?.element} open={anchorRef.open}>
+        <ClickAwayListener onClickAway={handleClose}>
+          <div
+            className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
+          >
+            <ul className="relative m-0 list-none py-2">
+              {thumbnail && (
+                <li>
+                  <button
+                    type="button"
+                    className="relative box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                    onClick={() => {
+                      setFiles((prev) =>
+                        prev.map((f) => ({
+                          ...f,
+                          thumbnail: f.file.name === anchorRef.file.file.name,
+                        }))
+                      );
+                      setAnchorRef({ element: null, open: false, file: null })
+                    }}
+                  >
+                    <div className="inline-flex min-w-[36px] shrink-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                        className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                        focusable="false"
+                      >
+                        <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                      </svg>
+                    </div>
+                    Set as thumbnail
+                  </button>
+                </li>
+              )}
+              {secondaryName && (
+                <li>
+                  <button
+                    type="button"
+                    className="relative w-full box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                    onClick={() => {
+                      setFiles((prev) =>
+                        prev.map((f) => ({
+                          ...f,
+                          [secondaryName]: f.file.name === anchorRef.file.file.name
+                        }))
+                      );
+                      secondaryField.onChange(files.filter((f) => f.file.name === anchorRef.file.file.name).map((f) => valueFormatter(f?.file?.name)).join(','))
+                      setAnchorRef({ element: null, open: false, file: null })
+                    }}
+                  >
+                    <div className="inline-flex min-w-[36px] shrink-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                        className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                        focusable="false"
+                      >
+                        <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                      </svg>
+                    </div>
+                    Set as {secondaryName}
+                  </button>
+                </li>
+              )}
+              <li>
+                <button
+                  className="relative w-full box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                  type="button"
+                  onClick={() => {
+                    setFiles((prev) =>
+                      prev.map((f) => ({
+                        ...f,
+                        preview: f.file.name === anchorRef?.file?.file?.name,
+                      }))
+                    );
+                    setAnchorRef({ element: null, open: false, file: null })
+                  }}
+                >
+                  <div className="inline-flex min-w-[36px] shrink-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 576 512"
+                      className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                      focusable="false"
+                    >
+                      <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                    </svg>
+                  </div>
+                  Preview
+                </button>
+              </li>
+              <li>
+                <button
+                  className="relative w-full box-border flex cursor-pointer select-none items-center justify-start whitespace-nowrap px-4 py-1.5 text-base font-normal text-current hover:bg-black/10 dark:hover:bg-white/10"
+                  type="button"
+                  onClick={() => {
+                    toast.custom(
+                      (t) => (
+                        <Toast
+                          t={t}
+                          variant="error"
+                          title={`You're about to delete ${anchorRef.file.file.name}`}
+                          message="Are you sure you want to delete this file? This action cannot be undone."
+                          primaryAction={() => handleFileDelete(anchorRef.file)}
+                        />
+                      ),
+                      { position: "top-center" }
+                    );
+                  }}
+                >
+                  <div className="inline-flex min-w-[36px] shrink-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                      focusable="false"
+                    >
+                      <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
+                    </svg>
+                  </div>
+                  Delete
+                </button>
+              </li>
+            </ul>
+          </div>
+        </ClickAwayListener>
+      </Popper>
     </div>
   );
 };
 
-export default FileUpload
+export default FileUpload;

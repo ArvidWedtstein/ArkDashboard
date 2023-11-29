@@ -13,17 +13,16 @@ export const QUERY = gql`
       id
       created_at
       name
-      MapResource {
-        latitude
-        longitude
-        type
-      }
-      MapNote {
-        latitude
-        longitude
-        note_index
-      }
       img
+      icon
+      description
+      release_date
+      boundaries
+      cord_shift_lat
+      cord_shift_lon
+      cord_mult_lat
+      cord_mult_lon
+      parent_map_id
     }
   }
 `;

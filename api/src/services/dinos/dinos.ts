@@ -8,10 +8,16 @@ import { db } from "src/lib/db";
 
 export const dinosPage: QueryResolvers["dinosPage"] = ({
   page = 1,
-  search = "",
-  diet = "",
-  temperament = "",
-  type = "",
+  search,
+  diet,
+  temperament,
+  type,
+}: {
+  page: number;
+  search?: string;
+  type?: string;
+  diet?: string;
+  temperament?: string;
 }) => {
   const dinos_per_page = 36;
   const offset = (page - 1) * dinos_per_page;

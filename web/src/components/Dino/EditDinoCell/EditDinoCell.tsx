@@ -49,6 +49,21 @@ export const QUERY = gql`
       movement
       type
       carryable_by
+      released
+      breedable
+      bp
+      default_dmg
+      diet
+      default_swing_radius
+      targeting_team_name
+      temperament
+      flags
+      mating_cooldown_min
+      mating_cooldown_max
+      gestation_time
+      baby_food_consumption_mult
+      icon
+      image
       DinoStat {
         item_id
         Item {
@@ -105,6 +120,21 @@ const UPDATE_DINO_MUTATION = gql`
       movement
       type
       carryable_by
+      released
+      breedable
+      bp
+      default_dmg
+      diet
+      default_swing_radius
+      targeting_team_name
+      temperament
+      flags
+      mating_cooldown_min
+      mating_cooldown_max
+      gestation_time
+      baby_food_consumption_mult
+      icon
+      image
     }
   }
 `;

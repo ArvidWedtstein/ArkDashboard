@@ -17,6 +17,7 @@ export const QUERY = gql`
         tamable
         temperament
         image
+        icon
       }
       diets
       temperaments

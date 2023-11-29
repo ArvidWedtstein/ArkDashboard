@@ -27,6 +27,8 @@ export const QUERY = gql`
         color
         category
         type
+        blueprint
+        visible
       }
       count
     }
@@ -44,7 +46,7 @@ export const beforeQuery = ({ page, search, category, type }) => {
 export const Loading = () => (
   <>
     <Items loading={true} itemsPage={{ count: 0, items: [] }} />
-    <div className="grid gap-3 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
       <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
       <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
       <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
@@ -74,9 +76,7 @@ export const Loading = () => (
 );
 
 export const Empty = () => {
-  return (
-    <Items itemsPage={{ count: 0, items: [] }} />
-  );
+  return <Items itemsPage={{ count: 0, items: [] }} />;
 };
 
 export const Failure = ({ error }: CellFailureProps<FindItemsVariables>) => (

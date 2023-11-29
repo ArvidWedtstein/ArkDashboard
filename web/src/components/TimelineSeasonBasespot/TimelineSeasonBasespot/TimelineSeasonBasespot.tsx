@@ -2,16 +2,22 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useContext, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
-import { ModalContext, Modal } from "src/components/Util/Modal/Modal";
+import { Modal, useModal } from "src/components/Util/Modal/Modal";
+import Ripple from "src/components/Util/Ripple/Ripple";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
 import Toast from "src/components/Util/Toast/Toast";
 
-import { formatBytes, getDateDiff, pluralize, timeTag } from "src/lib/formatters";
+import {
+  formatBytes,
+  getDateDiff,
+  pluralize,
+  timeTag,
+} from "src/lib/formatters";
 
 import type {
   DeleteTimelineSeasonBasespotMutationVariables,
@@ -62,23 +68,44 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
         title={`You're about to delete basespot ${id}`}
         message={`Are you sure you want to delete basespot ${id}?`}
         primaryAction={() => {
-          toast.promise(
-            deleteTimelineSeasonBasespot({ variables: { id } }),
-            {
-              loading: "deleting basespot from season...",
-              success: `Successfully deleted basespot`,
-              error: `Failed to delete basespot`,
-            }
-          );
+          toast.promise(deleteTimelineSeasonBasespot({ variables: { id } }), {
+            loading: "deleting basespot from season...",
+            success: `Successfully deleted basespot`,
+            error: `Failed to delete basespot`,
+          });
         }}
         actionType="OkCancel"
       />
     ));
   };
-  const [images, setImages] = useState([]);
-  const [currentModalImage, setCurrentModalImage] = useState(null);
 
-  // !TODO: consider switching to useEffect?
+  type Bucket = {
+    id: string;
+    name: string;
+    owner: string;
+    file_size_limit?: number;
+    allowed_mime_types?: string[];
+    created_at: string;
+    updated_at: string;
+    public: boolean;
+  };
+  type FileObject = {
+    name: string;
+    bucket_id: string;
+    owner: string;
+    id: string;
+    updated_at: string;
+    created_at: string;
+    last_accessed_at: string;
+    metadata: Record<string, any>;
+    buckets: Bucket;
+  };
+  const [images, setImages] = useState<FileObject[]>([]);
+  const [currentModalImage, setCurrentModalImage] = useState({
+    url: "",
+    mimetype: "",
+  });
+
   useLayoutEffect(() => {
     supabase.storage
       .from("timelineimages")
@@ -102,10 +129,13 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
     return new Date(year, month, day, hour, minute, second);
   };
 
-  const { openModal } = useContext(ModalContext);
+  const { openModal } = useModal();
   return (
     <article className="rw-segment">
-      <Modal image={currentModalImage} />
+      <Modal
+        image={currentModalImage.url}
+        mimetype={currentModalImage.mimetype}
+      />
 
       <div className="m-2 block rounded-md text-white">
         <section className="body-font container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
@@ -117,7 +147,8 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               This time we played on
               {` ${timelineSeasonBasespot?.TimelineSeason.server} ${timelineSeasonBasespot.TimelineSeason?.cluster} Season ${timelineSeasonBasespot.TimelineSeason.season}`}
             </p>
-            <div className="flex flex-wrap justify-start space-x-1 md:space-y-1 xl:space-y-0">
+
+            <div className="rw-button-group">
               {isAuthenticated && (
                 <>
                   {hasRole("timeline_update") ||
@@ -131,6 +162,13 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           })}
                           className="rw-button rw-button-gray-outline"
                         >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"
+                            className="rw-button-icon-start"
+                          >
+                            <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                          </svg>
                           Edit
                         </Link>
                       ))}
@@ -145,14 +183,14 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           }
                           className="rw-button rw-button-red-outline"
                         >
-                          Delete
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"
-                            className="rw-button-icon-end"
+                            className="rw-button-icon-start"
                           >
                             <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
                           </svg>
+                          Delete
                         </button>
                       ))}
                 </>
@@ -170,7 +208,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           )}
         </section>
 
-        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
+        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden text-base lg:mb-0 lg:w-1/2">
               <p>
@@ -193,14 +231,16 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           </div>
         </section>
 
-        {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent?.length > 0 && (
-          <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-gray-200">
+        {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent?.length >
+          0 && (
+          <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-white/20">
             <h1
               id="event-heading"
               className="title-font mt-8 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
             >
               {pluralize(
-                timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.length,
+                timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent
+                  .length,
                 "Event",
                 "s",
                 false
@@ -214,15 +254,8 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               controls={true}
               autoPlay={false}
               slides={timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.map(
-                ({
-                  id,
-                  title,
-                  content,
-                  created_at,
-                  tags,
-                }) => {
+                ({ id, title, content, created_at, tags }) => {
                   return {
-                    tabColor: `bg-pea-500`,
                     content: (
                       <div key={id} className="flex justify-center px-5 py-12">
                         <div className="text-center lg:w-3/4 xl:w-1/2">
@@ -235,7 +268,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
                           </svg>
 
-                          <p className="text-black dark:text-white text-lg leading-relaxed">
+                          <p className="text-lg leading-relaxed text-black dark:text-white">
                             {content &&
                               content.split("\n").map((w, idx) => (
                                 <span
@@ -248,14 +281,20 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           </p>
 
                           <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
-                          <h2 className="text-lg dark:text-gray-200 text-zinc-600 title-font font-medium tracking-wider my-4">
+                          <h2 className="title-font my-4 text-lg font-medium tracking-wider text-zinc-600 dark:text-gray-200">
                             {title}
                           </h2>
-                          <p className="text-gray-500">
-                            {timeTag(created_at)}
-                          </p>
+                          <p className="text-gray-500">{timeTag(created_at)}</p>
                           <p className="inline-flex gap-x-1">
-                            {tags && tags.split(',').map(t => <span key={`tag-${t}-${id}`} className="rw-badge rw-badge-gray">#{t}</span>)}
+                            {tags &&
+                              tags.split(",").map((t) => (
+                                <span
+                                  key={`tag-${t}-${id}`}
+                                  className="rw-badge rw-badge-gray-outline"
+                                >
+                                  #{t}
+                                </span>
+                              ))}
                           </p>
                         </div>
                       </div>
@@ -267,7 +306,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           </section>
         )}
 
-        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
+        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
               {timelineSeasonBasespot.map_id && (
@@ -291,7 +330,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                 />
               )}
             </div>
-            <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
+            <div className="flex flex-col flex-wrap border-l border-black/20 text-center dark:border-white/20 lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
               <div className="mb-10 flex flex-col items-center lg:items-start">
                 <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                   <svg
@@ -363,7 +402,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                   </div>
                 </div>
               )}
-              <div className="mb-10 flex flex-col items-center lg:items-start justify-start">
+              <div className="mb-10 flex flex-col items-center justify-start lg:items-start">
                 <div className="flex flex-col">
                   <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                     <svg
@@ -384,95 +423,144 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                   </h2>
                 </div>
                 <div className="-mx-8">
-                  <TimelineSeasonPeopleCell timeline_season_id={timelineSeasonBasespot.TimelineSeason.id} />
+                  <TimelineSeasonPeopleCell
+                    timeline_season_id={
+                      timelineSeasonBasespot.TimelineSeason.id
+                    }
+                  />
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
-          <div className="container mx-auto px-5 py-24">
-            <div className="mb-20 flex w-full flex-col text-center">
-              <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
-                Images & Screenshots taken during this base
-              </h2>
-              <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl">
-                Images
-              </h1>
-            </div>
+        {images.length > 0 && (
+          <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
+            <div className="container mx-auto px-5 py-24">
+              <div className="mb-20 flex w-full flex-col text-center">
+                <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
+                  Images & Screenshots taken during this base
+                </h2>
+                <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl">
+                  Images
+                </h1>
+              </div>
 
-            <div className="flex flex-wrap gap-5">
-              {images.map((img, i) => (
-                <div
-                  key={`image-${i}`}
-                  className={clsx("block", {
-                    "basis-1/2": i % 4 === 0,
-                    "basis-[23%]": i % 4 !== 0,
-                  })}
-                >
-                  <div className="flex h-full justify-between">
-                    <button
-                      className={
-                        "group relative flex h-auto w-full overflow-hidden rounded-xl"
-                      }
-                      onClick={() => {
-                        setCurrentModalImage(
-                          `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`
-                        );
-                        openModal();
-                      }}
-                    >
-                      <img
-                        className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-110"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`}
-                        alt=""
-                      />
-                      <div
-                        className="absolute flex h-full w-full flex-col items-end justify-end p-3"
-                        style={{
-                          background:
-                            "linear-gradient(0deg, #001022cc 0%, #f0f4fd33 90%)",
+              <div className="flex flex-wrap gap-3">
+                {images.map((img, i) => (
+                  <div
+                    key={`image-${i}`}
+                    className={clsx("block", {
+                      "basis-1/2": i % 4 === 0,
+                      "basis-[23%]": i % 4 !== 0,
+                    })}
+                  >
+                    <div className="flex h-full justify-between dark:text-white">
+                      <button
+                        className={
+                          "group relative flex h-auto w-full overflow-hidden rounded-lg"
+                        }
+                        onClick={() => {
+                          setCurrentModalImage({
+                            url: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`,
+                            mimetype: img.metadata.mimetype,
+                          });
+                          openModal();
                         }}
                       >
-                        <div className="flex w-full justify-between text-left">
-                          <div className="w-full">
-                            <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
-                              {img.name}
-                            </p>
-                            {img.metadata?.size && (
-                              <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
-                                {formatBytes(img.metadata.size)}
+                        {img.metadata.mimetype.startsWith("image") ? (
+                          <img
+                            className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-110"
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`}
+                            alt=""
+                          />
+                        ) : (
+                          <video
+                            className="h-full w-full object-cover transition-all duration-200 ease-in"
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`}
+                            autoPlay={false}
+                            controls={false}
+                            disableRemotePlayback={true}
+                          />
+                        )}
+                        <div
+                          className={clsx(
+                            "absolute flex h-full w-full flex-col items-end justify-end p-3",
+                            {
+                              "!bg-none":
+                                img.metadata.mimetype.startsWith("video"),
+                            }
+                          )}
+                          style={{
+                            background:
+                              "linear-gradient(0deg, #001022cc 0%, #f0f4fd33 90%)",
+                          }}
+                        >
+                          <div className="flex w-full justify-between text-left">
+                            <div
+                              className={clsx(
+                                "w-full transition-transform ease-in-out",
+                                {
+                                  "group-hover:translate-y-10":
+                                    img.metadata.mimetype.startsWith("video"),
+                                }
+                              )}
+                            >
+                              <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs">
+                                {img.name}
                               </p>
-                            )}
+                              {img.metadata?.size && (
+                                <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs">
+                                  {formatBytes(img.metadata.size)}
+                                </p>
+                              )}
+                            </div>
+                            {/* TODO: add logic for not opening modal */}
+                            {/* <a
+                              className="rw-button rw-button-small rw-button-gray-outline"
+                              download
+                              target="_blank"
+                              href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`}
+                            >
+                              <span className="sr-only">Download</span>
+                              Download icon
+                            </a> */}
                           </div>
                         </div>
-                      </div>
-                      <span className="absolute right-3 top-3 z-10 rounded-[10px] bg-[#8b9ca380] py-1 px-3 text-sm text-white">
-                        {convertToDate(
-                          img.name.replace("_1.jpg", "")
-                        ).toLocaleString("de", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        }) === "Invalid Date"
-                          ? new Date(img.created_at).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })
-                          : convertToDate(
+                        <span
+                          className={clsx(
+                            "rw-badge rw-badge-gray-outline absolute right-3 top-3 z-10 !text-white transition-transform ease-in-out",
+                            {
+                              "group-hover:-translate-y-10":
+                                img.metadata.mimetype.startsWith("video"),
+                            }
+                          )}
+                        >
+                          {convertToDate(
                             img.name.replace("_1.jpg", "")
                           ).toLocaleString("de", {
                             dateStyle: "medium",
                             timeStyle: "short",
-                          })}
-                      </span>
-                    </button>
+                          }) === "Invalid Date"
+                            ? new Date(img.created_at).toLocaleString("de", {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              })
+                            : convertToDate(
+                                img.name.replace("_1.jpg", "")
+                              ).toLocaleString("de", {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              })}
+                        </span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </div>
     </article>
   );

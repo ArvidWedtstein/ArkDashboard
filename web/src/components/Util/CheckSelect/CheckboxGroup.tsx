@@ -1,6 +1,8 @@
 import { useController } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import Ripple from "../Ripple/Ripple";
+import { useRipple } from "src/components/useRipple";
 
 interface CheckboxGroupProps {
   name?: string;
@@ -9,12 +11,14 @@ interface CheckboxGroupProps {
     value?: string | number;
     image?: string | React.ReactNode;
   }[];
+  exclusive?: boolean;
   form?: boolean;
   className?: string;
   defaultValue?: string[] | string;
-  size?: "sm" | "md" | "lg";
+  size?: "small" | "medium" | "large";
   onChange?: (name: string, value: string[]) => void;
   disabled?: boolean;
+  disableRipple?: boolean;
   validation?: {
     valueAsBoolean?: boolean;
     valueAsJSON?: boolean;
@@ -23,22 +27,26 @@ interface CheckboxGroupProps {
     single?: boolean;
   };
 }
-const CheckboxGroup = ({
-  name,
-  options,
-  form = true,
-  defaultValue = [],
-  onChange,
-  className,
-  size = "lg",
-  disabled = false,
-  validation = {
-    required: false,
-    single: false,
-  },
-}: CheckboxGroupProps) => {
+const CheckboxGroup = (props: CheckboxGroupProps) => {
+  const {
+    name,
+    options,
+    form = true,
+    defaultValue = [],
+    onChange,
+    className,
+    size = "large",
+    disabled = false,
+    exclusive = false,
+    disableRipple,
+    validation = {
+      required: false,
+      single: false,
+    }
+  } = props
+  // TODO: fix errorStyles for checkbox group
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    () => validation.single ? defaultValue as string[] : [defaultValue] as string[]
+    () => validation.single || exclusive ? defaultValue as string[] : [defaultValue] as string[]
   );
   const { field } =
     form && !!name
@@ -46,42 +54,49 @@ const CheckboxGroup = ({
       : { field: null };
   const memoizedOptions = useMemo(() => options, [options]);
 
-  const handleCheckboxChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      let newSelectedOptions;
+  const handleCheckboxChange = ((event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    let newSelectedOptions;
 
-      if (selectedOptions.includes(value)) {
-        newSelectedOptions = selectedOptions.filter(
-          (option) => option !== value
-        );
-      } else {
-        newSelectedOptions = validation.single
-          ? [value]
-          : [...selectedOptions, value];
-      }
+    if (selectedOptions.includes(value)) {
+      newSelectedOptions = selectedOptions.filter(
+        (option) => option !== value
+      );
+    } else {
+      newSelectedOptions = validation.single || exclusive
+        ? [value]
+        : [...selectedOptions, value];
+    }
 
-      setSelectedOptions(newSelectedOptions);
-      !!name &&
-        form &&
-        field.onChange(
-          validation.single
-            ? validation.valueAsNumber
-              ? parseInt(newSelectedOptions[0])
-              : newSelectedOptions[0]
-            : newSelectedOptions
-        );
-      onChange?.(value, newSelectedOptions);
-    },
-    [name, onChange, selectedOptions, validation.single]
-  );
+    setSelectedOptions(newSelectedOptions);
 
+    if (name && field) {
+      field.onChange(
+        validation.single || exclusive
+          ? validation.valueAsNumber
+            ? parseInt(newSelectedOptions[0])
+            : newSelectedOptions[0]
+          : newSelectedOptions
+      );
+    }
+
+    if (onChange) {
+      onChange(value, newSelectedOptions);
+    }
+  });
+
+  const rippleRef = useRef(null);
+  const { enableRipple, getRippleHandlers } = useRipple({
+    disabled,
+    disableRipple,
+    rippleRef
+  })
   return (
     <div
-      className={clsx("mt-1 flex h-fit flex-wrap gap-1 md:gap-3", className)}
+      className={clsx("flex h-fit flex-wrap gap-1 md:gap-3", className)}
     >
       {memoizedOptions.map(({ label, image, value: optValue }) => (
-        <label key={label} aria-details={`Item: ${optValue}`}>
+        <label key={label} aria-details={`Item: ${optValue}`} {...getRippleHandlers()}>
           <input
             disabled={(!name && !label) || (!name && !form) || disabled}
             type="checkbox"
@@ -93,28 +108,35 @@ const CheckboxGroup = ({
           />
           <span
             className={clsx(
-              "rw-check-tile relative flex flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
+              "rw-check-tile p-1 relative flex flex-col items-center justify-center rounded border border-black/[.12] dark:border-white/[.12] transition-all duration-150",
               {
                 disabled: (!name && !label) || disabled,
                 "cursor-pointer": label && !disabled,
+                "h-12 w-12 text-xs": size === 'small',
+                "h-20 w-20 text-xs": size === 'medium',
+                "h-28 w-28 text-sm": size === 'large',
               },
-              size === 'lg' ? 'h-28 w-28' : size === 'md' ? 'h-20 w-20' : 'h-12 w-12'
             )}
           >
-            <span className="text-gray-900 transition-all duration-150 ease-in dark:text-stone-200">
+            <span className="inline-flex items-center justify-center text-gray-900 grow transition-all duration-150 ease-in dark:text-stone-200">
               {image &&
                 (React.isValidElement(image) ? (
                   image
                 ) : (
                   <img
-                    className={size === 'lg' ? 'max-w-16 max-h-12 w-auto' : size === 'md' ? 'max-w-10 max-h-8 w-auto' : "max-w-8 max-h-8 w-auto"}
+                    className={clsx("w-auto", {
+                      "max-w-8 max-h-8": size === 'small',
+                      'max-w-10 max-h-8': size === 'medium',
+                      'max-w-16 max-h-12': size === 'large',
+                    })}
                     src={image.toString()}
                   />
                 ))}
             </span>
-            <span className="mx-2 text-center text-xs text-gray-900 transition-all duration-300 ease-linear dark:text-stone-200">
+            <span className="mx-2 text-center text-gray-900 transition-all duration-300 ease-linear dark:text-stone-200">
               {label}
             </span>
+            {enableRipple ? <Ripple ref={rippleRef} /> : null}
           </span>
         </label>
       ))}

@@ -47,7 +47,7 @@ export const QUERY = gql`
     }
   }
 `;
-
+// TODO: fix loading
 export const Loading = () => (
   <div
     role="status"

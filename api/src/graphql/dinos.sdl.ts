@@ -52,14 +52,18 @@ export const schema = gql`
     tamable: Boolean
     breedable: Boolean
     bp: String
+    default_dmg: Float
+    default_swing_radius: Float
+    targeting_team_name: String
+    flags: JSON
     DinoStat: [DinoStat]!
   }
 
   type DinosPage {
-    dinos: [Dino!]!
-    diets: [JSON]!
-    temperaments: [JSON]!
-    count: Int!
+    dinos: [Dino!]
+    diets: [JSON]
+    temperaments: [JSON]
+    count: Int
   }
 
   type Query {
@@ -71,7 +75,7 @@ export const schema = gql`
       type: String
       diet: String
       temperament: String
-    ): DinosPage @skipAuth
+    ): DinosPage! @skipAuth
   }
 
   input CreateDinoInput {
@@ -126,6 +130,10 @@ export const schema = gql`
     tamable: Boolean
     breedable: Boolean
     bp: String
+    default_dmg: Float
+    default_swing_radius: Float
+    targeting_team_name: String
+    flags: JSON
   }
 
   input UpdateDinoInput {
@@ -180,6 +188,10 @@ export const schema = gql`
     tamable: Boolean
     breedable: Boolean
     bp: String
+    default_dmg: Float
+    default_swing_radius: Float
+    targeting_team_name: String
+    flags: JSON
   }
 
   type Mutation {

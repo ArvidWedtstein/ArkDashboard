@@ -6,7 +6,6 @@ import type {
 
 import { db } from "src/lib/db";
 import { requireAuth } from "src/lib/auth";
-import { prismaVersion } from "@redwoodjs/api";
 
 const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
@@ -34,6 +33,51 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
     count: db.basespot.count({
       where: where,
     }),
+  };
+};
+
+export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
+  take,
+  lastCursor,
+}) => {
+  let result = await db.basespot.findMany({
+    take: take ? take : 9,
+    ...(lastCursor && {
+      skip: 1,
+      cursor: {
+        id: lastCursor as string,
+      },
+    }),
+    orderBy: {
+      id: "desc",
+    },
+  });
+
+  if (result.length === 0) {
+    return {
+      basespots: [],
+      cursor: null,
+      hasNextPage: false,
+    };
+  }
+  // https://community.redwoodjs.com/t/infinite-scrolling-using-field-policy-inmemorycache/3570/3
+  const lastPostInResults = result[result.length - 1];
+  const cursor = lastPostInResults.id;
+  // console.log(cursor, lastCursor, result.length);
+  const nextPage = await db.basespot.findMany({
+    take: take ? take : 7,
+    skip: 1, // Do not include the cursor itself in the query result.
+    cursor: {
+      id: cursor,
+    },
+  });
+
+  const hasNextPage = nextPage.length > 0;
+
+  return {
+    basespots: result,
+    cursor: cursor,
+    hasNextPage: hasNextPage,
   };
 };
 

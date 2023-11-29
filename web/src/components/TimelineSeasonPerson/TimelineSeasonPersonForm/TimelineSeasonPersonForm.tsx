@@ -13,7 +13,7 @@ import type {
   UpdateTimelineSeasonPersonInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 type FormTimelineSeasonPerson = NonNullable<
   EditTimelineSeasonPersonById["timelineSeasonPerson"]
@@ -33,7 +33,6 @@ interface TimelineSeasonPersonFormProps {
 
 const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
   const onSubmit = (data: FormTimelineSeasonPerson) => {
-
     data.timeline_season_id = props.timeline_season_id;
     props.onSave(data, props?.timelineSeasonPerson?.id);
   };
@@ -50,24 +49,14 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
 
         <div className="flex">
           <div className="flex-1">
-            <Label
+            <Lookup
               name="user_id"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              User
-            </Label>
-
-            <MultiSelectLookup
-              name="user_id"
-              options={props?.profiles.map((user) => ({
-                label: user.username,
-                value: user.id,
-              }))}
-              defaultValue={[props.timelineSeasonPerson?.user_id]}
+              label="User"
+              options={props?.profiles ?? []}
+              getOptionLabel={(option) => option.username}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              defaultValue={props.timelineSeasonPerson?.user_id}
             />
-
-            <FieldError name="user_id" className="rw-field-error" />
           </div>
           <div className="flex-1">
             <Label

@@ -20,14 +20,15 @@ export const schema = gql`
     Map: Map
     other_Map: [Map]!
     MapNote: [MapNote]!
+    MapRegion: [MapRegion]!
     MapResource: [MapResource]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
   }
 
   type Query {
-    maps: [Map!]! @skipAuth
-    map(id: BigInt!): Map @skipAuth
+    maps: [Map!]! @requireAuth
+    map(id: BigInt!): Map @requireAuth
   }
 
   input CreateMapInput {
@@ -65,14 +66,8 @@ export const schema = gql`
   }
 
   type Mutation {
-    createMap(input: CreateMapInput!): Map!
-      @requireAuth
-      @hasPermission(permission: "gamedata_create")
-    updateMap(id: BigInt!, input: UpdateMapInput!): Map!
-      @requireAuth
-      @hasPermission(permission: "gamedata_update")
-    deleteMap(id: BigInt!): Map!
-      @requireAuth
-      @hasPermission(permission: "gamedata_delete")
+    createMap(input: CreateMapInput!): Map! @requireAuth
+    updateMap(id: BigInt!, input: UpdateMapInput!): Map! @requireAuth
+    deleteMap(id: BigInt!): Map! @requireAuth
   }
-`;
+`

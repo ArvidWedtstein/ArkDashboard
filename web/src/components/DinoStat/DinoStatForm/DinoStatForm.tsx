@@ -10,16 +10,22 @@ import {
 
 import type { EditDinoStatById, UpdateDinoStatInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { InputOutlined } from "src/components/Util/Input/Input";
 
 type FormDinoStat = NonNullable<EditDinoStatById["dinoStat"]>;
 
+// highlight-start
 interface DinoStatFormProps {
+  dino_id?: FormDinoStat["dino_id"];
   dinoStat?: EditDinoStatById["dinoStat"];
   onSave: (data: UpdateDinoStatInput, id?: FormDinoStat["id"]) => void;
   error: RWGqlError;
   loading: boolean;
 }
+// highlight-end
 
+// highlight-next-line
 const DinoStatForm = (props: DinoStatFormProps) => {
   const onSubmit = (data: FormDinoStat) => {
     props.onSave(data, props?.dinoStat?.id);
@@ -35,6 +41,45 @@ const DinoStatForm = (props: DinoStatFormProps) => {
           listClassName="rw-form-error-list"
         />
 
+        <div className="flex flex-row space-x-3">
+          {/* TODO: insert items here */}
+          <Lookup
+            margin="none"
+            options={[]}
+            name="item_id"
+            defaultValue={props.dinoStat?.item_id}
+            label="Item"
+            validation={{ required: true }}
+          />
+          <Lookup
+            margin="none"
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            getOptionLabel={(option) => option.label}
+            options={[
+              { value: "food", label: "Food" },
+              { value: "gather_efficiency", label: "Gather Efficiency" },
+              { value: "weight_reduction", label: "Weight Reduction" },
+              { value: "immobilized_by", label: "Immobilized By" },
+              { value: "fits_through", label: "Fits Through" },
+              { value: "drops", label: "Drops" },
+              { value: "saddle", label: "Saddle" },
+              { value: "bossrecipe", label: "Bossrecipe" },
+              { value: "engrams", label: "Engrams" },
+            ]}
+            name="type"
+            defaultValue={props.dinoStat?.type}
+            closeOnSelect
+            label="Type"
+          />
+
+          <InputOutlined
+            name="value"
+            type="number"
+            defaultValue={props.dinoStat?.value}
+            label="Value"
+            validation={{ valueAsNumber: true }}
+          />
+        </div>
         <Label
           name="dino_id"
           className="rw-label"
@@ -45,184 +90,13 @@ const DinoStatForm = (props: DinoStatFormProps) => {
 
         <TextField
           name="dino_id"
-          defaultValue={props.dinoStat?.dino_id}
+          defaultValue={props?.dinoStat?.dino_id ?? props.dino_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
         />
 
         <FieldError name="dino_id" className="rw-field-error" />
-
-        <Label
-          name="item_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Item id
-        </Label>
-
-        <TextField
-          name="item_id"
-          defaultValue={props.dinoStat?.item_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="item_id" className="rw-field-error" />
-
-        <Label
-          name="value"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Value
-        </Label>
-
-        <TextField
-          name="value"
-          defaultValue={props.dinoStat?.value}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-        <FieldError name="value" className="rw-field-error" />
-
-        <Label
-          name="rank"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Rank
-        </Label>
-
-        <TextField
-          name="rank"
-          defaultValue={props.dinoStat?.rank}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="rank" className="rw-field-error" />
-
-        <Label
-          name="type"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Type
-        </Label>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-0"
-            name="type"
-            defaultValue="food"
-            defaultChecked={props.dinoStat?.type?.includes("food")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Food</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-1"
-            name="type"
-            defaultValue="gather_efficiency"
-            defaultChecked={props.dinoStat?.type?.includes("gather_efficiency")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Gather Efficiency</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-2"
-            name="type"
-            defaultValue="weight_reduction"
-            defaultChecked={props.dinoStat?.type?.includes("weight_reduction")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Weight Reduction</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-3"
-            name="type"
-            defaultValue="immobilized_by"
-            defaultChecked={props.dinoStat?.type?.includes("immobilized_by")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Immobilized By</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-4"
-            name="type"
-            defaultValue="fits_through"
-            defaultChecked={props.dinoStat?.type?.includes("fits_through")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Fits Through</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-5"
-            name="type"
-            defaultValue="drops"
-            defaultChecked={props.dinoStat?.type?.includes("drops")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Drops</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-6"
-            name="type"
-            defaultValue="saddle"
-            defaultChecked={props.dinoStat?.type?.includes("saddle")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Saddle</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-7"
-            name="type"
-            defaultValue="bossrecipe"
-            defaultChecked={props.dinoStat?.type?.includes("bossrecipe")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Bossrecipe</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="dinoStat-type-8"
-            name="type"
-            defaultValue="engrams"
-            defaultChecked={props.dinoStat?.type?.includes("engrams")}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Engrams</div>
-        </div>
-
-        <FieldError name="type" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

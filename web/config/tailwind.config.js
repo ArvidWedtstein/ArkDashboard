@@ -19,29 +19,19 @@ module.exports = {
       },
       animation: {
         "circle-progress": "progress 1s ease-out forwards",
-        "fade-in": "fadein 0.5s ease-in forwards",
-        "fade-out": "fadeout 0.5s linear forwards",
+        "fade-in": "fadein 0.3s ease-in forwards",
+        "fade-out": "fadeout 0.3s linear forwards",
         "fly-in": "flyIn 0.3s ease-out",
         "fly-out": "flyOut 0.3s ease-out",
+        "fly-in-top": "flyInTop 0.1s ease-out",
         "pop-up":
           "popUp 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         "fill-up":
           "fillProgess 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         fill: "fill 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
-        ripple: "ripple 0.6s linear infinite",
-        "ripple-hover": "ripple 0.6s linear forwards",
+        "auto-fill-cancel": "auto-fill-cancel 10ms",
       },
       keyframes: {
-        ripple: {
-          "0%": {
-            "box-shadow":
-              "0 0 0 0 rgba(255,255,255, 0.1), 0 0 0 20px rgba(255,255,255, 0.1), 0 0 0 40px rgba(255,255,255, 0.1), 0 0 0 60px rgba(255,255,255, 0.1)",
-          },
-          "100%": {
-            "box-shadow":
-              "0 0 0 20px rgba(255,255,255, 0.1), 0 0 0 40px rgba(255,255,255, 0.1), 0 0 0 60px rgba(255,255,255, 0.1), 0 0 0 80px rgba(255,255,255, 0)",
-          },
-        },
         progress: {
           "0%": {
             "stroke-dasharray": "0 100",
@@ -102,6 +92,19 @@ module.exports = {
             transform: "scaleX(1)",
           },
         },
+        "auto-fill-cancel": {
+          from: {
+            display: "block",
+          },
+        },
+        flyInTop: {
+          from: {
+            transform: "translateY(calc(-100% + 1.5em))",
+          },
+          to: {
+            transform: "translateY(0)",
+          },
+        },
       },
       // https://uicolors.app/create
       // https://realtimecolors.com/?colors=0a070e-f4f1f8-14eba3-25211e-12d393
@@ -141,11 +144,11 @@ module.exports = {
   },
   plugins: [
     require("@tailwindcss/typography"),
+    require("autoprefixer"),
     plugin(({ addVariant, addComponents, theme }) => {
-      addVariant("dataready", '&[data-ready="true"]');
       addVariant("not-last", "&:not(:last-child)");
       addVariant("not-only", "&:not(:only-child)");
-      addVariant("not-firstlast", "&:not(:first-child):not(:last-child)");
+      addVariant("between", "&:not(:first-child):not(:last-child)");
       addComponents({
         ".rw-badge": {
           display: "inline-flex",
@@ -164,6 +167,9 @@ module.exports = {
           overflow: "hidden",
           scrollBehavior: "smooth",
           scrollbarColor: `${theme("colors.zinc.400")} transparent`,
+        },
+        ".rw-segment-main": {
+          padding: `${theme("spacing.4")}`,
         },
       });
     }),

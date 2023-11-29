@@ -7,51 +7,309 @@ import { timeTag, truncate } from 'src/lib/formatters'
 import Toast from 'src/components/Util/Toast/Toast'
 
 import type {
-  DeleteMapResourceMutationVariables,
-  FindMapResources,
+  FindMapResourcesByMap,
 } from 'types/graphql'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-const DELETE_MAP_RESOURCE_MUTATION = gql`
-  mutation DeleteMapResourceMutation($id: BigInt!) {
-    deleteMapResource(id: $id) {
-      id
+const MapResourcesList = ({ mapResources }: FindMapResourcesByMap) => {
+  const posToMap = (coord: number): number => {
+    return (500 / 100) * coord + 500 / 100;
+  };
+
+  type Point = {
+    x: number;
+    y: number;
+  };
+  const ORIGIN = Object.freeze({ x: 0, y: 0 });
+  const ZOOM_SENSITIVITY = 500; // bigger for lower zoom per scroll
+
+  const ref = useRef<HTMLCanvasElement | null>(null);
+  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+  const [scale, setScale] = useState<number>(1);
+  const [offset, setOffset] = useState<Point>(ORIGIN);
+  const [mousePos, setMousePos] = useState<Point>(ORIGIN);
+  const [viewportTopLeft, setViewportTopLeft] = useState<Point>(ORIGIN);
+  const isResetRef = useRef<boolean>(false);
+  const lastMousePosRef = useRef<Point>(ORIGIN);
+  const lastOffsetRef = useRef<Point>(ORIGIN);
+
+  const { devicePixelRatio: ratio = 1 } = window;
+
+  function diffPoints(p1: Point, p2: Point) {
+    return { x: p1.x - p2.x, y: p1.y - p2.y };
+  }
+
+  function addPoints(p1: Point, p2: Point) {
+    return { x: p1.x + p2.x, y: p1.y + p2.y };
+  }
+
+  function scalePoint(p1: Point, scale: number) {
+    return { x: p1.x / scale, y: p1.y / scale };
+  }
+  useEffect(() => {
+    lastOffsetRef.current = offset;
+  }, [offset]);
+
+  const reset = useCallback(
+    (context: CanvasRenderingContext2D) => {
+      if (context && !isResetRef.current) {
+        // adjust for device pixel density
+        context.canvas.width = 500 * ratio;
+        context.canvas.height = 500 * ratio;
+        context.scale(ratio, ratio);
+        setScale(1);
+
+        // reset state and refs
+        setContext(context);
+        setOffset(ORIGIN);
+        setMousePos(ORIGIN);
+        setViewportTopLeft(ORIGIN);
+        lastOffsetRef.current = ORIGIN;
+        lastMousePosRef.current = ORIGIN;
+
+        // this thing is so multiple resets in a row don't clear canvas
+        isResetRef.current = true;
+      }
+    },
+    []
+  );
+
+  // functions for panning
+  const mouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (context) {
+        const lastMousePos = lastMousePosRef.current;
+        const currentMousePos = { x: event.pageX, y: event.pageY }; // use document so can pan off element
+        lastMousePosRef.current = currentMousePos;
+
+        const mouseDiff = diffPoints(currentMousePos, lastMousePos);
+        setOffset((prevOffset) => addPoints(prevOffset, mouseDiff));
+      }
+    },
+    [context]
+  );
+
+  const mouseUp = useCallback(() => {
+    document.removeEventListener("mousemove", mouseMove);
+    document.removeEventListener("mouseup", mouseUp);
+  }, [mouseMove]);
+
+  const startPan = useCallback(
+    (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+      document.addEventListener("mousemove", mouseMove);
+      document.addEventListener("mouseup", mouseUp);
+      lastMousePosRef.current = { x: event.pageX, y: event.pageY };
+    },
+    [mouseMove, mouseUp]
+  );
+
+  useLayoutEffect(() => {
+    if (ref.current) {
+      // get new drawing context
+      const renderCtx = ref.current.getContext("2d");
+
+      if (renderCtx) {
+        reset(renderCtx);
+      }
     }
-  }
-`
+  }, [reset]);
 
-const MapResourcesList = ({ mapResources }: FindMapResources) => {
-  const [deleteMapResource] = useMutation(DELETE_MAP_RESOURCE_MUTATION, {
-    onCompleted: () => {
-      toast.success('MapResource deleted')
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  })
+  // pan when offset or scale changes
+  useLayoutEffect(() => {
+    if (context && lastOffsetRef.current) {
+      const offsetDiff = scalePoint(
+        diffPoints(offset, lastOffsetRef.current),
+        scale
+      );
+      context.translate(offsetDiff.x, offsetDiff.y);
+      setViewportTopLeft((prevVal) => diffPoints(prevVal, offsetDiff));
+      isResetRef.current = false;
+    }
+  }, [context, offset, scale]);
 
-  const onDeleteClick = (id: DeleteMapResourceMutationVariables['id']) => {
-    toast.custom(
-      (t) => (
-        <Toast
-          t={t}
-          title={`You are about to delete mapResource`}
-          message={`Are you sure you want to delete mapResource {id}?`}
-          actionType="YesNo"
-          primaryAction={() => deleteMapResource({ variables: { id } })}
-        />
-      ),
-      { position: 'top-center' }
-    )
+
+  // draw
+  useLayoutEffect(() => {
+    if (context) {
+      const squareSize = 20;
+      // clear canvas but maintain transform
+      const storedTransform = context.getTransform();
+      context.canvas.width = context.canvas.width;
+      context.setTransform(storedTransform);
+      let img = new Image(500, 500)
+      img.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp`
+      context.drawImage(img, 0, 0, 500, 500);
+      mapResources.forEach((mapResource) => {
+        context.beginPath();
+        context.arc(posToMap(mapResource.longitude), posToMap(mapResource.latitude), Math.min(Math.max(scale, 1), 5), 0, 2 * Math.PI);
+        context.fill();
+        context.stroke();
+      });
+    }
+  }, [
+    context,
+    scale,
+    offset
+  ]);
+
+  // add event listener on canvas for mouse position
+  useEffect(() => {
+    const canvasElem = ref.current;
+    if (canvasElem === null) {
+      return;
+    }
+
+    function handleUpdateMouse(event: MouseEvent) {
+      event.preventDefault();
+      if (ref.current) {
+        const viewportMousePos = { x: event.clientX, y: event.clientY };
+        const topLeftCanvasPos = {
+          x: ref.current.offsetLeft,
+          y: ref.current.offsetTop
+        };
+        setMousePos(diffPoints(viewportMousePos, topLeftCanvasPos));
+      }
+    }
+
+
+
+    canvasElem.addEventListener("mousemove", handleUpdateMouse);
+    canvasElem.addEventListener("wheel", handleUpdateMouse);
+    return () => {
+      canvasElem.removeEventListener("mousemove", handleUpdateMouse);
+      canvasElem.removeEventListener("wheel", handleUpdateMouse);
+    };
+  }, []);
+
+  // add event listener on canvas for zoom
+  useEffect(() => {
+    const canvasElem = ref.current;
+    if (canvasElem === null) {
+      return;
+    }
+
+    // this is tricky. Update the viewport's "origin" such that
+    // the mouse doesn't move during scale - the 'zoom point' of the mouse
+    // before and after zoom is relatively the same position on the viewport
+    function handleWheel(event: WheelEvent) {
+      event.preventDefault();
+      if (context) {
+        const zoom = 1 - event.deltaY / ZOOM_SENSITIVITY;
+        const viewportTopLeftDelta = {
+          x: (mousePos.x / scale) * (1 - 1 / zoom),
+          y: (mousePos.y / scale) * (1 - 1 / zoom)
+        };
+        const newViewportTopLeft = addPoints(
+          viewportTopLeft,
+          viewportTopLeftDelta
+        );
+
+        context.translate(viewportTopLeft.x, viewportTopLeft.y);
+        context.scale(zoom, zoom);
+        context.translate(-newViewportTopLeft.x, -newViewportTopLeft.y);
+
+        setViewportTopLeft(newViewportTopLeft);
+        setScale(scale * zoom);
+        isResetRef.current = false;
+      }
+    }
+
+    canvasElem.addEventListener("wheel", handleWheel);
+    return () => canvasElem.removeEventListener("wheel", handleWheel);
+  }, [context, mousePos.x, mousePos.y, viewportTopLeft, scale]);
+
+  const handleClick = (e: MouseEvent) => {
+    const canvas = ref.current;
+    const tip = document.getElementById("canvastip");
+    const canvasBounds = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - canvasBounds.left;
+    const mouseY = e.clientY - canvasBounds.top;
+
+    let hit = false;
+    mapResources.forEach((mapResource) => {
+      const x = posToMap(mapResource.longitude);
+      const y = posToMap(mapResource.latitude);
+
+      const dx = mouseX - x;
+      const dy = mouseY - y;
+      if (dx * dx + dy * dy < 4 * 4) {
+        hit = true;
+
+        if (tip && mapResource.Item) {
+          // create image
+          const img = document.createElement("img");
+          img.src = "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/" + mapResource?.Item.image;
+          img.width = 32;
+          img.height = 32;
+          img.classList.add("inline-block", "mr-2");
+
+          // create text
+          const text = document.createElement("span");
+          text.innerText = mapResource.Item.name;
+          text.classList.add("inline-block", "align-middle");
+
+          // add to tip
+          tip.innerHTML = "";
+          tip.appendChild(img);
+          tip.appendChild(text);
+
+
+          tip.style.left = x + "px";
+          tip.style.top = (y - 40) + "px";
+          tip.classList.toggle("invisible", false)
+
+        }
+      }
+    });
+    if (!hit) { tip.classList.toggle("invisible", false) }
   }
-  // TODO: fix
+
+  useEffect(() => {
+    const canvas = ref.current;
+    // canvas.addEventListener("click", handleClick)
+    // const ctx = canvas.getContext("2d");
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // let img = new Image(500, 500)
+    // img.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp`
+    // ctx.drawImage(img, 0, 0, 500, 500);
+    // ctx.strokeStyle = "red";
+    // ctx.fillStyle = "white";
+    // ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+
+    // mapResources.map((mapResource) => {
+    //   ctx.beginPath();
+    //   ctx.arc(posToMap(mapResource.longitude), posToMap(mapResource.latitude), 4, 0, 2 * Math.PI);
+    //   ctx.fill();
+    //   ctx.stroke();
+    // });
+
+    return () => {
+      // canvas.removeEventListener("click", handleClick);
+    }
+  }, [])
+
+
   return (
-    <div className="rw-segment rw-table-wrapper-responsive">
-      <table className="rw-table">
+    <div className="rw-segment">
+      <div className='relative'>
+        <div id="canvastip" className='invisible text-sm inline-flex justify-center items-center absolute text-white z-10 rounded bg-zinc-600 ring-1 ring-inset ring-zinc-500 p-1'>
+        </div>
+        <canvas
+          className='relative z-0'
+          ref={ref}
+          width={500}
+          height={500}
+          onMouseDown={startPan}
+          style={{
+            border: "2px solid #000",
+            width: `500px`,
+            height: `500px`
+          }}
+        />
+      </div>
+
+      {/* <table className="rw-table">
         <thead>
           <tr>
             <th>Id</th>
@@ -85,34 +343,13 @@ const MapResourcesList = ({ mapResources }: FindMapResources) => {
                   >
                     Show
                   </Link>
-                  <Link
-                    to={routes.editMapResource({ id: mapResource.id })}
-                    title={'Edit mapResource ' + mapResource.id}
-                    className="rw-button rw-button-small rw-button-blue"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                      className="rw-button-icon-start"
-                    >
-                      <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-                    </svg>
-                    Edit
-                  </Link>
-                  <button
-                    type="button"
-                    title={'Delete mapResource ' + mapResource.id}
-                    className="rw-button rw-button-small rw-button-red"
-                    onClick={() => onDeleteClick(mapResource.id)}
-                  >
-                    Delete
-                  </button>
+
                 </nav>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
     </div>
   )
 }

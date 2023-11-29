@@ -14,7 +14,7 @@ const CREATE_ITEM_RECIPE_MUTATION = gql`
   }
 `
 
-const NewItemRecipe = () => {
+const NewItemRecipe = ({ item_id }: { item_id?: number }) => {
   const [createItemRecipe, { loading, error }] = useMutation(
     CREATE_ITEM_RECIPE_MUTATION,
     {
@@ -42,7 +42,7 @@ const NewItemRecipe = () => {
         <h2 className="rw-heading rw-heading-secondary">New ItemRecipe</h2>
       </header>
       <div className="rw-segment-main">
-        <ItemRecipeForm onSave={onSave} loading={loading} error={error} />
+        <ItemRecipeForm onSave={onSave} item_id={item_id} loading={loading} error={error} />
       </div>
     </div>
   )

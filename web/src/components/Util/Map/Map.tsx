@@ -1,5 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useLazyQuery } from "@apollo/client";
+import { Lookup } from "../Lookup/Lookup";
 
 const MAPQUERY = gql`
   query FindMapsForMapComp {
@@ -25,8 +32,9 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
-      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${
+      (size.height / 100) * coordinate.lon + size.width / 100
+    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -44,11 +52,17 @@ interface mapProps {
     image?: string;
     name?: string;
     opacity?: number;
+    /**
+     * Used to determine which node to use for the selected map
+     */
+    map_id?: number;
   }[];
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
   onSubMapChange?: (submap: number) => void;
+  onMapChange?: (map: number) => void;
+  mapFilter?: (map: { id: number; name: string }) => boolean;
   onPosClick?: (pos: {
     lat: number;
     lon: number;
@@ -68,7 +82,9 @@ const Map = ({
   className,
   path,
   interactive = false,
+  mapFilter,
   onPosClick,
+  onMapChange,
   onSubMapChange,
 }: mapProps) => {
   const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
@@ -99,18 +115,27 @@ const Map = ({
     return !subMap || !coords
       ? ""
       : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(
-        coords[1].lon
-      )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
-        coords[1].lat
-      )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
+          coords[1].lon
+        )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
+          coords[1].lat
+        )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
   };
 
-  useEffect(() => {
-    if (!called && !loading && !disable_map) {
+  useLayoutEffect(() => {
+    if (!called && !loading) {
       loadMaps();
     }
     setMap(map_id);
     setSubMap(submap_id);
+
+    // if (data)
+    // console.log(
+    //   data.maps.filter(
+    //     (m) =>
+    //       m.parent_map_id == null &&
+    //       (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
+    //   )
+    // );
   }, [called, loading, submap_id, map_id]);
 
   const handleKeyUp = useCallback((event) => {
@@ -118,8 +143,9 @@ const Map = ({
       !interactive ||
       event.code !== "ShiftLeft" ||
       event.code !== "ShiftRight"
-    )
+    ) {
       return;
+    }
 
     setZoom(1);
     setPanPosition({ x: 0, y: 0 });
@@ -247,9 +273,10 @@ const Map = ({
           >
             <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
           </svg>
+          <span className="sr-only">Zoom In</span>
         </button>
         <button
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+          className="rw-button rw-button-small rw-button-gray !border-l-transparent first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => handleZoomButton("out")}
           disabled={zoom == 1 || !interactive}
         >
@@ -260,57 +287,78 @@ const Map = ({
           >
             <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
           </svg>
+          <span className="sr-only">Zoom Out</span>
         </button>
-        <select
-          value={map}
+        <Lookup
+          margin="none"
+          disableClearable
+          className="flex-grow"
+          btnClassName="!rounded-none"
+          size="small"
+          value={data?.maps.find((m) => m.id === map)}
           disabled={disable_map}
-          className="rw-button rw-button-small rw-button-gray flex-grow first:!rounded-bl-none last:!rounded-br-none"
-          onChange={(e) => setMap(parseInt(e.target.value))}
-        >
-          {data &&
-            data.maps
-              .filter((m) => m.parent_map_id == null)
-              .map((map: { id: number; name: string }) => (
-                <option key={map.id} value={map.id}>
-                  {map.name}
-                </option>
-              ))}
-        </select>
-        {data &&
-          data.maps.some((m) => m.other_Map && m.other_Map.length > 0) &&
-          (submap_id || subMap) && (
-            <select
-              value={subMap}
-              disabled={disable_sub_map}
-              className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-              onChange={({ target: { value } }) => {
-                onSubMapChange?.(parseInt(value));
-                setSubMap(parseInt(value));
-              }}
-            >
-              {data &&
-                data.maps
-                  ?.find((m) => m.id === map || m.id === map_id)
-                  .other_Map.map((map: { id: number; name: string }) => (
-                    <option key={map.id} value={map.id}>
-                      {map.name}
-                    </option>
-                  ))}
-            </select>
-          )}
-        <select
-          value={mapType}
-          disabled={disable_map_type}
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none !border-l-transparent"
-          onChange={({ target: { value } }) =>
-            (value == "img" || value == "topographic_img") && setMapType(value)
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => option.name}
+          options={
+            (data?.maps.filter(
+              (m) =>
+                m.parent_map_id == null &&
+                (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
+            ) as { id: number; name: string }[]) ?? []
           }
-        >
-          <option value={"img"}>Drawn</option>
-          <option value={"topographic_img"}>Topographic</option>
-        </select>
+          onSelect={(e) => {
+            if (!e) return;
+            onMapChange?.(parseInt(e.id.toString()));
+            setMap(parseInt(e.id.toString()));
+          }}
+        />
+        {data &&
+          data.maps.some(
+            (m) => m.other_Map && m.other_Map.length > 0 && m.id === map
+          ) && (
+            <Lookup
+              margin="none"
+              disableClearable
+              btnClassName="!rounded-none"
+              size="small"
+              defaultValue={subMap}
+              disabled={disable_sub_map}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.name}
+              options={
+                data.maps?.find((m) => m.id === map || m.id === map_id)
+                  .other_Map as { id: number; name: string }[]
+              }
+              onSelect={(e) => {
+                if (!e) return;
+                onSubMapChange?.(parseInt(e.id.toString()));
+                setSubMap(parseInt(e.id.toString()));
+              }}
+            />
+          )}
+        <Lookup
+          margin="none"
+          disableClearable
+          btnClassName="!rounded-none"
+          size="small"
+          value={[
+            { label: "Drawn", value: "img" },
+            { label: "Topographic", value: "topographic_img" },
+          ].find((mt) => mt.value === mapType)}
+          disabled={disable_map_type}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+          getOptionLabel={(option) => option.label}
+          options={[
+            { label: "Drawn", value: "img" },
+            { label: "Topographic", value: "topographic_img" },
+          ]}
+          onSelect={(e) => {
+            if (!e) return;
+            setMapType(e.value.toString() as "img" | "topographic_img");
+          }}
+        />
         <button
-          className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
+          className="rw-button rw-button-small rw-button-red !ml-0 first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => {
             reset();
           }}
@@ -338,10 +386,15 @@ const Map = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find((m) => m.id === (submap_id ? subMap : map))[
-              mapType
-            ] || ""
-              }`}
+            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${
+              data?.maps?.find(
+                (m) =>
+                  m.id ===
+                  (data.maps.find((m) => m.id === map)?.other_Map.length > 0
+                    ? subMap ?? 16
+                    : map)
+              )[mapType] || ""
+            }`}
             height={size.height}
             width={size.width}
             ref={imgRef}
@@ -395,88 +448,93 @@ const Map = ({
           width="100%"
           height="100%"
         >
-          {pos?.map((p, i) => (
-            <React.Fragment key={`map-pos-${i}`}>
-              {p.image && p.image != null ? (
-                <image
-                  href={p.image}
-                  width={9}
-                  id={`map-pos-${p.lat}-${p.lon}`}
-                  y={posToMap(
-                    p.lat,
-                    mapType == "topographic_img"
-                      ? JSON.parse(
-                        data?.maps?.find(
-                          (m) => m.id === (submap_id ? subMap : map)
-                        )?.boundaries
-                      )
-                      : null
+          {pos &&
+            pos
+              ?.filter((p) =>
+                p?.map_id ? p?.map_id === map || p.map_id === subMap : true
+              )
+              ?.map((p, i) => (
+                <React.Fragment key={`map-pos-${i}`}>
+                  {p.image && p.image != null ? (
+                    <image
+                      href={p.image}
+                      width={9}
+                      id={`map-pos-${p.lat}-${p.lon}`}
+                      y={posToMap(
+                        p.lat,
+                        mapType == "topographic_img"
+                          ? JSON.parse(
+                              data?.maps?.find(
+                                (m) => m.id === (submap_id ? subMap : map)
+                              )?.boundaries
+                            )
+                          : null
+                      )}
+                      x={posToMap(
+                        p.lon,
+                        mapType == "topographic_img"
+                          ? JSON.parse(
+                              data?.maps?.find(
+                                (m) => m.id === (submap_id ? subMap : map)
+                              )?.boundaries
+                            )
+                          : null
+                      )}
+                      ref={imgRef}
+                      opacity={p.opacity ?? 1}
+                      className="rounded-full"
+                      stroke="black"
+                      style={{
+                        cursor: "pointer",
+                        transformOrigin: "center center",
+                      }}
+                      onClick={() => onPosClick?.(p)}
+                    >
+                      <title>{p.name}</title>
+                    </image>
+                  ) : (
+                    <circle
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                        transformOrigin: "center center",
+                      }}
+                      id={`map-pos-${p.lat}-${p.lon}`}
+                      fill={p.color || "red"}
+                      stroke="black"
+                      className="hover:stroke-red-500"
+                      x={0}
+                      onClick={() => onPosClick?.(p)}
+                      y={0}
+                      cy={posToMap(
+                        p.lat,
+                        mapType == "topographic_img"
+                          ? JSON.parse(
+                              data?.maps?.find(
+                                (m) => m.id === (submap_id ? subMap : map)
+                              )?.boundaries
+                            )
+                          : null
+                      )}
+                      cx={posToMap(
+                        p.lon,
+                        mapType == "topographic_img"
+                          ? JSON.parse(
+                              data?.maps?.find(
+                                (m) => m.id === (submap_id ? subMap : map)
+                              )?.boundaries
+                            )
+                          : null
+                      )}
+                      // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
+                      r="3"
+                    >
+                      <title>{p.name}</title>
+                    </circle>
                   )}
-                  x={posToMap(
-                    p.lon,
-                    mapType == "topographic_img"
-                      ? JSON.parse(
-                        data?.maps?.find(
-                          (m) => m.id === (submap_id ? subMap : map)
-                        )?.boundaries
-                      )
-                      : null
-                  )}
-                  ref={imgRef}
-                  opacity={p.opacity ?? 1}
-                  className="rounded-full"
-                  stroke="black"
-                  style={{
-                    cursor: "pointer",
-                    transformOrigin: "center center",
-                  }}
-                  onClick={() => onPosClick?.(p)}
-                >
-                  <title>{p.name}</title>
-                </image>
-              ) : (
-                <circle
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    cursor: "pointer",
-                    transformOrigin: "center center",
-                  }}
-                  id={`map-pos-${p.lat}-${p.lon}`}
-                  fill={p.color || "red"}
-                  stroke="black"
-                  className="hover:stroke-red-500"
-                  x={0}
-                  onClick={() => onPosClick?.(p)}
-                  y={0}
-                  cy={posToMap(
-                    p.lat,
-                    mapType == "topographic_img"
-                      ? JSON.parse(
-                        data?.maps?.find(
-                          (m) => m.id === (submap_id ? subMap : map)
-                        )?.boundaries
-                      )
-                      : null
-                  )}
-                  cx={posToMap(
-                    p.lon,
-                    mapType == "topographic_img"
-                      ? JSON.parse(
-                        data?.maps?.find(
-                          (m) => m.id === (submap_id ? subMap : map)
-                        )?.boundaries
-                      )
-                      : null
-                  )}
-                  // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
-                  r="3"
-                >
-                  <title>{p.name}</title>
-                </circle>
-              )}
-            </React.Fragment>
-          ))}
+                </React.Fragment>
+              ))}
         </g>
         {pos?.length > 0 && path?.coords && (
           <path

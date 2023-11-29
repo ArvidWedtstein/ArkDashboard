@@ -6,7 +6,7 @@ import type {
 
 import { db } from "src/lib/db";
 
-export const lootcratesByMap = async ({
+export const lootcratesByMap: QueryResolvers["lootcratesByMap"] = async ({
   map,
   search,
   type,
@@ -17,19 +17,13 @@ export const lootcratesByMap = async ({
   type?: string;
   color?: string;
 }) => {
+  // !!type ? { type: { hasSome: type.split(",") } } : {},
   return db.lootcrate.findMany({
     orderBy: { name: "asc" },
     where:
       map || search || type || color
         ? {
             OR: [
-              type
-                ? {
-                    type: {
-                      in: type.split(","),
-                    },
-                  }
-                : {},
               search
                 ? {
                     LootcrateMap: {

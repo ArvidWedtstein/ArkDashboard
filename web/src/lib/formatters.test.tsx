@@ -11,7 +11,6 @@ import {
   combineBySummingKeys,
   isObject,
   capitalize,
-  getWeekDates,
   isDate,
   random,
   getDateDiff,
@@ -43,6 +42,7 @@ describe('formatEnum', () => {
     expect(formatEnum(5)).toEqual('')
   })
 })
+
 
 describe('truncate', () => {
   it('truncates really long strings', () => {
@@ -285,16 +285,6 @@ describe('capitalize', () => {
 
   it('does not capitalize the first letter of a string if it is already capitalized', () => {
     expect(capitalize('Hello')).toBe('Hello')
-  })
-})
-
-describe('getWeekDates', () => {
-  it('returns an array of the start and end date of the current week', () => {
-    const dates = getWeekDates()
-
-    expect(dates).toHaveLength(2)
-    expect(dates[0]).toBeInstanceOf(Date)
-    expect(dates[1]).toBeInstanceOf(Date)
   })
 })
 

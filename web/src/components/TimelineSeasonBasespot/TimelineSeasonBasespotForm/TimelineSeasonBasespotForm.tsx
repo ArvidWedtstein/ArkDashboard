@@ -13,13 +13,11 @@ import type {
   UpdateTimelineSeasonBasespotInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
-
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
 >;
-
 
 interface TimelineSeasonBasespotFormProps {
   timelineSeasonBasespot?: EditTimelineSeasonBasespotById["timelineSeasonBasespot"];
@@ -35,7 +33,6 @@ interface TimelineSeasonBasespotFormProps {
 }
 
 const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
-
   const onSubmit = (data: FormTimelineSeasonBasespot) => {
     data.timeline_season_id = props.timeline_season_id;
     props.onSave(data, props?.timelineSeasonBasespot?.id);
@@ -105,28 +102,25 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           Basespot
         </Label>
 
-        <MultiSelectLookup
-          options={props?.basespots.map((bs) => ({
-            label: bs.name,
-            value: bs.id,
-          })) || []}
+        <Lookup
+          options={props?.basespots || []}
           name="basespot_id"
-          defaultValue={[props.timelineSeasonBasespot?.basespot_id]}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          defaultValue={props.timelineSeasonBasespot?.basespot_id}
           placeholder="Select a basespot"
           className="mt-3"
         />
 
         <FieldError name="basespot_id" className="rw-field-error" />
 
-
-        <MultiSelectLookup
-          options={props?.maps.map((map) => ({
-            label: map.name,
-            value: map.id,
-            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`
-          })) || []}
+        <Lookup
+          options={props?.maps || []}
           name="map_id"
-          defaultValue={[props.timelineSeasonBasespot?.map_id.toString()]}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+          defaultValue={props.timelineSeasonBasespot?.map_id}
           placeholder="Select a map"
           className="mt-3"
         />

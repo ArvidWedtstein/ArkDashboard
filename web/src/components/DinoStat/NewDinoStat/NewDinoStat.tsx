@@ -1,10 +1,10 @@
-import { navigate, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { navigate, routes } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import DinoStatForm from 'src/components/DinoStat/DinoStatForm'
+import DinoStatForm from "src/components/DinoStat/DinoStatForm";
 
-import type { CreateDinoStatInput } from 'types/graphql'
+import type { CreateDinoStatInput } from "types/graphql";
 
 const CREATE_DINO_STAT_MUTATION = gql`
   mutation CreateDinoStatMutation($input: CreateDinoStatInput!) {
@@ -12,21 +12,21 @@ const CREATE_DINO_STAT_MUTATION = gql`
       id
     }
   }
-`
+`;
 
-const NewDinoStat = () => {
+const NewDinoStat = ({ dino_id = "" }) => {
   const [createDinoStat, { loading, error }] = useMutation(
     CREATE_DINO_STAT_MUTATION,
     {
       onCompleted: () => {
-        toast.success('DinoStat created')
-        navigate(routes.dinoStats())
+        toast.success("DinoStat created");
+        navigate(routes.dinoStats());
       },
       onError: (error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       },
     }
-  )
+  );
 
   const onSave = (input: CreateDinoStatInput) => {
     toast.promise(createDinoStat({ variables: { input } }), {
@@ -34,7 +34,7 @@ const NewDinoStat = () => {
       success: "Dniostat successfully created",
       error: <b>Failed to create dinostat .</b>,
     });
-  }
+  };
 
   return (
     <div className="rw-segment">
@@ -42,10 +42,15 @@ const NewDinoStat = () => {
         <h2 className="rw-heading rw-heading-secondary">New DinoStat</h2>
       </header>
       <div className="rw-segment-main">
-        <DinoStatForm onSave={onSave} loading={loading} error={error} />
+        <DinoStatForm
+          onSave={onSave}
+          loading={loading}
+          error={error}
+          dino_id={dino_id}
+        />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NewDinoStat
+export default NewDinoStat;

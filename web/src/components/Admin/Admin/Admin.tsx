@@ -1,11 +1,11 @@
-import { set } from "@redwoodjs/forms";
-import { Link } from "@redwoodjs/router";
 import { MetaTags, useMutation } from "@redwoodjs/web";
-import { CheckmarkIcon, toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Button from "src/components/Util/Button/Button";
+import { Card, CardContent, CardHeader } from "src/components/Util/Card/Card";
 import Chart from "src/components/Util/Chart/Chart";
-import StatCard from "src/components/Util/StatCard/StatCard";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Table from "src/components/Util/Table/Table";
 import Toast from "src/components/Util/Toast/Toast";
 import {
@@ -13,8 +13,6 @@ import {
   getHexCodeFromPercentage,
   groupBy,
   relativeDate,
-  timeFormatL,
-  timeTag,
   truncate,
 } from "src/lib/formatters";
 import { FindAdminData } from "types/graphql";
@@ -32,14 +30,11 @@ const UPDATE_PROFILE_MUTATION = gql`
 `;
 
 const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
-  const [updateUser, { loading }] = useMutation(
-    UPDATE_PROFILE_MUTATION,
-    {
-      onError: (error) => {
-        console.error(`Failed updating user: ${error.message}`);
-      },
-    }
-  );
+  const [updateUser, { loading }] = useMutation(UPDATE_PROFILE_MUTATION, {
+    onError: (error) => {
+      console.error(`Failed updating user: ${error.message}`);
+    },
+  });
 
   type CommitAuthor = {
     login: string;
@@ -60,7 +55,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
     received_events_url: string;
     type: string;
     site_admin: boolean;
-  }
+  };
   type Commit = {
     author: CommitAuthor;
     comments_url: string;
@@ -99,13 +94,15 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
       url: string;
       html_url: string;
     }[];
-  }
+  };
   const [githubCommits, setGithubCommits] = useState<Commit[]>([]);
   // Fetch Github data
   useEffect(() => {
-    fetch('https://api.github.com/repos/arvidwedtstein/ArkDashboard/commits?sha=1bc1c549eb8573f1719432e7e66ce34dca8b35bc')
-      .then(response => response.json())
-      .then(data => setGithubCommits(data))
+    fetch(
+      "https://api.github.com/repos/arvidwedtstein/ArkDashboard/commits?sha=1bc1c549eb8573f1719432e7e66ce34dca8b35bc"
+    )
+      .then((response) => response.json())
+      .then((data) => setGithubCommits(data));
   }, []);
 
   const optimizedBasespots = useMemo(() => {
@@ -183,62 +180,201 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
 
       <div className="container-xl m-4 overflow-hidden p-3 text-center">
         <div className="mb-3 flex flex-col-reverse space-x-3 md:flex-row">
-          <StatCard
-            stat={"Finsihed Basespots"}
-            value={formatNumber(
-              (optimizedBasespots.filter((b) => b.progress == 100).length /
-                optimizedBasespots.length) *
-              100,
-              { maximumSignificantDigits: 3 }
-            )}
-            valueDisplay="percent"
-          />
-          <StatCard
-            stat={"Goal: 20 basespots per map"}
-            value={(
-              Object.entries(groupBy(optimizedBasespots, "map_id"))
-                .map(([k, v]) => ({
-                  map_id: k,
-                  map_name: v[0].Map.name,
-                  basespots: v.length,
-                  percent: (v.slice(0, 20).length / 20) * 100,
-                }))
-                // .filter((g) => g.map_id === "12")
-                .reduce((acc, curr) => {
-                  return acc + curr.percent;
-                }, 0) / 12
-            ).toPrecision(3)}
-          />
-          <StatCard stat={"Test"} value={10} />
+          <Card className="flex items-start bg-zinc-200 text-left shadow-md dark:bg-zinc-700">
+            <CardHeader
+              title={`Finished Basespots`}
+              titleProps={{
+                className: "!text-xs !font-semibold uppercase font-poppins",
+              }}
+              subheader={`${formatNumber(
+                (optimizedBasespots.filter((b) => b.progress == 100).length /
+                  optimizedBasespots.length) *
+                100,
+                { maximumSignificantDigits: 3 }
+              ).toString()} / 100`}
+              subheaderProps={{ className: "text-xl !font-bold !text-white" }}
+            />
+            <CardContent>
+              <div className="relative w-auto flex-initial">
+                <svg
+                  viewBox="0 0 36 36"
+                  className="inline-flex h-20 w-20 items-center justify-center text-center text-white"
+                >
+                  <path
+                    className="stroke-pea-800 fill-none stroke-1"
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <path
+                    className={clsx(
+                      "animate-circle-progress fill-none stroke-2",
+                      "stroke-pea-500"
+                    )}
+                    strokeLinecap="round"
+                    strokeDasharray={`${formatNumber(
+                      (optimizedBasespots.filter((b) => b.progress == 100)
+                        .length /
+                        optimizedBasespots.length) *
+                      100,
+                      { maximumSignificantDigits: 3 }
+                    )}, 100`}
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <text
+                    textAnchor="middle"
+                    x="18"
+                    y="19.35"
+                    dominantBaseline="middle"
+                    fontSize={8}
+                    className="fill-black text-center font-normal dark:fill-white"
+                  >
+                    {formatNumber(
+                      (optimizedBasespots.filter((b) => b.progress == 100)
+                        .length /
+                        optimizedBasespots.length) *
+                      100,
+                      { maximumSignificantDigits: 3 }
+                    )}
+                    %
+                  </text>
+                </svg>
+              </div>
+            </CardContent>
+          </Card>
 
-          <Chart
-            options={{ verticalLabels: true, horizontalLabels: true }}
-            className="rounded-lg border border-transparent bg-gray-200 text-black shadow-lg transition ease-in-out dark:bg-zinc-700 dark:text-white"
-            height={100}
-            data={Object.values(
-              groupDatesByMonth(
-                profiles
-                  .map((p) => new Date(p.created_at))
-                  .sort((a, b) => a.getTime() - b.getTime())
-              )
-            ).map((g: Date[]) => g.length)}
-            labels={Object.keys(
-              groupDatesByMonth(
-                profiles
-                  .map((p) => new Date(p.created_at))
-                  .sort((a, b) => a.getTime() - b.getTime())
-              )
-            ).map((p) =>
-              new Date(p).toLocaleDateString("en-GB", { month: "short" })
-            )}
-            title={"New Users in the last months"}
-          />
+          <Card className="flex items-start bg-zinc-200 text-left shadow-md dark:bg-zinc-700">
+            <CardHeader
+              title={`Goal: 20 basespots per map`}
+              titleProps={{
+                className: "!text-xs !font-semibold uppercase font-poppins",
+              }}
+              subheader={(
+                Object.entries(groupBy(optimizedBasespots, "map_id"))
+                  .map(([k, v]) => ({
+                    map_id: k,
+                    map_name: v[0].Map.name,
+                    basespots: v.length,
+                    percent: (v.slice(0, 20).length / 20) * 100,
+                  }))
+                  // .filter((g) => g.map_id === "12")
+                  .reduce((acc, curr) => {
+                    return acc + curr.percent;
+                  }, 0) / 12
+              ).toPrecision(3)}
+              subheaderProps={{ className: "text-xl !font-bold !text-white" }}
+            />
+            <CardContent>
+              <div className="relative w-auto flex-initial">
+                <svg
+                  viewBox="0 0 36 36"
+                  className="inline-flex h-20 w-20 items-center justify-center text-center text-white"
+                >
+                  <path
+                    className="stroke-pea-800 fill-none stroke-1"
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <path
+                    className={clsx(
+                      "animate-circle-progress fill-none stroke-2",
+                      "stroke-pea-500"
+                    )}
+                    strokeLinecap="round"
+                    strokeDasharray={`${(
+                      Object.entries(groupBy(optimizedBasespots, "map_id"))
+                        .map(([k, v]) => ({
+                          map_id: k,
+                          map_name: v[0].Map.name,
+                          basespots: v.length,
+                          percent: (v.slice(0, 20).length / 20) * 100,
+                        }))
+                        // .filter((g) => g.map_id === "12")
+                        .reduce((acc, curr) => {
+                          return acc + curr.percent;
+                        }, 0) / 12
+                    ).toPrecision(3)}, 100`}
+                    d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                  ></path>
+                  <text
+                    textAnchor="middle"
+                    x="18"
+                    y="19.35"
+                    dominantBaseline="middle"
+                    fontSize={8}
+                    className="fill-black text-center font-normal dark:fill-white"
+                  >
+                    {(
+                      Object.entries(groupBy(optimizedBasespots, "map_id"))
+                        .map(([k, v]) => ({
+                          map_id: k,
+                          map_name: v[0].Map.name,
+                          basespots: v.length,
+                          percent: (v.slice(0, 20).length / 20) * 100,
+                        }))
+                        // .filter((g) => g.map_id === "12")
+                        .reduce((acc, curr) => {
+                          return acc + curr.percent;
+                        }, 0) / 12
+                    ).toPrecision(3)}
+                    %
+                  </text>
+                </svg>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="grow bg-zinc-200 shadow-md dark:bg-zinc-700">
+            <CardContent>
+              <Chart
+                margin={{
+                  top: 40,
+                  left: 40,
+                  right: 40,
+                }}
+                type="line"
+                height={200}
+                dataset={Object.entries(
+                  groupDatesByMonth(
+                    profiles
+                      .map((p) => new Date(p.created_at))
+                      .sort((a, b) => a.getTime() - b.getTime())
+                  )
+                ).map(([k, v]: [k: string, v: unknown[]]) => ({
+                  month: new Date(k).toLocaleDateString("en-GB", {
+                    month: "short",
+                  }),
+                  newUsers: v.length,
+                }))}
+                series={[
+                  {
+                    area: true,
+                    color: "#34b364",
+                    dataKey: "newUsers",
+                  },
+                ]}
+                xAxis={[
+                  {
+                    scaleType: "point",
+                    dataKey: "month",
+                    label: "New Users in the last months",
+                  },
+                ]}
+              // title={"New Users in the last months"}
+              />
+            </CardContent>
+          </Card>
         </div>
 
         <Table
           rows={optimizedBasespots}
+          checkSelect
           settings={{
-            select: true,
             pagination: {
               enabled: true,
               rowsPerPage: 10,
@@ -259,7 +395,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             },
             {
               header: "Map",
-              field: "Map.name",
+              field: "Map",
+              valueFormatter: ({ value }) => value.name,
               sortable: true,
             },
             {
@@ -303,19 +440,21 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           ]}
         />
 
-        <div className="relative my-12 px-4 max-w-2xl mx-auto">
-          <div className="flex items-center absolute inset-0">
-            <div className="border-t border-zinc-500 w-full" />
+        <div className="relative my-12 mx-auto max-w-2xl px-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-zinc-500" />
           </div>
-          <div className="flex justify-center relative dark:text-white text-black">
-            <span className="font-semibold text-base px-3 dark:bg-zinc-900 bg-white">Users</span>
+          <div className="relative flex justify-center text-black dark:text-white">
+            <span className="bg-white px-3 text-base font-semibold dark:bg-zinc-900">
+              Users
+            </span>
           </div>
         </div>
 
         <Table
           rows={profiles}
+          checkSelect
           settings={{
-            select: true,
             pagination: {
               enabled: true,
               rowsPerPage: 10,
@@ -372,9 +511,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               render: ({ value, row }) => (
                 <div className="inline-flex gap-x-2">
                   {/* Bans for one week */}
-                  <button
+                  <Button
+                    className="group"
+                    color="error"
                     disabled={loading}
-                    className="rw-button rw-button-small rw-button-red-outline group"
                     onClick={() => {
                       toast.custom((t) => (
                         <Toast
@@ -416,7 +556,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     >
                       <path d="M512 208.3c0-9.103-7.43-16-15.99-16c-4.091 0-8.183 1.562-11.31 4.688l-12.7 12.7L302.4 40l12.68-12.69C318.2 24.19 319.8 20.09 319.8 16c0-9.103-7.43-16-15.99-16c-4.091 0-8.183 1.562-11.31 4.688l-143.9 144C145.5 151.8 143.9 155.9 143.9 160c0 9.103 7.43 16 15.99 16c4.091 0 8.183-1.562 11.31-4.688l12.68-12.69l73.39 73.44l-75.46 78.11L172.4 300.7c-8.456-8.437-19.56-12.67-30.64-12.67c-11.13 0-22.26 4.234-30.73 12.67l-98.31 98.38C4.232 407.6 0 418.7 0 429.8s4.232 22.23 12.7 30.7l38.76 38.78C59.65 507.5 70.55 512 82.14 512c11.6 0 22.5-4.5 30.69-12.72l98.31-98.34c8.464-8.469 12.7-19.59 12.7-30.7S219.6 348 211.1 339.5l-6.711-6.719l75.47-78.12l73.56 73.6l-12.66 12.67c-3.123 3.125-4.685 7.219-4.685 11.31c0 9.103 7.43 16 15.99 16c4.092 0 8.183-1.562 11.31-4.688l143.9-144C510.4 216.5 512 212.4 512 208.3zM191.9 370.2c0 2.922-1.113 5.844-3.338 8.078l-98.32 98.34c-2.139 2.156-5.095 3.234-8.054 3.234c-2.959 0-5.923-1.078-8.078-3.234l-38.76-38.78c-2.225-2.234-3.338-5.156-3.338-8.078s1.113-5.844 3.338-8.078l98.31-98.38c2.218-2.219 5.138-3.312 8.074-3.312c2.92 0 5.856 1.094 8.089 3.344l38.74 38.78C190.7 364.4 191.9 367.3 191.9 370.2zM206.5 136l73.33-73.38l169.6 169.7l-73.33 73.38L206.5 136z" />
                     </svg>
-                  </button>
+                  </Button>
                 </div>
               ),
             },
@@ -445,26 +585,32 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               header: "Role",
               field: "role_id",
               sortable: true,
-              render: (
-                { value, row }
-              ) => (
-                <select
-                  className="rw-input rw-input-small"
+              render: ({ value, row }) => (
+                <Lookup
+                  label="Role"
                   disabled={loading}
+                  margin="none"
+                  getOptionLabel={(option) => option.name}
                   defaultValue={value}
-                  onChange={(e) => {
+                  valueKey="id"
+                  isOptionEqualToValue={(val, opt) => opt.id === val.id}
+                  options={roles || []}
+                  onChange={(e, val) => {
+                    if (!val || val.id === value) return;
                     toast.custom((t) => (
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${row.username}'s role from ${roles.find((r) => r.id == value)?.name} to ${roles.find((r) => r.id == e.target.value)?.name}?`}
+                        message={`Are you sure you want to change ${row.username
+                          }'s role from ${roles.find((r) => r.id == value)?.name
+                          } to ${val?.name}?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(
                             updateUser({
                               variables: {
                                 id: row.id,
-                                input: { role_id: e.target.value },
+                                input: { role_id: val.id },
                               },
                             }),
                             {
@@ -479,25 +625,21 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       />
                     ));
                   }}
-                >
-                  {roles &&
-                    roles.map((role) => (
-                      <option key={role.id} value={role.id}>
-                        {role.name}
-                      </option>
-                    ))}
-                </select>
+                  size="small"
+                />
               ),
             },
           ]}
         />
 
-        <div className="relative my-12 px-4 max-w-2xl mx-auto">
-          <div className="flex items-center absolute inset-0">
-            <div className="border-t border-zinc-500 w-full" />
+        <div className="relative my-12 mx-auto max-w-2xl px-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-zinc-500" />
           </div>
-          <div className="flex justify-center relative dark:text-white text-black">
-            <span className="font-semibold text-base px-3 dark:bg-zinc-900 bg-white">Commits</span>
+          <div className="relative flex justify-center text-black dark:text-white">
+            <span className="bg-white px-3 text-base font-semibold dark:bg-zinc-900">
+              Commits
+            </span>
           </div>
         </div>
 
@@ -517,24 +659,37 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               sortable: true,
               render: ({ value }) => (
                 <div className="flex items-center gap-x-4">
-                  <img src={value.avatar_url} className="h-8 w-8 rounded-full" />
-                  <span className="font-medium text-sm leading-6 text-ellipsis whitespace-nowrap">{value.login}</span>
+                  <img
+                    src={value.avatar_url}
+                    className="h-8 w-8 rounded-full"
+                  />
+                  <span className="text-ellipsis whitespace-nowrap text-sm font-medium leading-6">
+                    {value.login}
+                  </span>
                 </div>
-              )
+              ),
             },
             {
               header: "Commit",
               field: "commit",
               render: ({ value }) => (
-                <div className="flex gap-x-3 items-center leading-6">
-                  <a target="_blank" href={`https://github.com/ArvidWedtstein/ArkDashboard/commit/${value.tree.sha}`} className="font-mono text-sm leading-6 text-ellipsis whitespace-nowrap">{value.tree.sha.slice(0, 7)}</a>
+                <div className="flex items-center gap-x-3 leading-6">
+                  <a
+                    target="_blank"
+                    rel="noopener"
+                    href={`https://github.com/ArvidWedtstein/ArkDashboard/commit/${value.tree.sha}`}
+                    className="text-ellipsis whitespace-nowrap font-mono text-sm leading-6"
+                  >
+                    {value.tree.sha.slice(0, 7)}
+                  </a>
                   <span className="rw-badge rw-badge-gray-outline">dev</span>
                 </div>
-              )
+              ),
             },
             {
               header: "Changes",
-              field: "commit.message",
+              field: "commit",
+              valueFormatter: ({ value }) => value.message,
               render: ({ value }) => (
                 <div className="flex items-center gap-x-3">
                   {/* <div className={clsx("p-1 rounded-full flex-none", {
@@ -543,16 +698,19 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   })}>
                     <div className="bg-current rounded-full w-1.5 h-1.5" />
                   </div> */}
-                  <span className="text-sm leading-6 whitespace-pre-line">{value}</span>
+                  <span className="whitespace-pre-line text-sm leading-6">
+                    {value}
+                  </span>
                 </div>
-              )
+              ),
             },
             {
               header: "Commited at",
-              field: "commit.author.date",
+              field: "commit",
+              valueFormatter: ({ value }) => value.author.date,
               sortable: true,
               datatype: "date",
-              render: ({ value }) => relativeDate(value)
+              render: ({ value }) => relativeDate(value),
             },
           ]}
         />

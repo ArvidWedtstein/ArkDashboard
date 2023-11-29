@@ -7,14 +7,19 @@ export const schema = gql`
     item_id: BigInt
     latitude: Float
     longitude: Float
+    x: Float
+    y: Float
+    z: Float
     type: String
+    note_index: BigInt
     Item: Item
     Map: Map!
   }
 
   type Query {
-    mapResources: [MapResource!]! @requireAuth
-    mapResource(id: BigInt!): MapResource @requireAuth
+    mapResources: [MapResource!]! @skipAuth
+    mapResource(id: BigInt!): MapResource @skipAuth
+    mapResourcesByMap(map_id: BigInt, item_id: BigInt): [MapResource] @skipAuth
   }
 
   input CreateMapResourceInput {
@@ -24,7 +29,11 @@ export const schema = gql`
     item_id: BigInt
     latitude: Float
     longitude: Float
+    x: Float
+    y: Float
+    z: Float
     type: String
+    note_index: BigInt
   }
 
   input UpdateMapResourceInput {
@@ -34,7 +43,11 @@ export const schema = gql`
     item_id: BigInt
     latitude: Float
     longitude: Float
+    x: Float
+    y: Float
+    z: Float
     type: String
+    note_index: BigInt
   }
 
   type Mutation {

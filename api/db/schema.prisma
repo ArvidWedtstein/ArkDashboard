@@ -143,6 +143,10 @@ model Dino {
   tamable                        Boolean?   @default(true)
   breedable                      Boolean?   @default(true)
   bp                             String?
+  default_dmg                    Float?     @default(0)
+  default_swing_radius           Float?     @default(0)
+  targeting_team_name            String?
+  flags                          Json?      @default("[]")
   DinoStat                       DinoStat[]
 }
 
@@ -198,6 +202,7 @@ model Map {
   Map                    Map?                     @relation("MapToMap", fields: [parent_map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   other_Map              Map[]                    @relation("MapToMap")
   MapNote                MapNote[]
+  MapRegion              MapRegion[]
   MapResource            MapResource[]
   TimelineSeasonBasespot TimelineSeasonBasespot[]
   TimelineSeasonEvent    TimelineSeasonEvent[]
@@ -399,6 +404,10 @@ model MapResource {
   latitude   Float?    @default(0)
   longitude  Float?    @default(0)
   type       String?
+  x          Float?    @default(0)
+  y          Float?    @default(0)
+  z          Float?    @default(0)
+  note_index BigInt?
   Item       Item?     @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Map        Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
@@ -441,6 +450,29 @@ model LootcrateMap {
   Map          Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([map_id, lootcrate_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model MapRegion {
+  id          BigInt    @id(map: "MapRegions_pkey") @default(autoincrement())
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  name        String?
+  map_id      BigInt
+  wind        Decimal?  @db.Decimal
+  temperature Decimal?  @db.Decimal
+  priority    BigInt?
+  outside     Boolean?  @default(true)
+  start_x     Decimal?  @db.Decimal
+  start_y     Decimal?  @db.Decimal
+  start_z     Decimal?  @db.Decimal
+  end_x       Decimal?  @db.Decimal
+  end_y       Decimal?  @db.Decimal
+  end_z       Decimal?  @db.Decimal
+  radiation   Boolean?  @default(false)
+  Map         Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([map_id, start_x, start_y, start_z, end_x, end_y, end_z])
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.

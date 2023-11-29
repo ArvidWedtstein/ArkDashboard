@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import { debounce, generateUniqueId } from "src/lib/formatters";
 
 interface Item {
@@ -12,7 +12,10 @@ interface Item {
 interface ItemListProps {
   options: Item[];
   onSearch?: (search: string) => void;
-  onSelect?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: Item) => void;
+  onSelect?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    item: Item
+  ) => void;
   defaultSearch?: boolean;
   onCheck?: (event: React.ChangeEvent<HTMLInputElement>, item: Item) => void;
 }
@@ -25,7 +28,7 @@ const ItemList = ({
   defaultSearch = true,
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
-  const [openItemIds, setOpenItemIds] = useState<string[]>([]);// Store open item IDs
+  const [openItemIds, setOpenItemIds] = useState<string[]>([]); // Store open item IDs
   const toggleItemOpen = (itemId: string) => {
     setOpenItemIds((prevOpenItemIds) =>
       prevOpenItemIds.includes(itemId)
@@ -35,7 +38,10 @@ const ItemList = ({
   };
 
   const renderItem = (item: Item) => (
-    <li key={`${JSON.stringify(item)}-${Math.random()}`} className="flex items-center p-2 space-x-1 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 rounded-lg">
+    <li
+      key={`${JSON.stringify(item)}-${Math.random()}`}
+      className="flex items-center space-x-1 rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+    >
       {onCheck && (
         <input
           className="rw-input"
@@ -65,67 +71,73 @@ const ItemList = ({
     const itemId = generateUniqueId();
     const isOpen = openItemIds.includes((index + (subindex ?? 0)).toString());
     return (
-      <React.Fragment key={itemId}>
-        {
-          item?.value &&
-            item?.value?.filter(({ label }) =>
-              label.toLowerCase().includes(defaultSearch ? search.toLowerCase() : "")
-            ).length > 0 ? (
-            <li>
-              <details
-                className="[&>summary:after]:open:rotate-90"
-                open={
-                  !!search &&
+      <Fragment key={`${itemId}-${index + subindex}`}>
+        {item?.value &&
+        item?.value?.filter(({ label }) =>
+          label
+            .toLowerCase()
+            .includes(defaultSearch ? search.toLowerCase() : "")
+        ).length > 0 ? (
+          <li>
+            <details
+              className="[&>summary:after]:open:rotate-90"
+              open={
+                (!!search &&
                   item?.value?.filter(({ label }) =>
                     label
                       .toLowerCase()
                       .includes(defaultSearch ? search.toLowerCase() : "")
-                  ).length == 1 || isOpen
-                }
+                  ).length == 1) ||
+                isOpen
+              }
+            >
+              <summary
+                onClick={() => {
+                  toggleItemOpen((index + (subindex ?? 0)).toString());
+                }}
+                className="flex select-none items-center space-x-1 rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
               >
-                <summary
-                  onClick={() => {
-                    toggleItemOpen((index + (subindex ?? 0)).toString());
-                  }}
-                  className="flex select-none items-center space-x-1 rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                  {item.icon && typeof item.icon == "string" ? (
-                    <img
-                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                      src={item.icon}
-                      alt={``}
-                      loading="lazy"
-                    />
-                  ) : (
-                    item.icon
-                  )}
-                  <span className="flex-grow">
-                    {item.label == "null" ? "Other" : item.label}
-                  </span>
-                  <span className="text-pea-800 pr-6 inline-flex h-2 items-center justify-center text-right rounded-full text-xs dark:text-stone-300">
-                    {
-                      (defaultSearch
-                        ? item?.value?.filter(({ label }) =>
+                {item.icon && typeof item.icon == "string" ? (
+                  <img
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
+                    src={item.icon}
+                    alt={``}
+                    loading="lazy"
+                  />
+                ) : (
+                  item.icon
+                )}
+                <span className="flex-grow">
+                  {item.label == "null" ? "Other" : item.label}
+                </span>
+                <span className="text-pea-800 inline-flex h-2 items-center justify-center rounded-full pr-6 text-right text-xs dark:text-stone-300">
+                  {
+                    (defaultSearch
+                      ? item?.value?.filter(({ label }) =>
                           label.toLowerCase().includes(search.toLowerCase())
                         )
-                        : item?.value
-                      ).length
-                    }
-                  </span>
-                </summary>
+                      : item?.value
+                    ).length
+                  }
+                </span>
+              </summary>
 
-                <ul className="py-2">{item?.value.map((f, i) => renderList(f, i, (subindex ?? 0) + index + 1))}</ul>
-              </details>
-            </li>
-          ) : (
-            item?.label
-              .toLowerCase()
-              .includes(defaultSearch ? search.toLowerCase() : "") &&
-            renderItem(item)
-          )
-        }
-      </React.Fragment>
-    )
-  }
+              <ul className="py-2">
+                {item?.value.map((f, i) =>
+                  renderList(f, i, (subindex ?? 0) + index + 1)
+                )}
+              </ul>
+            </details>
+          </li>
+        ) : (
+          item?.label
+            .toLowerCase()
+            .includes(defaultSearch ? search.toLowerCase() : "") &&
+          renderItem(item)
+        )}
+      </Fragment>
+    );
+  };
 
   return (
     <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto overflow-x-hidden rounded-lg border border-zinc-500 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:bg-zinc-600 dark:text-white">
@@ -169,7 +181,7 @@ const ItemList = ({
         </li>
         {!options ||
           (options.length < 1 && (
-            <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+            <li className="flex items-center rounded-lg p-2 text-gray-900 dark:text-white">
               No items found
             </li>
           ))}

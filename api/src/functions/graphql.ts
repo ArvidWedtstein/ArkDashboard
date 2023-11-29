@@ -14,12 +14,7 @@ export const handler = createGraphQLHandler({
   getCurrentUser,
   loggerConfig: {
     logger,
-    options: {
-      // operationName: false,
-      // level: 'info
-      // data: true,
-      // tracing: true,
-    },
+    options: {},
   },
   // defaultError: "An bruh moment occurred",
   directives,
@@ -29,7 +24,6 @@ export const handler = createGraphQLHandler({
     maxDepth: {
       n: 7,
     },
-    // logErrors: true,
   },
   onException: () => {
     // Disconnect from your database with an unhandled exception.

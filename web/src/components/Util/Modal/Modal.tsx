@@ -1,9 +1,11 @@
 import clsx from "clsx";
+import ReactDOM from "react-dom";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type iModal = {
   isOpen?: boolean;
   image?: string;
+  mimetype?: string;
   title?: string;
   content?: string | React.ReactNode;
   actions?: React.ReactNode;
@@ -11,9 +13,20 @@ type iModal = {
   formSubmit?: (formData) => void;
   onClose?: () => void;
 };
-export const Modal = ({ image, title, content }: iModal) => {
-  const { modalOpen, closeModal } = useContext(ModalContext);
-  return (
+
+/**
+ * @description A modal is a self-contained UI component that typically appears as a pop-up or overlay on top of the main content.
+ *
+ * WHEN TO USE:
+ * - For user interactions that require the user's immediate attention or input, such as alert messages, confirmations, or forms.
+ * - For shorter, focused interactions that temporarily interrupt the main workflow.
+ *
+ * @returns a modal
+ */
+export const Modal = ({ content, image, title, mimetype }: iModal) => {
+  const { modalOpen, closeModal } = useModal();
+
+  return ReactDOM.createPortal(
     <div
       tabIndex={-1}
       role="dialog"
@@ -67,7 +80,17 @@ export const Modal = ({ image, title, content }: iModal) => {
             </button>
           </div>
           <div className="space-y-6 p-6">
-            {image && <img src={image} className="w-full rounded" />}
+            {image || mimetype ? mimetype?.startsWith("image") ? (
+              <img src={image} className="w-full rounded" />
+            ) : (
+              <video
+                src={image}
+                className="w-full rounded"
+                autoPlay={false}
+                controlsList="nodownload"
+                controls
+              />
+            ) : null}
             {content &&
               (typeof content == "string" ? (
                 <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
@@ -79,18 +102,24 @@ export const Modal = ({ image, title, content }: iModal) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
-interface iModalForm {
+type FormModalProps = {
   title?: string;
   isOpen: boolean;
   onClose?: () => void;
   children?: React.ReactNode;
-}
-export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
-  const modalRef = React.useRef<HTMLDialogElement>(null);
+};
+export const FormModal = ({
+  title,
+  isOpen,
+  children,
+  onClose,
+}: FormModalProps) => {
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     if (isOpen == true && !modalRef?.current.open)
@@ -175,17 +204,24 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   );
 };
 
-const ModalContext = createContext<{
+type ModalContextValue = {
   openModal: () => void;
   closeModal: () => void;
   modalOpen: boolean;
-}>({
-  openModal: () => {},
-  closeModal: () => {},
+};
+
+const ModalContext = createContext<ModalContextValue>({
+  openModal: () => { },
+  closeModal: () => { },
   modalOpen: false,
 });
 
-const ModalProvider = ({ children }: { children: React.ReactNode }) => {
+type ModalProviderProps = {
+  children: JSX.Element;
+};
+
+// TODO: https://stackoverflow.com/questions/4770025/how-to-disable-scrolling-temporarily
+export const ModalProvider = ({ children }: ModalProviderProps) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -203,4 +239,12 @@ const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export { ModalContext, ModalProvider };
+export const useModal = () => {
+  const context = useContext(ModalContext);
+
+  if (context === undefined) {
+    throw new Error("useModal must be used within a ModalProvider");
+  }
+
+  return context;
+};

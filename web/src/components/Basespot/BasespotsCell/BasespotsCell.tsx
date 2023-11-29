@@ -6,6 +6,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Util/Pagination/Pagination";
 
+
 export const QUERY = gql`
   query FindBasespots($page: Int, $map: Int, $type: String) {
     basespotPage(page: $page, map: $map, type: $type) {
@@ -22,6 +23,7 @@ export const QUERY = gql`
         estimated_for_players
         Map {
           name
+          icon
         }
       }
       count
@@ -38,6 +40,41 @@ export const beforeQuery = ({ page, map, type }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
   return { variables: { page, map: parseInt(map), type } };
 };
+// export const QUERY = gql`
+//   query FindBasespots($take: Int, $lastCursor: String) {
+//     basespotPagination(take: $take, lastCursor: $lastCursor) {
+//       basespots {
+//         id
+//         name
+//         description
+//         latitude
+//         longitude
+//         thumbnail
+//         created_at
+//         updated_at
+//         map_id
+//         estimated_for_players
+//         Map {
+//           name
+//           icon
+//         }
+//       }
+//       hasNextPage
+//       cursor
+//     }
+//     maps {
+//       id
+//       name
+//       icon
+//     }
+//   }
+// `;
+
+// export const beforeQuery = ({ lastCursor, take }) => {
+//   return { variables: { take: take || 9, lastCursor } };
+// };
+
+
 
 export const Loading = () => {
   return (
@@ -73,7 +110,7 @@ export const Loading = () => {
 
 export const Empty = () => {
   return (
-    <div className="text-center text-black dark:text-white text-black dark:text-white">
+    <div className="text-center text-black dark:text-white">
       {"No basespots yet. "}
       <Link to={routes.newBasespot()} className="rw-link">
         {"Create one?"}
@@ -103,6 +140,7 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 export const Success = ({
+  // basespotPagination,
   basespotPage,
   maps,
 }: CellSuccessProps<FindBasespots>) => {
@@ -116,6 +154,7 @@ export const Success = ({
       ) : (
         <Basespots basespotPage={basespotPage} maps={maps} />
       )}
+      {/* <Basespots basespotPagination={basespotPagination} maps={maps} /> */}
     </>
   );
 };

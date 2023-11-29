@@ -15,17 +15,6 @@ export const formatEnum = (values: string | string[] | null | undefined) => {
   return output;
 };
 
-/**
- * @description Capitalize the first letter of each word in a string
- * @param sentence
- * @returns Capitalized string
- */
-export const capitalizeSentence = (sentence: string) => {
-  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
-    letter.toUpperCase()
-  );
-};
-
 export const jsonDisplay = (obj: unknown) => {
   return (
     <pre>
@@ -34,11 +23,36 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
+export const isEmpty = (input: unknown): boolean => {
+  if (input === null || input === undefined) {
+    return true;
+  }
+
+  // For strings, trim and check if the length is zero
+  if (typeof input === "string") {
+    return input.trim().length === 0;
+  }
+
+  // For arrays, check if the length is zero
+  if (Array.isArray(input)) {
+    return input.length === 0;
+  }
+
+  // For objects, check if it has no own properties
+  if (typeof input === "object") {
+    return Object.keys(input).length === 0;
+  }
+
+  // For other types, consider them non-empty
+  return false;
+};
 export const formatNumber = (
   num: number,
   options?: Intl.NumberFormatOptions
 ): string => {
-  return new Intl.NumberFormat("en-GB", options).format(num);
+  return new Intl.NumberFormat(navigator && navigator.language, options).format(
+    num
+  );
 };
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
@@ -55,21 +69,6 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
   return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
-// const dateFormatter = new Intl.DateTimeFormat("en-GB", {
-// 	day: "2-digit",
-// 	month: "2-digit",
-// 	year: "numeric",
-// 	timeZone: "utc",
-// });
-
-// const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
-// 	day: "2-digit",
-// 	month: "2-digit",
-// 	year: "numeric",
-// 	hour: "2-digit",
-// 	minute: "2-digit",
-// 	timeZone: "utc",
-// });
 interface options {
   dateStyle?: "long" | "short" | "full" | "medium";
   timeStyle?: "long" | "short" | "full" | "medium" | "none";
@@ -88,10 +87,13 @@ export const timeTag = (
     return "";
   }
 
-  const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
-    timeStyle: timeStyle == "none" ? undefined : timeStyle || "short",
-    dateStyle: dateStyle || "long",
-  });
+  const formattedDateTime = new Date(dateTime).toLocaleString(
+    navigator && navigator.language,
+    {
+      timeStyle: timeStyle == "none" ? undefined : timeStyle || "short",
+      dateStyle: dateStyle || "long",
+    }
+  );
 
   return (
     <time dateTime={dateTime.toString()} title={dateTime.toString()}>
@@ -101,7 +103,9 @@ export const timeTag = (
 };
 
 export const checkboxInputTag = (checked: boolean) => {
-  return <input type="checkbox" checked={checked} disabled />;
+  return (
+    <input type="checkbox" className="rw-checkbox" checked={checked} disabled />
+  );
 };
 
 /**
@@ -144,6 +148,13 @@ export const isDate = (dateString: string | Date | number): boolean => {
 };
 
 /**
+ *
+ * @param arr
+ * @returns
+ */
+export const average = (arr) => arr.reduce((p, c) => p + c, 0) / arr.length;
+
+/**
  * Sorts an array of objects based on a specified property and sorting order.
  *
  * @template ItemType
@@ -152,22 +163,27 @@ export const isDate = (dateString: string | Date | number): boolean => {
  * @param {boolean} ascending - If true, sorts the array in ascending order; otherwise, in descending order.
  * @returns {Array<ItemType>} - The sorted array.
  */
-export const dynamicSort = <T extends {}>(array: Array<T>, property: string, ascending: boolean = true): Array<T> =>
-  (property != "" && array) ? [...array].sort((a: T, b: T) => {
-    const aValue = a[property];
-    const bValue = b[property];
+export const dynamicSort = <T extends {}>(
+  array: Array<T>,
+  property: string,
+  ascending: boolean = true
+): Array<T> =>
+  property != "" && array
+    ? [...array].sort((a: T, b: T) => {
+        const aValue = a[property];
+        const bValue = b[property];
 
-    if (ascending) {
-      if (aValue < bValue) return -1;
-      if (aValue > bValue) return 1;
-      return 0;
-    } else {
-      if (aValue > bValue) return -1;
-      if (aValue < bValue) return 1;
-      return 0;
-    }
-  }) : array;
-
+        if (ascending) {
+          if (aValue < bValue) return -1;
+          if (aValue > bValue) return 1;
+          return 0;
+        } else {
+          if (aValue > bValue) return -1;
+          if (aValue < bValue) return 1;
+          return 0;
+        }
+      })
+    : array;
 
 /**
  *
@@ -179,8 +195,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -191,6 +208,17 @@ export const formatBytes = (a, b = 2) => {
  */
 export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+/**
+ * @description Capitalize the first letter of each word in a string
+ * @param sentence
+ * @returns Capitalized string
+ */
+export const capitalizeSentence = (sentence: string) => {
+  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+    letter.toUpperCase()
+  );
 };
 
 /**
@@ -518,42 +546,174 @@ export const timeFormatL = (seconds, onlyLast = false) => {
 };
 
 /**
- * @description Returns the start and end date of the current week
- * @returns {Array} array of start and end dates of the current week
- */
-export const getWeekDates = (date?: Date): [Date, Date] => {
-  let now = date ?? new Date();
-  let dayOfWeek = now.getUTCDay();
-  let numDay = now.getUTCDate();
-
-  let start = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay - dayOfWeek)
-  );
-  start.setUTCHours(0, 0, 0, 0);
-
-  let end = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay + (7 - dayOfWeek))
-  );
-  end.setUTCHours(0, 0, 0, 0);
-
-  return [start, end];
-};
-
-
-/**
- * TODO: remove
- * @deprecated not in use
- * @param num
+ *
+ * @param date
+ * @param value
  * @param unit
  * @returns
  */
-export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
-  return new Intl.RelativeTimeFormat("en", {
-    localeMatcher: "best fit", // other values: "lookup"
-    numeric: "always", // other values: "auto"
-    style: "long", // other values: "short" or "narrow"
-  }).format(num, unit);
+export const addToDate = (
+  date: Date,
+  value: number = 0,
+  unit: "day" | "week" | "month" | "year" = "day"
+) => {
+  const result = new Date(date);
+
+  if (unit === "day") {
+    result.setDate(result.getDate() + value);
+  } else if (unit === "week") {
+    result.setDate(result.getDate() + value * 7);
+  } else if (unit === "month") {
+    result.setMonth(result.getMonth() + value);
+  } else if (unit === "year") {
+    result.setFullYear(result.getFullYear() + value);
+  }
+
+  return result;
 };
+
+/**
+ *  Returns an array of dates between the two dates
+ * @param currentDay
+ * @param lastDay
+ * @returns
+ */
+export const getDaysBetweenDates = (
+  currentDay: Date,
+  lastDay: Date
+): Date[] => {
+  return Array.from(
+    { length: (+lastDay - +currentDay) / (24 * 60 * 60 * 1000) + 1 },
+    (_, index) => {
+      return addToDate(new Date(currentDay), index, "day");
+    }
+  );
+};
+
+export const toLocalPeriod = (date: Date): string => {
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}`;
+};
+
+/**
+ *
+ * @param firstDayOfWeek
+ * @returns
+ */
+export const getDateUnit = (
+  type: "weekday" | "month" = "weekday",
+  firstDayOfWeek = 1
+): Date[] => {
+  const days: Date[] = [];
+  let date = new Date();
+
+  // Set the date to the first day of the week (Monday)
+
+  if (type === "month") {
+    date.setMonth(0);
+  } else {
+    date.setDate(date.getDate() - ((date.getDay() - firstDayOfWeek + 7) % 7));
+  }
+
+  // Get the weekdays (Monday to Sunday)
+  for (let i = 0; i < (type === "weekday" ? 7 : 12); i++) {
+    days.push(new Date(date));
+    if (type === "weekday") {
+      date.setDate(date.getDate() + 1);
+    } else {
+      date.setMonth(date.getMonth() + 1);
+    }
+  }
+
+  return days;
+};
+
+/**
+ *
+ * @param date
+ * @returns
+ */
+export const toLocaleISODate = (date: Date | null) => {
+  if (!date) return;
+  return `${date.getFullYear()}-${(date.getMonth() + 1 + "").padStart(
+    2,
+    "0"
+  )}-${(date.getDate() + "").padStart(2, "0")}`;
+};
+
+/**
+ * Get Start or End of a period
+ * @param date
+ * @param type
+ * @param period
+ * @param startOn
+ * @returns
+ */
+export const adjustCalendarDate = (
+  date: Date,
+  type: "start" | "end",
+  period: "day" | "week" | "month" | "year",
+  startOn = 0
+): Date => {
+  const result = new Date(date);
+
+  if (type === "start") {
+    if (period === "day") {
+      result.setUTCHours(0, 0, 0, 0);
+    } else if (period === "week") {
+      const dayOfWeek = result.getUTCDay();
+      const diff = (dayOfWeek - startOn + 7) % 7;
+      result.setUTCDate(result.getUTCDate() - diff);
+    } else if (period === "month") {
+      result.setDate(1);
+    } else if (period === "year") {
+      result.setUTCMonth(0, 1);
+    }
+  } else if (type === "end") {
+    if (period === "day") {
+      result.setUTCHours(23, 59, 59, 999);
+    } else if (period === "month") {
+      result.setMonth(result.getMonth() + 1, 0);
+    } else if (period === "week") {
+      const dayOfWeek = result.getUTCDay();
+      const diff = (6 - dayOfWeek + 7) % 7;
+      result.setUTCDate(result.getUTCDate() + diff);
+    } else if (period === "year") {
+      result.setUTCMonth(11, 31);
+    }
+  }
+
+  return result;
+};
+
+/**
+ *
+ * @param date
+ * @returns
+ */
+export const getISOWeek = (date: Date = new Date()): number => {
+  const dayMs = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const daysSinceStart = Math.floor((+date - +startOfYear) / dayMs);
+  const dayOfWeek = date.getUTCDay(); // Get the day of the week, where Monday is 0 and Sunday is 6
+  const weekNumber = Math.ceil((daysSinceStart + 1 - dayOfWeek) / 7);
+
+  // If it's a Sunday (dayOfWeek = 6), consider it as part of the next week
+  if (dayOfWeek === 6) {
+    return weekNumber + 1;
+  }
+
+  return weekNumber;
+};
+
+export function toISODate(date: Date | null): string | null {
+  if (date) {
+    return date.toISOString().split("T")[0];
+  }
+
+  return null;
+}
 
 /**
  *
@@ -561,26 +721,26 @@ export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
  * @param unit
  * @returns
  */
-export const relativeDate = (
-  date: Date | string,
-): string => {
-
+export const relativeDate = (date: Date | string): string => {
   const now = new Date().getTime();
   const diffInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
 
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto', localeMatcher: 'best fit' });
+  const rtf = new Intl.RelativeTimeFormat("en", {
+    numeric: "auto",
+    localeMatcher: "best fit",
+  });
 
   if (diffInSeconds < 60) {
-    return rtf.format(-diffInSeconds, 'second');
+    return rtf.format(-diffInSeconds, "second");
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
-    return rtf.format(-minutes, 'minute');
+    return rtf.format(-minutes, "minute");
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
-    return rtf.format(-hours, 'hour');
+    return rtf.format(-hours, "hour");
   } else {
     const days = Math.floor(diffInSeconds / 86400);
-    return rtf.format(-days, 'day');
+    return rtf.format(-days, "day");
   }
 };
 
@@ -789,6 +949,182 @@ export const formatXYtoLatLon = (
   };
 };
 
+export const svgArc = (
+  centerX: number,
+  centerY: number,
+  radiusX: number,
+  radiusY: number,
+  startAngle: number,
+  endAngle: number,
+  largeArcFlag: boolean = false,
+  sweepFlag: boolean = true
+): string => {
+  // Convert angles from degrees to radians
+  startAngle = (startAngle * Math.PI) / 180;
+  endAngle = (endAngle * Math.PI) / 180;
+
+  // Calculate the start and end points of the arc
+  const startX = centerX + radiusX * Math.cos(startAngle);
+  const startY = centerY + radiusY * Math.sin(startAngle);
+  const endX = centerX + radiusX * Math.cos(endAngle);
+  const endY = centerY + radiusY * Math.sin(endAngle);
+
+  // Use the A command to create the arc path
+  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${
+    sweepFlag ? 1 : 0
+  } ${endX} ${endY}`;
+
+  // Construct the full path command
+  const pathData = `M ${startX} ${startY} ${arcCommand}`;
+
+  return pathData;
+};
+
+// export const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
+//   const t2 = t * t;
+//   const t3 = t * t2;
+//   return 0.5 * (
+//     (2 * p1) +
+//     (-p0 + p2) * t +
+//     (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+//     (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+//   );
+// }
+export const catmullRomInterpolation = (
+  t: number,
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number
+): number => {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const a = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
+  const b = p0 - 2.5 * p1 + 2 * p2 - 0.5 * p3;
+  const c = -0.5 * p0 + 0.5 * p2;
+  const d = p1;
+  return a * t3 + b * t2 + c * t + d;
+};
+
+export const drawCatmullRomChart = (
+  points: [number, number][],
+  numPoints: number = 100
+): { x: number; y: number }[] => {
+  const result: { x: number; y: number }[] = [];
+  const numSegments = points.length - 1;
+
+  for (let i = 0; i < numSegments; i++) {
+    const p0 = i > 0 ? points[i - 1][1] : points[i][1];
+    const p1 = points[i][1];
+    const p2 = points[i + 1][1];
+    const p3 = i < numSegments - 1 ? points[i + 2][1] : p2;
+
+    for (let j = 0; j < numPoints; j++) {
+      const t = j / numPoints;
+      const interpolatedValue = catmullRomInterpolation(t, p0, p1, p2, p3);
+      result.push({
+        x: points[i][0] + t * (points[i + 1][0] - points[i][0]),
+        y: interpolatedValue,
+      });
+    }
+  }
+
+  return result;
+};
+
+interface SvgPath {
+  pathData: string;
+}
+
+export const mergeOverlappingSvgPaths = (paths: SvgPath[]): SvgPath => {
+  // Combine all path data into one string
+  const allPathData = paths.map((path) => path.pathData).join("");
+
+  // Split the path data into individual commands
+  const commands = allPathData.split(/(?=[A-Za-z])/).filter(Boolean);
+
+  // Initialize variables to store the merged path data
+  let mergedPathData = "";
+  let currentCommand = "";
+  let currentArgs: string[] = [];
+
+  // Helper function to append a command and its arguments to the merged path
+  const appendCommand = () => {
+    if (currentCommand) {
+      mergedPathData += currentCommand + currentArgs.join(" ");
+      currentArgs = [];
+      currentCommand = "";
+    }
+  };
+
+  // Iterate through the commands
+  for (const command of commands) {
+    if (/^[A-Za-z]$/.test(command)) {
+      // If a new command is encountered, append the previous one
+      appendCommand();
+      currentCommand = command;
+    } else {
+      // Otherwise, accumulate arguments
+      currentArgs.push(command);
+    }
+  }
+
+  // Append the last command
+  appendCommand();
+  console.log(mergedPathData);
+  return { pathData: mergedPathData };
+};
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface Rectangle {
+  topLeft: Point;
+  topRight: Point;
+  bottomLeft: Point;
+  bottomRight: Point;
+}
+/**
+ *
+ * @param start
+ * @param end
+ * @example <caption>Example usage of calculateCorners.</caption>
+ * // returns { topLeft: { x: 0, y: 0 }, topRight: { x: 10, y: 0 }, bottomLeft: { x: 0, y: 10 }, bottomRight: { x: 10, y: 10 } }
+ * calculateCorners({ x: 0, y: 0 }, { x: 10, y: 10 });
+ *
+ * @returns  {Rectangle} coordinates
+ */
+export const calculateCorners = (start: Point, end: Point): Rectangle => {
+  const topLeft: Point = {
+    x: Math.min(start.x, end.x),
+    y: Math.min(start.y, end.y),
+  };
+
+  const topRight: Point = {
+    x: Math.max(start.x, end.x),
+    y: Math.min(start.y, end.y),
+  };
+
+  const bottomLeft: Point = {
+    x: Math.min(start.x, end.x),
+    y: Math.max(start.y, end.y),
+  };
+
+  const bottomRight: Point = {
+    x: Math.max(start.x, end.x),
+    y: Math.max(start.y, end.y),
+  };
+
+  return {
+    topLeft,
+    topRight,
+    bottomLeft,
+    bottomRight,
+  };
+};
+
 /**
  * Generates a pdf from an array of your choice
  */
@@ -904,9 +1240,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -940,7 +1276,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1008,6 +1344,53 @@ export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
 };
 
 /**
+ *
+ * @param {number} seriesCount - The number of series to generate colors for.
+ * @returns
+ */
+export const generateChartColors = (seriesCount: number): string[] => {
+  const baseColors: string[] = [];
+  const colorThreshold = 100; // Adjust as needed
+
+  for (let i = 0; i < seriesCount; i++) {
+    let r, g, b;
+    do {
+      r = Math.floor(Math.random() * 256);
+      g = Math.floor(Math.random() * 256);
+      b = Math.floor(Math.random() * 256);
+    } while (
+      baseColors.some((color) => {
+        const [cr, cg, cb] = color.match(/\d+/g).map((c) => parseInt(c, 10));
+        return (
+          Math.abs(r - cr) < colorThreshold &&
+          Math.abs(g - cg) < colorThreshold &&
+          Math.abs(b - cb) < colorThreshold
+        );
+      })
+    );
+
+    baseColors.push(`rgb(${r}, ${g}, ${b})`);
+  }
+
+  // Ensure the colors are visible on a dark background
+  return baseColors.map((color) => {
+    let [r, g, b] = color.match(/\d+/g).map((c) => parseInt(c, 10));
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    if (luminance > 0.5) {
+      // If the color is too light for a dark background, make it darker
+      const ratio = 0.8; // Adjust as needed
+      r = Math.floor(r * ratio);
+      g = Math.floor(g * ratio);
+      b = Math.floor(b * ratio);
+      return `rgb(${r}, ${g}, ${b})`;
+    } else {
+      return color;
+    }
+  });
+};
+
+/**
  * Returns color from red to green based on percentage
  * @param percentage
  * @returns
@@ -1059,6 +1442,23 @@ export const groupBy = <T extends {}>(
 
 type NestedKey<T> = string | (string | number)[];
 
+/**
+ *
+ * @param obj
+ * @param nestedKey
+ * @returns
+ * @example
+ * const obj = {
+ * a: {
+ *  b: {
+ *   c: 1,
+ * },
+ * },
+ * };
+ * getValueByNestedKey(obj, "a.b.c"); // 1
+ * getValueByNestedKey(obj, ["a", "b", "c"]); // 1
+ * getValueByNestedKey(obj, "a.b.d"); // undefined
+ */
 export const getValueByNestedKey = <T extends object>(
   obj: T,
   nestedKey: NestedKey<T>
@@ -1117,7 +1517,7 @@ export const clamp = (
   );
 };
 
-type Colors =
+export type Colors =
   | "red"
   | "purple"
   | "blue"
@@ -1132,15 +1532,33 @@ type Colors =
   | "amber"
   | "yellow"
   | "pea";
-type Luminance = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+export type Luminance =
+  | 50
+  | 100
+  | 200
+  | 300
+  | 400
+  | 500
+  | 600
+  | 700
+  | 800
+  | 900;
 export type BgColor = `bg-${Colors}-${Luminance}`;
 export type TextColor = `text-${Colors}-${Luminance}`;
+export type TextSize = `text-${Size}`;
 export type FillColor = `fill-${Colors}-${Luminance}`;
 export type StrokeColor = `stroke-${Colors}-${Luminance}`;
-export type Color = `${Colors}-${Luminance}`;
+export type Color =
+  | `${Colors}-${Luminance}`
+  | "transparent"
+  | "current"
+  | "none"
+  | "white"
+  | "black";
 
 type Distance = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 type Breakpoints = "xs:" | "sm:" | "md:" | "lg:" | "xl:" | "";
+type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Space = `${Breakpoints}space-${"x" | "y"}-${Distance}`;
 type Padding = `${Breakpoints}p-${Distance}`;
 
@@ -1302,19 +1720,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;
@@ -1349,3 +1767,89 @@ export class SimplexNoise3D {
     return 32.0 * (n0 + n1 + n2 + n3);
   }
 }
+
+type UseControlledOptions<T> = {
+  controlled?: T | undefined;
+  default?: T;
+  name?: string;
+  state?: string;
+};
+
+type UseControlledReturnValue<T> = [T, (newValue: T) => void];
+
+export const useControlled = <T extends unknown>({
+  controlled,
+  default: defaultProp,
+  name = "",
+  state = "value",
+}: UseControlledOptions<T>): UseControlledReturnValue<T> => {
+  const { current: isControlled } = React.useRef(controlled !== undefined);
+  const [valueState, setValue] = React.useState(defaultProp);
+  const value = isControlled ? (controlled as T) : valueState;
+
+  if (process.env.NODE_ENV !== "production") {
+    React.useEffect(() => {
+      if (isControlled !== (controlled !== undefined)) {
+        console.error(
+          [
+            `ArkDashboard: A component is changing the ${
+              isControlled ? "" : "un"
+            }controlled ${state} state of ${name} to be ${
+              isControlled ? "un" : ""
+            }controlled.`,
+            "Elements should not switch from uncontrolled to controlled (or vice versa).",
+            `Decide between using a controlled or uncontrolled ${name} ` +
+              "element for the lifetime of the component.",
+            "The nature of the state is determined during the first render. It's considered controlled if the value is not `undefined`.",
+            ,
+          ].join("\n")
+        );
+      }
+    }, [state, name, controlled]);
+
+    const { current: defaultValue } = React.useRef(defaultProp);
+    React.useEffect(() => {
+      if (!isControlled && defaultValue !== defaultProp) {
+        console.error(
+          [
+            `ArkDashboard: A component is changing the default ${state} state of an uncontrolled ${name} after being initialized. ` +
+              `To suppress this warning opt to use a controlled ${name}.`,
+          ].join("\n")
+        );
+      }
+    }, [JSON.stringify(defaultProp)]);
+  }
+
+  const setValueIfUncontrolled = React.useCallback((newValue: T) => {
+    if (!isControlled) {
+      setValue(newValue);
+    }
+  }, []);
+  return [value, setValueIfUncontrolled];
+};
+
+export function useEventCallback<
+  Fn extends (...args: any[]) => any = (...args: unknown[]) => unknown
+>(fn: Fn): Fn;
+export function useEventCallback<Args extends unknown[], Return>(
+  fn: (...args: Args) => Return
+): (...args: Args) => Return;
+export function useEventCallback<Args extends unknown[], Return>(
+  fn: (...args: Args) => Return
+): (...args: Args) => Return {
+  const ref = React.useRef(fn);
+  ref.current = fn;
+  return React.useRef((...args: Args) =>
+    // @ts-expect-error hide `this`
+    // tslint:disable-next-line:ban-comma-operator
+    (0, ref.current!)(...args)
+  ).current;
+}
+
+export const usePreviousProps = <T extends {}>(value: T) => {
+  const ref = React.useRef<T | {}>({});
+  React.useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current as Partial<T>;
+};

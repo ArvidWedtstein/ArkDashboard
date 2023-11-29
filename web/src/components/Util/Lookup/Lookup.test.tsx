@@ -1,56 +1,46 @@
-import { render, screen, fireEvent } from '@redwoodjs/testing/web'
-import React from 'react';
+import { render, screen, fireEvent } from "@redwoodjs/testing/web";
+import React from "react";
 
-import { MultiSelectLookup } from './Lookup'
+import { Lookup } from "./Lookup";
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
 
 const mockOptions = [
-  { label: 'Option 1', value: '1' },
-  { label: 'Option 2', value: '2' },
+  { label: "Option 1", value: "1" },
+  { label: "Option 2", value: "2" },
   // Add more mock options as needed
 ];
 
-describe('MultiSelectLookup Component', () => {
-  it('renders with placeholder when no options are selected', () => {
-    render(
-      <MultiSelectLookup
-        options={mockOptions}
-        placeholder="Select options"
-      />
-    );
+describe("Lookup Component", () => {
+  it("renders with placeholder when no options are selected", () => {
+    render(<Lookup options={mockOptions} placeholder="Select options" />);
 
-    const placeholderElement = screen.getByText('Select options');
+    const placeholderElement = screen.getByText("Select options");
     expect(placeholderElement).toBeInTheDocument();
   });
 
-  it('displays selected options', () => {
+  it("displays selected options", () => {
     render(
-      <MultiSelectLookup
+      <Lookup
         options={mockOptions}
-        defaultValue={mockOptions.slice(0, 2).map(o => o.value)} // Simulate two selected options
+        defaultValue={mockOptions.slice(0, 2).map((o) => o.value)[0]} // Simulate two selected options
       />
     );
 
-    const selectedOption1 = screen.getByText('Option 1');
-    const selectedOption2 = screen.getByText('Option 2');
+    const selectedOption1 = screen.getByText("Option 1");
+    const selectedOption2 = screen.getByText("Option 2");
 
     expect(selectedOption1).toBeInTheDocument();
     expect(selectedOption2).toBeInTheDocument();
   });
 
-  it('invokes onSelect callback when an option is selected', () => {
+  it("invokes onSelect callback when an option is selected", () => {
     const onSelectMock = jest.fn();
 
-    render(
-      <MultiSelectLookup
-        options={mockOptions}
-        onSelect={onSelectMock}
-      />
-    );
+    render(<Lookup options={mockOptions} onSelect={onSelectMock} />);
 
-    const optionToSelect = screen.getByText('Option 1');
+    const optionToSelect = screen.getByText("Option 1");
 
     fireEvent.click(optionToSelect);
 
@@ -62,14 +52,14 @@ describe('MultiSelectLookup Component', () => {
     const onSelectMock = jest.fn();
 
     render(
-      <MultiSelectLookup
+      <Lookup
         options={mockOptions}
-        defaultValue={mockOptions.slice(0, 2).map(o => o.value)}
+        defaultValue={mockOptions.slice(0, 2).map((o) => o.value)[0]}
         onSelect={onSelectMock}
       />
     );
 
-    const clearSelectionButton = screen.getByText('Clear Selection');
+    const clearSelectionButton = screen.getByText("Clear Selection");
 
     fireEvent.click(clearSelectionButton);
 
