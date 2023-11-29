@@ -189,7 +189,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               subheader={`${formatNumber(
                 (optimizedBasespots.filter((b) => b.progress == 100).length /
                   optimizedBasespots.length) *
-                  100,
+                100,
                 { maximumSignificantDigits: 3 }
               ).toString()} / 100`}
               subheaderProps={{ className: "text-xl !font-bold !text-white" }}
@@ -216,7 +216,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       (optimizedBasespots.filter((b) => b.progress == 100)
                         .length /
                         optimizedBasespots.length) *
-                        100,
+                      100,
                       { maximumSignificantDigits: 3 }
                     )}, 100`}
                     d="M18 2.0845
@@ -235,7 +235,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       (optimizedBasespots.filter((b) => b.progress == 100)
                         .length /
                         optimizedBasespots.length) *
-                        100,
+                      100,
                       { maximumSignificantDigits: 3 }
                     )}
                     %
@@ -365,7 +365,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     label: "New Users in the last months",
                   },
                 ]}
-                // title={"New Users in the last months"}
+              // title={"New Users in the last months"}
               />
             </CardContent>
           </Card>
@@ -373,8 +373,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
 
         <Table
           rows={optimizedBasespots}
+          checkSelect
           settings={{
-            select: true,
             pagination: {
               enabled: true,
               rowsPerPage: 10,
@@ -453,8 +453,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
 
         <Table
           rows={profiles}
+          checkSelect
           settings={{
-            select: true,
             pagination: {
               enabled: true,
               rowsPerPage: 10,
@@ -530,7 +530,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   input: {
                                     banned_until: new Date(
                                       new Date().getTime() +
-                                        1000 * 60 * 60 * 24 * 7
+                                      1000 * 60 * 60 * 24 * 7
                                     ),
                                   },
                                 },
@@ -601,11 +601,9 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${
-                          row.username
-                        }'s role from ${
-                          roles.find((r) => r.id == value)?.name
-                        } to ${val?.name}?`}
+                        message={`Are you sure you want to change ${row.username
+                          }'s role from ${roles.find((r) => r.id == value)?.name
+                          } to ${val?.name}?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(

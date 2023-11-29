@@ -1,4 +1,4 @@
-import { ElementType, HTMLAttributes, ReactElement, forwardRef, useCallback, useMemo, useRef, useState } from "react";
+import { ElementType, Fragment, HTMLAttributes, ReactElement, forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { IntRange, debounce, formatNumber } from "src/lib/formatters";
 import clsx from "clsx";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
@@ -8,6 +8,7 @@ import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import Button, { ButtonGroup } from "../Button/Button";
 import { Input, InputOutlined } from "../Input/Input";
 import { Lookup } from "../Lookup/Lookup";
+import { useSubscription } from "@redwoodjs/web";
 type Filter<Row extends Record<string, any>> = {
   /**
    * The column name.
@@ -118,10 +119,6 @@ type TableSettings = {
    */
   header?: boolean;
   /**
-   * Indicates whether the select feature is enabled.
-   */
-  select?: boolean;
-  /**
    * Enables exporting selected rows to clipboard
    */
   export?: boolean;
@@ -133,11 +130,6 @@ type TableSettings = {
    * Lets user choose which columns to display
    */
   columnSelector?: boolean;
-  /**
-   * Size of table.
-   * @default medium
-   */
-  size?: 'small' | 'medium' | 'large';
   /**
    * Configuration for table borders.
    */
@@ -178,6 +170,15 @@ interface TableProps<Row extends Record<string, any>> {
    */
   className?: string;
   /**
+ * Size of table.
+ * @default medium
+ */
+  size?: 'small' | 'medium' | 'large';
+  /**
+ * Indicates whether the select feature is enabled.
+ */
+  checkSelect?: boolean;
+  /**
    * The settings for the table.
    */
   settings?: TableSettings;
@@ -186,19 +187,21 @@ interface TableProps<Row extends Record<string, any>> {
    */
   toolbar?: React.ReactNode[];
 }
-const Table = <Row extends Record<string, any>>({
-  columns,
-  rows: dataRows,
-  className,
-  settings = {},
-  toolbar = [],
-}: TableProps<Row>) => {
+const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
+  let {
+    columns,
+    rows: dataRows,
+    className,
+    settings = {},
+    toolbar = [],
+    size = "medium",
+    checkSelect = false,
+  } = props;
+
   const defaultSettings: TableSettings = {
     search: false,
     header: true,
-    select: false,
     filter: false,
-    size: 'medium',
     columnSelector: false,
     borders: {
       vertical: false,
@@ -456,28 +459,31 @@ const Table = <Row extends Record<string, any>>({
     tableRow: clsx(tableRow, {
       "divide-opacity-30": mergedSettings.borders.vertical
     }),
-    tableHeaderCell: clsx("table-cell sticky leading-6 z-10 min-w-[50px] line-clamp-1 bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800", {
-      "py-1 px-3": mergedSettings.size === 'small',
-      "p-3": mergedSettings.size === 'medium',
-      "py-4 px-5": mergedSettings.size === 'large',
-    }),
-    tableCell: clsx("table-cell bg-zinc-100 dark:bg-zinc-600/80 align-middle", {
-      "py-1 px-3": mergedSettings.size === 'small',
-      "p-4": mergedSettings.size === 'medium',
-      "px-6 py-5": mergedSettings.size === 'large',
-    }),
   }
 
+  const [columnSizes, setColumnSizes] = useState(columnSettings
+    .filter((col) => !col.hidden).map((e) => {
+      return { [e.field]: 500 }
+    }));
+  const handleResize = (event, field) => {
+    console.log('resize', field, event)
+  }
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
-      <th
+      <TableCell
+        header={true}
         abbr={other.field}
         key={`headcell-${columnIndex}-${label}`}
         id={`headcell-${other.field}`}
-        className={clsx(classes.tableHeaderCell, other.headerClassName)}
         aria-sort="none"
         scope="col"
+        className={clsx(other.className, {
+          "cursor-pointer": other.sortable
+        })}
+        columnWidth={columnSizes[other.field as string]}
+        field={other.field}
+        handleResize={handleResize}
         onClick={() => {
           other.sortable &&
             setSort((prev) => ({
@@ -506,7 +512,7 @@ const Table = <Row extends Record<string, any>>({
             )}
           </svg>
         )}
-      </th>
+      </TableCell>
     );
   };
 
@@ -562,7 +568,7 @@ const Table = <Row extends Record<string, any>>({
         "rounded-bl-lg":
           rowIndex === PaginatedData.length - 1 &&
           columnIndex === 0 &&
-          !mergedSettings.select &&
+          !checkSelect &&
           !columnSettings.some((col) => col.aggregate) &&
           !dataRows.some((row) => row.collapseContent),
         "rounded-br-lg":
@@ -588,7 +594,7 @@ const Table = <Row extends Record<string, any>>({
     select?: boolean;
   }) => {
     return (
-      <TableCell header={header} size={mergedSettings.size} scope="col" selected={isSelected(datarow?.row_id || "")}>
+      <TableCell header={header} size={size} scope="col" selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
         {select ? (
           <div className="flex items-center">
             <input
@@ -597,7 +603,7 @@ const Table = <Row extends Record<string, any>>({
                 header
                   ? PaginatedData.every((row) =>
                     selectedRows.includes(row.row_id.toString())
-                  )
+                  ) && PaginatedData.length > 0
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -713,18 +719,13 @@ const Table = <Row extends Record<string, any>>({
 
   const tableFooter = () => (
     <tfoot>
-      <tr
-        className={clsx(classes.tableRow,
-          "rounded-b-lg font-semibold text-gray-900 dark:text-white"
-        )}
-        role="checkbox"
-      >
+      <TableRow className="rounded-b-lg font-semibold text-gray-900 dark:text-white">
         {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
-          <td className={clsx(classes.tableCell, "first:rounded-bl-lg")} />
+          <TableCell className="first:rounded-bl-lg" />
         )}
-        {mergedSettings.select && (
-          <td className={clsx(classes.tableCell, "first:rounded-bl-lg")} />
+        {checkSelect && (
+          <TableCell className="first:rounded-bl-lg" />
         )}
         {columnSettings
           .filter((col) => !col.hidden)
@@ -735,7 +736,7 @@ const Table = <Row extends Record<string, any>>({
             ) => {
               if (!aggregate) {
                 return (
-                  <td className={clsx(classes.tableCell, "first:rounded-bl-lg")} />
+                  <TableCell className="first:rounded-bl-lg" />
                 );
               }
 
@@ -747,24 +748,17 @@ const Table = <Row extends Record<string, any>>({
 
               const key = `${field}-${header}`; // Use a unique identifier for the key
               return (
-                <td
-                  key={key}
-                  className={clsx(
-                    classes.tableCell,
-                    "first:rounded-bl-lg last:rounded-br-lg",
-                    className
-                  )}
-                >
+                <TableCell key={key} className={clsx("first:rounded-bl-lg last:rounded-br-lg", className)}>
                   {datatype === "number"
                     ? formatNumber(aggregatedValue)
                     : index === 0
                       ? "Total"
-                      : ""}
-                </td>
+                      : null}
+                </TableCell>
               );
             }
           )}
-      </tr>
+      </TableRow>
     </tfoot>
   );
 
@@ -941,7 +935,7 @@ const Table = <Row extends Record<string, any>>({
     <div
       className={clsx("relative !overflow-x-hidden overflow-y-auto sm:rounded-lg", className)}
     >
-      {(mergedSettings.select || mergedSettings.export || mergedSettings.filter || mergedSettings.search || toolbar.length > 0) && (
+      {(checkSelect || mergedSettings.export || mergedSettings.filter || mergedSettings.search || toolbar.length > 0) && (
         <div className="rw-button-group">
           {mergedSettings.filter && (
             <>
@@ -1106,7 +1100,7 @@ const Table = <Row extends Record<string, any>>({
               </Popper>
             </>
           )}
-          {mergedSettings.select && mergedSettings.export && (
+          {checkSelect && mergedSettings.export && (
             <button
               className="rw-button rw-button-gray"
               title="Export"
@@ -1179,43 +1173,40 @@ const Table = <Row extends Record<string, any>>({
         className={"w-full overflow-x-auto rounded-lg border border-zinc-500"}
       >
         <table className={classes.table}>
-          <thead className={classes.tableHead}>
-            <tr
-              className={classes.tableHeaderRow}
-            >
-              {dataRows.some((row) => row.collapseContent) &&
-                tableSelect({ header: true, rowIndex: -1, select: false })}
-              {mergedSettings.select &&
-                tableSelect({ header: true, rowIndex: -1, select: true })}
-              {columns &&
-                columnSettings
-                  .filter((col) => !col.hidden)
-                  .map(({ ...other }, index) =>
-                    headerRenderer({
-                      label: other.header,
-                      columnIndex: index,
-                      ...other,
-                    })
-                  )}
-            </tr>
-          </thead>
+          {mergedSettings.header && (
+            <thead className={classes.tableHead}>
+              <TableRow borders={mergedSettings.borders}>
+                {dataRows.some((row) => row.collapseContent) &&
+                  tableSelect({ header: true, rowIndex: -1, select: false })}
+                {checkSelect &&
+                  tableSelect({ header: true, rowIndex: -1, select: checkSelect })}
+                {columns &&
+                  columnSettings
+                    .filter((col) => !col.hidden)
+                    .map(({ ...other }, index) =>
+                      headerRenderer({
+                        label: other.header,
+                        columnIndex: index,
+                        ...other,
+                      })
+                    )}
+              </TableRow>
+            </thead>
+          )}
           <tbody
             className={classes.tableBody}
           >
             {dataRows &&
               PaginatedData.map((datarow, i) => (
-                <React.Fragment key={datarow.row_id.toString()}>
-                  <tr
-                    className={classes.tableRow}
-                    role="checkbox"
-                  >
+                <Fragment key={datarow.row_id.toString()}>
+                  <TableRow borders={mergedSettings.borders}>
                     {dataRows.some((row) => row.collapseContent) &&
                       tableSelect({
                         datarow,
                         rowIndex: i,
                         select: false,
                       })}
-                    {mergedSettings.select &&
+                    {checkSelect &&
                       tableSelect({ datarow, rowIndex: i, select: true })}
                     {columnSettings &&
                       columnSettings.map(
@@ -1248,40 +1239,18 @@ const Table = <Row extends Record<string, any>>({
                             ...other,
                           })
                       )}
-                  </tr>
+                  </TableRow>
                   {datarow?.collapseContent && (
-                    <tr
-                      className={`transition ease-in ${isRowOpen(datarow.row_id.toString())
-                        ? "table-row"
-                        : "hidden"
-                        }`}
-                    >
-                      <td
-                        colSpan={100}
-                        className="table-cell bg-zinc-100 dark:bg-zinc-600"
-                      >
-                        {datarow.collapseContent}
-                      </td>
-                    </tr>
+                    <TableRow className={isRowOpen(datarow.row_id.toString()) ? 'table-row' : 'hidden'} borders={mergedSettings.borders}>
+                      <TableCell colSpan={100}>{datarow.collapseContent}</TableCell>
+                    </TableRow>
                   )}
-                </React.Fragment>
+                </Fragment>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <tr className={classes.tableRow}>
-                <td
-                  headers=""
-                  className={clsx("p-4 text-center", {
-                    "rounded-lg":
-                      !columnSettings.some((col) => col.aggregate) ||
-                      (mergedSettings.header &&
-                        PaginatedData.length === 0 &&
-                        columns.length == 0),
-                  })}
-                  colSpan={100}
-                >
-                  <span className="px-3 py-2 text-gray-400">No data found</span>
-                </td>
-              </tr>
+              <TableRow borders={mergedSettings.borders}>
+                <TableCell colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
+              </TableRow>
             )}
           </tbody>
           {columnSettings.some((col) => col.aggregate) && tableFooter()}
@@ -1297,27 +1266,82 @@ type TableCellProps = {
   size?: 'small' | 'medium' | 'large';
   header?: boolean;
   selected?: boolean;
+  columnWidth?: number;
+  field?: string;
+  handleResize?: (event, field: string) => void
 } & React.DetailedHTMLProps<React.TdHTMLAttributes<HTMLTableCellElement>, HTMLTableCellElement>
 const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) => {
-  const { children, header = false, selected = false, size = "medium", className, ...other } = props;
-  const classes = clsx("table-cell truncate", {
+  const { children, header = false, selected = false, size = "medium", className, field, columnWidth = 500, handleResize, ...other } = props;
+  const classes = clsx("table-cell relative truncate ", {
     "py-1 px-3": size === 'small' && !header,
     "p-4": size === 'medium' && !header,
     "px-6 py-5": size === 'large' && !header,
     "py-0.5 px-3": size === 'small' && header,
     "p-3 px-4": size === 'medium' && header,
     "py-4 px-6": size === 'large' && header,
-    "": selected && header,
+    "group": header,
     "bg-zinc-300 dark:bg-zinc-700": selected && !header,
     "dark:bg-zinc-600/80 bg-zinc-100": !selected && !header,
-  }, header ? `sticky z-10 align-baseline leading-6 bg-zinc-300 dark:bg-zinc-800 min-w-[50px] line-clamp-1 first:rounded-tl-lg last:rounded-tr-lg` : `align-middle`, className)
-
+  }, header ? `sticky z-10 align-middle leading-6 bg-zinc-300 dark:bg-zinc-800 min-w-[50px] line-clamp-1 first:rounded-tl-lg last:rounded-tr-lg` : `align-middle`, className)
 
   const Component: ElementType = header ? 'th' : 'td';
+
+  const cellRef = useRef(null)
   return (
-    <Component className={classes} ref={ref} {...other}>
-      {children}
+    // <Component className={classes} ref={ref} {...other}>
+    //   {children}
+    // </Component>
+    <Component
+      className={classes}
+      ref={cellRef}
+      style={{ width: columnWidth }}
+      role={header ? 'columnheader' : 'cell'}
+      onMouseUp={(e) => {
+        cellRef.current.removeEventListener('mousemove', (e) => handleResize(e, field))
+      }}
+      onMouseLeave={(e) => {
+        console.log('mouseleave')
+        cellRef.current.removeEventListener('mousemove', (e) => handleResize(e, field))
+      }}
+      onMouseOut={(e) => cellRef.current.removeEventListener('mousemove', (e) => handleResize(e, field))}
+    >
+      <div {...other} ref={ref}>
+        {children}
+      </div>
+      {header && (
+        <div
+          onMouseDown={(e) => {
+            cellRef.current.addEventListener('mousemove', (e) => handleResize(e, field))
+          }}
+          className="opacity-100 w-1 cursor-col-resize top-0 h-full absolute z-50 flex flex-col justify-center text-red-500 touch-none -right-3 group-hover:w-auto"
+        >
+          <svg className="pointer-events-none w-4 h-4 fill-current inline-block shrink-0 transition-colors duration-200 select-none text-inherit">
+            <path d="M0 19V5h2v14z" />
+          </svg>
+        </div>
+      )}
     </Component>
+  )
+})
+
+type TableRowProps = {
+  header?: boolean
+  children?: React.ReactNode
+  borders?: {
+    vertical?: boolean;
+    horizontal?: boolean;
+  }
+} & React.DetailedHTMLProps<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>
+const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>((props, ref) => {
+  const { header = false, children, borders = { vertical: false, horizontal: false }, className, ...other } = props;
+  const tableRow = clsx(`table-row text-inherit outline-none align-middle`, className, {
+    "divide-x divide-gray-400 dark:divide-zinc-800": borders.vertical,
+    "divide-opacity-30": borders.vertical && !header,
+  })
+  return (
+    <tr ref={ref} role="rowgroup" className={tableRow} {...other}>
+      {children}
+    </tr>
   )
 })
 

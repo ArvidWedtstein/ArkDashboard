@@ -129,11 +129,11 @@ const TribesList = ({ tribes }: FindTribes) => {
 
       <div className="">
         <Table
+          checkSelect
           settings={{
-            size: 'medium',
             filter: true,
-            select: true,
             search: true,
+            header: true,
             pagination: {
               rowsPerPage: 10,
               enabled: true,
