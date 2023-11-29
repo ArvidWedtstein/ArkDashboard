@@ -1259,7 +1259,38 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
     );
   }
 );
-
+// SLIDER
+{/* <div className="range">
+          <div className="range-slider h-4 relative rounded bg-zinc-300">
+            <span className="range-selected absolute h-full rounded bg-pea-500" style={{ left: '34%', right: '29%' }}></span>
+          </div>
+          <div className="range-input relative">
+            <input type="range" className="min" min="0" max="1000" value="300" step="10" onInput={(e) => {
+              console.log('ONCHANGE')
+              // let minRange = parseInt(rangeInput[0].value);
+              // let maxRange = parseInt(rangeInput[1].value);
+              // if (maxRange - minRange < rangeMin) {
+              //   if (e.target.className === "min") {
+              //     rangeInput[0].value = maxRange - rangeMin;
+              //   } else {
+              //     rangeInput[1].value = minRange + rangeMin;
+              //   }
+              // } else {
+              //   rangePrice[0].value = minRange;
+              //   rangePrice[1].value = maxRange;
+              //   range.style.left = (minRange / rangeInput[0].max) * 100 + "%";
+              //   range.style.right = 100 - (maxRange / rangeInput[1].max) * 100 + "%";
+              // }
+            }} />
+            <input type="range" className="max" min="0" max="1000" value="700" step="10" />
+          </div>
+          <div className="range-price">
+            <label htmlFor="min">Min</label>
+            <input type="number" name="min" value="300" />
+            <label htmlFor="max">Max</label>
+            <input type="number" name="max" value="700" />
+          </div>
+        </div> */}
 type InputProps = {
   autoComplete?: string;
   autoFocus?: boolean;

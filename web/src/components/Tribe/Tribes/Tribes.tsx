@@ -173,6 +173,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             {
               field: "created_at",
               header: "",
+              width: 30,
               render: ({ row }) => (
                 <button
                   className="rw-button rounded-full p-2 hover:bg-black/10 dark:hover:bg-white/10"

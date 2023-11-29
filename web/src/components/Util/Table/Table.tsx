@@ -67,6 +67,10 @@ type TableColumn<Row extends TableDataRow> = {
    */
   sortable?: boolean;
   /**
+   * width
+   */
+  width?: number;
+  /**
    * Indicates whether the column is hidable.
    */
   visibleOnly?: boolean;
@@ -156,7 +160,7 @@ type TableSettings = {
   };
 };
 
-interface TableProps<Row extends Record<string, any>> {
+type TableProps<Row extends Record<string, any>> = {
   /**
    * The column configurations for the table.
    */
@@ -174,6 +178,11 @@ interface TableProps<Row extends Record<string, any>> {
  * @default medium
  */
   size?: 'small' | 'medium' | 'large';
+  /**
+   * variant
+   * @default outlined
+   */
+  variant?: 'standard' | 'outlined'
   /**
  * Indicates whether the select feature is enabled.
  */
@@ -195,6 +204,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     settings = {},
     toolbar = [],
     size = "medium",
+    variant = "outlined",
     checkSelect = false,
   } = props;
 
@@ -254,17 +264,10 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     if (column) {
       const sortDirection = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
-
-      // TODO: remove . split feature
       data.sort((a, b) => {
         let c = a[sortKey];
         let d = b[sortKey];
-        // let c = sortKey.includes(".")
-        //   ? getValueByNestedKey(a, sortKey)
-        //   : a[sortKey];
-        // let d = sortKey.includes(".")
-        //   ? getValueByNestedKey(b, sortKey)
-        //   : b[sortKey];
+
 
         // Compare based on data type
         if (!columnDataType) {
@@ -443,30 +446,23 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   const isRowOpen = (id: TableDataRow["row_id"]) =>
     collapsedRows.indexOf(id) !== -1;
 
-
-  const tableRow = clsx(`table-row text-inherit outline-none align-middle`, {
-    "divide-x divide-gray-400 dark:divide-zinc-800": mergedSettings.borders.vertical
-  })
   const classes = {
     table: "table w-full border-collapse border-spacing-0 text-left text-sm text-zinc-700 dark:text-zinc-300",
     tableHead: "table-header-group text-sm uppercase",
     tableBody: clsx("table-row-group", {
       "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-500": mergedSettings.borders.horizontal
     }),
-    tableHeaderRow: clsx(tableRow, {
-      hidden: !mergedSettings.header,
-    }),
-    tableRow: clsx(tableRow, {
-      "divide-opacity-30": mergedSettings.borders.vertical
-    }),
   }
-
   const [columnSizes, setColumnSizes] = useState(columnSettings
-    .filter((col) => !col.hidden).map((e) => {
-      return { [e.field]: 500 }
+    .filter((col) => !col.hidden).map((e, i) => {
+      return {
+        ...e,
+        width: e.width || 500,
+        columnIndex: i
+      }
     }));
   const handleResize = (event, field) => {
-    console.log('resize', field, event)
+    // console.log('resize', field, event)
   }
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
@@ -481,8 +477,10 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         className={clsx(other.className, {
           "cursor-pointer": other.sortable
         })}
-        columnWidth={columnSizes[other.field as string]}
+        columnWidth={columnSizes.find((d) => d.columnIndex === columnIndex)?.width}
         field={other.field}
+        variant={variant}
+        size={size}
         handleResize={handleResize}
         onClick={() => {
           other.sortable &&
@@ -564,7 +562,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       : valueFormatted;
 
     return (
-      <TableCell key={key} headers={`headcell-${field}`} selected={isSelected(rowData.row_id)} className={clsx(className, {
+      <TableCell key={key} size={size} variant={variant} headers={`headcell-${field}`} selected={isSelected(rowData.row_id)} columnWidth={columnSizes.find((d) => d.columnIndex === columnIndex).width} className={clsx(className, {
         "rounded-bl-lg":
           rowIndex === PaginatedData.length - 1 &&
           columnIndex === 0 &&
@@ -594,7 +592,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     select?: boolean;
   }) => {
     return (
-      <TableCell header={header} size={size} scope="col" selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
+      <TableCell header={header} size={size} variant={variant} scope="col" columnWidth={30} selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
         {select ? (
           <div className="flex items-center">
             <input
@@ -722,10 +720,10 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       <TableRow className="rounded-b-lg font-semibold text-gray-900 dark:text-white">
         {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
-          <TableCell className="first:rounded-bl-lg" />
+          <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
         )}
         {checkSelect && (
-          <TableCell className="first:rounded-bl-lg" />
+          <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
         )}
         {columnSettings
           .filter((col) => !col.hidden)
@@ -736,7 +734,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             ) => {
               if (!aggregate) {
                 return (
-                  <TableCell className="first:rounded-bl-lg" />
+                  <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
                 );
               }
 
@@ -748,7 +746,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
               const key = `${field}-${header}`; // Use a unique identifier for the key
               return (
-                <TableCell key={key} className={clsx("first:rounded-bl-lg last:rounded-br-lg", className)}>
+                <TableCell size={size} variant={variant} key={key} className={clsx("first:rounded-bl-lg last:rounded-br-lg", className)}>
                   {datatype === "number"
                     ? formatNumber(aggregatedValue)
                     : index === 0
@@ -1242,14 +1240,14 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   </TableRow>
                   {datarow?.collapseContent && (
                     <TableRow className={isRowOpen(datarow.row_id.toString()) ? 'table-row' : 'hidden'} borders={mergedSettings.borders}>
-                      <TableCell colSpan={100}>{datarow.collapseContent}</TableCell>
+                      <TableCell size={size} variant={variant} colSpan={100}>{datarow.collapseContent}</TableCell>
                     </TableRow>
                   )}
                 </Fragment>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
               <TableRow borders={mergedSettings.borders}>
-                <TableCell colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
+                <TableCell size={size} variant={variant} colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
               </TableRow>
             )}
           </tbody>
@@ -1263,7 +1261,8 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
 type TableCellProps = {
   children?: React.ReactNode;
-  size?: 'small' | 'medium' | 'large';
+  size?: TableProps<any>["size"]
+  variant?: TableProps<any>["variant"]
   header?: boolean;
   selected?: boolean;
   columnWidth?: number;
@@ -1271,7 +1270,13 @@ type TableCellProps = {
   handleResize?: (event, field: string) => void
 } & React.DetailedHTMLProps<React.TdHTMLAttributes<HTMLTableCellElement>, HTMLTableCellElement>
 const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) => {
-  const { children, header = false, selected = false, size = "medium", className, field, columnWidth = 500, handleResize, ...other } = props;
+  const { children, header = false, selected = false, variant = "outlined", size = "medium", className, field, columnWidth = 500, handleResize, ...other } = props;
+  const variantClasses = {
+    outlined: clsx({
+      "bg-zinc-300 dark:bg-zinc-800": header,
+    }, !header && !selected ? 'dark:bg-zinc-600/80 bg-zinc-100' : ''),
+    standard: clsx()
+  }
   const classes = clsx("table-cell relative truncate ", {
     "py-1 px-3": size === 'small' && !header,
     "p-4": size === 'medium' && !header,
@@ -1279,48 +1284,53 @@ const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) 
     "py-0.5 px-3": size === 'small' && header,
     "p-3 px-4": size === 'medium' && header,
     "py-4 px-6": size === 'large' && header,
-    "group": header,
     "bg-zinc-300 dark:bg-zinc-700": selected && !header,
-    "dark:bg-zinc-600/80 bg-zinc-100": !selected && !header,
-  }, header ? `sticky z-10 align-middle leading-6 bg-zinc-300 dark:bg-zinc-800 min-w-[50px] line-clamp-1 first:rounded-tl-lg last:rounded-tr-lg` : `align-middle`, className)
+  }, header ? `sticky z-10 align-middle leading-6 min-w-[50px] line-clamp-1` : `align-middle`, className, variantClasses[variant])
 
   const Component: ElementType = header ? 'th' : 'td';
 
-  const cellRef = useRef(null)
   return (
-    // <Component className={classes} ref={ref} {...other}>
-    //   {children}
-    // </Component>
-    <Component
-      className={classes}
-      ref={cellRef}
-      style={{ width: columnWidth }}
-      role={header ? 'columnheader' : 'cell'}
-      onMouseUp={(e) => {
-        cellRef.current.removeEventListener('mousemove', (e) => handleResize(e, field))
-      }}
-      onMouseLeave={(e) => {
-        console.log('mouseleave')
-        cellRef.current.removeEventListener('mousemove', (e) => handleResize(e, field))
-      }}
-      onMouseOut={(e) => cellRef.current.removeEventListener('mousemove', (e) => handleResize(e, field))}
-    >
-      <div {...other} ref={ref}>
-        {children}
-      </div>
-      {header && (
-        <div
-          onMouseDown={(e) => {
-            cellRef.current.addEventListener('mousemove', (e) => handleResize(e, field))
-          }}
-          className="opacity-100 w-1 cursor-col-resize top-0 h-full absolute z-50 flex flex-col justify-center text-red-500 touch-none -right-3 group-hover:w-auto"
-        >
-          <svg className="pointer-events-none w-4 h-4 fill-current inline-block shrink-0 transition-colors duration-200 select-none text-inherit">
-            <path d="M0 19V5h2v14z" />
-          </svg>
-        </div>
-      )}
+    <Component className={classes} ref={ref} style={{ width: columnWidth }} {...other}>
+      {children}
     </Component>
+    // <Component
+    //   className={classes}
+    //   ref={cellRef}
+    //   style={{ width: columnWidth }}
+    //   role={header ? 'columnheader' : 'cell'}
+    // // onMouseMove={(e) => {
+    // //   if (mousedown) {
+    // //     handleResize(e, field)
+    // //   }
+    // // }}
+    // // onMouseUp={(e) => {
+    // //   setmousedown(false)
+    // // }}
+    // // onMouseLeave={(e) => {
+    // //   setmousedown(false)
+    // // }}
+    // // onMouseOut={(e) => {
+    // //   setmousedown(false)
+    // // }}
+    // >
+    //   <div {...other} ref={ref}>
+    //     {children}
+    //   </div>
+    //   {header && (
+    //     <div
+    //       onMouseDown={(e) => {
+    //         e.persist();
+    //         setmousedown(true)
+    //         handleResize(e, field)
+    //       }}
+    //       className="opacity-100 w-1 cursor-col-resize top-0 h-full absolute z-50 flex flex-col justify-center text-red-500 touch-none -right-3 group-hover:w-auto"
+    //     >
+    //       <svg className="pointer-events-none w-4 h-4 fill-current inline-block shrink-0 transition-colors duration-200 select-none text-inherit">
+    //         <path d="M0 19V5h2v14z" />
+    //       </svg>
+    //     </div>
+    //   )}
+    // </Component>
   )
 })
 
