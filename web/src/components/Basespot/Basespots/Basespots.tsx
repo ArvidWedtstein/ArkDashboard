@@ -11,6 +11,8 @@ import {
   CardMedia,
 } from "src/components/Util/Card/Card";
 import Button from "src/components/Util/Button/Button";
+import Badge from "src/components/Util/Badge/Badge";
+import Tooltip from "src/components/Util/Tooltip/Tooltip";
 
 const QUERY = gql`
   query FindBasespotsAgain($take: Int, $lastCursor: String) {
@@ -40,24 +42,7 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
   const [basespot, setBasespot] = useState(basespotPage.basespots);
   // const [cursor, setCursor] = useState(basespotPagination.cursor);
   // let basespots = basespotPagination.basespots;
-  let { map, type } = useParams();
 
-  // TODO: https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
-
-
-  const [params, setParams] = useState({ map, type });
-  useEffect(() => {
-    navigate(
-      routes.basespots({
-        ...parseSearch(
-          Object.fromEntries(
-            Object.entries(params).filter(([_, v]) => v != "" && v != null)
-          ) as Record<string, string>
-        ),
-        page: 1,
-      })
-    );
-  }, [params]);
   // const [loadMore, { called, loading, data, variables }] = useLazyQuery(QUERY, {
   //   variables: {
   //     take: 9,
@@ -84,6 +69,25 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
   //     loadMore();
   //   }
   // };
+  let { map, type } = useParams();
+
+  // TODO: https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
+
+
+  const [params, setParams] = useState({ map, type });
+  useEffect(() => {
+    navigate(
+      routes.basespots({
+        ...parseSearch(
+          Object.fromEntries(
+            Object.entries(params).filter(([_, v]) => v != "" && v != null)
+          ) as Record<string, string>
+        ),
+        page: 1,
+      })
+    );
+  }, [params]);
+
 
   const mapImages = {
     theisland:
@@ -110,6 +114,7 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
     genesis2:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
+
 
   return (
     <div className="-m-3">
@@ -144,20 +149,6 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
         >
           New Basespot
         </Button>
-        {/* <button
-          type="button"
-          onClick={loadMoreData}
-          className="rw-button rw-button-green-outline rw-button-large"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 448 512"
-            className="rw-button-icon-start"
-          >
-            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-          </svg>
-          test
-        </button> */}
 
         <Lookup
           label={"Map"}
@@ -217,13 +208,49 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
                 mapImages[basespot.Map.name.toLowerCase().replaceAll(" ", "")]
               }
             />
-            <CardActions>
-              <Link
-                to={routes.basespot({ id: basespot.id.toString() })}
-                className="rw-button transition-colors duration-100 ease-in-out hover:bg-black/10 dark:hover:bg-white/10"
+            <CardActions className="justify-between">
+              <Button
+                variant="outlined"
+                color="success"
+                to={routes.basespot({ id: basespot.id })}
               >
                 Learn More
-              </Link>
+              </Button>
+              <div className="shrink justify-end inline-flex items-center py-0.5">
+                {basespot.type.toLowerCase().includes('underwater') && (
+                  <Tooltip content={'This Basespot is located underwater'}>
+                    <div className="inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent text-center align-middle text-xs font-medium">
+                      <Badge
+                        variant="outlined"
+                        color="info"
+                        standalone
+                        content={
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 fill-current">
+                            <path d="M562 479.1c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0C448.5 464.6 417.5 480 383.1 480c-33.52 0-64.53-15.44-82.97-41.28c-6.031-8.438-20.03-8.438-26.06 0C256.5 464.6 225.5 480 192 480c-33.51 0-64.53-15.44-82.97-41.28C106 434.5 101.2 432 96 432s-10.02 2.5-13.02 6.719c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94c1.125 8.75 9.029 15.06 17.92 13.81c29.98-3.875 57.48-17.47 77.94-38.09c24.62 24.84 59.28 39.25 96.06 39.25c36.77 0 71.33-14.41 95.95-39.25C312.6 497.6 347.3 512 384.1 512c36.78 0 71.33-14.41 95.95-39.25c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81C576.1 488.3 570.8 480.2 562 479.1zM18.05 382.8c29.98-3.875 57.48-17.47 77.94-38.09c24.62 24.84 59.28 39.16 96.06 39.16c36.77 0 71.33-14.32 95.95-39.16c24.62 24.84 59.28 39.16 96.05 39.16c36.78 0 71.34-14.32 95.96-39.16c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81c1.125-8.781-5.062-16.81-13.83-17.94c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0C448.5 336.6 417.5 352 383.1 352c-33.52 0-64.53-15.44-82.97-41.28c-6.031-8.438-20.03-8.438-26.06 0C256.5 336.6 225.5 352 192 352c-33.51 0-64.53-15.44-82.97-41.28C106 306.5 101.2 304 96 304S85.99 306.5 82.99 310.7c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94C1.258 377.8 9.162 384.1 18.05 382.8zM276.7 235.3C279.8 238.4 283.9 240 288 240s8.188-1.562 11.31-4.688l96-96c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 185.4V16c0-8.844-7.157-16-16-16S272 7.156 272 16v169.4L203.3 116.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L276.7 235.3z" />
+                          </svg>
+                        }
+                      />
+                    </div>
+                  </Tooltip>
+                )}
+                {(basespot.has_air && basespot.type.toLowerCase().includes('underwater')) && <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />}
+                {basespot.has_air && (
+                  <Tooltip content={'This Basespot has air'}>
+                    <div className="inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent text-center align-middle text-xs font-medium">
+                      <Badge
+                        variant="outlined"
+                        color="DEFAULT"
+                        standalone
+                        content={
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 fill-current">
+                            <path d="M224 416c0 35.3-28.7 64-64 64c-26.47 0-48-21.53-48-48S133.5 384 160 384c8.836 0 16-7.164 16-16S168.8 352 160 352c-44.11 0-80 35.89-80 79.1S115.9 512 160 512c52.94 0 96-43.06 96-96V288H224V416zM416 320c-8.836 0-16 7.164-16 15.1S407.2 352 416 352c26.47 0 48 21.53 48 48S442.5 448 416 448c-35.3 0-64-28.7-64-64V288h-32v96c0 52.94 43.06 96 96 96c44.11 0 80-35.89 80-80S460.1 320 416 320zM512 .0002H64c-35.2 0-64 28.8-64 64V192c0 35.2 28.8 64 64 64h448c35.2 0 64-28.8 64-64V64C576 28.8 547.2 .0002 512 .0002zM544 192c0 17.67-14.33 32-32 32H64C46.33 224 32 209.7 32 192V64c0-17.67 14.33-32 32-32h448c17.67 0 32 14.33 32 32V192zM464 128h-352C103.2 128 96 135.2 96 144S103.2 160 112 160h352C472.8 160 480 152.8 480 144S472.8 128 464 128z" />
+                          </svg>
+                        }
+                      />
+                    </div>
+                  </Tooltip>
+                )}
+              </div>
             </CardActions>
           </Card>
         ))}

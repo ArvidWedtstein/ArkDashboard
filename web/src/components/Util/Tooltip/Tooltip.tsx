@@ -10,13 +10,15 @@ interface TooltipProps {
   active?: boolean;
   direction?: "top" | "bottom" | "left" | "right";
 }
+
+// TODO: rework tooltip
+// must adjust position to not go over hovered content
 const Tooltip = React.memo(({
   content,
   children,
   direction = "top",
   active,
   delay = 400,
-
 }: TooltipProps) => {
   let timeout;
   const margin = 20;
@@ -45,7 +47,7 @@ const Tooltip = React.memo(({
 
   const tooltip = tooltipActive && (
     <div
-      className={`absolute z-50 w-max rounded-lg border border-zinc-500 bg-zinc-700 p-2 text-gray-700 shadow dark:text-white`}
+      className={`absolute z-50 w-max rounded border border-zinc-500 bg-zinc-700 px-1 text-xs py-0.5 text-gray-700 shadow dark:text-white`}
       style={{ top: position.top, left: position.left, position: "absolute" }}
     >
       {content}

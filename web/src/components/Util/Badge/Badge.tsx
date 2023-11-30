@@ -50,16 +50,16 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       error: "bg-red-500 text-white",
       DEFAULT: "dark:text-black/90 text-white bg-black dark:bg-white",
     },
-    // TODO: implement primary and default
+    // TODO: implement primary
     outlined: {
       primary: "",
       secondary: "bg-zinc-50 text-zinc-600 ring-1 ring-inset ring-zinc-500/10 dark:bg-zinc-400/10 dark:text-zinc-400 dark:ring-zinc-400/20",
-      info: "bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30",
+      info: "bg-blue-400/10 text-blue-700 ring-1 ring-inset ring-blue-700/30 dark:bg-blue-400/20 dark:text-blue-400 dark:ring-blue-400/30",
       purple: "bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-blue-400/10 dark:text-purple-400 dark:ring-purple-400/30",
       success: "bg-pea-50 text-pea-700 ring-pea-600/20 dark:bg-pea-500/10 dark:text-pea-400 dark:ring-pea-500/20 ring-1 ring-inset",
       warning: "bg-yellow-50 text-yellow-800 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-500 dark:ring-yellow-400/20",
       error: "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20",
-      DEFAULT: ""
+      DEFAULT: "dark:bg-white/10 bg-black/10 ring-1 ring-inset dark:ring-white/30 ring-black/30 dark:text-white/90 text-black/70"
     }
   }
   const classes = clsx("items-center text-xs",

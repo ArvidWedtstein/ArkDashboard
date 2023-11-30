@@ -14,13 +14,13 @@ export const QUERY = gql`
         id
         name
         description
-        latitude
-        longitude
         thumbnail
         created_at
         updated_at
         map_id
         estimated_for_players
+        type
+        has_air
         Map {
           name
           icon
