@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 type PopperProps = {
@@ -8,6 +8,7 @@ type PopperProps = {
   disablePortal?: boolean;
   keepMounted?: boolean;
   paddingToAnchor?: number;
+  style?: CSSProperties;
 };
 const Popper = ({
   children,
@@ -16,6 +17,7 @@ const Popper = ({
   disablePortal = false,
   keepMounted = false,
   paddingToAnchor = 0,
+  style,
 }: PopperProps) => {
   const [popperPosition, setPopperPosition] = useState({ top: 0, left: 0 });
   const popperRef = useRef<HTMLDivElement>(null);
@@ -61,6 +63,7 @@ const Popper = ({
         transform: `translate(${popperPosition.left}px, ${popperPosition.top}px)`,
         inset: "0px auto auto 0px",
         margin: 0,
+        ...style,
       }}
       ref={popperRef}
     >
@@ -75,6 +78,7 @@ const Popper = ({
           inset: "0px auto auto 0px",
           overflow: "hidden",
           margin: 0,
+          ...style,
         }}
         className="z-50"
         ref={popperRef}

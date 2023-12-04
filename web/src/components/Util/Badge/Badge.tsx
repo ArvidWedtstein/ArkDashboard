@@ -22,6 +22,8 @@ type BadgeProps = {
   max?: number;
   showZero?: boolean;
   standalone?: boolean;
+  className?: string;
+  onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void
 };
 
 const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
@@ -37,6 +39,8 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
     showZero = false,
     standalone = false,
     children,
+    className,
+    onClick,
   } = props;
 
   const variants = {
@@ -89,9 +93,12 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       : content;
 
   return (
-    <span className={clsx("inline-flex flex-shrink-0", {
-      "relative": !isEmpty(children)
-    })}>
+    <span className={clsx("inline-flex flex-shrink-0", className, {
+      "relative": !isEmpty(children),
+      "cursor-pointer select-none": onClick
+    })}
+      onClick={onClick}
+    >
       {children}
       <span className={classes} ref={ref}>
         {max && typeof child === "number"

@@ -170,19 +170,19 @@ export const dynamicSort = <T extends {}>(
 ): Array<T> =>
   property != "" && array
     ? [...array].sort((a: T, b: T) => {
-        const aValue = a[property];
-        const bValue = b[property];
+      const aValue = a[property];
+      const bValue = b[property];
 
-        if (ascending) {
-          if (aValue < bValue) return -1;
-          if (aValue > bValue) return 1;
-          return 0;
-        } else {
-          if (aValue > bValue) return -1;
-          if (aValue < bValue) return 1;
-          return 0;
-        }
-      })
+      if (ascending) {
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
+      } else {
+        if (aValue > bValue) return -1;
+        if (aValue < bValue) return 1;
+        return 0;
+      }
+    })
     : array;
 
 /**
@@ -195,9 +195,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -721,13 +720,14 @@ export function toISODate(date: Date | null): string | null {
  * @param unit
  * @returns
  */
-export const relativeDate = (date: Date | string): string => {
+export const relativeDate = (date: Date | string, style?: Intl.RelativeTimeFormatStyle): string => {
   const now = new Date().getTime();
   const diffInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
 
   const rtf = new Intl.RelativeTimeFormat("en", {
     numeric: "auto",
-    localeMatcher: "best fit",
+    localeMatcher: "lookup",
+    style: style,
   });
 
   if (diffInSeconds < 60) {
@@ -970,9 +970,8 @@ export const svgArc = (
   const endY = centerY + radiusY * Math.sin(endAngle);
 
   // Use the A command to create the arc path
-  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${
-    sweepFlag ? 1 : 0
-  } ${endX} ${endY}`;
+  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${sweepFlag ? 1 : 0
+    } ${endX} ${endY}`;
 
   // Construct the full path command
   const pathData = `M ${startX} ${startY} ${arcCommand}`;
@@ -1240,9 +1239,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-        (Object.keys(crafts[0]).length - 1) *
-          (tableSize.width / Object.keys(crafts[0]).length) +
-        columnWidths[Object.keys(crafts[0]).length - 1],
+      (Object.keys(crafts[0]).length - 1) *
+      (tableSize.width / Object.keys(crafts[0]).length) +
+      columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -1276,7 +1275,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1720,19 +1719,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;
@@ -1792,14 +1791,12 @@ export const useControlled = <T extends unknown>({
       if (isControlled !== (controlled !== undefined)) {
         console.error(
           [
-            `ArkDashboard: A component is changing the ${
-              isControlled ? "" : "un"
-            }controlled ${state} state of ${name} to be ${
-              isControlled ? "un" : ""
+            `ArkDashboard: A component is changing the ${isControlled ? "" : "un"
+            }controlled ${state} state of ${name} to be ${isControlled ? "un" : ""
             }controlled.`,
             "Elements should not switch from uncontrolled to controlled (or vice versa).",
             `Decide between using a controlled or uncontrolled ${name} ` +
-              "element for the lifetime of the component.",
+            "element for the lifetime of the component.",
             "The nature of the state is determined during the first render. It's considered controlled if the value is not `undefined`.",
             ,
           ].join("\n")
@@ -1813,7 +1810,7 @@ export const useControlled = <T extends unknown>({
         console.error(
           [
             `ArkDashboard: A component is changing the default ${state} state of an uncontrolled ${name} after being initialized. ` +
-              `To suppress this warning opt to use a controlled ${name}.`,
+            `To suppress this warning opt to use a controlled ${name}.`,
           ].join("\n")
         );
       }

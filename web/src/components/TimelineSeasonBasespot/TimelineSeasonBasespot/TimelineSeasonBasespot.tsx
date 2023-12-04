@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useLayoutEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
@@ -107,6 +108,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   });
 
   useLayoutEffect(() => {
+    console.log(timelineSeasonBasespot.id?.toString())
     supabase.storage
       .from("timelineimages")
       .list(timelineSeasonBasespot.id?.toString())
@@ -148,7 +150,37 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               {` ${timelineSeasonBasespot?.TimelineSeason.server} ${timelineSeasonBasespot.TimelineSeason?.cluster} Season ${timelineSeasonBasespot.TimelineSeason.season}`}
             </p>
 
-            <div className="rw-button-group">
+            <ButtonGroup>
+              <Button
+                permission="timeline_update"
+                color="primary"
+                variant="outlined"
+                to={routes.editTimelineSeasonBasespot({
+                  id: timelineSeasonBasespot.id,
+                })}
+                startIcon={
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                  </svg>
+                }
+              >
+                Edit
+              </Button>
+              <Button
+                permission="timeline_delete"
+                color="error"
+                variant="outlined"
+                onClick={() => onDeleteClick(timelineSeasonBasespot.id)}
+                startIcon={
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                  </svg>
+                }
+              >
+                Delete
+              </Button>
+            </ButtonGroup>
+            {/* <div className="rw-button-group">
               {isAuthenticated && (
                 <>
                   {hasRole("timeline_update") ||
@@ -195,7 +227,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                       ))}
                 </>
               )}
-            </div>
+            </div> */}
           </div>
           {images.length > 0 && (
             <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
@@ -233,78 +265,78 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
 
         {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent?.length >
           0 && (
-          <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-white/20">
-            <h1
-              id="event-heading"
-              className="title-font mt-8 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
-            >
-              {pluralize(
-                timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent
-                  .length,
-                "Event",
-                "s",
-                false
-              )}
-            </h1>
+            <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-white/20">
+              <h1
+                id="event-heading"
+                className="title-font mt-8 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
+              >
+                {pluralize(
+                  timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent
+                    .length,
+                  "Event",
+                  "s",
+                  false
+                )}
+              </h1>
 
-            <Slideshow
-              className="mb-6"
-              aria-labelledby="event-heading"
-              border={false}
-              controls={true}
-              autoPlay={false}
-              slides={timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.map(
-                ({ id, title, content, created_at, tags }) => {
-                  return {
-                    content: (
-                      <div key={id} className="flex justify-center px-5 py-12">
-                        <div className="text-center lg:w-3/4 xl:w-1/2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="currentColor"
-                            className="mb-8 inline-block h-8 w-8 text-black dark:text-white"
-                            viewBox="0 0 975.036 975.036"
-                          >
-                            <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
-                          </svg>
+              <Slideshow
+                className="mb-6"
+                aria-labelledby="event-heading"
+                border={false}
+                controls={true}
+                autoPlay={false}
+                slides={timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.map(
+                  ({ id, title, content, created_at, tags }) => {
+                    return {
+                      content: (
+                        <div key={id} className="flex justify-center px-5 py-12">
+                          <div className="text-center lg:w-3/4 xl:w-1/2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              className="mb-8 inline-block h-8 w-8 text-black dark:text-white"
+                              viewBox="0 0 975.036 975.036"
+                            >
+                              <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+                            </svg>
 
-                          <p className="text-lg leading-relaxed text-black dark:text-white">
-                            {content &&
-                              content.split("\n").map((w, idx) => (
-                                <span
-                                  className="block"
-                                  key={`event-comment-${idx}`}
-                                >
-                                  {w.replace("\\n", "")}
-                                </span>
-                              ))}
-                          </p>
+                            <p className="text-lg leading-relaxed text-black dark:text-white">
+                              {content &&
+                                content.split("\n").map((w, idx) => (
+                                  <span
+                                    className="block"
+                                    key={`event-comment-${idx}`}
+                                  >
+                                    {w.replace("\\n", "")}
+                                  </span>
+                                ))}
+                            </p>
 
-                          <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
-                          <h2 className="title-font my-4 text-lg font-medium tracking-wider text-zinc-600 dark:text-gray-200">
-                            {title}
-                          </h2>
-                          <p className="text-gray-500">{timeTag(created_at)}</p>
-                          <p className="inline-flex gap-x-1">
-                            {tags &&
-                              tags.split(",").map((t) => (
-                                <span
-                                  key={`tag-${t}-${id}`}
-                                  className="rw-badge rw-badge-gray-outline"
-                                >
-                                  #{t}
-                                </span>
-                              ))}
-                          </p>
+                            <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                            <h2 className="title-font my-4 text-lg font-medium tracking-wider text-zinc-600 dark:text-gray-200">
+                              {title}
+                            </h2>
+                            <p className="text-gray-500">{timeTag(created_at)}</p>
+                            <p className="inline-flex gap-x-1">
+                              {tags &&
+                                tags.split(",").map((t) => (
+                                  <span
+                                    key={`tag-${t}-${id}`}
+                                    className="rw-badge rw-badge-gray-outline"
+                                  >
+                                    #{t}
+                                  </span>
+                                ))}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ),
-                  };
-                }
-              )}
-            />
-          </section>
-        )}
+                      ),
+                    };
+                  }
+                )}
+              />
+            </section>
+          )}
 
         <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
@@ -543,15 +575,15 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             timeStyle: "short",
                           }) === "Invalid Date"
                             ? new Date(img.created_at).toLocaleString("de", {
-                                dateStyle: "medium",
-                                timeStyle: "short",
-                              })
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
                             : convertToDate(
-                                img.name.replace("_1.jpg", "")
-                              ).toLocaleString("de", {
-                                dateStyle: "medium",
-                                timeStyle: "short",
-                              })}
+                              img.name.replace("_1.jpg", "")
+                            ).toLocaleString("de", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
                         </span>
                       </button>
                     </div>

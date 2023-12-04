@@ -73,7 +73,7 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
   return (
     <div className="flex items-center text-center">
       <section className="mx-auto max-w-3xl bg-white dark:bg-[#252636] my-8 ">
-        <div className="flex flex-col border border-[#60728F] bg-[#0D2836] max-h-full p-8 h-screen text-[#97FBFF]">
+        <div className="flex flex-col border border-[#60728F] bg-[#0D2836] max-h-full p-8 h-auto text-[#97FBFF]">
           <h1 className="mb-3 text-2xl font-bold uppercase">
             {error?.name ?? "Error"}
           </h1>
@@ -81,7 +81,7 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
             {error?.message || "Outgoing reliable buffer overflow"}
           </span>
           {query != "" && (
-            <div className="relative h-full overflow-y-auto">
+            <div className="relative max-h-full h-fit overflow-y-auto">
               <pre className="mb-4 whitespace-pre-wrap rounded bg-zinc-800 p-4 text-left">
                 <div
                   id="header-buttons"
