@@ -1,7 +1,9 @@
 import clsx from "clsx";
 import ReactDOM from "react-dom";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-
+import { Children, ReactNode, createContext, forwardRef, isValidElement, useContext, useEffect, useRef, useState } from "react";
+import Button from "../Button/Button";
+import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
+import { Transition } from 'react-transition-group'
 type iModal = {
   isOpen?: boolean;
   image?: string;
@@ -129,14 +131,16 @@ export const FormModal = ({
     } else modalRef.current?.close();
   }, [isOpen, modalRef?.current?.open]);
 
+  // TODO: fix modal.
   return (
     <dialog
       className={clsx(
-        `animate-pop-up z-10 flex flex-col gap-3 rounded-lg bg-zinc-200 p-3 text-zinc-900 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
+        `animate-pop-up !-z-10 flex flex-col gap-3 rounded-lg bg-zinc-200 p-3 text-zinc-900 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
         {
           hidden: isOpen === false,
         }
       )}
+      style={{ position: 'revert-layer' }}
       onCancel={() => {
         modalRef?.current?.querySelector("form")?.reset();
         onClose?.();
@@ -177,8 +181,9 @@ export const FormModal = ({
       {children}
 
       <div className="flex items-center justify-end space-x-2 rounded-b border-t border-zinc-500 pt-3">
-        <button
-          className="rw-button rw-button-blue"
+        <Button
+          type="button"
+          variant="outlined"
           onClick={() => {
             modalRef.current.querySelector("form")?.requestSubmit();
             modalRef.current.querySelector("form")?.reset();
@@ -187,18 +192,19 @@ export const FormModal = ({
           }}
         >
           OK
-        </button>
-        <button
+        </Button>
+        <Button
+          type="button"
+          variant="outlined"
+          color="error"
           onClick={() => {
             modalRef.current.querySelector("form")?.reset();
             onClose?.();
           }}
-          type="button"
-          className="rw-button rw-button-red"
           formMethod="dialog"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </dialog>
   );
@@ -248,3 +254,61 @@ export const useModal = () => {
 
   return context;
 };
+
+// type ModalProps = {
+//   children?: React.ReactNode
+// }
+// export const Modal2 = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
+//   const {
+//     children
+//   } = props;
+
+//   const { modalOpen, closeModal } = useModal();
+//   const transitionStyles = {
+//     entering: { opacity: 1 },
+//     entered: { opacity: 1 },
+//     exiting: { opacity: 0 },
+//     exited: { opacity: 0 },
+//   };
+//   return ReactDOM.createPortal((
+//     <Transition nodeRef={ref} in={true} timeout={500}>
+//       {(state) => (
+//         <div aria-label="Modal" className={clsx("fixed inset-0 z-50", {
+//           "block": modalOpen === true,
+//           hidden: modalOpen === false,
+//         })} ref={ref} style={{
+//           ...transitionStyles[state]
+//         }}>
+//           <div aria-label="backdrop" className="fixed flex items-center justify-center inset-0 bg-black/50 -z-10" />
+//           <ClickAwayListener onClickAway={() => {
+//             closeModal();
+//           }}>
+//             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-fit bg-zinc-500">
+//               {Children.map(children, (child, i) => {
+//                 if (!isValidElement(child)) {
+//                   return null;
+//                 }
+//                 return React.cloneElement(child as React.ReactElement<any>, {})
+//               })}
+//             </div>
+//           </ClickAwayListener>
+//         </div>
+//       )}
+//     </Transition>
+//   ), document.documentElement)
+// })
+
+// type DialogProps = {
+
+// }
+// export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
+//   return (
+//     <div>
+//       <Transition
+//         appear
+//       >
+
+//       </Transition>
+//     </div>
+//   )
+// })

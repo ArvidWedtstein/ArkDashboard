@@ -14,6 +14,8 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { Input } from "src/components/Util/Input/Input";
+import DatePicker from "src/components/Util/DatePicker/DatePicker";
 
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
@@ -48,6 +50,24 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           listClassName="rw-form-error-list"
         />
 
+        <DatePicker
+          label="Start Date"
+          name="start_date"
+          defaultValue={new Date(props.timelineSeasonBasespot?.start_date) ??
+            new Date()}
+        />
+        <Input
+          variant="outlined"
+          color="DEFAULT"
+          label="Start Date"
+          name="start_date"
+          defaultValue={props.timelineSeasonBasespot?.start_date ??
+            new Date(new Date().toString().split("GMT")[0] + " UTC")
+              .toISOString()
+              .split(".")[0]
+              .toString()
+              .slice(0, -3)}
+        />
         <div className="relative max-w-sm">
           <DatetimeLocalField
             name="start_date"

@@ -9,7 +9,7 @@ import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/Edit
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPersonCell from "src/components/TimelineSeasonPerson/NewTimelineSeasonPersonCell";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
-import { FormModal } from "src/components/Util/Modal/Modal";
+import { FormModal, Modal, useModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -20,6 +20,7 @@ import Toast from "src/components/Util/Toast/Toast";
 import Ripple from "src/components/Util/Ripple/Ripple";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import SplitPane from "src/components/Util/SplitPane/SplitPane";
+import Badge from "src/components/Util/Badge/Badge";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -69,19 +70,19 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   const servers = {
     "Elite Ark": {
       icon: "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
-      badge: "rw-badge-blue-outline",
+      badge: "info",
     },
     "Bloody Ark": {
       icon: "https://preview.redd.it/cdje2wcsmr521.png?width=313&format=png&auto=webp&s=bf1e8347b8dcd066bcf3aace6a461b61e804570b",
-      badge: "rw-badge-red-outline",
+      badge: "error",
     },
     "Mesa Ark": {
       icon: "https://mesa-ark.com/images/MESA_Icon.png",
-      badge: "rw-badge-green-outline",
+      badge: "warning",
     },
     Arkosic: {
       icon: "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
-      badge: "rw-badge-green-outline",
+      badge: "success",
     },
   };
   type modalType =
@@ -93,8 +94,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   const [editEvent, setEditEvent] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState<modalType>(null);
 
+
   return (
-    <div>
+    <article>
       <FormModal
         title={
           openModal === "timelineseasonperson"
@@ -136,20 +138,20 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           backgroundImage:
             "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
         }}
+        onClick={() => {
+          open();
+        }}
       >
         <div className="flex justify-between pb-5">
           <div className="text-xl font-bold uppercase tracking-widest">
             <span className="align-middle font-medium text-white">
               {timelineSeason.server}{" "}
               {timelineSeason.cluster && (
-                <span
-                  className={`rw-badge align-middle ${servers[timelineSeason.server]?.badge
-                    }`}
-                >
+                <Badge standalone variant="outlined" color={servers[timelineSeason.server]?.badge || 'DEFAULT'} content={(<>
                   {timelineSeason.cluster}{" "}
                   <span className="mx-2 border-l border-current"></span> Season{" "}
                   {timelineSeason.season}
-                </span>
+                </>)} />
               )}
             </span>
           </div>
@@ -282,7 +284,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           Delete
         </Button>
       </ButtonGroup>
-    </div>
+    </article>
   );
 };
 
