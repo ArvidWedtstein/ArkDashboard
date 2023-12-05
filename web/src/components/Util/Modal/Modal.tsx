@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import ReactDOM from "react-dom";
-import { Children, ReactNode, createContext, forwardRef, isValidElement, useContext, useEffect, useRef, useState } from "react";
+import { Children, HTMLAttributes, ReactNode, createContext, forwardRef, isValidElement, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
 import Button from "../Button/Button";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import { Transition } from 'react-transition-group'
@@ -296,19 +296,4 @@ export const useModal = () => {
 //       )}
 //     </Transition>
 //   ), document.documentElement)
-// })
-
-// type DialogProps = {
-
-// }
-// export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
-//   return (
-//     <div>
-//       <Transition
-//         appear
-//       >
-
-//       </Transition>
-//     </div>
-//   )
 // })

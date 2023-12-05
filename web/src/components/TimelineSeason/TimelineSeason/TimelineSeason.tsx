@@ -21,6 +21,7 @@ import Ripple from "src/components/Util/Ripple/Ripple";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import SplitPane from "src/components/Util/SplitPane/SplitPane";
 import Badge from "src/components/Util/Badge/Badge";
+import { Dialog, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -94,10 +95,42 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   const [editEvent, setEditEvent] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState<modalType>(null);
 
-
   return (
     <article>
-      <FormModal
+      <Dialog open={openModal === "timelineseasonbasespot"} onClose={() => setOpenModal(null)}>
+        <DialogTitle>
+          {openModal === "timelineseasonperson"
+            ? "Add person"
+            : openModal === "timelineseasonbasespot"
+              ? "Add Basespot"
+              : openModal === "timelineseasonevent"
+                ? "Add Event"
+                : ""}
+        </DialogTitle>
+        <DialogContent dividers>
+          {openModal === "timelineseasonperson" && (
+            <NewTimelineSeasonPersonCell timeline_season_id={timelineSeason.id} />
+          )}
+          {openModal === "timelineseasonbasespot" && (
+            <NewTimelineSeasonBasespotCell
+              timeline_season_id={timelineSeason.id}
+            />
+          )}
+          {openModal === "timelineseasonevent" && (
+            <NewTimelineSeasonEventCell timeline_season_id={timelineSeason.id} />
+          )}
+          {openModal === "editevent" && (
+            <EditTimelineSeasonEventCell
+              id={editEvent}
+              timeline_season_id={timelineSeason.id}
+            />
+          )}
+          {openModal === "previewimage" && (
+            <img src={editEvent} className="w-full rounded" />
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* <FormModal
         title={
           openModal === "timelineseasonperson"
             ? "Add person"
@@ -130,7 +163,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         {openModal === "previewimage" && (
           <img src={editEvent} className="w-full rounded" />
         )}
-      </FormModal>
+      </FormModal> */}
 
       <header
         className="flex w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"

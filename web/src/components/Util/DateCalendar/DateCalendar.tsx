@@ -30,7 +30,7 @@ const DateCalendar = ({
   views = ["day", "year"],
   disabled = false,
   readOnly = false,
-  defaultValue = new Date(),
+  defaultValue,
   firstDayOfWeek = 1,
   onChange,
 }: DateCalendarProps) => {
@@ -93,7 +93,6 @@ const DateCalendar = ({
         navigateMonth(1);
       }
     }
-
   };
 
   const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek);

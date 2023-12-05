@@ -7,7 +7,7 @@ import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import { FormControl, InputBase, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
-import { toLocaleISODate } from "src/lib/formatters";
+import { isDate, toLocaleISODate } from "src/lib/formatters";
 
 type ViewType = "year" | "month" | "day";
 type InputFieldProps = {
@@ -100,7 +100,6 @@ const DateField = ({ format = 'DD/YYYY/MM' }: any) => {
         formattedValue += format[i];
       }
     }
-    console.log('formay', formattedValue, value)
     setInputValue(formattedValue);
 
   };
@@ -360,7 +359,7 @@ const DatePicker = ({
   const anchorRef = useRef(null);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(
-    defaultValue ? new Date(defaultValue) : null
+    defaultValue && isDate(defaultValue) ? new Date(defaultValue) : null
   );
   const [internalValue, setInternalValue] = useState<string>("");
 
@@ -458,7 +457,7 @@ const DatePicker = ({
             variant === 'outlined' ? (
               <fieldset aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-                  "max-w-full": state.focused || state.filled,
+                  "max-w-full": state.focused || state.filled || open,
                   "max-w-[0.01px]": !state.focused && !state.filled
                 })}>
                   {label && label !== "" && (
@@ -529,6 +528,7 @@ const DatePicker = ({
           >
             <DateCalendar
               views={views}
+              defaultValue={selectedDate || new Date()}
               onChange={(date) => {
                 setSelectedDate(date);
                 setInternalValue(date.toLocaleDateString(navigator && navigator.language, {
