@@ -18,6 +18,7 @@ import { Lookup } from "src/components/Util/Lookup/Lookup";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useState } from "react";
 import TagInput from "src/components/Util/TagInput/TagInput";
+import Button from "src/components/Util/Button/Button";
 
 type FormTimelineSeasonEvent = NonNullable<
   EditTimelineSeasonEventById["timelineSeasonEvent"]
@@ -46,7 +47,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper my-3">
+    <div className="">
       {props.timelineSeasonEvent?.id && (
         <Form<FormTimelineSeasonEvent>
           onSubmit={onSubmit}
@@ -176,9 +177,8 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
 
           <TagInput
             name="tags"
-            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
-              raid ? "raid" : ""
-            }`}
+            defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""
+              }`}
           />
 
           <FieldError name="tags" className="rw-field-error" />
@@ -235,9 +235,8 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
               className="mb-2 px-2"
               tagClassName="rw-button rw-button-small rw-button-gray !rounded-full"
               inputClassName="dark:text-zinc-300 text-zinc-500 text-sm py-0 px-3 outline-none bg-transparent"
-              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
-                raid ? "raid" : ""
-              }`}
+              defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""
+                }`}
             />
             <FileUpload
               className="relative !w-full !rounded-none border-none !bg-transparent"
@@ -274,9 +273,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
                 </button>
               </div>
               <div className="shrink-0">
-                <Submit className="rw-button rw-button-blue rw-button-medium">
-                  Create
-                </Submit>
+                <Button type="submit" size="small" variant="contained" color="success">Create</Button>
               </div>
             </div>
           </div>

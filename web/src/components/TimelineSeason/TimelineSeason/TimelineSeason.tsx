@@ -1,7 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import NewTimelineSeasonBasespotCell from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespotCell";
 import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
 import NewTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/NewTimelineSeasonEventCell";
@@ -21,7 +21,7 @@ import Ripple from "src/components/Util/Ripple/Ripple";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import SplitPane from "src/components/Util/SplitPane/SplitPane";
 import Badge from "src/components/Util/Badge/Badge";
-import { Dialog, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -94,10 +94,11 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
     | "previewimage";
   const [editEvent, setEditEvent] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState<modalType>(null);
+  const modalRef = useRef<HTMLDivElement>()
 
   return (
     <article>
-      <Dialog open={openModal === "timelineseasonbasespot"} onClose={() => setOpenModal(null)}>
+      <Dialog ref={modalRef} open={openModal !== null} onClose={() => setOpenModal(null)}>
         <DialogTitle>
           {openModal === "timelineseasonperson"
             ? "Add person"
@@ -129,41 +130,38 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             <img src={editEvent} className="w-full rounded" />
           )}
         </DialogContent>
+        <DialogActions className="space-x-1">
+          <Button
+            type="button"
+            color="success"
+            variant="contained"
+            onClick={() => {
+              if (modalRef?.current) {
+                modalRef.current.querySelector("form")?.requestSubmit();
+              }
+            }}
+            startIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="pointer-events-none"
+                fill="currentColor"
+              >
+                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+              </svg>
+            }
+          >
+            Save
+          </Button>
+          <Button
+            type="reset"
+            color="error"
+            onClick={() => setOpenModal(null)}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
-      {/* <FormModal
-        title={
-          openModal === "timelineseasonperson"
-            ? "Add person"
-            : openModal === "timelineseasonbasespot"
-              ? "Add Basespot"
-              : openModal === "timelineseasonevent"
-                ? "Add Event"
-                : ""
-        }
-        isOpen={openModal !== null}
-        onClose={() => setOpenModal(null)}
-      >
-        {openModal === "timelineseasonperson" && (
-          <NewTimelineSeasonPersonCell timeline_season_id={timelineSeason.id} />
-        )}
-        {openModal === "timelineseasonbasespot" && (
-          <NewTimelineSeasonBasespotCell
-            timeline_season_id={timelineSeason.id}
-          />
-        )}
-        {openModal === "timelineseasonevent" && (
-          <NewTimelineSeasonEventCell timeline_season_id={timelineSeason.id} />
-        )}
-        {openModal === "editevent" && (
-          <EditTimelineSeasonEventCell
-            id={editEvent}
-            timeline_season_id={timelineSeason.id}
-          />
-        )}
-        {openModal === "previewimage" && (
-          <img src={editEvent} className="w-full rounded" />
-        )}
-      </FormModal> */}
 
       <header
         className="flex w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"

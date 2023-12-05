@@ -35,7 +35,7 @@ type ButtonProps = {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   color?: "primary" | "secondary" | "success" | "warning" | "error" | 'DEFAULT';
-  variant?: "text" | "contained" | "outlined" | "icon";
+  variant?: "text" | "contained" | "outlined" | "elevated" | "icon";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   fullWidth?: boolean;
@@ -96,6 +96,11 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         medium: `text-sm leading-7 py-[5px] px-[15px]`,
         large: `text-base leading-7 py-[7px] px-[21px]`,
       },
+      elevated: {
+        small: `text-xs leading-7 py-[3px] px-[9px]`,
+        medium: `text-sm leading-7 py-[5px] px-[15px]`,
+        large: `text-base leading-7 py-[7px] px-[21px]`,
+      },
       icon: {
         small: `p-1.5 text-lg [&>svg]:w-4 [&>svg]:h-4`,
         medium: `p-2 text-2xl [&>svg]:w-5 [&>svg]:h-5`,
@@ -136,6 +141,14 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         error:
           "text-red-500 border border-red-500 border-opacity-50 hover:border-opacity-100 hover:bg-red-500 hover:bg-opacity-10",
         DEFAULT: "dark:text-white border text-black dark:border-white border-black dark:border-opacity-50 border-opacity-50 hover:border-opacity-100 hover:bg-black dark:hover:bg-white hover:bg-opacity-10 dark:hover:bg-opacity-10"
+      },
+      elevated: {
+        primary: "bg-gradient-to-tr from-blue-500 to-blue-400 border-b-4 border-l-2 active:border-blue-500 active:shadow-none shadow-lg border-blue-600 text-white",
+        secondary: "bg-gradient-to-tr from-zinc-500 to-zinc-400 border-b-4 border-l-2 active:border-zinc-500 active:shadow-none shadow-lg border-zinc-600 text-white",
+        success: "bg-gradient-to-tr from-green-600 to-green-500 border-b-4 border-l-2 active:border-green-600 active:shadow-none shadow-lg border-green-700 text-white",
+        warning: "bg-gradient-to-tr from-orange-500 to-orange-400 border-b-4 border-l-2 active:border-orange-500 active:shadow-none shadow-lg border-orange-600 text-white",
+        error: "bg-gradient-to-tr from-red-600 to-red-500 border-b-4 border-l-2 active:border-red-600 active:shadow-none shadow-lg border-red-700 text-white",
+        DEFAULT: "text-white dark:text-black bg-gradient-to-tr dark:from-zinc-200 dark:to-zinc-100 from-zinc-900 to-zinc-800 border-b-4 border-l-2 dark:active:border-zinc-200 active:border-zinc-700 active:shadow-none shadow-lg border-zinc-900 dark:border-zinc-300"
       },
       icon: {
         primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",

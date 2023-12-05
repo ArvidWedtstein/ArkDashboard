@@ -14,6 +14,7 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { Input } from "src/components/Util/Input/Input";
 
 type FormTimelineSeasonPerson = NonNullable<
   EditTimelineSeasonPersonById["timelineSeasonPerson"]
@@ -47,59 +48,38 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <div className="flex">
-          <div className="flex-1">
-            <Lookup
-              name="user_id"
-              label="User"
-              options={props?.profiles ?? []}
-              getOptionLabel={(option) => option.username}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              defaultValue={props.timelineSeasonPerson?.user_id}
-            />
-          </div>
-          <div className="flex-1">
-            <Label
-              name="permission"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Role
-            </Label>
-
-            <SelectField
-              name="permission"
-              defaultValue={props.timelineSeasonPerson?.permission}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-            >
-              <option value="guest">Guest</option>
-              <option value="member">Member</option>
-              <option value="admin">Admin</option>
-            </SelectField>
-
-            <FieldError name="permission" className="rw-field-error" />
-          </div>
-        </div>
-
-        <Label
-          name="ingame_name"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Ingame name
-        </Label>
-
-        <TextField
-          name="ingame_name"
-          defaultValue={props.timelineSeasonPerson?.ingame_name}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+        <Lookup
+          name="user_id"
+          label="User"
+          options={props?.profiles ?? []}
+          getOptionLabel={(option) => option.username}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          defaultValue={props.timelineSeasonPerson?.user_id}
         />
 
-        <FieldError name="ingame_name" className="rw-field-error" />
+        <Lookup
+          name="permission"
+          label="Role"
+          options={[
+            { label: 'Guest', value: 'guest' },
+            { label: 'Member', value: 'member' },
+            { label: 'Admin', value: 'admin' },
+          ]}
+          getOptionLabel={(option) => option.label}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+          defaultValue={props.timelineSeasonPerson?.user_id}
+        />
 
-        {props?.timelineSeasonPerson && (
+        <Input
+          name="ingame_name"
+          fullWidth
+          label="Ingame Name"
+          color="DEFAULT"
+          variant="outlined"
+          defaultValue={props.timelineSeasonPerson?.ingame_name}
+        />
+
+        {/* {props?.timelineSeasonPerson && (
           <div className="rw-button-group">
             <Submit
               disabled={props.loading}
@@ -116,7 +96,7 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
               </svg>
             </Submit>
           </div>
-        )}
+        )} */}
       </Form>
     </div>
   );
