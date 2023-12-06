@@ -33,14 +33,7 @@ const NewTribe = () => {
   };
 
   return (
-    <div className="rw-segment">
-      <header className="py-3 px-4 text-gray-900 dark:text-stone-200">
-        <h2 className="rw-heading-secondary">New Tribe</h2>
-      </header>
-      <div className="p-4">
-        <TribeForm onSave={onSave} loading={loading} error={error} />
-      </div>
-    </div>
+    <TribeForm onSave={onSave} loading={loading} error={error} />
   );
 };
 

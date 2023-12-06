@@ -2,6 +2,7 @@ import { MetaTags, useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
+import Badge from "src/components/Util/Badge/Badge";
 import Button from "src/components/Util/Button/Button";
 import { Card, CardContent, CardHeader } from "src/components/Util/Card/Card";
 import Chart from "src/components/Util/Chart/Chart";
@@ -491,18 +492,19 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               sortable: true,
               datatype: "date",
               render: ({ value }) => (
-                <span className="rw-badge rw-badge-gray-outline">
-                  <svg
-                    className="mr-1.5 h-2.5 w-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-                  </svg>
-                  {relativeDate(new Date(value))}
-                </span>
+                <Badge standalone content={
+                  <>
+                    <svg
+                      className="mr-1.5 h-2.5 w-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
+                    </svg>
+                    {relativeDate(new Date(value))}
+                  </>} variant="outlined" color="secondary" />
               ),
             },
             {
@@ -567,18 +569,19 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               datatype: "date",
               render: ({ value }) =>
                 value && (
-                  <span className="rw-badge rw-badge-gray-outline">
-                    <svg
-                      className="mr-1.5 h-2.5 w-2.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-                    </svg>
-                    {relativeDate(new Date(value))}
-                  </span>
+                  <Badge standalone content={
+                    <>
+                      <svg
+                        className="mr-1.5 h-2.5 w-2.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
+                      </svg>
+                      {relativeDate(new Date(value))}
+                    </>} variant="outlined" color="secondary" />
                 ),
             },
             {
@@ -682,7 +685,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   >
                     {value.tree.sha.slice(0, 7)}
                   </a>
-                  <span className="rw-badge rw-badge-gray-outline">dev</span>
+                  <Badge standalone content={"dev"} variant="outlined" color="secondary" />
                 </div>
               ),
             },

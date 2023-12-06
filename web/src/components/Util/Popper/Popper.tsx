@@ -28,7 +28,7 @@ const Popper = ({
     const popperRect = popperRef?.current.getBoundingClientRect();
     let top = disablePortal
       ? triggerRect.height + paddingToAnchor
-      : triggerRect.bottom + window.scrollY + paddingToAnchor;
+      : triggerRect.bottom + paddingToAnchor; //  + window.scrollY
     let left = triggerRect.left + window.scrollX;
 
     if (triggerRect.left + (popperRect.width + 20) >= window.innerWidth) {

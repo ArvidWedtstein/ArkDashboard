@@ -12,6 +12,7 @@ import type { EditTribeById, UpdateTribeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useAuth } from "src/auth";
 import { permission } from ".prisma/client";
+import { Input } from "src/components/Util/Input/Input";
 type FormTribe = NonNullable<EditTribeById["tribe"]>;
 
 interface TribeFormProps {
@@ -47,24 +48,12 @@ const TribeForm = (props: TribeFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Label
+        <Input
           name="name"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Name
-        </Label>
-
-        <TextField
-          name="name"
+          label="Name"
           defaultValue={props.tribe?.name}
-          placeholder="Tribe name"
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
+          color="DEFAULT"
         />
-
-        <FieldError name="name" className="rw-field-error" />
 
         {props?.tribe?.id && (
           <div className="rw-button-group">

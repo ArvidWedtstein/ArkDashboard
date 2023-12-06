@@ -1,4 +1,5 @@
 import { Toast as iToast, toast } from "@redwoodjs/web/dist/toast";
+import Button from "../Button/Button";
 
 interface ToastProps {
   t: iToast;
@@ -39,39 +40,33 @@ const Toast = ({
       </div>
       <div className="mt-2 mb-4 text-sm">{message}</div>
       <div className="flex space-x-2">
-        <button
-          type="button"
+        <Button
+          size="small"
+          variant="outlined"
+          color={variant === 'info' ? 'primary' : variant}
           onClick={async () => {
             toast.dismiss(t.id);
             primaryAction?.(t);
           }}
-          className={`rw-button rw-button-${variant == "error"
-              ? "red"
-              : variant == "success"
-                ? "green"
-                : variant == "info"
-                  ? "blue"
-                  : "yellow"
-            } rw-button-small`}
         >
           {actionType === "Ok"
             ? "Ok"
             : actionType === "OkCancel"
               ? "Ok"
               : "Yes"}
-        </button>
+        </Button>
         {actionType !== "Ok" && (
-          <button
-            type="button"
+          <Button
+            size="small"
+            variant="text"
+            color="secondary"
             onClick={() => {
               toast.dismiss(t.id);
               secondaryAction?.(t);
             }}
-            className="rw-button rw-button-red-outline rw-button-small"
-            aria-label="Close"
           >
             {actionType === "OkCancel" ? "Cancel" : "No"}
-          </button>
+          </Button>
         )}
       </div>
     </div>

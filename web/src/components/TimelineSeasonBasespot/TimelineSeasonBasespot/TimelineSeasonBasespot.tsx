@@ -5,7 +5,9 @@ import clsx from "clsx";
 import { useLayoutEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
+import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import { Dialog } from "src/components/Util/Dialog/Dialog";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
@@ -179,54 +181,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                 Delete
               </Button>
             </ButtonGroup>
-            {/* <div className="rw-button-group">
-              {isAuthenticated && (
-                <>
-                  {hasRole("timeline_update") ||
-                    (currentUser &&
-                      currentUser.permissions.some(
-                        (p) => p === "timeline_update"
-                      ) && (
-                        <Link
-                          to={routes.editTimelineSeasonBasespot({
-                            id: timelineSeasonBasespot.id,
-                          })}
-                          className="rw-button rw-button-gray-outline"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                            className="rw-button-icon-start"
-                          >
-                            <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-                          </svg>
-                          Edit
-                        </Link>
-                      ))}
-                  {hasRole("timeline_delete") ||
-                    (currentUser &&
-                      currentUser.permissions.some(
-                        (p) => p === "timeline_delete"
-                      ) && (
-                        <button
-                          onClick={() =>
-                            onDeleteClick(timelineSeasonBasespot.id)
-                          }
-                          className="rw-button rw-button-red-outline"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                            className="rw-button-icon-start"
-                          >
-                            <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                          </svg>
-                          Delete
-                        </button>
-                      ))}
-                </>
-              )}
-            </div> */}
           </div>
           {images.length > 0 && (
             <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
@@ -299,7 +253,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                               <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
                             </svg>
 
-                            <p className="text-lg leading-relaxed text-black dark:text-white">
+                            <p className="text-lg leading-relaxed text-black dark:text-white whitespace-pre-wrap">
                               {content &&
                                 content.split("\n").map((w, idx) => (
                                   <span
@@ -318,14 +272,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             <p className="text-gray-500">{timeTag(created_at)}</p>
                             <p className="inline-flex gap-x-1">
                               {tags &&
-                                tags.split(",").map((t) => (
-                                  <span
-                                    key={`tag-${t}-${id}`}
-                                    className="rw-badge rw-badge-gray-outline"
-                                  >
-                                    #{t}
-                                  </span>
-                                ))}
+                                tags.split(",").map((t) => <Badge color="secondary" variant="outlined" content={`#${t}`} standalone />)}
                             </p>
                           </div>
                         </div>
@@ -390,13 +337,15 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                       ? timelineSeasonBasespot.Basespot.longitude
                       : timelineSeasonBasespot.longitude}{" "}
                     <abbr title="Longitude">Lon</abbr> on the map{" "}
-                    <Link
+                    <Button
+                      variant="text"
                       to={routes.map({
                         id: timelineSeasonBasespot.map_id,
                       })}
+                      color="success"
                     >
                       {timelineSeasonBasespot?.Map?.name}
-                    </Link>
+                    </Button>
                   </p>
                 </div>
               </div>
@@ -420,15 +369,16 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                       Base
                     </h2>
                     <p className="text-base leading-relaxed">
-                      Our basespot was{" "}
-                      <Link
+                      Our basespot was
+                      <Button
+                        variant="text"
                         to={routes.basespot({
                           id: timelineSeasonBasespot.Basespot.id,
                         })}
-                        className="rw-link"
+                        color="success"
                       >
                         {timelineSeasonBasespot.Basespot.name}
-                      </Link>
+                      </Button>
                     </p>
                   </div>
                 </div>
@@ -558,32 +508,29 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             </a> */}
                           </div>
                         </div>
-                        <span
-                          className={clsx(
-                            "rw-badge rw-badge-gray-outline absolute right-3 top-3 z-10 !text-white transition-transform ease-in-out",
-                            {
-                              "group-hover:-translate-y-10":
-                                img.metadata.mimetype.startsWith("video"),
-                            }
-                          )}
-                        >
-                          {convertToDate(
-                            img.name.replace("_1.jpg", "")
-                          ).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          }) === "Invalid Date"
-                            ? new Date(img.created_at).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })
-                            : convertToDate(
+                        <div className="absolute right-3 top-3">
+                          <Badge content={<span>
+                            {convertToDate(
                               img.name.replace("_1.jpg", "")
                             ).toLocaleString("de", {
                               dateStyle: "medium",
                               timeStyle: "short",
-                            })}
-                        </span>
+                            }) === "Invalid Date"
+                              ? new Date(img.created_at).toLocaleString("de", {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              }).toString()
+                              : convertToDate(
+                                img.name.replace("_1.jpg", "")
+                              ).toLocaleString("de", {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              }).toString()}
+                          </span>} className={clsx({
+                            "group-hover:-translate-y-10":
+                              img.metadata.mimetype.startsWith("video")
+                          })} standalone variant="outlined" color="secondary" />
+                        </div>
                       </button>
                     </div>
                   </div>

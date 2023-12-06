@@ -22,7 +22,6 @@ import {
   usePreviousProps,
   useEventCallback,
 } from "src/lib/formatters";
-import Ripple from "../Ripple/Ripple";
 import { FormControl, InputBase, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
 
@@ -149,12 +148,6 @@ type LookupValue<Value, Multiple, DisableClearable> =
   ? NonNullable<Value | never>
   : Value | null | never;
 
-// interface LookupGroupedOption<Value = string> {
-//   key: number;
-//   index: number;
-//   group: string;
-//   options: Value[];
-// }
 
 type SelectProps<
   Value,
@@ -1731,7 +1724,7 @@ export const Lookup = <
           endAdornment={(
             <Fragment>
               {(!disableClearable && !readOnly) && (
-                <Button variant="icon" className={clsx("-mr-0.5 !p-1", {
+                <Button variant="icon" color="DEFAULT" className={clsx("-mr-0.5 !p-1", {
                   [`${focused ? 'opacity-100 visible' : 'opacity-0 invisible'} group-hover:opacity-100 group-hover:visible`]: !disabled && dirty,
                   "opacity-0 invisible": disabled || !dirty || readOnly,
                 })} onClick={handleClear} size={size}>
@@ -1745,7 +1738,7 @@ export const Lookup = <
                   </svg>
                 </Button>
               )}
-              <Button variant="icon" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
+              <Button variant="icon" color="DEFAULT" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
                 <svg
                   className={clsx(
                     "h-4 w-4 stroke-white !fill-none transition-transform duration-75 will-change-transform",
