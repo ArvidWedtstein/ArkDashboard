@@ -108,7 +108,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   });
 
   useLayoutEffect(() => {
-    console.log(timelineSeasonBasespot.id?.toString())
     supabase.storage
       .from("timelineimages")
       .list(timelineSeasonBasespot.id?.toString())

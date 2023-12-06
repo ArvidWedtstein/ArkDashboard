@@ -1,11 +1,7 @@
 import {
-  CheckboxField,
   FieldError,
   Form,
   Label,
-  NumberField,
-  Submit,
-  TextField,
 } from "@redwoodjs/forms";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
@@ -18,11 +14,9 @@ import {
   formatNumber,
 } from "src/lib/formatters";
 import { Fragment, useCallback, useEffect, useMemo, useReducer } from "react";
-
 import type {
   DeleteDinoMutationVariables,
   FindDinoById,
-  permission,
 } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
@@ -38,7 +32,6 @@ import {
   CardMedia,
 } from "src/components/Util/Card/Card";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
-import List, { ListItem } from "src/components/Util/List/List";
 import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
@@ -99,7 +92,6 @@ interface Props {
 }
 
 const Dino = ({ dino, itemsByIds }: Props) => {
-  const { currentUser } = useAuth();
   const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {
     onCompleted: () => {
       toast.success("Dino deleted");
@@ -957,9 +949,47 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       ...calcNarcotics.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
     };
   }, [state.foods]);
-
+  // https://codepen.io/adamstuartclark/pen/xVgMBY
   return (
     <article className="grid grid-cols-1 gap-3 text-black dark:text-white md:grid-cols-2">
+      {/* <div className="relative">
+        <div className="parchment [filter:url(#wavy)]" />
+        <div className="p-6 text-[#585045]">
+          <div className="flex">
+            <div className="flex-auto">
+              <ul className="space-y-2 divide-y divide-zinc-500 align-middle w-fit text-center">
+                <li className="px-3">
+                  <p className="font-bold uppercase">{dino.type}</p>
+                </li>
+                <li className="px-3">test</li>
+                <li className="px-3">test</li>
+                <li className="px-3">test</li>
+                <li className="px-3">test</li>
+                <li className="px-3">test</li>
+              </ul>
+            </div>
+            <div className="flex justify-center w-full">
+              <img
+                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
+                alt={dino.name}
+                className="w-auto -scale-x-100 transform"
+              />
+            </div>
+          </div>
+          <div className="">
+            <h1 className="text-3xl font-bold my-4">{dino.name}</h1>
+            <p className="first-letter:text-7xl first-letter:pr-1 first-letter:align-text-top first-letter:font-serif first-letter:text-opacity-50 first-letter:float-left first-letter:inline-block first-letter:leading-[1.125] first-line:uppercase first-line:block first-line:font-bold text-xl overflow-auto">
+              {dino.description}
+            </p>
+          </div>
+        </div>
+      </div>
+      <svg>
+        <filter id="wavy">
+          <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="12"></feTurbulence>
+          <feDisplacementMap in="SourceGraphic" scale="20" />
+        </filter>
+      </svg> */}
       <section className="col-span-2 grid auto-cols-auto grid-cols-1 md:grid-cols-2">
         <img
           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
@@ -2698,6 +2728,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             )}
         </Tabs>
       </section>
+
       <ButtonGroup className="col-span-2">
         <Button
           permission="gamedata_update"

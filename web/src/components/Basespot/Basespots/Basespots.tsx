@@ -1,6 +1,6 @@
 import { navigate, parseSearch } from "@redwoodjs/router";
 import { Link, routes, useParams } from "@redwoodjs/router";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import type { FindBasespots } from "types/graphql";
 import { useLazyQuery } from "@apollo/client";
@@ -13,6 +13,8 @@ import {
 import Button from "src/components/Util/Button/Button";
 import Badge from "src/components/Util/Badge/Badge";
 import Tooltip from "src/components/Util/Tooltip/Tooltip";
+import { useAuth } from "src/auth";
+import { toast } from "@redwoodjs/web/dist/toast";
 
 const QUERY = gql`
   query FindBasespotsAgain($take: Int, $lastCursor: String) {
@@ -39,6 +41,9 @@ const QUERY = gql`
 `;
 // const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
 const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
+  const {
+    client: supabase,
+  } = useAuth();
   const [basespot, setBasespot] = useState(basespotPage.basespots);
   // const [cursor, setCursor] = useState(basespotPagination.cursor);
   // let basespots = basespotPagination.basespots;
@@ -73,7 +78,25 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
 
   // TODO: https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
 
+  useEffect(() => {
+    supabase
+      .storage
+      .from('basespotimages')
+      .createSignedUrls(basespot.map((d) => `M${d.map_id}-${d.id}/${d.thumbnail}`), 60)
+      .then(({ data, error }) => {
+        if (error) {
+          return toast.error(`Error fetching images: ${JSON.stringify(error)}`);
+        }
 
+        setBasespot((prev) => prev.map((f) => {
+          return {
+            ...f,
+            thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl
+          }
+        })
+        )
+      })
+  }, []);
   const [params, setParams] = useState({ map, type });
   useEffect(() => {
     navigate(
@@ -205,7 +228,8 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
             />
             <CardMedia
               image={
-                mapImages[basespot.Map.name.toLowerCase().replaceAll(" ", "")]
+                // mapImages[basespot.Map.name.toLowerCase().replaceAll(" ", "")]
+                basespot.thumbnail === "" ? mapImages[basespot.Map.name.toLowerCase().replaceAll(" ", "")] : basespot.thumbnail
               }
             />
             <CardActions className="justify-between">
@@ -213,6 +237,22 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
                 variant="outlined"
                 color="success"
                 to={routes.basespot({ id: basespot.id })}
+                endIcon={
+                  <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M1 5h12m0 0L9 1m4 4L9 9"
+                    />
+                  </svg>
+                }
               >
                 Learn More
               </Button>
