@@ -1,6 +1,20 @@
 console.time("normal");
-const Valg = require("./web/public/species.json");
+// const Valg = require("./web/public/species.json");
 
+// const f = species.map((f) => {
+//   return `UPDATE public."Dino"
+//   SET torpor_immune = ${!f?.flags?.some((v) => v === 'canBeTorpid') || 'FALSE'}
+//   WHERE name LIKE '${f.name}%'${f?.dinoTagName ? ` OR name LIKE '${f.dinoTagName}'` : ''};
+//   `
+// })
+
+// require("fs").writeFile(`insert.txt`, f.join("\n"), (error) => {
+//   if (error) {
+//     throw error;
+//   }
+// });
+
+// return
 var partition = function (arr, length) {
   var result = [];
   for (var i = 0; i < arr.length; i++) {

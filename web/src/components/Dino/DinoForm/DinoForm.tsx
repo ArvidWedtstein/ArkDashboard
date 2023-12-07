@@ -578,15 +578,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               variant="outlined"
             />
-            {/* <InputOutlined
-              name="food_consumption_mult"
-              label="Food consumption base multiplier"
-              defaultValue={props.dino?.food_consumption_mult}
-              type="number"
-              emptyAs={0}
-              validation={{ valueAsNumber: true }}
-              margin="normal"
-            /> */}
             <Input
               label="Non violent food rate multiplier"
               name="non_violent_food_rate_mult"
@@ -596,15 +587,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               variant="outlined"
             />
-            {/* <InputOutlined
-                name="non_violent_food_rate_mult"
-                label="Non violent food rate multiplier"
-                defaultValue={props.dino?.non_violent_food_rate_mult}
-                type="number"
-                emptyAs={0}
-                validation={{ valueAsNumber: true }}
-                margin="normal"
-              /> */}
             {/* </Form> */}
           </Step>
 
@@ -1339,13 +1321,6 @@ const DinoForm = (props: DinoFormProps) => {
               variant="outlined"
               validation={{ valueAsNumber: true, min: 0 }}
             />
-            {/* <InputOutlined
-              name="base_points"
-              label="Base points"
-              defaultValue={props.dino?.base_points || 0}
-              type="number"
-              margin="normal"
-            /> */}
 
             {/* TODO: add info box here about base point */}
 

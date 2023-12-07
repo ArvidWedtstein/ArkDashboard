@@ -359,6 +359,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       base_taming_time,
       taming_interval,
       flee_threshold,
+      // variants,
       x_variant,
     } = dino;
     const { h: { b: baseHealth = 0, w: incPerLevel = 0 } = {} } =
@@ -405,6 +406,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         totalMultipliers *= state.settings.meleeMultiplier / 100;
       }
 
+      // if (variants.includes('Genesis') && state.variants.includes('Genesis')) {
       if (x_variant && state.x_variant) {
         knockOut /= 0.4;
         totalMultipliers *= 0.4;
