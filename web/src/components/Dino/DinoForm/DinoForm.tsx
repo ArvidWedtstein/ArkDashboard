@@ -328,12 +328,12 @@ const DinoForm = (props: DinoFormProps) => {
             </div>
 
             <div className="flex flex-col space-y-2">
-              <Switch
+              {/* <Switch
                 name="x_variant"
                 onLabel="X Variant"
                 defaultChecked={props.dino?.x_variant}
                 helperText="Does this dino have a x-variant?"
-              />
+              /> */}
 
               <Switch
                 name="ridable"
@@ -624,24 +624,24 @@ const DinoForm = (props: DinoFormProps) => {
               defaultChecked={props.dino?.tamable}
             />
 
-            <Switch
+            {/* <Switch
               name="disable_ko"
               onLabel="Disable KO"
               defaultChecked={props.dino?.disable_ko}
             />
-            <p className="rw-helper-text">Can this dino be KO'd?</p>
-
-            <Switch
+            <p className="rw-helper-text">Can this dino be KO'd?</p> */}
+            {/* TODO: add taming method instead */}
+            {/* <Switch
               name="violent_tame"
               onLabel="Violent tame"
               defaultChecked={props.dino?.violent_tame}
             />
-            <p className="rw-helper-text">Is this dino aggressive?</p>
+            <p className="rw-helper-text">Is this dino aggressive?</p> */}
 
             <Input
               label="Torpor Depletion per second"
-              name="tdps"
-              defaultValue={props.dino?.tdps}
+              name="torpor_depetion_per_second"
+              defaultValue={props.dino?.torpor_depetion_per_second}
               InputProps={{
                 min: 0
               }}

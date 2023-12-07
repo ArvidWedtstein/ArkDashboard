@@ -9,6 +9,7 @@ export const standard = defineScenario<Prisma.DinoCreateArgs>({
         can_destroy: 'String',
         type: 'String',
         carryable_by: 'String',
+        variants: 'String',
       },
     },
     two: {
@@ -17,6 +18,7 @@ export const standard = defineScenario<Prisma.DinoCreateArgs>({
         can_destroy: 'String',
         type: 'String',
         carryable_by: 'String',
+        variants: 'String',
       },
     },
   },

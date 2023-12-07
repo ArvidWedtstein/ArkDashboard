@@ -102,7 +102,6 @@ model Dino {
   exp_per_kill                   Float?     @default(0)
   egg_min                        Float?     @default(0)
   egg_max                        Float?     @default(0)
-  tdps                           Float?     @default(0)
   maturation_time                Float?     @default(0)
   incubation_time                Float?     @default(0)
   affinity_needed                Float?     @default(0)
@@ -111,8 +110,6 @@ model Dino {
   hitboxes                       Json?
   food_consumption_base          Float?     @default(0)
   food_consumption_mult          Float?     @default(0)
-  disable_ko                     Boolean?   @default(false)
-  violent_tame                   Boolean?   @default(false)
   taming_ineffectiveness         Float?     @default(0)
   disable_food                   Boolean?   @default(false)
   disable_mult                   Boolean?   @default(false)
@@ -122,8 +119,6 @@ model Dino {
   non_violent_food_rate_mult     Float?     @default(0)
   taming_interval                Float?     @default(0)
   base_taming_time               Float?
-  disable_tame                   Boolean?   @default(false)
-  x_variant                      Boolean?   @default(false)
   attack                         Json?
   mounted_weaponry               Boolean?   @default(false)
   ridable                        Boolean?   @default(false)
@@ -147,6 +142,11 @@ model Dino {
   default_swing_radius           Float?     @default(0)
   targeting_team_name            String?
   flags                          Json?      @default("[]")
+  drag_weight                    Float?     @default(0)
+  taming_method                  String?    @default("")
+  variants                       String[]
+  torpor_immune                  Boolean?   @default(false)
+  torpor_depetion_per_second     Float?     @default(0)
   DinoStat                       DinoStat[]
 }
 
@@ -201,7 +201,6 @@ model Map {
   LootcrateMap           LootcrateMap[]
   Map                    Map?                     @relation("MapToMap", fields: [parent_map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   other_Map              Map[]                    @relation("MapToMap")
-  MapNote                MapNote[]
   MapRegion              MapRegion[]
   MapResource            MapResource[]
   TimelineSeasonBasespot TimelineSeasonBasespot[]
@@ -240,20 +239,6 @@ model DinoStat {
   Item       Item         @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([dino_id, item_id, type])
-}
-
-model MapNote {
-  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
-  map_id     BigInt
-  latitude   Float     @default(0)
-  longitude  Float     @default(0)
-  x          Float?
-  y          Float?
-  z          Float?
-  note_index BigInt?
-  Map        Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

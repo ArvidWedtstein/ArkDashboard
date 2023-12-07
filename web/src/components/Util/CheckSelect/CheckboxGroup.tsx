@@ -85,61 +85,64 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
     }
   });
 
-  const rippleRef = useRef(null);
-  const { enableRipple, getRippleHandlers } = useRipple({
-    disabled,
-    disableRipple,
-    rippleRef
-  })
   return (
     <div
       className={clsx("flex h-fit flex-wrap gap-1 md:gap-3", className)}
     >
-      {memoizedOptions.map(({ label, image, value: optValue }) => (
-        <label key={label} aria-details={`Item: ${optValue}`} {...getRippleHandlers()}>
-          <input
-            disabled={(!name && !label) || (!name && !form) || disabled}
-            type="checkbox"
-            name={name || optValue.toString() || label + "checkbox"}
-            value={optValue || label}
-            onChange={handleCheckboxChange}
-            checked={selectedOptions.includes(optValue.toString() || label)}
-            className="rw-check-input absolute hidden overflow-hidden"
-          />
-          <span
-            className={clsx(
-              "rw-check-tile p-1 relative flex flex-col items-center justify-center rounded border border-black/[.12] dark:border-white/[.12] transition-all duration-150",
-              {
-                disabled: (!name && !label) || disabled,
-                "cursor-pointer": label && !disabled,
-                "h-12 w-12 text-xs": size === 'small',
-                "h-20 w-20 text-xs": size === 'medium',
-                "h-28 w-28 text-sm": size === 'large',
-              },
-            )}
-          >
-            <span className="inline-flex items-center justify-center text-gray-900 grow transition-all duration-150 ease-in dark:text-stone-200">
-              {image &&
-                (React.isValidElement(image) ? (
-                  image
-                ) : (
-                  <img
-                    className={clsx("w-auto", {
-                      "max-w-8 max-h-8": size === 'small',
-                      'max-w-10 max-h-8': size === 'medium',
-                      'max-w-16 max-h-12': size === 'large',
-                    })}
-                    src={image.toString()}
-                  />
-                ))}
+      {memoizedOptions.map(({ label, image, value: optValue }) => {
+        const rippleRef = useRef(null);
+        const { enableRipple, getRippleHandlers } = useRipple({
+          disabled,
+          disableRipple,
+          rippleRef
+        })
+        return (
+
+          <label key={label} aria-details={`Item: ${optValue}`} className="overflow-hidden" {...getRippleHandlers()}>
+            <input
+              disabled={(!name && !label) || (!name && !form) || disabled}
+              type="checkbox"
+              name={name || optValue.toString() || label + "checkbox"}
+              value={optValue || label}
+              onChange={handleCheckboxChange}
+              checked={selectedOptions.includes(optValue.toString() || label)}
+              className="rw-check-input absolute hidden overflow-hidden"
+            />
+            <span
+              className={clsx(
+                "rw-check-tile p-1 relative flex flex-col items-center justify-center rounded border border-black/[.12] dark:border-white/[.12] transition-all duration-150 overflow-hidden",
+                {
+                  disabled: (!name && !label) || disabled,
+                  "cursor-pointer": label && !disabled,
+                  "h-12 w-12 text-xs": size === 'small',
+                  "h-20 w-20 text-xs": size === 'medium',
+                  "h-28 w-28 text-sm": size === 'large',
+                },
+              )}
+            >
+              <span className="inline-flex items-center justify-center text-gray-900 grow transition-all overflow-hidden duration-150 ease-in dark:text-stone-200">
+                {image &&
+                  (React.isValidElement(image) ? (
+                    image
+                  ) : (
+                    <img
+                      className={clsx("w-auto", {
+                        "max-w-8 max-h-8": size === 'small',
+                        'max-w-10 max-h-8': size === 'medium',
+                        'max-w-16 max-h-12': size === 'large',
+                      })}
+                      src={image.toString()}
+                    />
+                  ))}
+              </span>
+              <span className="mx-2 text-center text-gray-900 transition-all duration-300 ease-linear dark:text-stone-200">
+                {label}
+              </span>
+              {enableRipple ? <Ripple ref={rippleRef} /> : null}
             </span>
-            <span className="mx-2 text-center text-gray-900 transition-all duration-300 ease-linear dark:text-stone-200">
-              {label}
-            </span>
-            {enableRipple ? <Ripple ref={rippleRef} /> : null}
-          </span>
-        </label>
-      ))}
+          </label>
+        )
+      })}
     </div>
   );
 };

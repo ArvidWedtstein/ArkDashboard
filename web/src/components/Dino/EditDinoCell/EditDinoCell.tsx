@@ -21,7 +21,7 @@ export const QUERY = gql`
       exp_per_kill
       egg_min
       egg_max
-      tdps
+      torpor_depetion_per_second
       maturation_time
       incubation_time
       affinity_needed
@@ -30,8 +30,7 @@ export const QUERY = gql`
       hitboxes
       food_consumption_base
       food_consumption_mult
-      disable_ko
-      violent_tame
+      taming_method
       taming_ineffectiveness
       disable_food
       disable_mult
@@ -42,8 +41,8 @@ export const QUERY = gql`
       taming_interval
       base_taming_time
       tamable
-      x_variant
       attack
+      variants
       mounted_weaponry
       ridable
       movement
@@ -92,7 +91,7 @@ const UPDATE_DINO_MUTATION = gql`
       exp_per_kill
       egg_min
       egg_max
-      tdps
+      torpor_depetion_per_second
       maturation_time
       incubation_time
       affinity_needed
@@ -101,8 +100,7 @@ const UPDATE_DINO_MUTATION = gql`
       hitboxes
       food_consumption_base
       food_consumption_mult
-      disable_ko
-      violent_tame
+      taming_method
       taming_ineffectiveness
       disable_food
       disable_mult
@@ -113,7 +111,7 @@ const UPDATE_DINO_MUTATION = gql`
       taming_interval
       base_taming_time
       tamable
-      x_variant
+      variants
       attack
       mounted_weaponry
       ridable

@@ -22,7 +22,6 @@ import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Counter from "src/components/Util/Counter/Counter";
-import { useAuth } from "src/auth";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 import Toast from "src/components/Util/Toast/Toast";
 import {
@@ -82,7 +81,7 @@ type BaseStats = {
 };
 type TamingCalculatorForm = {
   level: string;
-  x_variant?: boolean | null;
+  genesis_variant?: boolean | null;
   selected_food: number;
   seconds_between_hits: string;
 };
@@ -329,7 +328,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     level: number;
     maturation: number;
     seconds_between_hits: number;
-    x_variant: boolean;
+    variants?: string[];
     activeRecipeTabIndex: number;
     selected_food: number;
     foods: Food[];
@@ -359,8 +358,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       base_taming_time,
       taming_interval,
       flee_threshold,
-      // variants,
-      x_variant,
+      variants,
     } = dino;
     const { h: { b: baseHealth = 0, w: incPerLevel = 0 } = {} } =
       (base_stats as BaseStats) || { b: 0, w: 0 };
@@ -385,15 +383,15 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       const isPossible = torpor_duration
         ? torpor -
         (state.seconds_between_hits - torpor_duration) *
-        (dino.tdps +
-          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
+        (dino.torpor_depetion_per_second +
+          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.torpor_depetion_per_second))
         : torpor;
 
       let torporPerHit = isPossible
         ? torpor -
         (state.seconds_between_hits - torpor_duration) *
-        (dino.tdps +
-          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
+        (dino.torpor_depetion_per_second +
+          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.torpor_depetion_per_second))
         : torpor;
 
       const knockOutMultiplier =
@@ -406,8 +404,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         totalMultipliers *= state.settings.meleeMultiplier / 100;
       }
 
-      // if (variants.includes('Genesis') && state.variants.includes('Genesis')) {
-      if (x_variant && state.x_variant) {
+      if (variants.includes('Genesis') && state.variants.includes('Genesis')) {
         knockOut /= 0.4;
         totalMultipliers *= 0.4;
       }
@@ -566,7 +563,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       let foodSeconds = 0;
       let isFoodSelected = Item.id === state?.selected_food;
 
-      if (!dino.violent_tame) {
+      if (dino.taming_method != "NV") {
         foodMaxRaw = foodMaxRaw / dino.non_violent_food_rate_mult;
         interval = foodValue / foodConsumption;
 
@@ -731,7 +728,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       maturation: 0,
       level: 150,
       seconds_between_hits: 5,
-      x_variant: false,
+      variants: dino?.variants || [],
       foods: [],
       activeRecipeTabIndex: 0,
       selected_food: dino.DinoStat.some((f) => f.type === "food")
@@ -829,7 +826,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       dino.food_consumption_mult *
       state.settings.consumptionMultiplier;
 
-    foodConsumption = dino.violent_tame
+    foodConsumption = dino.taming_method !== 'NV'
       ? foodConsumption
       : foodConsumption * dino.non_violent_food_rate_mult;
 
@@ -849,7 +846,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         if (state.selected_food) {
           food.use = food.id == state.selected_food ? food.max : 0;
         }
-        numNeeded = dino.violent_tame
+        numNeeded = dino.taming_method !== 'NV'
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
             affinityLeft /
@@ -861,7 +858,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use;
 
-        affinityLeft = dino.violent_tame
+        affinityLeft = dino.taming_method !== 'NV'
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
           numToUse *
@@ -874,7 +871,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         let i = 1;
         numToUse = numToUse < 1000 ? numToUse : 1;
         while (i <= numToUse) {
-          effectiveness -= dino.violent_tame
+          effectiveness -= dino.taming_method !== 'NV'
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
             affinityVal /
             tamingMultiplier /
@@ -922,8 +919,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     let totalTorpor =
       dino.base_taming_time + dino.taming_interval * (state.level - 1);
     let torporDepletionPS =
-      dino.tdps +
-      Math.pow(state.level - 1, 0.800403041) / (22.39671632 / dino.tdps);
+      dino.torpor_depetion_per_second +
+      Math.pow(state.level - 1, 0.800403041) / (22.39671632 / dino.torpor_depetion_per_second);
 
     const calcNarcotics = narcotics.map(({ name, torpor, torpor_duration }) => {
       return {
@@ -1018,7 +1015,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
           <br />
           <div className="mr-4 mb-4 inline-block">
-            <strong>X-Variant:</strong> {dino.x_variant ? "Yes" : "No"}
+            <strong>X-Variant:</strong> {dino?.variants?.some(v => v === 'Genesis') ? "Yes" : "No"}
           </div>
           <div className="mr-4 mb-4 inline-block">
             <strong>Weapon:</strong> {dino.mounted_weaponry ? "Yes" : "No"}
@@ -1026,7 +1023,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           <br />
           <div className="mr-4 mb-4 inline-block">
             <strong>Type:</strong>{" "}
-            {dino.violent_tame ? "Aggressive" : "Passive"}
+            {dino.taming_method !== 'NV' ? "Aggressive" : "Passive"}
           </div>
           {/* <div className="text-lg">XP Gained when killed:</div> */}
           <div className="mr-4 mb-4 inline-block">
@@ -1885,7 +1882,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   color="success"
                   defaultValue={state.level}
                   validation={{
-                    required: true,
+                    // required: true,
                     valueAsNumber: true,
                     min: 1,
                     max: 500,
@@ -1907,8 +1904,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   type="number"
                 />
 
-                {dino?.x_variant && (
-                  <Switch onLabel="X Variant" name="x_variant" />
+                {dino?.variants?.some(v => v === 'Genesis') && (
+                  <Switch onLabel="X Variant" name="genesis_variant" />
                 )}
 
                 <br />
@@ -1997,7 +1994,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                               name: "Max after Taming",
                               sub: `Lvl ${state.level +
                                 tameData.levelsGained +
-                                (state.x_variant && dino.x_variant ? 88 : 73)
+                                (state?.variants?.some(v => v === 'Genesis') && dino.variants?.some(v => v === 'Genesis') ? 88 : 73)
                                 }`,
                               icon: (
                                 <svg
@@ -2081,14 +2078,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 "Ascerbic-MushroomMin",
                               ].includes(k)
                             )
-                            .map(([name, amount]) => {
+                            .map(([name, amount], i) => {
                               const newName = name
                                 .replace("Min", "")
                                 .toLowerCase();
                               return (
                                 <div
                                   className="flex flex-col items-center"
-                                  key={`narcotic-${name}`}
+                                  key={`narcotic-${name}-${i}`}
                                 >
                                   <img
                                     src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${newName}.webp`}
@@ -2279,8 +2276,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                   hitboxes,
                                   userDamage,
                                   chanceOfDeathHigh,
-                                }) => (
+                                }, i) => (
                                   <Card
+                                    key={`weapon-${i}-${name}`}
                                     variant="outlined"
                                     className={clsx("min-w-[200px] mb-3 flex flex-col pb-2", {
                                       "rw-img-disable !text-gray-500":
@@ -2306,7 +2304,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                         </Button>
                                       }
                                       subheader={
-                                        isPossible ? (
+                                        isPossible && !isNaN(hits) ? (
                                           <Counter
                                             startNumber={0}
                                             endNumber={hits}

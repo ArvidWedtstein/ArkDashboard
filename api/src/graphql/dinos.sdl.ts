@@ -11,7 +11,6 @@ export const schema = gql`
     exp_per_kill: Float
     egg_min: Float
     egg_max: Float
-    tdps: Float
     maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
@@ -20,8 +19,6 @@ export const schema = gql`
     hitboxes: JSON
     food_consumption_base: Float
     food_consumption_mult: Float
-    disable_ko: Boolean
-    violent_tame: Boolean
     taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
@@ -31,8 +28,6 @@ export const schema = gql`
     non_violent_food_rate_mult: Float
     taming_interval: Float
     base_taming_time: Float
-    disable_tame: Boolean
-    x_variant: Boolean
     attack: JSON
     mounted_weaponry: Boolean
     ridable: Boolean
@@ -56,6 +51,11 @@ export const schema = gql`
     default_swing_radius: Float
     targeting_team_name: String
     flags: JSON
+    drag_weight: Float
+    taming_method: String
+    variants: [String]!
+    torpor_immune: Boolean
+    torpor_depetion_per_second: Float
     DinoStat: [DinoStat]!
   }
 
@@ -89,7 +89,6 @@ export const schema = gql`
     exp_per_kill: Float
     egg_min: Float
     egg_max: Float
-    tdps: Float
     maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
@@ -98,8 +97,6 @@ export const schema = gql`
     hitboxes: JSON
     food_consumption_base: Float
     food_consumption_mult: Float
-    disable_ko: Boolean
-    violent_tame: Boolean
     taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
@@ -109,8 +106,6 @@ export const schema = gql`
     non_violent_food_rate_mult: Float
     taming_interval: Float
     base_taming_time: Float
-    disable_tame: Boolean
-    x_variant: Boolean
     attack: JSON
     mounted_weaponry: Boolean
     ridable: Boolean
@@ -134,6 +129,11 @@ export const schema = gql`
     default_swing_radius: Float
     targeting_team_name: String
     flags: JSON
+    drag_weight: Float
+    taming_method: String
+    variants: [String]!
+    torpor_immune: Boolean
+    torpor_depetion_per_second: Float
   }
 
   input UpdateDinoInput {
@@ -147,7 +147,6 @@ export const schema = gql`
     exp_per_kill: Float
     egg_min: Float
     egg_max: Float
-    tdps: Float
     maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
@@ -156,8 +155,6 @@ export const schema = gql`
     hitboxes: JSON
     food_consumption_base: Float
     food_consumption_mult: Float
-    disable_ko: Boolean
-    violent_tame: Boolean
     taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
@@ -167,8 +164,6 @@ export const schema = gql`
     non_violent_food_rate_mult: Float
     taming_interval: Float
     base_taming_time: Float
-    disable_tame: Boolean
-    x_variant: Boolean
     attack: JSON
     mounted_weaponry: Boolean
     ridable: Boolean
@@ -192,6 +187,11 @@ export const schema = gql`
     default_swing_radius: Float
     targeting_team_name: String
     flags: JSON
+    drag_weight: Float
+    taming_method: String
+    variants: [String]!
+    torpor_immune: Boolean
+    torpor_depetion_per_second: Float
   }
 
   type Mutation {
