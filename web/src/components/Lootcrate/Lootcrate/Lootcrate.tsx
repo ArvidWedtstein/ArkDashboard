@@ -3,6 +3,7 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useMemo } from "react";
 import { useAuth } from "src/auth";
+import Badge from "src/components/Util/Badge/Badge";
 import { Card, CardHeader } from "src/components/Util/Card/Card";
 import Map from "src/components/Util/Map/Map";
 import Table from "src/components/Util/Table/Table";
@@ -130,12 +131,10 @@ const Lootcrate = ({ lootcrate }: Props) => {
                         </Link>
                       ))}
                     </div>
-                    <p className="rw-badge rw-badge-yellow-outline">
-                      {(items[0].entry_quality as qty).min === 0
-                        ? `only as blueprint`
-                        : `as item or as blueprint with quality ${(items[0].entry_quality as qty).min * 100
-                        }%`}
-                    </p>
+                    <Badge variant="outlined" color="warning" standalone content={(items[0].entry_quality as qty).min === 0
+                      ? `only as blueprint`
+                      : `as item or as blueprint with quality ${(items[0].entry_quality as qty).min * 100
+                      }%`} />
                   </div>
                 </Tab>
               ))}
@@ -235,9 +234,12 @@ const Lootcrate = ({ lootcrate }: Props) => {
               field: "entries",
               header: "Entries",
               render: ({ value }) => (
-                <span className="rw-badge rw-badge-small rw-badge-gray">
-                  {value}
-                </span>
+                <Badge
+                  content={<span>{value.toString()}</span>}
+                  variant="standard"
+                  color="secondary"
+                  standalone
+                />
               ),
             },
           ]}

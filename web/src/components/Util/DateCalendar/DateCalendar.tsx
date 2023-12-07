@@ -10,6 +10,7 @@ import {
   toLocaleISODate,
 } from "src/lib/formatters";
 import Button from "../Button/Button";
+import Badge from "../Badge/Badge";
 
 type ViewType = "year" | "month" | "day";
 type DateCalendarProps = {
@@ -445,7 +446,7 @@ const DateCalendar = ({
                             >
                               {day.getDate()}
                             </button>
-                            <span className="rw-badge rw-badge-small absolute top-[14%] right-[14%] translate-x-1/2 -translate-y-1/2 transform"></span>
+                            {/* <Badge content="s" /> */}
                           </div>
                         );
                       })}

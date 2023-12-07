@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ReactNode, forwardRef } from "react";
+import { ReactNode, forwardRef, isValidElement } from "react";
 import { isEmpty } from "src/lib/formatters";
 
 type BadgeProps = {
@@ -20,6 +20,7 @@ type BadgeProps = {
   };
   children?: ReactNode;
   max?: number;
+  fullWidth?: boolean;
   showZero?: boolean;
   standalone?: boolean;
   className?: string;
@@ -38,6 +39,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
     max = 99,
     showZero = false,
     standalone = false,
+    fullWidth = false,
     children,
     className,
     onClick,
@@ -54,10 +56,9 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       error: "bg-red-500 text-white",
       DEFAULT: "dark:text-black/90 text-white bg-black dark:bg-white",
     },
-    // TODO: implement primary
     outlined: {
-      primary: "",
-      secondary: "bg-zinc-50 text-zinc-600 ring-1 ring-inset ring-zinc-500/10 dark:bg-zinc-400/10 dark:text-zinc-400 dark:ring-zinc-400/20",
+      primary: "bg-blue-400/10 text-blue-600 ring-1 ring-inset ring-blue-500/10 dark:text-blue-500 dark:ring-blue-400/30",
+      secondary: "bg-zinc-300 text-zinc-600 ring-1 ring-inset ring-zinc-500/10 dark:bg-zinc-400/10 dark:text-zinc-400 dark:ring-zinc-400/20",
       info: "bg-blue-400/10 text-blue-700 ring-1 ring-inset ring-blue-700/30 dark:bg-blue-400/20 dark:text-blue-400 dark:ring-blue-400/30",
       purple: "bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-blue-400/10 dark:text-purple-400 dark:ring-purple-400/30",
       success: "bg-pea-50 text-pea-700 ring-pea-600/20 dark:bg-pea-500/10 dark:text-pea-400 dark:ring-pea-500/20 ring-1 ring-inset",
@@ -69,6 +70,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
   const classes = clsx("items-center text-xs",
     variants[variant][color],
     {
+      "w-full": fullWidth,
       "-translate-x-1/2 left-0": anchor.horizontal == "left" && !standalone,
       "translate-x-1/2 right-0": anchor.horizontal == "right" && !standalone,
       "-translate-y-1/2 top-0": anchor.vertical === "top" && !standalone,
@@ -86,12 +88,17 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
     }
   );
 
-  let child: ReactNode | number = isNaN(parseInt(content.toString()))
+  // let child: ReactNode | number = isNaN(parseInt(content.toString()))
+  //   ? content
+  //   : typeof content === "string"
+  //     ? parseInt(content)
+  //     : content;
+
+  let child: ReactNode | number = isValidElement(content)
     ? content
-    : typeof content === "string"
+    : typeof content === "string" && /^\d+$/.test(content)
       ? parseInt(content)
       : content;
-
   return (
     <span className={clsx("inline-flex flex-shrink-0", className, {
       "relative": !isEmpty(children),

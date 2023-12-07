@@ -35,6 +35,7 @@ import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
+import Badge from "src/components/Util/Badge/Badge";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -1603,7 +1604,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                               }
                               style={{
                                 borderRadius: '0.375rem 0 0 0.375rem',
-                                marginLeft: '-0.5px',
+                                marginRight: '-0.5px',
                               }}
                             >
                               Random
@@ -2269,7 +2270,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 ({
                                   id,
                                   name,
-                                  visible,
                                   image,
                                   isPossible,
                                   chanceOfDeath,
@@ -2280,13 +2280,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 }) => (
                                   <Card
                                     variant="outlined"
-                                    className={clsx("min-w-[200px]", {
+                                    className={clsx("min-w-[200px] mb-3 flex flex-col pb-2", {
                                       "rw-img-disable !text-gray-500":
                                         !isPossible || chanceOfDeath >= 99,
                                     })}
                                   >
                                     <div className="mt-4 inline-flex items-center justify-center">
                                       <CardMedia
+                                        className="max-h-24"
                                         image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                                       />
@@ -2315,32 +2316,41 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                       }
                                     />
                                     {chanceOfDeath > 0 && isPossible && (
-                                      <p
-                                        className={clsx("rw-badge", {
-                                          "rw-badge-red-outline":
-                                            chanceOfDeathHigh,
-                                          "rw-badge-yellow-outline":
-                                            chanceOfDeath > 30 &&
-                                            chanceOfDeath < 60,
-                                          "rw-badge-blue-outline":
-                                            !chanceOfDeathHigh,
-                                        })}
-                                      >
-                                        {chanceOfDeath}% chance of death
-                                      </p>
+                                      <Badge
+                                        className="m-2"
+                                        fullWidth
+                                        content={`${chanceOfDeath}% chance of death`}
+                                        variant="outlined"
+                                        color={chanceOfDeathHigh
+                                          ? 'error'
+                                          : chanceOfDeath > 30 &&
+                                            chanceOfDeath < 60
+                                            ? 'warning'
+                                            : !chanceOfDeathHigh
+                                              ? 'primary'
+                                              : 'DEFAULT'
+                                        }
+                                        standalone
+                                      />
                                     )}
                                     {hitboxes.length > 0 && (
-                                      <span className="rw-badge rw-badge-gray">
-                                        {hitboxes.map(
-                                          ({ name, multiplier }) => (
-                                            <span
-                                              key={`hitbox-${name}`}
-                                            >{`${name} - ${multiplier}x`}</span>
+                                      <Badge
+                                        className="m-2"
+                                        variant="standard"
+                                        color="secondary"
+                                        content={
+                                          hitboxes.map(
+                                            ({ name, multiplier }) => (
+                                              <span
+                                                key={`hitbox-${name}`}
+                                              >{`${name} - ${multiplier}x`}</span>
+                                            )
                                           )
-                                        )}
-                                      </span>
+                                        }
+                                        standalone
+                                      />
                                     )}
-                                    <div className="relative w-full max-w-max px-2">
+                                    <div className="relative w-full max-w-max px-2 self-end place-self-end mt-auto">
                                       <Input
                                         label="Percent"
                                         size="small"
@@ -2531,13 +2541,19 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         Egg Temperature
                       </h3>
                       <p className="inline-flex gap-2 text-sm">
-                        <span className="rw-badge rw-badge-blue-outline">
-                          {dino.egg_min}°C
-                        </span>
+                        <Badge
+                          color="primary"
+                          variant="outlined"
+                          content={`${dino.egg_min}°C`}
+                          standalone
+                        />
                         -
-                        <span className="rw-badge rw-badge-red-outline">
-                          {dino.egg_max}°C
-                        </span>
+                        <Badge
+                          color="error"
+                          variant="outlined"
+                          content={`${dino.egg_max}°C`}
+                          standalone
+                        />
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 512 512"

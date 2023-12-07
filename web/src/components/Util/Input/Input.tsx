@@ -1,5 +1,6 @@
 import {
   Controller,
+  ControllerFieldState,
   ControllerRenderProps,
   FieldError,
   FieldValues,
@@ -723,10 +724,10 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
           labelSize[state.variant][size][focused || shrink ? "open" : "close"],
           className,
           colors[
-          disabled
-            ? "disabled"
-            : state.error
-              ? "error"
+          state.error
+            ? "error"
+            : disabled
+              ? "disabled"
               : focused
                 ? fcs.color || color
                 : "DEFAULTNOFOCUS"
@@ -793,15 +794,6 @@ type InputBaseProps = {
   maxRows?: string | number;
   minRows?: string | number;
   size?: "small" | "medium" | "large";
-  /**
-   * You can override the existing props or add new ones.
-   *
-   * @default {}
-   */
-  // slotProps?: {
-  //   root?: HTMLAttributes<HTMLDivElement> & { style?: CSSProperties };
-  //   input?: InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & { style?: CSSProperties };
-  // };
   startAdornment?: ReactNode;
   startAdornmentProps?: HTMLAttributes<HTMLDivElement>;
   type?: string;
@@ -842,7 +834,6 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       renderSuffix,
       rows,
       size,
-      // slotProps = {},
       startAdornment,
       startAdornmentProps,
       type = "text",
@@ -882,27 +873,12 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       [onFilled, onEmpty]
     );
 
-    const handleInputRefWarning = useCallback((instance) => {
-      if (process.env.NODE_ENV !== "production") {
-        if (instance && instance.nodeName !== "INPUT" && !instance.focus) {
-          console.error(
-            [
-              "ArkDashboard: You have provided a `inputComponent` to the input component",
-              "that does not correctly handle the `ref` prop.",
-              "Make sure the `ref` prop is called with a HTMLInputElement.",
-            ].join("\n")
-          );
-        }
-      }
-    }, []);
-
     const handleInputRef = useMemo(() => {
       if (
         [
           inputRef,
           inputRefProp,
           inputPropsProp.ref,
-          handleInputRefWarning,
         ].every((ref) => ref == null)
       ) {
         return null;
@@ -913,7 +889,6 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
           inputRef,
           inputRefProp,
           inputPropsProp.ref,
-          handleInputRefWarning,
         ].forEach((ref) => {
           if (typeof ref === "function") {
             ref(instance);
@@ -922,7 +897,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
           }
         });
       };
-    }, [inputRef, inputRefProp, inputPropsProp.ref, handleInputRefWarning]);
+    }, [inputRef, inputRefProp, inputPropsProp.ref]);
 
     const fcs = formControlState({
       props,
@@ -965,6 +940,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       if (onFocus) {
         onFocus(event);
       }
+
       if (inputPropsProp.onFocus) {
         inputPropsProp.onFocus(event);
       }
@@ -1124,10 +1100,10 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
     };
     // TODO: add react-form-hook error classes here instead
     const inputBaseClassesAfter = {
-      outlined: ``,
+      outlined: '',
       filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused
         ? "after:transform after:scale-x-100 after:translate-x-0"
-        : "after:scale-x-0 "
+        : "after:scale-x-0"
         } ${fcs.error
           ? `before:!border-red-500 after:border-red-500`
           : borders[ownerState.color ?? "DEFAULT"]
@@ -1142,27 +1118,27 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
     };
     const classes = {
       root: "relative box-border inline-flex w-auto cursor-text items-center text-base font-normal leading-6",
-      input: `font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0 ${((formControl.label || props.label)?.toString().length > 0 &&
-        !(
+      input: `
+        font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0
+        ${(
+          (formControl.label || props.label)?.toString().length > 0 &&
+          !(
+            formControl.filled ||
+            formControl.focused ||
+            formControl.adornedStart ||
+            formControl.shrink
+          )
+        ) ||
           formControl.filled ||
-          formControl.focused ||
           formControl.adornedStart ||
-          formControl.shrink
-        )) ||
-        formControl.filled ||
-        formControl.adornedStart ||
-        type === "date" ||
-        type === "datetime"
-        ? "placeholder:opacity-0"
-        : "placeholder:opacity-100"
-        } focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent ${inputSize[ownerState.variant][ownerState.size]
-        } ${ownerState.variant === "filled" || ownerState.variant === "outlined"
-          ? startAdornment
-            ? "pl-0"
-            : endAdornment
-              ? "pr-0"
-              : ""
-          : ""
+          type === "date" ||
+          type === "datetime"
+          ? "placeholder:opacity-0"
+          : "placeholder:opacity-100"
+        } focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent
+        ${inputSize[ownerState.variant][ownerState.size]}
+        ${(ownerState.variant === "filled" || ownerState.variant === "outlined") &&
+        (startAdornment ? 'pl-0' : endAdornment ? 'pr-0' : "")
         }`,
     };
 
@@ -1333,7 +1309,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     type,
     value,
     variant = "outlined",
-    size,
+    size = "medium",
     margin = "normal",
     validation,
     ...other
@@ -1379,7 +1355,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const inputLabelId = label && id ? `${id}-label` : undefined;
 
   // TODO: fix error styles
-  const InputComp = (field?: ControllerRenderProps<FieldValues, string>) => {
+  const InputComp = (field?: ControllerRenderProps<FieldValues, string>, fieldState?: ControllerFieldState) => {
     return (
       <InputBase
         label={label}
@@ -1419,9 +1395,11 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                 `absolute border text-left transition-colors duration-75 ease-in ${borders[
                 disabled || state.disabled
                   ? "disabled"
-                  : state.focused
-                    ? color
-                    : "DEFAULTNOFOCUS"
+                  : error || state.error || Boolean(fieldState?.error) || fieldState?.invalid
+                    ? 'error'
+                    : state.focused
+                      ? color
+                      : "DEFAULTNOFOCUS"
                 ]
                 } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
                 {
@@ -1464,56 +1442,104 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
             </fieldset>
           ) : null
         }
-      // {...InputMore}
       />
     );
   };
   return (
-    <FormControl
-      className={className}
-      disabled={disabled}
-      error={error}
-      fullWidth={fullWidth}
-      ref={ref}
-      required={Boolean(validation?.required)}
-      color={color}
-      variant={variant}
-      ownerState={ownerState}
-      margin={margin}
-      {...other}
-    >
-      {label != null && label !== "" && (
-        <InputLabel
-          htmlFor={id}
-          id={inputLabelId}
-          required={Boolean(validation?.required)}
-          {...InputLabelProps}
-        >
-          {label}
-        </InputLabel>
-      )}
+    <>
       {name ? (
         <Controller
           name={name}
           defaultValue={value}
           rules={validation}
-          render={({ field, fieldState, formState }) => InputComp(field)}
+          render={({ field, fieldState, formState }) => (
+            <FormControl
+              className={className}
+              disabled={disabled || field.disabled}
+              error={error || Boolean(fieldState.error)}
+              fullWidth={fullWidth}
+              ref={ref}
+              required={Boolean(validation?.required)}
+              color={color}
+              variant={variant}
+              ownerState={ownerState}
+              margin={margin}
+              size={size}
+              {...other}
+            >
+              {label != null && label !== "" && (
+                <InputLabel
+                  htmlFor={id}
+                  id={inputLabelId}
+                  required={Boolean(validation?.required)}
+                  {...InputLabelProps}
+                >
+                  {label}
+                </InputLabel>
+              )}
+
+              {InputComp(field)}
+
+              {helperText && (
+                <p
+                  id={helperTextId}
+                  className={clsx("rw-helper-text", {
+                    "!text-red-500": error || fieldState.error || fieldState.invalid,
+                    "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field.disabled) && !(error || fieldState.error || fieldState.invalid)
+                  })}
+                  {...FormHelperTextProps}
+                >
+                  {helperText}
+                </p>
+              )}
+
+              <FieldError name={name} className="rw-field-error" />
+            </FormControl>
+          )}
         />
       ) : (
-        InputComp()
-      )}
-
-      {helperText && (
-        <p
-          id={helperTextId}
-          className="rw-helper-text"
-          {...FormHelperTextProps}
+        <FormControl
+          className={className}
+          disabled={disabled}
+          error={error}
+          fullWidth={fullWidth}
+          ref={ref}
+          required={Boolean(validation?.required)}
+          color={color}
+          variant={variant}
+          ownerState={ownerState}
+          margin={margin}
+          size={size}
+          {...other}
         >
-          {helperText}
-        </p>
+          {label != null && label !== "" && (
+            <InputLabel
+              htmlFor={id}
+              id={inputLabelId}
+              required={Boolean(validation?.required)}
+              {...InputLabelProps}
+            >
+              {label}
+            </InputLabel>
+          )}
+
+          {InputComp()}
+
+          {helperText && (
+            <p
+              id={helperTextId}
+              className={clsx("rw-helper-text", {
+                "!text-red-500": error,
+                "dark:!text-white/50 !text-black/50": disabled && !error
+              })}
+              {...FormHelperTextProps}
+            >
+              {helperText}
+            </p>
+          )}
+        </FormControl>
       )}
-      {name && <FieldError name={name} className="rw-field-error" />}
-    </FormControl>
+    </>
   );
 });
 

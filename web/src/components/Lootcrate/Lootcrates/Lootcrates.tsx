@@ -9,6 +9,7 @@ import {
 import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import { useAuth } from "src/auth";
+import Badge from "src/components/Util/Badge/Badge";
 import Button from "src/components/Util/Button/Button";
 import {
   Card,
@@ -347,9 +348,12 @@ const LootcratesList = ({
                 />
                 <CardContent>
                   {required_level > 0 && required_level != null && (
-                    <span className="rw-badge rw-badge-gray-outline">
-                      Lvl {required_level}
-                    </span>
+                    <Badge
+                      content={`Lvl ${required_level}`}
+                      variant="outlined"
+                      color="secondary"
+                      standalone
+                    />
                   )}
                 </CardContent>
               </CardActionArea>
