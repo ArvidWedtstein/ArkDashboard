@@ -5,9 +5,9 @@ import clsx from "clsx";
 
 type ListProps = {
   children?: React.ReactNode;
-};
+} & React.DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;;
 const List = (props: ListProps) => {
-  return <ul className="relative m-0 list-none py-2">{props.children}</ul>;
+  return <ul className={clsx("relative m-0 list-none py-2", props?.className)} {...props}>{props.children}</ul>;
 };
 
 type ListItemProps = {
@@ -15,9 +15,11 @@ type ListItemProps = {
   size?: 'small' | 'medium' | 'large'
   disabled?: boolean;
   disableRipple?: boolean;
+  secondaryAction?: React.ReactNode;
+  secondaryActionProps?: React.DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 } & React.DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
 export const ListItem = (props: ListItemProps) => {
-  const { disabled: disabled, disableRipple, icon, children, className, size = "medium", ...other } = props;
+  const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, children, className, size = "medium", ...other } = props;
   const rippleRef = useRef(null);
   const { enableRipple, getRippleHandlers } = useRipple({
     disabled,
@@ -38,9 +40,12 @@ export const ListItem = (props: ListItemProps) => {
           {icon}
         </div>
       )}
-      <div className={clsx("min-w-0 flex-[1_1_auto]", {
+      <div className={clsx("min-w-0 flex-auto", {
         "my-1": size !== "small"
       })}>{children}</div>
+      {secondaryAction && (
+        <div {...secondaryActionProps} className={clsx("ml-4", secondaryActionProps?.className)}>{secondaryAction}</div>
+      )}
       {enableRipple ? <Ripple ref={rippleRef} center={false} /> : null}
     </li>
   );

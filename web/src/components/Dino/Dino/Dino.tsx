@@ -1018,6 +1018,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           <div className="mr-4 mb-4 inline-block">
             <strong>Ridable:</strong> {dino.ridable ? "Yes" : "No"}
           </div>
+          <div className="mr-4 mb-4 inline-block">
+            <strong>Taming Method:</strong> {dino.taming_method === 'KO' ? "Knockout" : "Passive"}
+          </div>
 
           <br />
           <div className="mr-4 mb-4 inline-block">
@@ -1026,6 +1029,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           </div>
           <div className="mr-4 mb-4 inline-block">
             <strong>Weapon:</strong> {dino.mounted_weaponry ? "Yes" : "No"}
+          </div>
+          <div className="mr-4 mb-4 inline-block">
+            <strong>Torpor Immune:</strong> {dino.torpor_immune ? "Yes" : "No"}
           </div>
           <br />
           <div className="mr-4 mb-4 inline-block">

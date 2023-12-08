@@ -59,8 +59,20 @@ export const QUERY = gql`
   }
 `;
 
-// TODO: fix skeletonloader
-export const Loading = () => <div>Loading...</div>;
+export const Loading = () => (
+  <article className="rw-segment flex flex-col gap-3 animate-pulse">
+    <div className="grid w-full grid-cols-2 gap-3 text-gray-700 dark:text-white">
+      <div className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 p-4 h-52" />
+
+      <div className="col-span-1 grid w-full grid-flow-col gap-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 p-4 h-52" />
+      <div className="col-span-1 grid w-full grid-flow-col gap-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 p-4 h-52" />
+    </div>
+    <div className="grid w-full grid-cols-3 gap-3">
+      <div className="col-span-1 grid w-full grid-flow-col gap-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 p-4 h-80" />
+      <div className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg  p-4 h-52" />
+    </div>
+  </article>
+);
 
 export const Empty = () => <div>Item not found</div>;
 

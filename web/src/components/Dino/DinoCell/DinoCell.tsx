@@ -19,6 +19,7 @@ export const QUERY = gql`
       egg_max
       torpor_depetion_per_second
       maturation_time
+      torpor_immune
       incubation_time
       affinity_needed
       aff_inc

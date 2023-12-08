@@ -7,9 +7,10 @@ import { useAuth } from "src/auth";
 import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { Card, CardHeader } from "src/components/Util/Card/Card";
+import List, { ListItem } from "src/components/Util/List/List";
 import Map from "src/components/Util/Map/Map";
 
-import { getWordType } from "src/lib/formatters";
+import { getHexCodeFromPercentage, getWordType } from "src/lib/formatters";
 
 import type {
   DeleteItemMutationVariables,
@@ -233,66 +234,74 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-gray-200 p-4 ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
               <p className="my-1 text-lg">Gather Efficiency</p>
-              <div className="flex flex-col">
+              <List className="w-fit">
                 {item.DinoStat.filter((g) => g.type === "gather_efficiency")
                   .sort((a, b) => b.value - a.value)
                   .slice(0, 10)
-                  .map((eff, i) => (
-                    <div
-                      className="flex items-center"
-                      key={`gather-efficiency-${i}`}
+                  .map(({ Dino, value, rank }, i) => (
+                    <ListItem
+                      size="small"
+                      disableRipple
+                      icon={<img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${Dino.image}`}
+                        className="h-8 w-8 rounded-full bg-zinc-500 p-1"
+                      />}
+                      secondaryActionProps={{
+                        className: 'ml-auto ',
+                      }}
+                      secondaryAction={<span
+                        className="float-right text-sm"
+                        title={value.toString()}
+                      >
+                        #{rank}
+                      </span>}
                     >
-                      <Link
-                        to={routes.dino({ id: eff.Dino.id })}
-                        className="mr-2 w-40 text-sm"
-                      >
-                        {eff.Dino.name}
-                      </Link>
-
-                      <div
-                        className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-stone-300"
-                        title={eff.value.toString()}
-                      >
-                        {Array.from(Array(5)).map((_, j) => (
-                          <div
-                            key={`dinostat-${i}-${j}`}
-                            className={clsx(
-                              `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
-                              {
-                                "bg-transparent ": Math.round(eff.value) < i,
-                                "[&:nth-child(1)]:bg-red-500":
-                                  j === 0 && Math.round(eff.value) >= j + 1,
-                                "[&:nth-child(2)]:bg-orange-500":
-                                  j === 1 && Math.round(eff.value) >= j + 1,
-                                "[&:nth-child(3)]:bg-yellow-500":
-                                  j === 2 && Math.round(eff.value) >= j + 1,
-                                "[&:nth-child(4)]:bg-lime-500":
-                                  j === 3 && Math.round(eff.value) >= j + 1,
-                                "[&:nth-child(5)]:bg-green-500":
-                                  j === 4 && Math.round(eff.value) >= j + 1,
-                              }
-                            )}
-                          ></div>
-                        ))}
+                      <div className="flex-auto min-w-0 my-0.5">
+                        <span>{Dino.name}</span>
+                        <div
+                          className="flex h-1.5 w-32 flex-row divide-x divide-black rounded-full bg-stone-300"
+                          title={value.toString()}
+                        >
+                          {Array.from(Array(5)).map((_, j) => {
+                            return (
+                              <div
+                                key={`dinostat-${i}-${j}`}
+                                // style={{
+                                //   backgroundColor: Math.round(value) < i ? 'transparent' : getHexCodeFromPercentage((value / 5) * 100)
+                                // }}
+                                className={clsx(
+                                  `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
+                                  {
+                                    "bg-transparent": Math.round(value) < i,
+                                    "[&:nth-child(1)]:bg-red-500":
+                                      j === 0 && Math.round(value) >= j + 1,
+                                    "[&:nth-child(2)]:bg-orange-500":
+                                      j === 1 && Math.round(value) >= j + 1,
+                                    "[&:nth-child(3)]:bg-yellow-500":
+                                      j === 2 && Math.round(value) >= j + 1,
+                                    "[&:nth-child(4)]:bg-lime-500":
+                                      j === 3 && Math.round(value) >= j + 1,
+                                    "[&:nth-child(5)]:bg-green-500":
+                                      j === 4 && Math.round(value) >= j + 1,
+                                  }
+                                )}
+                              />
+                            )
+                          })}
+                        </div>
                       </div>
-                      <p
-                        className="ml-2 w-40 text-sm"
-                        title={eff.value.toString()}
-                      >
-                        #{eff.rank}
-                      </p>
-                    </div>
+                    </ListItem>
                   ))}
-              </div>
+              </List>
             </section>
           )}
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-stone-300 p-4 ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
               <p className="my-1 text-lg">Weight Reduction</p>
               <div className="flex flex-col space-y-1">
