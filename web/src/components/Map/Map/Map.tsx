@@ -280,7 +280,7 @@ const Map = ({ map }: Props) => {
         items: value,
         value: key.toString(),
         color:
-          value[0].__typename == "MapNote" ||
+          value[0].__typename == "MapResource" ||
             value.every((f) => f.item_id == null)
             ? categories[key]?.color
             : value[0].Item.color,
@@ -392,6 +392,7 @@ const Map = ({ map }: Props) => {
                       let note = (mapData?.MapResource.filter(r => r.type === 'note')).find(
                         (j) => j.note_index === b
                       );
+
                       if (note) {
                         return {
                           lat: note?.latitude,
@@ -405,7 +406,7 @@ const Map = ({ map }: Props) => {
                       };
                     }
                   })
-                  .filter((c) => c.lat !== -1 && c.lon !== -1),
+                  ?.filter((c) => c?.lat !== -1 && c?.lon !== -1),
               }}
             />
             <div className="flex flex-col">

@@ -19,7 +19,6 @@ export const schema = gql`
     LootcrateMap: [LootcrateMap]!
     Map: Map
     other_Map: [Map]!
-    MapNote: [MapNote]!
     MapRegion: [MapRegion]!
     MapResource: [MapResource]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
@@ -66,8 +65,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createMap(input: CreateMapInput!): Map! @requireAuth
-    updateMap(id: BigInt!, input: UpdateMapInput!): Map! @requireAuth
-    deleteMap(id: BigInt!): Map! @requireAuth
+    createMap(input: CreateMapInput!): Map!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
+    updateMap(id: BigInt!, input: UpdateMapInput!): Map!
+      @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteMap(id: BigInt!): Map!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
-`
+`;

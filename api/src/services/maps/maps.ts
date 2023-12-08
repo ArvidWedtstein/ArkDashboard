@@ -48,9 +48,6 @@ export const Map: MapRelationResolvers = {
   other_Map: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).other_Map()
   },
-  MapNote: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).MapNote()
-  },
   MapRegion: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).MapRegion()
   },

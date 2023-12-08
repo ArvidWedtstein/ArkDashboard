@@ -158,6 +158,7 @@ type SelectProps<
   label?: string;
   name?: string;
   className?: string;
+
   btnClassName?: string;
   // defaultValue?: number | string; //LookupValue<Value, Multiple, DisableClearable>;
   defaultValue?: number | string | string[]; //LookupValue<Value, Multiple, DisableClearable>;
@@ -215,6 +216,7 @@ type SelectProps<
   color?: "primary" | "secondary" | "success" | "warning" | "error";
   variant?: 'filled' | 'outlined' | 'standard'
   valueKey?: keyof Value;
+  SuffixProps?: Partial<HTMLAttributes<HTMLFieldSetElement>>;
   InputProps?: {
     style?: CSSProperties;
   };
@@ -320,6 +322,7 @@ export const Lookup = <
     filterSelectedOptions = false,
     limitTags = -1,
     InputProps,
+    SuffixProps,
     getOptionDisabled,
     filterOptions = createFilterOptions<Value>(),
     groupBy,
@@ -1681,7 +1684,7 @@ export const Lookup = <
           {...InputProps}
           renderSuffix={(state) => (
             variant === 'outlined' ? (
-              <fieldset aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`)}>
+              <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, SuffixProps?.className)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
                   "max-w-full": state.focused || state.filled,
                   "max-w-[0.01px]": !state.focused && !state.filled

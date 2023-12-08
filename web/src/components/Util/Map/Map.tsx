@@ -7,6 +7,8 @@ import {
 } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { Lookup } from "../Lookup/Lookup";
+import Button from "../Button/Button";
+import clsx from "clsx";
 
 const MAPQUERY = gql`
   query FindMapsForMapComp {
@@ -32,9 +34,8 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${
-      (size.height / 100) * coordinate.lon + size.width / 100
-    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
+      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -115,10 +116,10 @@ const Map = ({
     return !subMap || !coords
       ? ""
       : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(
-          coords[1].lon
-        )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
-          coords[1].lat
-        )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
+        coords[1].lon
+      )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
+        coords[1].lat
+      )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
   };
 
   useLayoutEffect(() => {
@@ -259,42 +260,53 @@ const Map = ({
   };
 
   return (
-    <div className={"relative flex flex-col " + className}>
-      <div className="rw-button-group m-0 w-full -space-x-0.5" role="menubar">
-        <button
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+    <div className={clsx("relative flex flex-col max-w-fit", className)}>
+      <div className="flex flex-row m-0 max-w-[500px]" role="menubar">
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
           onClick={() => handleZoomButton("in")}
           disabled={zoom >= 5 || !interactive}
+          className="rounded-r-none first:!rounded-bl-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
-            className="rw-button-icon"
+            className="fill-current w-4"
           >
             <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
           </svg>
           <span className="sr-only">Zoom In</span>
-        </button>
-        <button
-          className="rw-button rw-button-small rw-button-gray !border-l-transparent first:!rounded-bl-none last:!rounded-br-none"
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
           onClick={() => handleZoomButton("out")}
           disabled={zoom == 1 || !interactive}
+          className="rounded-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
-            className="rw-button-icon"
+            className="fill-current w-4"
           >
             <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
           </svg>
           <span className="sr-only">Zoom Out</span>
-        </button>
+        </Button>
+
         <Lookup
           margin="none"
           disableClearable
-          className="flex-grow"
-          btnClassName="!rounded-none"
           size="small"
+          SuffixProps={{
+            style: {
+              borderRadius: '0',
+              marginRight: '-0.5px'
+            }
+          }}
           value={data?.maps.find((m) => m.id === map)}
           disabled={disable_map}
           isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -319,7 +331,6 @@ const Map = ({
             <Lookup
               margin="none"
               disableClearable
-              btnClassName="!rounded-none"
               size="small"
               defaultValue={subMap}
               disabled={disable_sub_map}
@@ -329,6 +340,11 @@ const Map = ({
                 data.maps?.find((m) => m.id === map || m.id === map_id)
                   .other_Map as { id: number; name: string }[]
               }
+              SuffixProps={{
+                style: {
+                  borderRadius: '0'
+                }
+              }}
               onSelect={(e) => {
                 if (!e) return;
                 onSubMapChange?.(parseInt(e.id.toString()));
@@ -339,7 +355,11 @@ const Map = ({
         <Lookup
           margin="none"
           disableClearable
-          btnClassName="!rounded-none"
+          SuffixProps={{
+            style: {
+              borderRadius: '0',
+            }
+          }}
           size="small"
           value={[
             { label: "Drawn", value: "img" },
@@ -357,15 +377,18 @@ const Map = ({
             setMapType(e.value.toString() as "img" | "topographic_img");
           }}
         />
-        <button
-          className="rw-button rw-button-small rw-button-red !ml-0 first:!rounded-bl-none last:!rounded-br-none"
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
           onClick={() => {
             reset();
           }}
+          className="rounded-l-none last:!rounded-br-none"
           disabled={!interactive}
         >
           Reset
-        </button>
+        </Button>
       </div>
 
       <svg
@@ -373,7 +396,7 @@ const Map = ({
         height={size.height}
         width={size.width}
         tabIndex={0}
-        className={"relative"}
+        className={"relative w-fit"}
         cursor={interactive ? (isDragging ? "grabbing" : "grab") : "default"}
         viewBox={`0 0 ${size.width} ${size.height}`}
         onKeyUp={handleKeyUp}
@@ -386,15 +409,14 @@ const Map = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${
-              data?.maps?.find(
-                (m) =>
-                  m.id ===
-                  (data.maps.find((m) => m.id === map)?.other_Map.length > 0
-                    ? subMap ?? 16
-                    : map)
-              )[mapType] || ""
-            }`}
+            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find(
+              (m) =>
+                m.id ===
+                (data.maps.find((m) => m.id === map)?.other_Map.length > 0
+                  ? subMap ?? 16
+                  : map)
+            )[mapType] || ""
+              }`}
             height={size.height}
             width={size.width}
             ref={imgRef}
@@ -464,20 +486,20 @@ const Map = ({
                         p.lat,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       x={posToMap(
                         p.lon,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       ref={imgRef}
@@ -511,20 +533,20 @@ const Map = ({
                         p.lat,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       cx={posToMap(
                         p.lon,
                         mapType == "topographic_img"
                           ? JSON.parse(
-                              data?.maps?.find(
-                                (m) => m.id === (submap_id ? subMap : map)
-                              )?.boundaries
-                            )
+                            data?.maps?.find(
+                              (m) => m.id === (submap_id ? subMap : map)
+                            )?.boundaries
+                          )
                           : null
                       )}
                       // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}

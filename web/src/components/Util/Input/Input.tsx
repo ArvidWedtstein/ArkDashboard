@@ -1339,7 +1339,6 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     InputMore.label = label;
   }
 
-
   const borders = {
     primary: `border-blue-400`,
     secondary: `border-zinc-500`,
@@ -1355,103 +1354,12 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const helperTextId = helperText && id ? `${id}-helper-text` : undefined;
   const inputLabelId = label && id ? `${id}-label` : undefined;
 
-  // TODO: fix error styles
-  const InputComp = (field?: ControllerRenderProps<FieldValues, string>, fieldState?: ControllerFieldState) => {
-    return (
-      <InputBase
-        label={label}
-        aria-describedby={helperTextId}
-        autoComplete={autoComplete}
-        autoFocus={autoFocus}
-        defaultValue={defaultValue}
-        fullWidth={fullWidth || false}
-        multiline={multiline}
-        name={name}
-        rows={rows}
-        maxRows={maxRows}
-        minRows={minRows}
-        type={type}
-        value={value || field?.value}
-        id={id}
-        ref={field ? field.ref : null}
-        inputRef={field ? field.ref : inputRef}
-        onBlur={(e) => {
-          onBlur?.(e);
-          field?.onBlur();
-        }}
-        onChange={(e) => {
-          onChange?.(e);
-          field?.onChange(e);
-        }}
-        onFocus={onFocus}
-        placeholder={placeholder}
-        inputProps={inputProps}
-        {...InputProps}
-        renderSuffix={(state) =>
-          variant === "outlined" ? (
-            <fieldset
-              {...SuffixProps}
-              aria-hidden
-              className={clsx(
-                `absolute border text-left transition-colors duration-75 ease-in ${borders[
-                disabled || state.disabled
-                  ? "disabled"
-                  : error || state.error || Boolean(fieldState?.error) || fieldState?.invalid
-                    ? 'error'
-                    : state.focused
-                      ? color
-                      : "DEFAULTNOFOCUS"
-                ]
-                } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
-                {
-                  "border-2": state.focused,
-                },
-                SuffixProps?.className
-              )}
-            >
-              <legend
-                className={clsx(
-                  "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
-                  {
-                    "max-w-full":
-                      state.focused ||
-                      state.filled ||
-                      props?.InputLabelProps?.shrink ||
-                      type === "date" ||
-                      type === "datetime" || props.InputProps?.startAdornment,
-                    "max-w-[0.01px]":
-                      !state.focused &&
-                      !state.filled &&
-                      !props?.InputLabelProps?.shrink &&
-                      !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
-                  }
-                )}
-              >
-                {label && label !== "" && (
-                  <span className={"visible inline-block px-[5px] opacity-0"}>
-                    {state.required ? (
-                      <React.Fragment>
-                        {label}
-                        &thinsp;{"*"}
-                      </React.Fragment>
-                    ) : (
-                      label
-                    )}
-                  </span>
-                )}
-              </legend>
-            </fieldset>
-          ) : null
-        }
-      />
-    );
-  };
   return (
     <>
       {name ? (
         <Controller
           name={name}
-          defaultValue={defaultValue}
+          defaultValue={defaultValue || value}
           rules={validation}
           render={({ field, fieldState, formState }) => (
             <FormControl
@@ -1608,7 +1516,85 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
             </InputLabel>
           )}
 
-          {InputComp()}
+          <InputBase
+            label={label}
+            aria-describedby={helperTextId}
+            autoComplete={autoComplete}
+            autoFocus={autoFocus}
+            defaultValue={defaultValue}
+            fullWidth={fullWidth || false}
+            multiline={multiline}
+            name={name}
+            rows={rows}
+            maxRows={maxRows}
+            minRows={minRows}
+            type={type}
+            value={value}
+            id={id}
+            inputRef={inputRef}
+            onBlur={onBlur}
+            onChange={onChange}
+            onFocus={onFocus}
+            placeholder={placeholder}
+            inputProps={inputProps}
+            {...InputProps}
+            renderSuffix={(state) =>
+              variant === "outlined" ? (
+                <fieldset
+                  {...SuffixProps}
+                  aria-hidden
+                  className={clsx(
+                    `absolute border text-left transition-colors duration-75 ease-in ${borders[
+                    disabled || state.disabled
+                      ? "disabled"
+                      : error || state.error
+                        ? 'error'
+                        : state.focused
+                          ? color
+                          : "DEFAULTNOFOCUS"
+                    ]
+                    } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
+                    {
+                      "border-2": state.focused,
+                    },
+                    SuffixProps?.className
+                  )}
+                >
+                  <legend
+                    className={clsx(
+                      "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
+                      {
+                        "max-w-full":
+                          state.focused ||
+                          state.filled ||
+                          props?.InputLabelProps?.shrink ||
+                          type === "date" ||
+                          type === "datetime" || props.InputProps?.startAdornment,
+                        "max-w-[0.01px]":
+                          !state.focused &&
+                          !state.filled &&
+                          !props?.InputLabelProps?.shrink &&
+                          !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
+                      }
+                    )}
+                  >
+                    {label && label !== "" && (
+                      <span className={"visible inline-block px-[5px] opacity-0"}>
+                        {state.required ? (
+                          <React.Fragment>
+                            {label}
+                            &thinsp;{"*"}
+                          </React.Fragment>
+                        ) : (
+                          label
+                        )}
+                      </span>
+                    )}
+                  </legend>
+                </fieldset>
+              ) : null
+            }
+          />
 
           {helperText && (
             <p

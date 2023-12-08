@@ -624,19 +624,18 @@ const DinoForm = (props: DinoFormProps) => {
               defaultChecked={props.dino?.tamable}
             />
 
-            {/* <Switch
-              name="disable_ko"
-              onLabel="Disable KO"
-              defaultChecked={props.dino?.disable_ko}
+            <Lookup
+              getOptionLabel={(opt) => opt.name}
+              isOptionEqualToValue={(opt, val) => opt.value === val.value}
+              options={[
+                { name: 'Knockout', value: 'KO' },
+                { name: 'Non Violent', value: 'NV' },
+              ]}
+              multiple
+              label="Taming Method"
+              name="taming_method"
+              defaultValue={props.dino?.taming_method}
             />
-            <p className="rw-helper-text">Can this dino be KO'd?</p> */}
-            {/* TODO: add taming method instead */}
-            {/* <Switch
-              name="violent_tame"
-              onLabel="Violent tame"
-              defaultChecked={props.dino?.violent_tame}
-            />
-            <p className="rw-helper-text">Is this dino aggressive?</p> */}
 
             <Input
               label="Torpor Depletion per second"
@@ -651,16 +650,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/* <InputOutlined
-              label="Torpor Depletion per second"
-              min={0}
-              margin="normal"
-              name="tdps"
-              defaultValue={props.dino?.tdps}
-              helperText="How much torpidity this dino looses per second"
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
 
             <Input
               label="Affinity needed"
@@ -675,16 +664,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/* <InputOutlined
-              label="Affinity needed"
-              min={0}
-              margin="normal"
-              name="affinity_needed"
-              defaultValue={props.dino?.affinity_needed}
-              helperText="Base Affinity needed to tame this dino. This will later be multiplied by the affinity increase per level"
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
 
             <Input
               label="Affinity Increase Per Level"
@@ -699,18 +678,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/*
-            <InputOutlined
-              label="Affinity Increase Per Level"
-              min={0}
-              emptyAs={0}
-              margin="normal"
-              name="aff_inc"
-              defaultValue={props.dino?.aff_inc}
-              helperText="Affinity increase (per level).  "
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
 
             {/* TODO: disable if disableFood? */}
 
@@ -727,15 +694,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/* <InputOutlined
-              label="Non violent food affinity multiplier"
-              min={0}
-              margin="normal"
-              name="non_violent_food_affinity_mult"
-              defaultValue={props.dino?.non_violent_food_affinity_mult}
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
 
             <Input
               label="Flee Threshold"
@@ -750,16 +708,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/* <InputOutlined
-              label="Flee Threshold"
-              name="flee_threshold"
-              min={0}
-              margin="normal"
-              defaultValue={props.dino?.flee_threshold}
-              helperText="Chance of this dino fleeing while being tamed"
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
 
             <Input
               label="Base Taming Time"
@@ -777,16 +725,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/* <InputOutlined
-              label="Base Taming Time"
-              name="base_taming_time"
-              min={0}
-              margin="normal"
-              defaultValue={props.dino?.base_taming_time}
-              helperText="Base taming time in seconds"
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
 
             <Input
               label="Taming Interval"
@@ -804,17 +742,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/* <InputOutlined
-              label="Taming Interval"
-              name="taming_interval"
-              min={0}
-              margin="normal"
-              defaultValue={props.dino?.taming_interval}
-              helperText="Taming interval in seconds"
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
-
 
             <Input
               label="Taming Ineffectiveness"
@@ -828,15 +755,6 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               validation={{ valueAsNumber: true }}
             />
-            {/* <InputOutlined
-              label="Taming Ineffectiveness"
-              name="taming_ineffectiveness"
-              min={0}
-              margin="normal"
-              defaultValue={props.dino?.taming_ineffectiveness}
-              type="number"
-              validation={{ valueAsNumber: true }}
-            /> */}
 
             <Input
               label="Hitboxes"
