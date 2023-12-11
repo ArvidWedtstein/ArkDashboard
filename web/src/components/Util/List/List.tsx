@@ -1,4 +1,4 @@
-import { HTMLAttributes, useRef } from "react";
+import { ElementType, HTMLAttributes, useRef } from "react";
 import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
 import clsx from "clsx";
@@ -17,6 +17,9 @@ type ListItemProps = {
   disableRipple?: boolean;
   secondaryAction?: React.ReactNode;
   secondaryActionProps?: React.DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+  to?: string;
+  href?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
 } & React.DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
 export const ListItem = (props: ListItemProps) => {
   const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, children, className, size = "medium", ...other } = props;
@@ -26,27 +29,30 @@ export const ListItem = (props: ListItemProps) => {
     disableRipple,
     rippleRef,
   });
+  const Root: ElementType = props.href || props.to ? "a" : props.onClick ? "button" : 'div';
   return (
     <li
-      className={clsx("relative box-border flex w-full items-center justify-start text-left text-black dark:text-white", className, {
-        "px-4 py-1.5": size === 'small',
-        "py-2 px-4": size === "medium"
-      })}
+      className={clsx("relative box-border flex w-full items-center justify-start text-left text-black dark:text-white", className)}
       {...other}
       {...getRippleHandlers()}
     >
-      {icon && (
-        <div className="inline-flex shrink-0 min-w-[36px]">
-          {icon}
-        </div>
-      )}
-      <div className={clsx("min-w-0 flex-auto", {
-        "my-1": size !== "small"
-      })}>{children}</div>
-      {secondaryAction && (
-        <div {...secondaryActionProps} className={clsx("ml-4", secondaryActionProps?.className)}>{secondaryAction}</div>
-      )}
-      {enableRipple ? <Ripple ref={rippleRef} center={false} /> : null}
+      <Root className={clsx("flex justify-start w-full items-center relative box-border", {
+        "px-4 py-1.5": size === 'small',
+        "py-2 px-4": size === "medium"
+      })} href={props?.to || props?.href} type="button" onClick={(e) => other?.onClick(e)}>
+        {icon && (
+          <div className="inline-flex shrink-0 min-w-[36px]">
+            {icon}
+          </div>
+        )}
+        <div className={clsx("min-w-0 flex-auto", {
+          "my-1": size !== "small"
+        })}>{children}</div>
+        {secondaryAction && (
+          <div {...secondaryActionProps} className={clsx("ml-4", secondaryActionProps?.className)}>{secondaryAction}</div>
+        )}
+        {enableRipple ? <Ripple ref={rippleRef} center={false} /> : null}
+      </Root>
     </li>
   );
 };

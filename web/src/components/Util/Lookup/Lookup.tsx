@@ -595,81 +595,86 @@ export const Lookup = <
       highlightedIndexRef.current = index;
 
       // does the index exist?
-      if (index === -1) {
-        inputRef.current.removeAttribute("aria-activedescendant");
-      } else {
-        inputRef.current.setAttribute(
-          "aria-activedescendant",
-          `data-option-${index}`
-        );
-      }
-
-      if (!listboxRef.current) {
-        return;
-      }
-      let unstable_classNamePrefix = "ArkDashboard";
-      const prev = listboxRef.current.querySelector(
-        `[role="option"].${unstable_classNamePrefix}-focused`
-      );
-      if (prev) {
-        prev.classList.remove(`${unstable_classNamePrefix}-focused`);
-        prev.classList.remove(`dark:bg-white/10`);
-        prev.classList.remove(`bg-black/10`);
-
-        prev.classList.remove(`dark:bg-white/[.12]`);
-        prev.classList.remove(`bg-black/[.12]`);
-      }
-
-      let listboxNode = listboxRef.current;
-      if (listboxRef.current.getAttribute("role") !== "listbox") {
-        listboxNode =
-          listboxRef.current.parentElement.querySelector('[role="listbox"]');
-      }
-
-      if (!listboxNode) {
-        return;
-      }
-
-      if (index === -1) {
-        listboxNode.scrollTop = 0;
-        return;
-      }
-
-      const option = listboxRef.current.querySelector(
-        `[data-option-index="${index}"]`
-      );
-
-      if (!option) {
-        return;
-      }
-
-      option.classList.add(`${unstable_classNamePrefix}-focused`);
-      option.classList.add(`dark:bg-white/10`);
-      option.classList.add(`bg-black/10`);
-      if (reason === "keyboard") {
-        option.classList.add(`dark:bg-white/[.12]`);
-        option.classList.add(`bg-black/[.12]`);
-      }
-
-      if (
-        listboxNode.scrollHeight > listboxNode.clientHeight &&
-        reason !== "mouse" &&
-        reason !== "touch"
-      ) {
-        const element = option;
-
-        const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
-        const elementBottom = element.offsetTop + element.offsetHeight;
-        if (elementBottom > scrollBottom) {
-          listboxNode.scrollTop = elementBottom - listboxNode.clientHeight;
-        } else if (
-          element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0) <
-          listboxNode.scrollTop
-        ) {
-          listboxNode.scrollTop =
-            element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0);
+      try {
+        if (index === -1) {
+          inputRef.current?.removeAttribute("aria-activedescendant");
+        } else {
+          inputRef.current.setAttribute(
+            "aria-activedescendant",
+            `data-option-${index}`
+          );
         }
+
+        if (!listboxRef.current) {
+          return;
+        }
+        let unstable_classNamePrefix = "ArkDashboard";
+        const prev = listboxRef.current.querySelector(
+          `[role="option"].${unstable_classNamePrefix}-focused`
+        );
+        if (prev) {
+          prev.classList.remove(`${unstable_classNamePrefix}-focused`);
+          prev.classList.remove(`dark:bg-white/10`);
+          prev.classList.remove(`bg-black/10`);
+
+          prev.classList.remove(`dark:bg-white/[.12]`);
+          prev.classList.remove(`bg-black/[.12]`);
+        }
+
+        let listboxNode = listboxRef.current;
+        if (listboxRef.current.getAttribute("role") !== "listbox") {
+          listboxNode =
+            listboxRef.current.parentElement.querySelector('[role="listbox"]');
+        }
+
+        if (!listboxNode) {
+          return;
+        }
+
+        if (index === -1) {
+          listboxNode.scrollTop = 0;
+          return;
+        }
+
+        const option = listboxRef.current.querySelector(
+          `[data-option-index="${index}"]`
+        );
+
+        if (!option) {
+          return;
+        }
+
+        option.classList.add(`${unstable_classNamePrefix}-focused`);
+        option.classList.add(`dark:bg-white/10`);
+        option.classList.add(`bg-black/10`);
+        if (reason === "keyboard") {
+          option.classList.add(`dark:bg-white/[.12]`);
+          option.classList.add(`bg-black/[.12]`);
+        }
+
+        if (
+          listboxNode.scrollHeight > listboxNode.clientHeight &&
+          reason !== "mouse" &&
+          reason !== "touch"
+        ) {
+          const element = option;
+
+          const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
+          const elementBottom = element.offsetTop + element.offsetHeight;
+          if (elementBottom > scrollBottom) {
+            listboxNode.scrollTop = elementBottom - listboxNode.clientHeight;
+          } else if (
+            element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0) <
+            listboxNode.scrollTop
+          ) {
+            listboxNode.scrollTop =
+              element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0);
+          }
+        }
+      } catch (error) {
+        console.error(error)
       }
+
     }
   );
 
@@ -1712,7 +1717,7 @@ export const Lookup = <
           inputProps={{
             role: "combobox",
             spellCheck: false,
-            "aria-activedescendant": popupOpen ? "" : null,
+            "aria-activedescendant": popupOpen ? `${id}-listbox` : null,
             "aria-autocomplete": autoComplete ? 'both' : 'list',
             "aria-controls": listboxAvailable ? `${id}-listbox` : undefined,
             "aria-expanded": listboxAvailable,

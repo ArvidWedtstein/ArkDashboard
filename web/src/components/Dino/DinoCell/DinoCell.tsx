@@ -17,6 +17,7 @@ export const QUERY = gql`
       can_destroy
       egg_min
       egg_max
+      icon
       torpor_depetion_per_second
       maturation_time
       torpor_immune
@@ -32,6 +33,7 @@ export const QUERY = gql`
       disable_mult
       non_violent_food_rate_mult
       taming_interval
+      temperament
       tamable
       base_taming_time
       variants

@@ -307,7 +307,9 @@ const Map = ({
               marginRight: '-0.5px'
             }
           }}
-          value={data?.maps.find((m) => m.id === map)}
+          defaultValue={map}
+          loading={loading}
+          // value={data?.maps?.find((m) => m.id === map) || undefined}
           disabled={disable_map}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(option) => option.name}
@@ -316,7 +318,7 @@ const Map = ({
               (m) =>
                 m.parent_map_id == null &&
                 (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
-            ) as { id: number; name: string }[]) ?? []
+            ) as { id: number; name: string }[]) || []
           }
           onSelect={(e) => {
             if (!e) return;
@@ -332,7 +334,9 @@ const Map = ({
               margin="none"
               disableClearable
               size="small"
-              defaultValue={subMap}
+              loading={loading}
+              value={(data.maps?.find((m) => m.id === map || m.id === map_id)
+                .other_Map as { id: number; name: string }[]).find((s) => s?.id === subMap)}
               disabled={disable_sub_map}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.name}
@@ -355,6 +359,7 @@ const Map = ({
         <Lookup
           margin="none"
           disableClearable
+          loading={loading}
           SuffixProps={{
             style: {
               borderRadius: '0',

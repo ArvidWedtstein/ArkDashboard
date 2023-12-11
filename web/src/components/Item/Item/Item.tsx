@@ -2,11 +2,11 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useState } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import { useAuth } from "src/auth";
 import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
-import { Card, CardHeader } from "src/components/Util/Card/Card";
+import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import List, { ListItem } from "src/components/Util/List/List";
 import Map from "src/components/Util/Map/Map";
 
@@ -15,6 +15,7 @@ import { getHexCodeFromPercentage, getWordType } from "src/lib/formatters";
 import type {
   DeleteItemMutationVariables,
   FindItemById,
+  dinostattype,
   permission,
 } from "types/graphql";
 
@@ -111,46 +112,145 @@ const Item = ({ item }: Props) => {
     },
   };
 
+  type StatSectionProps = {
+    stat_name: dinostattype;
+    format?: (value: number | null, rank: number | null) => string | ReactNode
+    formatTitle?: (title: string) => string | ReactNode
+    formatValue?: (value: number | null) => number;
+  }
+  const StatSection = ({ stat_name, format = (v) => v, formatValue = (v) => Math.round(v), formatTitle = (t) => t }: StatSectionProps) => {
+    if (!item.DinoStat) {
+      return null;
+    }
+
+    const statEntries = item.DinoStat.filter((g) => g.type === stat_name);
+    const hasStat = statEntries.length > 0;
+
+    if (!hasStat) {
+      return null;
+    }
+
+    const sortedStatEntries = statEntries
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 10);
+
+    return (
+      <Card>
+        <CardHeader
+          title={formatTitle(stat_name.replaceAll('_', ' '))}
+          titleProps={{ className: "text-lg capitalize" }}
+        />
+        <CardContent className="pt-0">
+          <List className="w-fit">
+            {sortedStatEntries.map(({ Dino, value, rank }, i) => (
+              <ListItem
+                key={`${stat_name}-${Dino.id}-${i}`}
+                size="small"
+                to={routes.dino({ id: Dino.id })}
+                icon={<img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${Dino.image}`}
+                  className="h-8 w-8 rounded-full bg-zinc-500 p-1"
+                />}
+                secondaryActionProps={{
+                  className: 'ml-auto ',
+                }}
+                secondaryAction={
+                  <span className="inline-flex items-center space-x-1">
+                    <span
+                      className="float-right text-sm"
+                      title={value?.toString()}
+                    >
+                      {format(value, rank)}
+                    </span>
+                  </span>
+                }
+              >
+                <div className="flex-auto min-w-0 my-0.5">
+                  <span>{Dino.name}</span>
+                  {value && (
+                    <div
+                      className="flex h-1.5 w-32 flex-row divide-x divide-black rounded-full bg-stone-300"
+                      title={value.toString()}
+                    >
+                      {Array.from(Array(5)).map((_, j) => {
+                        return (
+                          <div
+                            key={`dinostat-${i}-${j}`}
+                            className={clsx(
+                              `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
+                              {
+                                "bg-transparent": formatValue(value) < i,
+                                "[&:nth-child(1)]:bg-red-500":
+                                  j === 0 && formatValue(value) >= j + 1,
+                                "[&:nth-child(2)]:bg-orange-500":
+                                  j === 1 && formatValue(value) >= j + 1,
+                                "[&:nth-child(3)]:bg-yellow-500":
+                                  j === 2 && formatValue(value) >= j + 1,
+                                "[&:nth-child(4)]:bg-lime-500":
+                                  j === 3 && formatValue(value) >= j + 1,
+                                "[&:nth-child(5)]:bg-green-500":
+                                  j === 4 && formatValue(value) >= j + 1,
+                              }
+                            )}
+                          />
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              </ListItem>
+            ))}
+          </List>
+        </CardContent>
+      </Card>
+    )
+  }
+
   const [activeTab, setActiveTab] = useState(0);
 
   return (
     <article className="rw-segment flex flex-row gap-3">
-      <div className="grid w-full grid-cols-2 gap-3 text-gray-700 dark:text-white">
-        <section className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
-          <div className="w-full">
-            <div className="inline-flex">
-              <Link
-                className="rw-button rw-button-small rw-button-gray mb-2 h-fit"
-                to={routes.items()}
-              >
-                <span className="sr-only">Back</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  className="rw-button-icon"
-                >
-                  <path d="M447.1 256C447.1 264.8 440.8 272 432 272H68.17l135.7 149.3c5.938 6.531 5.453 16.66-1.078 22.59C199.7 446.6 195.8 448 192 448c-4.344 0-8.688-1.75-11.84-5.25l-160-176c-5.547-6.094-5.547-15.41 0-21.5l160-176c5.969-6.562 16.09-7 22.61-1.094c6.531 5.938 7.016 16.06 1.078 22.59L68.17 240H432C440.8 240 447.1 247.2 447.1 256z" />
-                </svg>
-              </Link>
-              <img
-                className="w-auto max-w-6xl"
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-              />
-            </div>
-            <h4 className="my-1 text-2xl font-semibold">{item.name}</h4>
-            <p className="text-sm italic">
-              (
-              {getWordType(
-                item.name.split(" ")[item.name.split(" ").length - 1]
-              )}
-              )
-            </p>
-            <p className="mt-2">{item.description}</p>
-          </div>
+      <div className="grid w-full grid-cols-2 md:grid-cols-3 gap-3 text-gray-700 dark:text-white">
 
+        <Card className="w-full col-span-full grid grid-flow-col gap-3 p-4" variant="standard">
+          <div className="w-full">
+            <Button
+              size="small"
+              variant="outlined"
+              color="DEFAULT"
+              to={routes.items()}
+            >
+              <span className="sr-only">Back</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="w-4 fill-current"
+              >
+                <path d="M447.1 256C447.1 264.8 440.8 272 432 272H68.17l135.7 149.3c5.938 6.531 5.453 16.66-1.078 22.59C199.7 446.6 195.8 448 192 448c-4.344 0-8.688-1.75-11.84-5.25l-160-176c-5.547-6.094-5.547-15.41 0-21.5l160-176c5.969-6.562 16.09-7 22.61-1.094c6.531 5.938 7.016 16.06 1.078 22.59L68.17 240H432C440.8 240 447.1 247.2 447.1 256z" />
+              </svg>
+            </Button>
+            <CardMedia
+              image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+            />
+            <CardHeader
+              title={item.name}
+              titleProps={{
+                className: 'text-2xl font-semibold'
+              }}
+              subheader={(getWordType(
+                item.name.split(" ")[item.name.split(" ").length - 1]
+              ))}
+              subheaderProps={{
+                className: 'italic'
+              }}
+            />
+            <CardContent>
+              {item.description}
+            </CardContent>
+          </div>
           <div className="grid w-fit grid-cols-3 gap-2 justify-self-end">
             <Card
-              variant="outlined"
+              variant="gradient"
               className="bg-zinc-200 shadow-md dark:bg-zinc-700"
             >
               <CardHeader
@@ -162,7 +262,7 @@ const Item = ({ item }: Props) => {
                 subheaderProps={{ className: "text-xl !font-bold" }}
               />
             </Card>
-            <Card className="bg-zinc-200 shadow-md dark:bg-zinc-700">
+            <Card variant="gradient" className="bg-zinc-200 shadow-md dark:bg-zinc-700">
               <CardHeader
                 title={`Weight`}
                 titleProps={{
@@ -173,21 +273,20 @@ const Item = ({ item }: Props) => {
                   className: "font-montserrat text-xl !font-bold uppercase",
                 }}
                 action={
-                  <div className="relative w-auto flex-initial">
+                  <div className="relative w-auto ml-4 flex-initial">
                     <div
                       className={`relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-zinc-500 p-3 text-center text-white shadow-lg`}
                     >
-                      <div className="h-4 w-4 text-current">
-                        <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp`}
-                        />
-                      </div>
+                      <img
+                        className="w-4"
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp`}
+                      />
                     </div>
                   </div>
                 }
               />
             </Card>
-            <Card className="bg-zinc-200 shadow-md dark:bg-zinc-700">
+            <Card variant="gradient" className="bg-zinc-200 shadow-md dark:bg-zinc-700">
               <CardHeader
                 title={`Type`}
                 titleProps={{
@@ -197,7 +296,7 @@ const Item = ({ item }: Props) => {
                 subheaderProps={{ className: "text-xl !font-bold" }}
               />
             </Card>
-            <Card className="bg-zinc-200 shadow-md dark:bg-zinc-700">
+            <Card variant="gradient" className="bg-zinc-200 shadow-md dark:bg-zinc-700">
               <CardHeader
                 title={`Category`}
                 titleProps={{
@@ -207,236 +306,115 @@ const Item = ({ item }: Props) => {
                 subheaderProps={{ className: "text-xl !font-bold" }}
               />
             </Card>
-          </div>
 
-          {item.stats &&
-            (item?.stats as { id: number; value: number }[]).filter(
-              (f) => f.id != 1
-            ).length > 0 && (
-              <div className="flex flex-col">
-                <div className="py-4 px-8 text-sm font-normal text-gray-700 dark:text-white">
-                  <div className="mb-4 inline-block">
-                    {(item?.stats as { id: number; value: number }[])
-                      .filter((f) => f.id != 1)
-                      .map(({ id, value }, i) => {
-                        if (!ItemStats[id]) return null;
-                        return (
-                          <p key={`${id}${value}${i}`}>
-                            <strong>{ItemStats[id].name}</strong>: {value}
-                          </p>
-                        );
-                      })}
-                  </div>
-                </div>
-              </div>
-            )}
-        </section>
-
-        {item.DinoStat &&
-          item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-          0 && (
-            <section className="rounded-lg bg-gray-200 p-4 ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
-              <p className="my-1 text-lg">Gather Efficiency</p>
-              <List className="w-fit">
-                {item.DinoStat.filter((g) => g.type === "gather_efficiency")
-                  .sort((a, b) => b.value - a.value)
-                  .slice(0, 10)
-                  .map(({ Dino, value, rank }, i) => (
-                    <ListItem
-                      size="small"
-                      disableRipple
-                      icon={<img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${Dino.image}`}
-                        className="h-8 w-8 rounded-full bg-zinc-500 p-1"
-                      />}
-                      secondaryActionProps={{
-                        className: 'ml-auto ',
+            {item?.stats &&
+              (item?.stats as { id: number; value: number | Record<string, unknown>[] }[] | null)?.length > 0 && (item?.stats as { id: number; value: number | Record<string, unknown>[] }[]).map(({ id, value }, i) => {
+                if (!ItemStats[id]) return null;
+                return (
+                  <Card variant="gradient" key={`stat-${i}`} className="bg-zinc-200 shadow-md dark:bg-zinc-700">
+                    <CardHeader
+                      title={ItemStats[id]?.name}
+                      titleProps={{
+                        className: "!text-xs !font-semibold uppercase font-poppins",
                       }}
-                      secondaryAction={<span
-                        className="float-right text-sm"
-                        title={value.toString()}
-                      >
-                        #{rank}
-                      </span>}
-                    >
-                      <div className="flex-auto min-w-0 my-0.5">
-                        <span>{Dino.name}</span>
-                        <div
-                          className="flex h-1.5 w-32 flex-row divide-x divide-black rounded-full bg-stone-300"
-                          title={value.toString()}
-                        >
-                          {Array.from(Array(5)).map((_, j) => {
-                            return (
-                              <div
-                                key={`dinostat-${i}-${j}`}
-                                // style={{
-                                //   backgroundColor: Math.round(value) < i ? 'transparent' : getHexCodeFromPercentage((value / 5) * 100)
-                                // }}
-                                className={clsx(
-                                  `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
-                                  {
-                                    "bg-transparent": Math.round(value) < i,
-                                    "[&:nth-child(1)]:bg-red-500":
-                                      j === 0 && Math.round(value) >= j + 1,
-                                    "[&:nth-child(2)]:bg-orange-500":
-                                      j === 1 && Math.round(value) >= j + 1,
-                                    "[&:nth-child(3)]:bg-yellow-500":
-                                      j === 2 && Math.round(value) >= j + 1,
-                                    "[&:nth-child(4)]:bg-lime-500":
-                                      j === 3 && Math.round(value) >= j + 1,
-                                    "[&:nth-child(5)]:bg-green-500":
-                                      j === 4 && Math.round(value) >= j + 1,
-                                  }
-                                )}
-                              />
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </ListItem>
-                  ))}
-              </List>
-            </section>
-          )}
+                      subheader={`${typeof value !== 'string' && typeof value !== 'number' ? `${value.length} Items` : value}`}
+                      subheaderProps={{ className: "text-xl !font-bold" }}
+                    />
+                  </Card>
+                )
+              })
+            }
+          </div>
+        </Card>
 
-        {item.DinoStat &&
-          item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-          0 && (
-            <section className="rounded-lg bg-stone-300 p-4 ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
-              <p className="my-1 text-lg">Weight Reduction</p>
-              <div className="flex flex-col space-y-1">
-                {item.DinoStat.filter((g) => g.type === "weight_reduction")
-                  .sort((a, b) => b.value - a.value)
-                  .slice(0, 10)
-                  .map((wr, i) => (
-                    <div
-                      className="flex items-center space-x-1"
-                      key={`weight-reduction-${i}`}
-                    >
-                      <img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${wr.Dino.image}`}
-                        className="h-8 w-8 rounded-full bg-zinc-500 p-1"
-                      />
-                      <Link
-                        to={routes.dino({ id: wr.Dino.id })}
-                        className="w-fit text-sm"
-                      >
-                        {wr.Dino.name}
-                      </Link>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                        className="inline-block w-4 fill-current"
-                      >
-                        <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
-                      </svg>
-                      <p className="text-pea-500 mx-1">{wr.value}%</p>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 320 512"
-                        className="text-pea-500 inline-block w-4 fill-current"
-                      >
-                        <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
-                      </svg>
-                    </div>
-                  ))}
-              </div>
-            </section>
-          )}
+        <StatSection stat_name="gather_efficiency" format={(_, r) => `#${r}`} />
 
-        {item.DinoStat &&
-          item.DinoStat.filter((g) => g.type === "drops").length > 0 && (
-            <section className="rounded-lg">
-              <div className="w-fit rounded-lg bg-stone-300 p-4 shadow-lg ring-1 ring-inset ring-zinc-500 dark:bg-zinc-600">
-                <p className="my-1 select-none text-lg">
-                  Dinos that drop {item.name}
-                </p>
-                <div className="flex flex-col">
-                  {item.DinoStat.filter((g) => g.type === "drops")
-                    .sort((a, b) => b.value - a.value)
-                    .slice(0, 10)
-                    .map(({ Dino: { id, name, image } }, i) => (
-                      <Link
-                        key={`drops-${i}`}
-                        to={routes.dino({ id: id })}
-                        className="mr-2 w-20 text-sm"
-                        title={name}
-                      >
-                        <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
-                          className="h-12 w-12 rounded-full bg-zinc-500 p-1"
-                        />
-                        {name}
-                      </Link>
-                    ))}
-                </div>
-              </div>
-            </section>
-          )}
+        <StatSection stat_name="weight_reduction" format={(v) => (
+          <Fragment>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+              className="inline-block w-4 fill-current"
+            >
+              <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+            </svg>
+            <span>{v}%</span>
+          </Fragment>
+        )} formatValue={(v) => Math.round((v / 10) / 2)} />
+
+        <StatSection stat_name="drops" format={(_, r) => ''} formatTitle={(v) => `Dinos that drop ${item.name}`} />
 
         {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 && (
-          <section className="col-span-2 flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
-            {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
-              (
-                {
-                  id,
-                  Item_ItemRecipe_crafting_station_idToItem,
-                  ItemRecipeItem,
-                  yields,
-                },
-                i
-              ) => (
-                <div
-                  className={clsx(
-                    "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
-                    {
-                      "flex-grow": activeTab === i,
-                      "flex-grow-0": activeTab !== i,
+          <Card className="col-span-full">
+            <CardHeader
+              title="Crafting Recipe"
+            />
+            <CardContent className="relative overflow-hidden flex gap-4 justify-center items-stretch">
+              {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+                (
+                  {
+                    id,
+                    Item_ItemRecipe_crafting_station_idToItem,
+                    ItemRecipeItem,
+                    yields,
+                  },
+                  i
+                ) => (
+                  <div
+                    key={`saddle-item-${i}`}
+                    className={clsx(
+                      "flex h-full flex-row items-center justify-start space-x-4 transition-all duration-500 ease-in-out rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700 overflow-x-hidden",
+                      {
+                        "flex-grow":
+                          activeTab === i,
+                        "flex-shrink":
+                          activeTab !== i,
+                      }
+                    )}
+                    onClick={() =>
+                      setActiveTab(i)
                     }
-                  )}
-                  key={`recipe-${id}`}
-                  // style={{
-                  //   background: 'url("https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712")',
-                  //   backgroundSize: "auto",
-                  //   backgroundRepeat: 'no-repeat',
-                  //   backgroundPosition: 'left',
-                  // }}
-                  onClick={() => setActiveTab(i)}
-                >
-                  <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
-                    <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
+                  >
+                    <div className="flex h-full items-center justify-center transition-colors shrink p-4">
                       <img
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
-                        className="h-16 w-16"
+                        className="w-16"
                       />
                     </div>
-
                     <div
                       className={clsx(
-                        "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
+                        "flex-row items-center gap-2 border-l px-4 transition-all duration-500 ease-in-out flex-1",
                         {
-                          hidden: activeTab !== i,
-                          block: activeTab === i,
+                          "!w-0 max-w-0 hidden opacity-0":
+                            activeTab !== i,
+                          "flex w-full opacity-100": activeTab === i,
                         }
                       )}
                     >
                       <div className="flex flex-row flex-wrap gap-2">
-                        {ItemRecipeItem.map(({ Item, amount }, i) => (
-                          <Button
-                            to={routes.item({ id: Item.id })}
-                            variant="text"
-                            className="animate-fade-in"
-                          >
-                            <img
-                              className="h-10 w-10"
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                              alt={Item.name}
-                            />
-                            <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                              {amount}
-                            </div>
-                          </Button>
-                        ))}
+                        {ItemRecipeItem.map(
+                          ({ Item, amount }, i) => (
+                            <Button
+                              className="aspect-square"
+                              to={routes.item({
+                                id: Item.id,
+                              })}
+                              variant="outlined"
+                              color="DEFAULT"
+                              title={Item.name}
+                              key={`recipe-${Item.id}`}
+                            >
+                              <img
+                                className="h-10 w-10"
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
+                                alt={Item.name}
+                              />
+                              <div className="absolute -bottom-1 right-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                                {amount}
+                              </div>
+                            </Button>
+                          )
+                        )}
                       </div>
 
                       <svg
@@ -449,27 +427,30 @@ const Item = ({ item }: Props) => {
                       </svg>
 
                       <Button
-                        to={routes.item({ id: item.id })}
+                        className="aspect-square"
+                        to={routes.item({
+                          id: item.id,
+                        })}
                         variant="outlined"
                         color="DEFAULT"
-                        className="animate-fade-in aspect-square"
+                        title={item.name}
+                        key={`recipe-${id}`}
                       >
                         <img
-                          className="aspect-square h-10 w-10"
+                          className="h-10 w-10"
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
                           alt={item.name}
                         />
                         <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
                           {yields}
                         </div>
-                        {/* <Badge color="secondary" content={"12"} max={10} /> */}
                       </Button>
                     </div>
                   </div>
-                </div>
-              )
-            )}
-          </section>
+                )
+              )}
+            </CardContent>
+          </Card>
         )}
 
         {item.MapResource && (
@@ -538,7 +519,7 @@ const Item = ({ item }: Props) => {
                         key={`bossdino-${d.Dino.id}`}
                       >
                         <Link
-                          key={`bossdino-${d.Dino.id}`}
+                          // key={`bossdino-${d.Dino.id}`}
                           to={routes.dino({
                             id: d.Dino.id.toString(),
                           })}
