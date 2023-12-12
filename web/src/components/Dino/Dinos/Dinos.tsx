@@ -1,5 +1,5 @@
 import {
-  Link,
+
   navigate,
   parseSearch,
   routes,
@@ -16,7 +16,6 @@ import { Lookup } from "src/components/Util/Lookup/Lookup";
 import {
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardHeader,
   CardMedia,
@@ -245,7 +244,7 @@ const DinosList = ({
               </svg>
               <span className="sr-only">Filters</span>
             </button>
-
+            {/* TODO: replace */}
             <InputOutlined
               fullWidth
               name="search"

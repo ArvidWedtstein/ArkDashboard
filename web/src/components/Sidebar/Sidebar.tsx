@@ -61,6 +61,10 @@ const Icon = (icon: string) => {
       </svg>
     ),
     dinos: (
+      // <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 256" className="fill-current w-6">
+      //   <path d="m185 44-13 6c-4 3-7 8-10 15-1 3-4 8-8 12l-6 6h-7c-12 0-21 3-29 11-6 5-7 8-12 20-2 7-5 12-6 13-4 3-11 0-14-6l-1-9c0-10-2-14-9-14-4 0-7 4-11 11-11 23-2 51 20 63 8 4 17 6 29 6h10l11 11 13 13c4 2 33 2 37 0 5-3 7-11 4-18-3-5-5-7-11-10-4-2-5-3-6-6s-1-4 2-7c11-15 5-38-11-45l-9-3c-5 0-6 0-7 2-2 2-2 2-1 5 1 2 3 3 6 3 18 3 24 22 11 35l-3 4 3 9c3 10 5 12 10 12 4 0 7 3 7 7v3h-28l-10-10-11-12-1-8c0-9-3-13-8-8-1 1-2 3-2 7v6h-9c-11 0-17-2-24-6-14-9-21-31-14-46l2-5v6c3 17 19 26 31 18 4-3 6-7 9-17 3-9 5-13 10-17 6-6 9-7 21-8h11l9-9c7-8 9-10 11-15 3-7 6-11 12-14 3-2 5-2 10-2h15c5 0 5 0 8 3l4 4c0 2 2 2 8 3 12 1 16 6 16 19l-1 10-9 1c-7 0-7 0-11-4-5-4-10-6-16-6-4 0-5 0-7 2v5c2 3 3 3 7 3 5 0 6 0 9 4l7 5c2 1-1 1-11 1h-14l-10 9-9 10 2 6c2 5 3 7 8 10s5 3 5 7c0 6 5 10 9 6l1-7c-1-7-3-11-10-15l-6-3 7-6 6-7h13c14 0 18-1 23-6l6-4 10-9c2-4 1-17-1-24-2-10-13-17-23-17l-4-2c-4-6-13-8-22-7h-18z" />
+      //   <path d="M205 66v5c2 2 5 3 7 0 2-2 2-4 0-6-2-3-5-2-7 1z" />
+      // </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 640 512"
@@ -99,6 +103,7 @@ const Icon = (icon: string) => {
   };
   return icons[icon.toLowerCase()] || null;
 };
+
 
 const Sidebar = memo(({ }) => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -156,6 +161,7 @@ const Sidebar = memo(({ }) => {
           title={"Basespots"}
           activeClassName={`text-white !ring-pea-400 !bg-blue-500`}
           matchSubPaths={true}
+          activeMatchParams={["page"]}
           className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
         >
           {Icon("Basespot")}

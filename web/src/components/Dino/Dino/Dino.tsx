@@ -953,7 +953,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   // https://codepen.io/adamstuartclark/pen/xVgMBY
   return (
     <article className="grid grid-cols-1 gap-3 text-black dark:text-white md:grid-cols-2">
-      <div className="relative w-full col-span-full">
+      {/* <div className="relative w-full col-span-full">
         <div className="parchment [filter:url(#wavy)]" />
         <div className=" flex flex-row gap-10 p-8">
           <div className="relative flex flex-col flex-shrink font-montserrat">
@@ -962,35 +962,35 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon/${dino.icon}`} className="p-6 h-36" />
             </div>
             <div className="relative ring-1 ring-white/50 mx-6 py-6 rounded-b w-40">
-              <div className="absolute w-full h-full inset-0 bg-[#7a6954]/30 rounded !z-[-1] pointer-events-none" /> {/*  shadow-[0px_0px_60px_#7a6954_inset]*/}
-              <ul className="space-y-2 divide-y divide-white/30 text-black align-middle w-fit text-center px-3 !z-10">
-                <li className="">
-                  <p className="">{dino.type}</p>
-                </li>
-                <li className="">test</li>
-                <li className="">test</li>
-                <li className="">test</li>
-                <li className="">test</li>
-              </ul>
-            </div>
+              <div className="absolute w-full h-full inset-0 bg-[#7a6954]/30 rounded !z-[-1] pointer-events-none" />
+      <ul className="space-y-2 divide-y divide-white/30 text-black align-middle w-fit text-center px-3 !z-10">
+        <li className="">
+          <p className="">{dino.type}</p>
+        </li>
+        <li className="">test</li>
+        <li className="">test</li>
+        <li className="">test</li>
+        <li className="">test</li>
+      </ul>
+    </div>
 
-          </div>
-          <div className="flex flex-col justify-start text-[#585045]">
-            <div className="">
-              <img
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
-                alt={dino.name}
-                className="w-auto -scale-x-100 transform"
-                loading="lazy"
-              />
-            </div>
-            <h1 className="text-2xl font-normal font-montserrat my-4">{dino.name}</h1>
-            <p className="first-letter:text-7xl first-letter:pr-1 first-letter:align-text-top first-letter:font-serif first-letter:text-opacity-50 first-letter:float-left first-letter:inline-block first-letter:leading-[1.125] first-line:uppercase first-line:block first-line:font-bold text-xl overflow-auto font-montserrat">
-              {dino.description}
-            </p>
-          </div>
-        </div>
-      </div>
+          </div >
+  <div className="flex flex-col justify-start text-[#585045]">
+    <div className="">
+      <img
+        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
+        alt={dino.name}
+        className="w-auto -scale-x-100 transform"
+        loading="lazy"
+      />
+    </div>
+    <h1 className="text-2xl font-normal font-montserrat my-4">{dino.name}</h1>
+    <p className="first-letter:text-7xl first-letter:pr-1 first-letter:align-text-top first-letter:font-serif first-letter:text-opacity-50 first-letter:float-left first-letter:inline-block first-letter:leading-[1.125] first-line:uppercase first-line:block first-line:font-bold text-xl overflow-auto font-montserrat">
+      {dino.description}
+    </p>
+  </div>
+        </div >
+      </div >
 
 
 
@@ -1251,7 +1251,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             />
           </Card>
         </div>
-      </Card>
+      </Card> */}
 
       <section className="col-span-full grid auto-cols-auto grid-cols-1 md:grid-cols-2">
         <img
@@ -2900,7 +2900,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           Delete
         </Button>
       </ButtonGroup>
-    </article>
+    </article >
   );
 };
 

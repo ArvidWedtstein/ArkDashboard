@@ -5,41 +5,8 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Util/Pagination/Pagination";
+import Button from "src/components/Util/Button/Button";
 
-
-export const QUERY = gql`
-  query FindBasespots($page: Int, $map: Int, $type: String) {
-    basespotPage(page: $page, map: $map, type: $type) {
-      basespots {
-        id
-        name
-        description
-        thumbnail
-        created_at
-        updated_at
-        map_id
-        estimated_for_players
-        type
-        has_air
-        Map {
-          name
-          icon
-        }
-      }
-      count
-    }
-    maps {
-      id
-      name
-      icon
-    }
-  }
-`;
-
-export const beforeQuery = ({ page, map, type }) => {
-  page = parseInt(page) ? parseInt(page, 10) : 1;
-  return { variables: { page, map: parseInt(map), type } };
-};
 // export const QUERY = gql`
 //   query FindBasespots($take: Int, $lastCursor: String) {
 //     basespotPagination(take: $take, lastCursor: $lastCursor) {
@@ -74,6 +41,39 @@ export const beforeQuery = ({ page, map, type }) => {
 //   return { variables: { take: take || 9, lastCursor } };
 // };
 
+export const QUERY = gql`
+  query FindBasespots($page: Int, $map: Int, $type: String) {
+    basespotPage(page: $page, map: $map, type: $type) {
+      basespots {
+        id
+        name
+        description
+        thumbnail
+        created_at
+        updated_at
+        map_id
+        estimated_for_players
+        type
+        has_air
+        Map {
+          name
+          icon
+        }
+      }
+      count
+    }
+    maps {
+      id
+      name
+      icon
+    }
+  }
+`;
+
+export const beforeQuery = ({ page, map, type }) => {
+  page = parseInt(page) ? parseInt(page, 10) : 1;
+  return { variables: { page, map: parseInt(map), type } };
+};
 
 
 export const Loading = () => {
@@ -112,9 +112,12 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {"No basespots yet. "}
-      <Link to={routes.newBasespot()} className="rw-link">
-        {"Create one?"}
-      </Link>
+      <Button
+        variant="text"
+        color="success"
+        to={routes.newBasespot()}
+        size="small"
+      >Create one?</Button>
     </div>
   );
 };
@@ -146,15 +149,11 @@ export const Success = ({
 }: CellSuccessProps<FindBasespots>) => {
   return (
     <>
-      {basespotPage.count > 0 ? (
-        <>
-          <Basespots basespotPage={basespotPage} maps={maps} />
-          <Pagination count={basespotPage.count} route={"basespots"} />
-        </>
-      ) : (
-        <Basespots basespotPage={basespotPage} maps={maps} />
-      )}
+      <Basespots basespotPage={basespotPage} maps={maps} />
+      <Pagination count={basespotPage.count} route={"basespots"} />
       {/* <Basespots basespotPagination={basespotPagination} maps={maps} /> */}
+
+
     </>
   );
 };

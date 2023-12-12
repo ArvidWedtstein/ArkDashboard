@@ -1044,7 +1044,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       error: fcs.error,
       focused: fcs.focused,
       formControl: formControl,
-      fullWidth,
+      fullWidth: fullWidth || formControl.fullWidth,
       multiline,
       size: fcs.size,
       variant: fcs.variant || variant,
@@ -1139,7 +1139,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
         ${inputSize[ownerState.variant][ownerState.size]}
         ${(ownerState.variant === "filled" || ownerState.variant === "outlined") &&
         (startAdornment ? 'pl-0' : endAdornment ? 'pr-0' : "")
-        }`,
+        } ${ownerState.fullWidth ? 'w-full' : ''}`,
     };
 
     inputProps = { ...inputProps };
@@ -1393,7 +1393,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                 autoComplete={autoComplete}
                 autoFocus={autoFocus}
                 defaultValue={defaultValue}
-                fullWidth={fullWidth || false}
+                fullWidth={fullWidth}
                 multiline={multiline}
                 name={name}
                 rows={rows}

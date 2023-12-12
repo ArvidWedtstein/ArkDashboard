@@ -86,7 +86,7 @@ export const Failure = ({ error }: CellFailureProps) => {
 export const Success = ({ dinosPage }: CellSuccessProps<FindDinos>) => {
   return (
     <>
-      <Dinos dinosPage={dinosPage} />
+      <Dinos dinosPage={dinosPage} loading={false} />
       <Pagination count={dinosPage.count} route={"dinos"} />
     </>
   )

@@ -23,6 +23,37 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
+type Primitive = string | number | boolean | null | undefined;
+
+type DeepObject = {
+  [key: string]: Primitive | DeepObject | DeepArray;
+};
+
+interface DeepArray extends Array<Primitive | DeepObject | DeepArray> { }
+export const deepEqual = (obj1: DeepObject | DeepArray, obj2: DeepObject | DeepArray): boolean => {
+  // Check if the objects are of the same type
+  if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+    return obj1 === obj2;
+  }
+
+  // Get the keys of the objects
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  // Check if the number of keys is the same
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  // Deep compare each property
+  for (const key of keys1) {
+    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+      return false;
+    }
+  }
+
+  return true;
+}
 export const isEmpty = (input: unknown): boolean => {
   if (input === null || input === undefined) {
     return true;

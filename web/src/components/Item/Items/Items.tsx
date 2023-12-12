@@ -332,7 +332,7 @@ const ItemsList = ({
               </svg>
               <span className="sr-only">Filters</span>
             </button>
-
+            {/* TODO: replace */}
             <InputOutlined
               name="search"
               type="search"
