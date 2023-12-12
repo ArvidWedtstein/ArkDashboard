@@ -61,7 +61,7 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useIntersectionObserver({
-    target: ref,
+    target: ref.current,
     onIntersect: ([{ isIntersecting }], observerElement) => {
       if (isIntersecting) {
         setIsVisible(true);

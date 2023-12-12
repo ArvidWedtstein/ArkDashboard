@@ -1,20 +1,30 @@
-import React from "react";
+import { useEffect } from "react";
+
+type IntersectionObserverProps = {
+  onIntersect: IntersectionObserverCallback;
+  threshold?: number | number[];
+  rootMargin?: number;
+  target: Element;
+}
 const useIntersectionObserver = ({
   target,
   onIntersect,
   threshold = 0.1,
-  rootMargin = "0px"
-}) => {
-  React.useEffect(() => {
+  rootMargin = 0
+}: IntersectionObserverProps) => {
+  useEffect(() => {
     const observer = new IntersectionObserver(onIntersect, {
-      rootMargin,
+      ...(rootMargin ? { rootMargin: `${rootMargin}px` } : null),
       threshold
     });
-    const current = target.current;
-    observer.observe(current);
+    if (target) {
+      observer.observe(target);
+    }
     return () => {
-      observer.unobserve(current);
+      if (target) {
+        observer.unobserve(target);
+      }
     };
-  });
+  }, [target]);
 };
 export default useIntersectionObserver;

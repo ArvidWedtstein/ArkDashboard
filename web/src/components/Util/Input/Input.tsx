@@ -1248,8 +1248,8 @@ type InputProps = {
   helperText?: ReactNode;
   id?: string;
   InputLabelProps?: Partial<InputLabelProps>;
-  inputProps?: InputBaseProps["inputProps"];
-  InputProps?: Partial<InputBaseProps>;
+  // inputProps?: InputBaseProps["inputProps"];
+  InputProps?: Partial<InputBaseProps>
   SuffixProps?: Partial<HTMLAttributes<HTMLFieldSetElement>>;
   inputRef?: React.Ref<any>;
   label?: ReactNode;
@@ -1292,7 +1292,6 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     helperText,
     id: idOverride,
     InputLabelProps,
-    inputProps,
     InputProps,
     inputRef,
     label,
@@ -1414,7 +1413,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                 }}
                 onFocus={onFocus}
                 placeholder={placeholder}
-                inputProps={inputProps}
+                // inputProps={InputProps?.inputProps}
                 {...InputProps}
                 renderSuffix={(state) =>
                   variant === "outlined" ? (
@@ -1536,7 +1535,6 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
             onChange={onChange}
             onFocus={onFocus}
             placeholder={placeholder}
-            inputProps={inputProps}
             {...InputProps}
             renderSuffix={(state) =>
               variant === "outlined" ? (

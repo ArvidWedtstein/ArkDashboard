@@ -11,7 +11,7 @@ import { useMemo, useState } from "react";
 import clsx from "clsx";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input, InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import {
   Card,
@@ -24,6 +24,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "src/components/Util/ToggleButton/ToggleButton";
+import Button from "src/components/Util/Button/Button";
 
 const DinosList = ({
   dinosPage,
@@ -183,7 +184,7 @@ const DinosList = ({
             <Lookup
               label="Sort by"
               margin="none"
-              className="hidden capitalize sm:block"
+              className="hidden capitalize sm:inline-flex"
               name="sort"
               defaultValue={sort.column}
               disabled={loading}
@@ -197,17 +198,17 @@ const DinosList = ({
               options={Object.keys(dinosPage.dinos[0] || {}).filter(
                 (c) => !["__typename", "id", "image", "blueprint"].includes(c)
               )}
-              InputProps={{
+              SuffixProps={{
                 style: {
                   borderRadius: "0.375rem 0 0 0.375rem",
-                  marginRight: "-1px",
+                  // marginRight: "-1px",
                 },
               }}
             />
 
-            <button
-              type="button"
-              className="rw-button rw-button-gray-outline -mr-px transition-all duration-150 ease-in-out"
+            <Button
+              variant="outlined"
+              color="DEFAULT"
               onClick={() => {
                 setSort((prev) => ({
                   ...prev,
@@ -215,12 +216,13 @@ const DinosList = ({
                 }));
               }}
               title={sort.direction == "asc" ? "Ascending " : "Descending"}
+              className="rounded-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 320 512"
                 className={clsx(
-                  "rw-button-icon-start transition-transform duration-150 ease-out",
+                  "w-4 fill-current transition-transform duration-150 ease-out",
                   {
                     "rotate-180 transform": sort.direction === "desc",
                   }
@@ -228,34 +230,39 @@ const DinosList = ({
               >
                 <path d="M32.05 224h255.9c28.36 0 42.73-34.5 22.62-54.62l-127.1-128c-12.5-12.5-32.86-12.5-45.36 0L9.304 169.4C-10.69 189.5 3.682 224 32.05 224zM160 63.98L287.1 192h-255.9L160 63.98z" />
               </svg>
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
+              variant="outlined"
+              color="DEFAULT"
               onClick={() => openModal()}
-              className="rw-button rw-button-gray-outline lg:!hidden"
+              className="rounded-none lg:!hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                className="rw-button-icon"
+                className="w-4 fill-current"
               >
                 <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
               </svg>
               <span className="sr-only">Filters</span>
-            </button>
-            {/* TODO: replace */}
-            <InputOutlined
-              fullWidth
+            </Button>
+
+            <Input
+              variant="outlined"
+              color="DEFAULT"
+              margin="none"
               name="search"
               type="search"
               label="Search"
               defaultValue={search}
               disabled={loading}
-              InputProps={{
+              SuffixProps={{
                 style: {
                   borderRadius: "0 0.375rem 0.375rem 0",
                 },
+              }}
+              InputProps={{
                 endAdornment: (
                   <Submit
                     className="rw-button rw-button-green"

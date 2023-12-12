@@ -1,4 +1,4 @@
-import type { FindBasespots } from "types/graphql";
+import type { FindNewBasespots } from "types/graphql";
 
 import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
@@ -6,28 +6,60 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Util/Pagination/Pagination";
 import Button from "src/components/Util/Button/Button";
+import BasespotsListNew from "../Basespots/BasespotsNew";
 
+export const QUERY = gql`
+  query FindNewBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String) {
+    basespotPagination(cursorId: $cursorId, take: $take, skip: $skip, map: $map, type: $type) {
+      basespots {
+        id
+      name
+      description
+      latitude
+      longitude
+      thumbnail
+      created_at
+      updated_at
+      map_id
+      estimated_for_players
+      type
+      has_air
+      Map {
+        name
+        icon
+      }
+      }
+      has_more_basespots
+      __typename
+    }
+  }
+`
+
+export const beforeQuery = ({ take, map, type }) => {
+  take = take || 6
+  map = parseInt(map) ? parseInt(map) : map
+  return { variables: { take, map, type } };
+};
 // export const QUERY = gql`
-//   query FindBasespots($take: Int, $lastCursor: String) {
-//     basespotPagination(take: $take, lastCursor: $lastCursor) {
+//   query FindBasespots($page: Int, $map: Int, $type: String) {
+//     basespotPage(page: $page, map: $map, type: $type) {
 //       basespots {
 //         id
 //         name
 //         description
-//         latitude
-//         longitude
 //         thumbnail
 //         created_at
 //         updated_at
 //         map_id
 //         estimated_for_players
+//         type
+//         has_air
 //         Map {
 //           name
 //           icon
 //         }
 //       }
-//       hasNextPage
-//       cursor
+//       count
 //     }
 //     maps {
 //       id
@@ -37,44 +69,11 @@ import Button from "src/components/Util/Button/Button";
 //   }
 // `;
 
-// export const beforeQuery = ({ lastCursor, take }) => {
-//   return { variables: { take: take || 9, lastCursor } };
+// export const beforeQuery = ({ page, map, type }) => {
+//   page = parseInt(page) ? parseInt(page, 10) : 1;
+//   map = parseInt(map) ? parseInt(map) : map
+//   return { variables: { page, map, type } };
 // };
-
-export const QUERY = gql`
-  query FindBasespots($page: Int, $map: Int, $type: String) {
-    basespotPage(page: $page, map: $map, type: $type) {
-      basespots {
-        id
-        name
-        description
-        thumbnail
-        created_at
-        updated_at
-        map_id
-        estimated_for_players
-        type
-        has_air
-        Map {
-          name
-          icon
-        }
-      }
-      count
-    }
-    maps {
-      id
-      name
-      icon
-    }
-  }
-`;
-
-export const beforeQuery = ({ page, map, type }) => {
-  page = parseInt(page) ? parseInt(page, 10) : 1;
-  map = parseInt(map) ? parseInt(map) : map
-  return { variables: { page, map, type } };
-};
 
 
 export const Loading = () => {
@@ -144,17 +143,27 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 export const Success = ({
-  // basespotPagination,
-  basespotPage,
-  maps,
-}: CellSuccessProps<FindBasespots>) => {
+  basespotPagination
+}: CellSuccessProps<FindNewBasespots>) => {
   return (
-    <>
-      <Basespots basespotPage={basespotPage} maps={maps} />
-      <Pagination count={basespotPage.count} route={"basespots"} />
-      {/* <Basespots basespotPagination={basespotPagination} maps={maps} /> */}
-
-
-    </>
+    <BasespotsListNew basespotPagination={basespotPagination} />
   );
 };
+
+
+// OLD
+// export const Success = ({
+//   // basespotPagination,
+//   basespotPage,
+//   maps,
+// }: CellSuccessProps<FindBasespots>) => {
+//   return (
+//     <>
+//       <Basespots basespotPage={basespotPage} maps={maps} />
+//       <Pagination count={basespotPage.count} route={"basespots"} />
+//       {/* <Basespots basespotPagination={basespotPagination} maps={maps} /> */}
+
+
+//     </>
+//   );
+// };
