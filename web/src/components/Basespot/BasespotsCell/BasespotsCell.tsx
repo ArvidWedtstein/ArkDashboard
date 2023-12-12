@@ -72,7 +72,8 @@ export const QUERY = gql`
 
 export const beforeQuery = ({ page, map, type }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-  return { variables: { page, map: parseInt(map), type } };
+  map = parseInt(map) ? parseInt(map) : map
+  return { variables: { page, map, type } };
 };
 
 

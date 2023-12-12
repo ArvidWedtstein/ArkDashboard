@@ -108,20 +108,32 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
   }, []);
   const [params, setParams] = useState({ map, type });
 
-  useEffect(() => {
-    if (deepEqual(params, { map, type }))
-      console.log('refresh', params)
+  const refreshData = (newparams) => {
     navigate(
       routes.basespots({
         ...parseSearch(
           Object.fromEntries(
-            Object.entries(params).filter(([_, v]) => v != "" && v != null)
+            Object.entries(newparams).filter(([_, v]) => v != "" && v != null)
           ) as Record<string, string>
         ),
         page: 1,
-      })
+      }),
+      { replace: true }
     );
-  }, [params]);
+  }
+
+  // useEffect(() => {
+  //   navigate(
+  //     routes.basespots({
+  //       ...parseSearch(
+  //         Object.fromEntries(
+  //           Object.entries(params).filter(([_, v]) => v != "" && v != null)
+  //         ) as Record<string, string>
+  //       ),
+  //       page: deepEqual(params, { map, type }) ? page : 1,
+  //     })
+  //   );
+  // }, [params]);
 
   type FormFindBasespot = NonNullable<{
     search: string;
@@ -133,11 +145,12 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
       routes.basespots({
         ...parseSearch(
           Object.fromEntries(
-            Object.entries(e).filter(([_, v]) => v != "")
+            Object.entries(e).filter(([_, v]) => v != "" && v != null)
           ) as FormFindBasespot
         ),
         page: 1,
-      })
+      }),
+      { replace: true }
     );
   };
 
@@ -221,6 +234,10 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
                   ...(e?.id && { map: e.id.toString() }),
                   ...(params.type && { type: params.type }),
                 });
+                refreshData({
+                  ...(e?.id && { map: e.id.toString() }),
+                  ...(params.type && { type: params.type }),
+                });
               }}
             />
 
@@ -238,6 +255,10 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
               label="Type"
               onSelect={(e) => {
                 setParams({
+                  ...(e && { type: e }),
+                  ...(params.map && { map: params.map }),
+                });
+                refreshData({
                   ...(e && { type: e }),
                   ...(params.map && { map: params.map }),
                 });
