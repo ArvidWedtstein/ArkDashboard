@@ -259,20 +259,12 @@ const DinoForm = (props: DinoFormProps) => {
                 color="DEFAULT"
                 helperText="Dinos name"
               />
-              {/* <InputOutlined
-                label="Name"
-                margin="normal"
-                name="name"
-                defaultValue={props.dino?.name}
-                helperText="Dinos name"
-              /> */}
-
               {/* TODO: TagInput or Lookup */}
               {/* <TagInput
                 name="synonyms"
               /> */}
               {/* <Lookup multiple options={[]} /> */}
-              <InputOutlined
+              <Input
                 label="Synonyms"
                 margin="normal"
                 name="synonyms"
@@ -506,14 +498,7 @@ const DinoForm = (props: DinoFormProps) => {
               color="DEFAULT"
               variant="outlined"
             />
-            {/* <InputOutlined
-              label="Blueprint"
-              name="bp"
-              margin="normal"
-              defaultValue={props.dino?.bp}
-              type="text"
-            /> */}
-
+            \
             {/* TODO: add newer fields. */}
             {/* FIELD checklist:
             ["flags","multipliers","default_dmg","default_swing_radius","hitboxes","targeting_team_name","icon","image"*/}
@@ -560,15 +545,7 @@ const DinoForm = (props: DinoFormProps) => {
               type="number"
               variant="outlined"
             />
-            {/* <InputOutlined
-              name="food_consumption_base"
-              label="Food consumption base multiplier"
-              defaultValue={props.dino?.food_consumption_base}
-              type="number"
-              emptyAs={0}
-              validation={{ valueAsNumber: true }}
-              margin="normal"
-            /> */}
+
             <Input
               label="Food consumption base multiplier"
               name="food_consumption_mult"
@@ -597,15 +574,6 @@ const DinoForm = (props: DinoFormProps) => {
               wrapperClassName="rw-form-error-wrapper"
               titleClassName="rw-form-error-title"
               listClassName="rw-form-error-list"
-            /> */}
-            {/* <InputOutlined
-              label="Taming Notice"
-              margin="normal"
-              name="taming_notice"
-              defaultValue={props.dino?.taming_notice}
-              rows={3}
-              helperText="Some info about the taming process of this dino"
-              type="textarea"
             /> */}
 
             <Input
@@ -768,12 +736,6 @@ const DinoForm = (props: DinoFormProps) => {
               multiline
               validation={{ valueAsJSON: true }}
             />
-            {/* <InputOutlined
-              name="hitboxes"
-              label="Hitboxes"
-              defaultValue={JSON.stringify(props.dino?.hitboxes, null, 2)}
-              validation={{ valueAsJSON: true }}
-            /> */}
             {/* </Form> */}
           </Step>
           <Step title="Stats">
@@ -849,30 +811,6 @@ const DinoForm = (props: DinoFormProps) => {
                             type="number"
                             validation={{ valueAsNumber: true }}
                           />
-                          {/* <InputOutlined
-                            type="text"
-                            label={`${variant} ${stat}`}
-                            InputProps={{
-                              startAdornment: (
-                                <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat
-                                    .toLowerCase()
-                                    .replaceAll(" ", "_")}.webp`}
-                                  className="h-4"
-                                />
-                              ),
-                            }}
-                            defaultValue={variants?.toString() ?? 0}
-                            onChange={(e) => {
-                              setBasestat((prev: object) => ({
-                                ...prev,
-                                [statChar]: {
-                                  ...prev[statChar],
-                                  [variantChar]: e.target.value,
-                                },
-                              }));
-                            }}
-                          /> */}
                         </>
                       );
                     }
@@ -1009,16 +947,6 @@ const DinoForm = (props: DinoFormProps) => {
               variant="outlined"
               validation={{ valueAsNumber: true, min: 0 }}
             />
-            {/* <InputOutlined
-              name="exp_per_kill"
-              label="Experience per kill"
-              defaultValue={props.dino?.exp_per_kill || 0}
-              helperText="Experience gained per kill"
-              type="number"
-              margin="normal"
-              min={0}
-              validation={{ valueAsNumber: true, min: 0 }}
-            /> */}
             <br />
             <Label
               name="movement"
@@ -1140,27 +1068,6 @@ const DinoForm = (props: DinoFormProps) => {
                                   variant="outlined"
                                   validation={{ valueAsNumber: true, min: 0 }}
                                 />
-                                {/* <InputOutlined
-                                  label={k3}
-                                  margin="dense"
-                                  type="text"
-                                  defaultValue={truncate(
-                                    (useFoundationUnit
-                                      ? Number((v3 as number) / 300)
-                                      : Number(v3)
-                                    ).toFixed(2),
-                                    6
-                                  )}
-                                  onChange={(e) => {
-                                    setMovement((prevMovement) => {
-                                      const newMovement = { ...prevMovement };
-                                      newMovement[k][stattype][k3] = Number(
-                                        e.target.value
-                                      );
-                                      return newMovement;
-                                    });
-                                  }}
-                                /> */}
                               </div>
                             ))
                           ) : (
@@ -1194,27 +1101,6 @@ const DinoForm = (props: DinoFormProps) => {
                                 variant="outlined"
                                 validation={{ valueAsNumber: true, min: 0 }}
                               />
-                              {/* <InputOutlined
-                                label={stattype}
-                                margin="dense"
-                                type="text"
-                                defaultValue={truncate(
-                                  (useFoundationUnit
-                                    ? Number(v2 / 300)
-                                    : Number(v2)
-                                  ).toFixed(2),
-                                  6
-                                )}
-                                onChange={(e) =>
-                                  setMovement((prevMovement) => {
-                                    const newMovement = { ...prevMovement };
-                                    newMovement[k][stattype] = Number(
-                                      e.target.value
-                                    );
-                                    return newMovement;
-                                  })
-                                }
-                              /> */}
                             </div>
                           )}
                         </div>
@@ -1255,13 +1141,6 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                name="default_dmg"
-                label="Default Damage"
-                defaultValue={props.dino?.default_dmg || 0}
-                type="number"
-                margin="normal"
-              /> */}
 
               <Input
                 label="Default Swing Radius"
@@ -1275,13 +1154,6 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                name="default_swing_radius"
-                label="Default Swing Radius"
-                defaultValue={props.dino?.default_swing_radius || 0}
-                type="number"
-                margin="normal"
-              /> */}
             </div>
             {/* https://react-hook-form.com/docs/usefieldarray */}
             <Label
@@ -1418,15 +1290,6 @@ const DinoForm = (props: DinoFormProps) => {
                 validation={{ valueAsNumber: true, min: 0 }}
               />
 
-              {/* <InputOutlined
-                  name="egg_min"
-                  label="Egg minimum temperature"
-                  defaultValue={props.dino?.egg_min || 0}
-                  helperText="Minimum temperature for the egg to hatch"
-                  type="number"
-                  margin="normal"
-                /> */}
-
               <Input
                 label="Egg maximum temperature"
                 name="egg_max"
@@ -1445,14 +1308,6 @@ const DinoForm = (props: DinoFormProps) => {
                 helperText="Maximum temperature for the egg to hatch"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                  name="egg_max"
-                  label="Egg maximum temperature"
-                  defaultValue={props.dino?.egg_max || 0}
-                  helperText="Maximum temperature for the egg to hatch"
-                  type="number"
-                  margin="normal"
-                /> */}
             </div>
 
             <div className="flex flex-row items-start space-x-3">
@@ -1473,13 +1328,7 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                  name="mating_cooldown_min"
-                  label="Mating cooldown minimum"
-                  defaultValue={props.dino?.mating_cooldown_min || 0}
-                  type="number"
-                  margin="normal"
-                /> */}
+
 
               <Input
                 label="Mating cooldown maximum"
@@ -1498,13 +1347,6 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                  name="mating_cooldown_max"
-                  label="Mating cooldown maximum"
-                  defaultValue={props.dino?.mating_cooldown_max || 0}
-                  type="number"
-                  margin="normal"
-                /> */}
             </div>
 
             <div className="flex flex-row items-start space-x-3">
@@ -1525,13 +1367,6 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                  name="incubation_time"
-                  label="Incubation time"
-                  defaultValue={props.dino?.incubation_time}
-                  type="number"
-                  margin="normal"
-                /> */}
 
               <Input
                 label="Maturation Time"
@@ -1550,13 +1385,6 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                  name="maturation_time"
-                  label="Maturation time"
-                  defaultValue={props.dino?.maturation_time || 0}
-                  type="number"
-                  margin="normal"
-                /> */}
 
               <Input
                 label="Gestation Time"
@@ -1570,13 +1398,6 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                  name="gestation_time"
-                  label="Gestation time"
-                  defaultValue={props.dino?.gestation_time || 0}
-                  type="number"
-                  margin="normal"
-                /> */}
 
               <Input
                 label="Baby food consumption multiplier"
@@ -1590,13 +1411,7 @@ const DinoForm = (props: DinoFormProps) => {
                 variant="outlined"
                 validation={{ valueAsNumber: true, min: 0 }}
               />
-              {/* <InputOutlined
-                  name="baby_food_consumption_mult"
-                  label="Baby food consumption multiplier"
-                  defaultValue={props.dino?.baby_food_consumption_mult || 0}
-                  type="number"
-                  margin="normal"
-                /> */}
+
             </div>
             {/* </Form> */}
           </Step>

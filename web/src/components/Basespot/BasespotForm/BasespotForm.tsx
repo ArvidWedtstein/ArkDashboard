@@ -20,7 +20,7 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import { Lookup, Lookup2 } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
@@ -51,7 +51,6 @@ const DELETE_BASESPOT_MUTATION = gql`
 `;
 
 const BasespotForm = (props: BasespotFormProps) => {
-  const { currentUser } = useAuth();
   const formMethods = useForm<FormBasespot>();
 
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
@@ -221,6 +220,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           getOptionLabel={(option) => option.name}
           getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
           options={props?.maps}
+          required
           onSelect={(e) => {
             if (!e) return setMap(null);
             setMap(e.id);
