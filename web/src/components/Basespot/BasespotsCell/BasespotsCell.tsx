@@ -1,12 +1,10 @@
 import type { FindNewBasespots } from "types/graphql";
 
-import { Link, routes } from "@redwoodjs/router";
+import { routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Basespots from "src/components/Basespot/Basespots";
-import Pagination from "src/components/Util/Pagination/Pagination";
 import Button from "src/components/Util/Button/Button";
-import BasespotsListNew from "../Basespots/BasespotsNew";
 
 export const QUERY = gql`
   query FindNewBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String) {
@@ -40,41 +38,6 @@ export const beforeQuery = ({ take, map, type }) => {
   map = parseInt(map) ? parseInt(map) : map
   return { variables: { take, map, type } };
 };
-// export const QUERY = gql`
-//   query FindBasespots($page: Int, $map: Int, $type: String) {
-//     basespotPage(page: $page, map: $map, type: $type) {
-//       basespots {
-//         id
-//         name
-//         description
-//         thumbnail
-//         created_at
-//         updated_at
-//         map_id
-//         estimated_for_players
-//         type
-//         has_air
-//         Map {
-//           name
-//           icon
-//         }
-//       }
-//       count
-//     }
-//     maps {
-//       id
-//       name
-//       icon
-//     }
-//   }
-// `;
-
-// export const beforeQuery = ({ page, map, type }) => {
-//   page = parseInt(page) ? parseInt(page, 10) : 1;
-//   map = parseInt(map) ? parseInt(map) : map
-//   return { variables: { page, map, type } };
-// };
-
 
 export const Loading = () => {
   return (
@@ -146,24 +109,8 @@ export const Success = ({
   basespotPagination
 }: CellSuccessProps<FindNewBasespots>) => {
   return (
-    <BasespotsListNew basespotPagination={basespotPagination} />
+    <Basespots basespotPagination={basespotPagination} />
   );
 };
 
 
-// OLD
-// export const Success = ({
-//   // basespotPagination,
-//   basespotPage,
-//   maps,
-// }: CellSuccessProps<FindBasespots>) => {
-//   return (
-//     <>
-//       <Basespots basespotPage={basespotPage} maps={maps} />
-//       <Pagination count={basespotPage.count} route={"basespots"} />
-//       {/* <Basespots basespotPagination={basespotPagination} maps={maps} /> */}
-
-
-//     </>
-//   );
-// };

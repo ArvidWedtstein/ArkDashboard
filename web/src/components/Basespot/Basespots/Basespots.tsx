@@ -1,9 +1,9 @@
 import { navigate, parseSearch } from "@redwoodjs/router";
 import { routes, useParams } from "@redwoodjs/router";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import type { FindBasespots } from "types/graphql";
-import { useLazyQuery } from "@apollo/client";
+import type { FindNewBasespots } from "types/graphql";
+import { useLazyQuery, useApolloClient } from "@apollo/client";
 import {
   Card,
   CardActions,
@@ -15,49 +15,71 @@ import Badge from "src/components/Util/Badge/Badge";
 import Tooltip from "src/components/Util/Tooltip/Tooltip";
 import { useAuth } from "src/auth";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { Form, Submit } from "@redwoodjs/forms";
+import { Form } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 import { Input } from "src/components/Util/Input/Input";
+import { QUERY } from "../BasespotsCell";
 
-
-const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
-  let { map, type, page } = useParams();
+const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
+  let { map, type } = useParams();
 
   const {
     client: supabase,
   } = useAuth();
-  const [basespot, setBasespot] = useState(basespotPage.basespots);
-  // const [cursor, setCursor] = useState(basespotPagination.cursor);
-  // let basespots = basespotPagination.basespots;
 
-  // const [loadMore, { called, loading, data, variables }] = useLazyQuery(QUERY, {
-  //   variables: {
-  //     take: 9,
-  //     lastCursor: cursor,
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //   },
-  //   onCompleted: (data) => {
-  //     console.log(data);
-  //     setCursor(data.basespotPagination.cursor);
-  //     if (
-  //       data.basespotPagination.basespots.length == 0 ||
-  //       !data.basespotPagination.hasNextPage
-  //     )
-  //       return;
-  //     setBasespot([...basespot, ...data.basespotPagination.basespots]);
-  //   },
-  // });
+  const [basespot, setBasespot] = useState(basespotPagination.basespots);
+  const [loading, setLoading] = useState(false);
+  const [hasMoreBasespots, setHasMoreBasespots] = useState(basespotPagination.has_more_basespots || true);
+  const client = useApolloClient();
 
-  // const loadMoreData = (e) => {
-  //   e.preventDefault();
-  //   if (!loading) {
-  //     loadMore();
-  //   }
-  // };
+  const loadMore = async () => {
+    const oldBasespots = [...basespot];
 
+    const response = await client.query({
+      query: QUERY,
+      variables: {
+        skip: 1,
+        take: 6,
+        cursorId: oldBasespots[oldBasespots.length - 1].id
+      }
+    });
+
+
+    if (response.error) {
+      setLoading(response.loading);
+      console.error(response.error)
+      return toast.error(`Error fetching images: ${response.error.message}`);
+    }
+    if (!response?.error) {
+      setHasMoreBasespots(response.data.has_more_basespots);
+      if (response.data.basespotPagination.basespots.filter((b) => b.thumbnail)?.length > 0) {
+        supabase
+          .storage
+          .from('basespotimages')
+          .createSignedUrls(response.data.basespotPagination.basespots.map((d) => `M${d.map_id}-${d.id}/${d?.thumbnail}`), 60)
+          .then(({ data, error }) => {
+            if (error) {
+              console.error(error)
+              return toast.error(`Error fetching images: ${error.message}`);
+            }
+
+            setBasespot([...oldBasespots, ...response.data.basespotPagination.basespots?.map((f) => {
+              return {
+                ...f,
+                thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl
+              }
+            })]);
+            setLoading(response.loading);
+            // console.log('aaaaaaa', response)
+            // console.log(groupBy(basespot, 'id'))
+          })
+      } else {
+        setLoading(response.loading);
+        setBasespot(() => [...oldBasespots, ...response.data.basespotPagination.basespots]);
+      }
+    }
+  }
   // TODO: https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
 
   useEffect(() => {
@@ -68,7 +90,7 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
       .createSignedUrls(basespot.map((d) => `M${d.map_id}-${d.id}/${d?.thumbnail}`), 60)
       .then(({ data, error }) => {
         if (error) {
-          return toast.error(`Error fetching images: ${JSON.stringify(error)}`);
+          return toast.error(`Error fetching images: ${error.message}`);
         }
 
         setBasespot((prev) => prev.map((f) => {
@@ -96,19 +118,6 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
     );
   }
 
-  // useEffect(() => {
-  //   navigate(
-  //     routes.basespots({
-  //       ...parseSearch(
-  //         Object.fromEntries(
-  //           Object.entries(params).filter(([_, v]) => v != "" && v != null)
-  //         ) as Record<string, string>
-  //       ),
-  //       page: deepEqual(params, { map, type }) ? page : 1,
-  //     })
-  //   );
-  // }, [params]);
-
   type FormFindBasespot = NonNullable<{
     search: string;
     map: string;
@@ -128,31 +137,20 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
     );
   };
 
-  const mapImages = {
-    theisland:
-      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
-    thecenter:
-      "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
-    scorchedearth: "https://wallpapercave.com/wp/wp10504822.jpg",
-    ragnarok:
-      "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
-    aberration:
-      "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
-    extinction:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
-    valguero:
-      "https://i.pinimg.com/originals/0b/95/09/0b9509ddce658e3209ece1957053b27e.jpg",
-    genesis:
-      "https://cdn.akamai.steamstatic.com/steam/apps/1646700/ss_c939dd546237cba9352807d4deebd79c4e29e547.1920x1080.jpg?t=1622514386",
-    crystalisles:
-      "https://cdn2.unrealengine.com/egs-crystalislesarkexpansionmap-studiowildcard-dlc-g1a-05-1920x1080-119682147.jpg?h=720&resize=1&w=1280",
-    fjordur:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1887560/ss_331869adb5f0c98e3f13b48189e280f8a0ba1616.1920x1080.jpg?t=1655054447",
-    lostisland:
-      "https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png",
-    genesis2:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
-  };
+  const handleScroll = (e) => {
+    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading || !hasMoreBasespots) {
+      return;
+    }
+    setLoading(true);
+    loadMore();
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading])
+
+
   const [view, setView] = useState<"grid" | "list">("grid");
 
   return (
@@ -193,7 +191,13 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
 
             <Lookup
               label={"Map"}
-              options={maps}
+              options={[
+                {
+                  name: 'Aberration',
+                  id: 5,
+                  icon: 'Aberration.webp'
+                }
+              ]}
               margin="none"
               getOptionLabel={(option) => option.name}
               getOptionImage={(option) =>
@@ -202,7 +206,6 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
               isOptionEqualToValue={(option, value) => option.id === value.id}
               defaultValue={parseInt(map) || parseInt(params.map)}
               valueKey="id"
-
               onSelect={(e) => {
                 setParams({
                   ...(e?.id && { map: e.id.toString() }),
@@ -317,9 +320,10 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
               />
               <CardMedia
                 image={
-                  basespot.thumbnail === "" ? mapImages[basespot.Map.name.toLowerCase().replaceAll(" ", "")] : basespot.thumbnail
+                  basespot.thumbnail === "" ? "" : basespot.thumbnail
                 }
-                className="grow"
+                loading="lazy"
+                className="grow max-h-72"
               />
               <CardActions className="justify-between">
                 <Button
@@ -383,8 +387,21 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
               </CardActions>
             </Card>
           ))}
+          {loading && (
+            <>
+              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+            </>
+          )}
         </div>
       </div>
+      {!hasMoreBasespots && (
+        <Button variant="text" color="DEFAULT" className="mx-auto" onClick={loadMore}>Sorry, that was all the basespots</Button>
+      )}
     </Form>
   );
 };
