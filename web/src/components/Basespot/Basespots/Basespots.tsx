@@ -1,9 +1,9 @@
 import { navigate, parseSearch } from "@redwoodjs/router";
 import { routes, useParams } from "@redwoodjs/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import type { FindNewBasespots } from "types/graphql";
-import { useLazyQuery, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import {
   Card,
   CardActions,
@@ -15,23 +15,78 @@ import Badge from "src/components/Util/Badge/Badge";
 import Tooltip from "src/components/Util/Tooltip/Tooltip";
 import { useAuth } from "src/auth";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { Form } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 import { Input } from "src/components/Util/Input/Input";
 import { QUERY } from "../BasespotsCell";
 
-const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
+const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
   let { map, type } = useParams();
 
   const {
     client: supabase,
   } = useAuth();
 
+  const mapImages = {
+    TheIsland:
+      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
+    TheCenter:
+      "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
+    ScorchedEarth: "https://wallpapercave.com/wp/wp10504822.jpg",
+    Ragnarok:
+      "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
+    Aberration:
+      "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
+    Extinction:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
+    Valguero:
+      "https://i.pinimg.com/originals/0b/95/09/0b9509ddce658e3209ece1957053b27e.jpg",
+    Genesis:
+      "https://cdn.akamai.steamstatic.com/steam/apps/1646700/ss_c939dd546237cba9352807d4deebd79c4e29e547.1920x1080.jpg?t=1622514386",
+    CrystalIsles:
+      "https://cdn2.unrealengine.com/egs-crystalislesarkexpansionmap-studiowildcard-dlc-g1a-05-1920x1080-119682147.jpg?h=720&resize=1&w=1280",
+    Fjordur:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1887560/ss_331869adb5f0c98e3f13b48189e280f8a0ba1616.1920x1080.jpg?t=1655054447",
+    LostIsland:
+      "https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png",
+    Genesis2:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
+  };
+
+  type Params = {
+    map: number;
+    type: string;
+    search?: string;
+  }
+  const [params, setParams] = useState<Params>({ map: map ? parseInt(map) : null, type: type || null });
   const [basespot, setBasespot] = useState(basespotPagination.basespots);
   const [loading, setLoading] = useState(false);
   const [hasMoreBasespots, setHasMoreBasespots] = useState(basespotPagination.has_more_basespots || true);
   const client = useApolloClient();
+
+
+  useEffect(() => {
+    setBasespot(basespotPagination.basespots);
+
+    if (basespotPagination.basespots.filter((b) => b?.thumbnail).length > 0) {
+      supabase
+        .storage
+        .from('basespotimages')
+        .createSignedUrls(basespotPagination.basespots.filter((b) => b?.thumbnail).map((b) => `M${b.map_id}-${b.id}/${b?.thumbnail}`), 60)
+        .then(({ data, error }) => {
+          if (error) {
+            return toast.error(`Error fetching images: ${error.message}`);
+          }
+
+          setBasespot((prev) => prev.map((f) => {
+            return {
+              ...f,
+              thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl
+            }
+          }))
+        })
+    };
+  }, [basespotPagination])
 
   const loadMore = async () => {
     const oldBasespots = [...basespot];
@@ -41,106 +96,85 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
       variables: {
         skip: 1,
         take: 6,
-        cursorId: oldBasespots[oldBasespots.length - 1].id
+        cursorId: oldBasespots[oldBasespots.length - 1].id,
+        ...(params?.map && { map: params?.map }),
+        ...(params?.type && { type: params?.type }),
       }
     });
 
-
     if (response.error) {
       setLoading(response.loading);
-      console.error(response.error)
-      return toast.error(`Error fetching images: ${response.error.message}`);
+      toast.dismiss('loading');
+      console.error(JSON.stringify(response.error))
+      toast.error(`Error fetching images: ${response.error.message}`);
     }
     if (!response?.error) {
-      setHasMoreBasespots(response.data.has_more_basespots);
+      setHasMoreBasespots((prev) => {
+        if (!prev && (response.data.has_more_basespots || response.data.basespotPagination.basespots.length > 0)) {
+          return true
+        }
+        return response.data.has_more_basespots
+      });
       if (response.data.basespotPagination.basespots.filter((b) => b.thumbnail)?.length > 0) {
         supabase
           .storage
           .from('basespotimages')
-          .createSignedUrls(response.data.basespotPagination.basespots.map((d) => `M${d.map_id}-${d.id}/${d?.thumbnail}`), 60)
+          .createSignedUrls([...oldBasespots, ...response.data.basespotPagination.basespots].filter((b) => b?.thumbnail && b?.thumbnail !== "" && b.thumbnail.length > 0 && !b.thumbnail.includes(b.id)).map((b) => `M${b.map_id}-${b.id}/${b.thumbnail}`), 60)
           .then(({ data, error }) => {
             if (error) {
               console.error(error)
               return toast.error(`Error fetching images: ${error.message}`);
             }
 
-            setBasespot([...oldBasespots, ...response.data.basespotPagination.basespots?.map((f) => {
+            setBasespot([...oldBasespots, ...response.data.basespotPagination.basespots]?.map((f) => {
               return {
                 ...f,
-                thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl
+                thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl || mapImages[f.Map.name.replace(" ", "")]
               }
-            })]);
+            }));
+            toast.dismiss('loading');
             setLoading(response.loading);
-            // console.log('aaaaaaa', response)
-            // console.log(groupBy(basespot, 'id'))
+            console.log('Response', response)
           })
       } else {
+        toast.dismiss('loading');
         setLoading(response.loading);
         setBasespot(() => [...oldBasespots, ...response.data.basespotPagination.basespots]);
       }
     }
   }
-  // TODO: https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
+  // https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
+  // https://community.redwoodjs.com/t/infinite-scrolling-using-field-policy-inmemorycache/3570/2
 
-  useEffect(() => {
-    if (basespot.filter((b) => b.thumbnail).length === 0) return;
-    supabase
-      .storage
-      .from('basespotimages')
-      .createSignedUrls(basespot.map((d) => `M${d.map_id}-${d.id}/${d?.thumbnail}`), 60)
-      .then(({ data, error }) => {
-        if (error) {
-          return toast.error(`Error fetching images: ${error.message}`);
-        }
-
-        setBasespot((prev) => prev.map((f) => {
-          return {
-            ...f,
-            thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl
-          }
-        })
-        )
-      })
-  }, []);
-  const [params, setParams] = useState({ map, type });
-
-  const refreshData = (newparams) => {
-    navigate(
-      routes.basespots({
+  const refreshData = (parameters: Params) => {
+    try {
+      console.log(routes.basespots({
         ...parseSearch(
           Object.fromEntries(
-            Object.entries(newparams).filter(([_, v]) => v != "" && v != null)
+            Object.entries(parameters).filter(([_, v]) => v != "" && v != null)
           ) as Record<string, string>
         ),
-        page: 1,
-      }),
-      { replace: true }
-    );
+      }))
+      navigate(
+        routes.basespots({
+          ...parseSearch(
+            Object.fromEntries(
+              Object.entries(parameters).filter(([_, v]) => v != "" && v != null)
+            ) as Record<string, string>
+          ),
+        }),
+        { replace: false }
+      );
+    } catch (error) {
+      console.error('Refresh went wrong.', error)
+    }
   }
 
-  type FormFindBasespot = NonNullable<{
-    search: string;
-    map: string;
-    type: string;
-  }>;
-  const onSubmit = (e: FormFindBasespot) => {
-    navigate(
-      routes.basespots({
-        ...parseSearch(
-          Object.fromEntries(
-            Object.entries(e).filter(([_, v]) => v != "" && v != null)
-          ) as FormFindBasespot
-        ),
-        page: 1,
-      }),
-      { replace: true }
-    );
-  };
-
   const handleScroll = (e) => {
-    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading || !hasMoreBasespots) {
+    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading) {
       return;
     }
+    toast.loading('Loading data', { id: 'loading' })
     setLoading(true);
     loadMore();
   }
@@ -154,7 +188,7 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
   const [view, setView] = useState<"grid" | "list">("grid");
 
   return (
-    <Form<FormFindBasespot> className="rw-segment" onSubmit={onSubmit}>
+    <article className="rw-segment">
       <div className="">
         <header
           className="flex min-h-[100px] w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-8 text-white"
@@ -176,7 +210,6 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
               to={routes.newBasespot()}
               color="success"
               variant="outlined"
-
               startIcon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -191,28 +224,22 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
 
             <Lookup
               label={"Map"}
-              options={[
-                {
-                  name: 'Aberration',
-                  id: 5,
-                  icon: 'Aberration.webp'
-                }
-              ]}
+              options={maps}
               margin="none"
               getOptionLabel={(option) => option.name}
               getOptionImage={(option) =>
                 `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`
               }
               isOptionEqualToValue={(option, value) => option.id === value.id}
-              defaultValue={parseInt(map) || parseInt(params.map)}
+              defaultValue={params.map}
               valueKey="id"
               onSelect={(e) => {
                 setParams({
-                  ...(e?.id && { map: e.id.toString() }),
-                  ...(params.type && { type: params.type }),
+                  map: e ? e?.id : null,
+                  type: params.type,
                 });
                 refreshData({
-                  ...(e?.id && { map: e.id.toString() }),
+                  ...(e?.id && { map: e.id }),
                   ...(params.type && { type: params.type }),
                 });
               }}
@@ -228,12 +255,12 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
                 "underwater",
               ]}
               margin="none"
-              defaultValue={type || params.type}
+              value={params.type}
               label="Type"
               onSelect={(e) => {
                 setParams({
-                  ...(e && { type: e }),
-                  ...(params.map && { map: params.map }),
+                  type: e,
+                  map: params.map,
                 });
                 refreshData({
                   ...(e && { type: e }),
@@ -245,28 +272,13 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
             <Input
               margin="none"
               type="search"
-              name="search"
               label="Search"
               color="DEFAULT"
-              InputProps={{
-                endAdornment: (
-                  <Button
-                    type="submit"
-                    color="success"
-                    variant="contained"
-                    startIcon={(
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                        className=""
-                      >
-                        <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-                      </svg>
-                    )}
-                  >
-                    <span className="hidden md:block">Search</span>
-                  </Button>
-                )
+              onChange={(e) => {
+                setParams((prev) => ({
+                  ...prev,
+                  search: e.target.value
+                }))
               }}
             />
           </div>
@@ -320,7 +332,7 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
               />
               <CardMedia
                 image={
-                  basespot.thumbnail === "" ? "" : basespot.thumbnail
+                  basespot.thumbnail === "" ? mapImages[basespot.Map.name.replace(" ", "")] : basespot.thumbnail
                 }
                 loading="lazy"
                 className="grow max-h-72"
@@ -366,6 +378,23 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
                       </div>
                     </Tooltip>
                   )}
+                  {(basespot?.type?.toLowerCase().includes('underwater') && basespot?.type?.toLowerCase().includes('cave')) && <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />}
+                  {basespot?.type?.toLowerCase().includes('cave') && (
+                    <Tooltip content={'This Basespot is located inside a cave'}>
+                      <div className="inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent text-center align-middle text-xs font-medium">
+                        <Badge
+                          variant="outlined"
+                          color="secondary"
+                          standalone
+                          content={
+                            <svg fillRule="evenodd" xmlns="http://www.w3.org/2000/svg" viewBox="0, 0, 400,400" className="h-4 fill-current">
+                              <path id="path0" d="M178.628 14.217 C 173.142 22.290,163.841 43.690,157.959 61.772 L 147.264 94.649 135.940 83.324 C 114.307 61.692,96.611 72.813,73.827 122.359 C 50.372 173.365,7.851 323.977,1.371 379.000 L -1.101 400.000 71.131 400.000 L 143.364 400.000 146.179 387.000 C 167.231 289.748,226.097 292.919,257.549 393.000 C 259.534 399.317,266.593 400.000,329.874 400.000 L 400.000 400.000 400.000 388.440 C 400.000 346.420,353.648 175.499,334.578 147.202 C 319.647 125.046,301.278 128.040,288.178 154.765 C 275.010 181.631,274.738 181.510,266.290 145.000 C 237.242 19.455,206.368 -26.606,178.628 14.217 M227.664 83.120 C 233.907 102.304,244.860 142.846,252.006 173.213 C 267.465 238.916,274.234 244.065,289.843 202.000 C 302.001 169.233,308.623 156.000,312.862 156.000 C 322.718 156.000,351.544 244.560,367.667 324.372 C 372.292 347.267,376.994 370.050,378.114 375.000 C 380.146 383.972,379.995 384.000,328.708 384.000 L 277.264 384.000 266.640 356.921 C 229.895 263.263,161.270 273.102,126.588 377.000 C 122.441 389.422,19.105 387.450,21.786 375.000 C 51.283 238.021,92.033 114.231,113.488 96.425 C 118.743 92.063,121.239 94.268,130.814 111.725 C 147.996 143.053,153.990 139.219,171.672 85.584 C 179.725 61.155,189.643 36.089,193.710 29.881 L 201.105 18.595 208.710 33.417 C 212.892 41.570,221.422 63.936,227.664 83.120" />
+                            </svg>
+                          }
+                        />
+                      </div>
+                    </Tooltip>
+                  )}
                   {(basespot.has_air && basespot?.type?.toLowerCase().includes('underwater')) && <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />}
                   {basespot.has_air && (
                     <Tooltip content={'This Basespot has air'}>
@@ -402,7 +431,7 @@ const BasespotsList = ({ basespotPagination }: FindNewBasespots) => {
       {!hasMoreBasespots && (
         <Button variant="text" color="DEFAULT" className="mx-auto" onClick={loadMore}>Sorry, that was all the basespots</Button>
       )}
-    </Form>
+    </article>
   );
 };
 

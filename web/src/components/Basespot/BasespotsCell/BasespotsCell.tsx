@@ -11,24 +11,29 @@ export const QUERY = gql`
     basespotPagination(cursorId: $cursorId, take: $take, skip: $skip, map: $map, type: $type) {
       basespots {
         id
-      name
-      description
-      latitude
-      longitude
-      thumbnail
-      created_at
-      updated_at
-      map_id
-      estimated_for_players
-      type
-      has_air
-      Map {
         name
-        icon
-      }
+        description
+        latitude
+        longitude
+        thumbnail
+        created_at
+        updated_at
+        map_id
+        estimated_for_players
+        type
+        has_air
+        Map {
+          name
+          icon
+        }
       }
       has_more_basespots
       __typename
+    },
+    maps {
+      id
+      name
+      icon
     }
   }
 `
@@ -106,10 +111,11 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 export const Success = ({
-  basespotPagination
+  basespotPagination,
+  maps
 }: CellSuccessProps<FindNewBasespots>) => {
   return (
-    <Basespots basespotPagination={basespotPagination} />
+    <Basespots basespotPagination={basespotPagination} maps={maps} />
   );
 };
 

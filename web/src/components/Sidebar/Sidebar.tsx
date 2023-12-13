@@ -157,7 +157,7 @@ const Sidebar = memo(({ }) => {
           <span className="hidden md:block">Home</span>
         </NavLink>
         <NavLink
-          to={routes.basespots({ page: 1 })}
+          to={routes.basespots()}
           title={"Basespots"}
           activeClassName={`text-white !ring-pea-400 !bg-blue-500`}
           matchSubPaths={true}
