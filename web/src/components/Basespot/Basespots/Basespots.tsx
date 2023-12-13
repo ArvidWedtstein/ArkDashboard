@@ -18,14 +18,40 @@ import { toast } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 import { Input } from "src/components/Util/Input/Input";
-import { QUERY } from "../BasespotsCell";
+
+
+const QUERY = gql`
+  query FindNewBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String) {
+    basespotPagination(cursorId: $cursorId, take: $take, skip: $skip, map: $map, type: $type) {
+      __typename
+      basespots {
+        id
+        name
+        description
+        latitude
+        longitude
+        thumbnail
+        created_at
+        updated_at
+        map_id
+        estimated_for_players
+        type
+        has_air
+        Map {
+          name
+          icon
+        }
+      }
+      has_more_basespots
+    },
+  }
+`
 
 const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
   let { map, type } = useParams();
 
-  const {
-    client: supabase,
-  } = useAuth();
+  const { client: supabase } = useAuth();
+  const client = useApolloClient();
 
   const mapImages = {
     TheIsland:
@@ -58,103 +84,124 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
     type: string;
     search?: string;
   }
-  const [params, setParams] = useState<Params>({ map: map ? parseInt(map) : null, type: type || null });
-  const [basespot, setBasespot] = useState(basespotPagination.basespots);
-  const [loading, setLoading] = useState(false);
-  const [hasMoreBasespots, setHasMoreBasespots] = useState(basespotPagination.has_more_basespots || true);
-  const client = useApolloClient();
 
+  const [params, setParams] = useState<Params>({
+    map: map ? parseInt(map) : null,
+    type: type || null
+  });
+  const [basespots, setBasespots] = useState(basespotPagination.basespots);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMoreBasespots, setHasMoreBasespots] = useState<boolean>(basespotPagination.has_more_basespots || true);
+
+
+  const getThumbnailUrls = async (basespotsToProcess: FindNewBasespots["basespotPagination"]["basespots"]) => {
+    const thumbnailIds = basespotsToProcess
+      .filter((b) => b?.thumbnail && b?.thumbnail !== "" && b.thumbnail.length > 0 && !b.thumbnail.includes(b.id))
+      .map((b) => `M${b.map_id}-${b.id}/${b.thumbnail}`);
+
+    const { data, error } = await supabase.storage.from('basespotimages').createSignedUrls(thumbnailIds, 60);
+
+    if (error) {
+      console.error(error);
+      toast.error(`Error fetching images: ${error.message}`);
+      return [];
+    }
+
+    return data;
+  };
+
+  const updateBasespots = (basespotsToProcess: FindNewBasespots["basespotPagination"]["basespots"], thumbnailUrls: {
+    error: string;
+    path: string;
+    signedUrl: string;
+  }[] = []) => {
+    setBasespots(
+      basespotsToProcess.map((f) => {
+        const matchingThumbnail = thumbnailUrls.find((d) => d.signedUrl?.includes(f.id));
+        return {
+          ...f,
+          thumbnail: matchingThumbnail?.signedUrl || mapImages[f.Map.name.replace(" ", "")],
+        };
+      })
+    );
+
+    toast.dismiss('loading');
+  };
 
   useEffect(() => {
-    setBasespot(basespotPagination.basespots);
+    setBasespots(basespotPagination.basespots);
 
-    if (basespotPagination.basespots.filter((b) => b?.thumbnail).length > 0) {
-      supabase
-        .storage
-        .from('basespotimages')
-        .createSignedUrls(basespotPagination.basespots.filter((b) => b?.thumbnail).map((b) => `M${b.map_id}-${b.id}/${b?.thumbnail}`), 60)
-        .then(({ data, error }) => {
-          if (error) {
-            return toast.error(`Error fetching images: ${error.message}`);
-          }
+    const fetchThumbnailUrls = async () => {
+      try {
+        const thumbnailUrls = await getThumbnailUrls(basespotPagination.basespots)
 
-          setBasespot((prev) => prev.map((f) => {
-            return {
-              ...f,
-              thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl
-            }
-          }))
-        })
+        updateBasespots(basespots, thumbnailUrls)
+      } catch (error) {
+        console.error(error);
+      }
     };
+
+    if (basespotPagination.basespots.some((b) => b?.thumbnail)) {
+      fetchThumbnailUrls();
+    }
   }, [basespotPagination])
 
   const loadMore = async () => {
-    const oldBasespots = [...basespot];
+    const oldBasespots = [...basespots];
 
-    const response = await client.query({
+    const { map, type } = params;
+    const response = await client.query<FindNewBasespots>({
       query: QUERY,
       variables: {
         skip: 1,
         take: 6,
-        cursorId: oldBasespots[oldBasespots.length - 1].id,
-        ...(params?.map && { map: params?.map }),
-        ...(params?.type && { type: params?.type }),
+        cursorId: oldBasespots[oldBasespots.length - 1]?.id,
+        ...(map && { map }),
+        ...(type && { type }),
       }
     });
 
     if (response.error) {
-      setLoading(response.loading);
-      toast.dismiss('loading');
-      console.error(JSON.stringify(response.error))
-      toast.error(`Error fetching images: ${response.error.message}`);
+      handleLoadError(response.loading, response.error);
+      return;
     }
-    if (!response?.error) {
-      setHasMoreBasespots((prev) => {
-        if (!prev && (response.data.has_more_basespots || response.data.basespotPagination.basespots.length > 0)) {
-          return true
-        }
-        return response.data.has_more_basespots
-      });
-      if (response.data.basespotPagination.basespots.filter((b) => b.thumbnail)?.length > 0) {
-        supabase
-          .storage
-          .from('basespotimages')
-          .createSignedUrls([...oldBasespots, ...response.data.basespotPagination.basespots].filter((b) => b?.thumbnail && b?.thumbnail !== "" && b.thumbnail.length > 0 && !b.thumbnail.includes(b.id)).map((b) => `M${b.map_id}-${b.id}/${b.thumbnail}`), 60)
-          .then(({ data, error }) => {
-            if (error) {
-              console.error(error)
-              return toast.error(`Error fetching images: ${error.message}`);
-            }
 
-            setBasespot([...oldBasespots, ...response.data.basespotPagination.basespots]?.map((f) => {
-              return {
-                ...f,
-                thumbnail: data.find((d) => d.signedUrl?.includes(f.id))?.signedUrl || mapImages[f.Map.name.replace(" ", "")]
-              }
-            }));
-            toast.dismiss('loading');
-            setLoading(response.loading);
-            console.log('Response', response)
-          })
-      } else {
-        toast.dismiss('loading');
-        setLoading(response.loading);
-        setBasespot(() => [...oldBasespots, ...response.data.basespotPagination.basespots]);
-      }
+    if (!response.data) {
+      handleLoadError(response.loading, response.error, 'No data in response.');
+      return;
     }
+
+    setHasMoreBasespots((prev) => {
+      if (!prev && (response.data.basespotPagination.has_more_basespots || response.data.basespotPagination.basespots.length > 0)) {
+        return true
+      }
+      return response.data.basespotPagination.has_more_basespots
+    });
+
+    const basespotsToProcess = [...oldBasespots, ...response.data.basespotPagination.basespots];
+
+    if (basespotsToProcess.some((basespot) => basespot?.thumbnail)) {
+      const thumbnailUrls = await getThumbnailUrls(basespotsToProcess);
+      updateBasespots(basespotsToProcess, thumbnailUrls);
+    } else {
+      updateBasespots(basespotsToProcess);
+    }
+
+    setLoading(response.loading);
   }
+
+  const handleLoadError = (loading: boolean, error: Record<string, any>, message = "Error fetching basespots") => {
+    setLoading(loading);
+    toast.dismiss('loading');
+    console.error(JSON.stringify(error));
+    toast.error(`Error fetching images: ${error?.message || message}`);
+  };
+
   // https://njihiamark.medium.com/cursor-based-pagination-for-infinite-scrolling-using-next-13-tailwind-postgres-and-prisma-5ba921be5ecc
   // https://community.redwoodjs.com/t/infinite-scrolling-using-field-policy-inmemorycache/3570/2
 
   const refreshData = (parameters: Params) => {
     try {
-      console.log(routes.basespots({
-        ...parseSearch(
-          Object.fromEntries(
-            Object.entries(parameters).filter(([_, v]) => v != "" && v != null)
-          ) as Record<string, string>
-        ),
-      }))
       navigate(
         routes.basespots({
           ...parseSearch(
@@ -315,7 +362,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
           "grid-cols-1 md:grid-cols-2 xl:grid-cols-3":
             view === "grid",
         })}>
-          {basespot.map((basespot, i) => (
+          {basespots.map((basespot, i) => (
             <Card key={`${basespot.id}-${i}`} className="flex flex-col">
               <CardHeader
                 title={basespot.name}
