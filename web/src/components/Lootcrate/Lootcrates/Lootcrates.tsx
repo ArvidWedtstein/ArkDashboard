@@ -172,12 +172,11 @@ const LootcratesList = ({
         </h1>
 
         <nav className="flex grow items-center justify-center space-x-2">
-          <div className="rw-button-group m-0 !space-x-0">
+          <div className="flex w-fit justify-center">
             <Lookup
               label="Sort by"
               margin="none"
-              className="hidden capitalize sm:block !rounded-r-none -mr-px"
-              btnClassName="!rounded-r-none ring-8 ring-red-500"
+              className="hidden capitalize sm:inline-flex !rounded-r-none -mr-[0.5px]"
               name="sort"
               defaultValue={sort.column}
               loading={loading}
@@ -193,10 +192,10 @@ const LootcratesList = ({
                 .filter(
                   (c) => !["__typename", "id", "image", "blueprint"].includes(c)
                 )}
-              InputProps={{
+              SuffixProps={{
                 style: {
-                  borderRadius: "0 0.375rem 0.375rem 0",
-                },
+                  borderRadius: "0.25rem 0 0 0.25rem"
+                }
               }}
             />
 
@@ -206,7 +205,7 @@ const LootcratesList = ({
                 direction: prev.direction === "asc" ? "desc" : "asc",
               }));
             }}
-              title={sort.direction == "asc" ? "Ascending " : "Descending"} variant="outlined" className="-ml-px rounded-l-none" color="secondary">
+              title={sort.direction == "asc" ? "Ascending " : "Descending"} variant="outlined" className="-ml-[0.5px] rounded-l-none" color="secondary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 320 512"

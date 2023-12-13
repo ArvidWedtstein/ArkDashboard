@@ -182,7 +182,7 @@ export const InputOutlined = ({
   return (
     <div
       className={clsx(
-        "relative mx-0 inline-flex min-w-0 max-w-sm flex-col p-0 align-top text-black dark:text-white",
+        "relative m-0 inline-flex min-w-0 max-w-sm flex-col p-0 align-top text-black dark:text-white",
         className,
         {
           "pointer-events-none text-black/50 dark:text-white/50": disabled,
@@ -283,7 +283,7 @@ export const InputOutlined = ({
               {
                 "max-w-full":
                   focus || !isEmpty(field?.value) || !!props?.placeholder,
-                "max-w-[0.01px]": !(
+                "max-w-[0.001px]": !(
                   focus ||
                   !isEmpty(field?.value) ||
                   !!props?.placeholder
@@ -573,9 +573,10 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
       <FormControlContext.Provider value={childContext}>
         <div
           className={clsx(
-            "relative mx-0 inline-flex min-w-0 flex-col p-0 align-top text-black dark:text-white",
+            "relative m-0 inline-flex min-w-0 flex-col p-0 align-top text-black dark:text-white",
             {
               "w-full": fullWidth,
+              "max-w-sm": !fullWidth,
               "mt-4 mb-2": ownerState.margin === "normal",
               "mt-2 mb-1": ownerState.margin === "dense",
             }
@@ -741,7 +742,7 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
   }
 );
 
-type InputBaseProps = {
+export type InputBaseProps = {
   className?: string;
   "aria-describedby"?: string;
   autoComplete?: string;
@@ -779,6 +780,7 @@ type InputBaseProps = {
   placeholder?: string;
   readOnly?: boolean;
   required?: boolean;
+  renderTags?: ReactNode | ReactNode[];
   renderSuffix?: (state: {
     disabled?: boolean;
     error?: boolean;
@@ -831,6 +833,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       placeholder,
       readOnly,
       required,
+      renderTags,
       renderSuffix,
       rows,
       size,
@@ -1117,9 +1120,10 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
         }`,
     };
     const classes = {
-      root: "relative box-border inline-flex w-auto cursor-text items-center text-base font-normal leading-6",
-      input: `
-        font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0
+      root: clsx(`relative box-border inline-flex cursor-text items-center text-base font-normal leading-6`, {
+        "w-full": ownerState.fullWidth
+      }),
+      input: clsx(`block w-full font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0
         ${(
           (formControl.label || props.label)?.toString().length > 0 &&
           !(
@@ -1135,11 +1139,11 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
           type === "datetime"
           ? "placeholder:opacity-0"
           : "placeholder:opacity-100"
-        } focus:outline-none box-content block disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent
-        ${inputSize[ownerState.variant][ownerState.size]}
-        ${(ownerState.variant === "filled" || ownerState.variant === "outlined") &&
-        (startAdornment ? 'pl-0' : endAdornment ? 'pr-0' : "")
-        } ${ownerState.fullWidth ? 'w-full' : ''}`,
+        } focus:outline-none box-content disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent
+        ${inputSize[ownerState.variant][ownerState.size]}`, {
+        "pl-0": startAdornment && (ownerState.variant === "filled" || ownerState.variant === "outlined"),
+        "pr-0": endAdornment && (ownerState.variant === "filled" || ownerState.variant === "outlined")
+      }),
     };
 
     inputProps = { ...inputProps };
@@ -1177,6 +1181,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
               {startAdornment}
             </div>
           )}
+          {renderTags && renderTags}
           <FormControlContext.Provider value={null}>
             <InputComponent
               aria-invalid={fcs.error}
@@ -1248,7 +1253,6 @@ type InputProps = {
   helperText?: ReactNode;
   id?: string;
   InputLabelProps?: Partial<InputLabelProps>;
-  // inputProps?: InputBaseProps["inputProps"];
   InputProps?: Partial<InputBaseProps>
   SuffixProps?: Partial<HTMLAttributes<HTMLFieldSetElement>>;
   inputRef?: React.Ref<any>;
@@ -1283,7 +1287,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     autoFocus = false,
     children,
     className,
-    color = "primary",
+    color = "DEFAULT",
     defaultValue,
     disabled = false,
     error = false,
@@ -1447,7 +1451,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                               props?.InputLabelProps?.shrink ||
                               type === "date" ||
                               type === "datetime" || props.InputProps?.startAdornment,
-                            "max-w-[0.01px]":
+                            "max-w-[0.001px]":
                               !state.focused &&
                               !state.filled &&
                               !props?.InputLabelProps?.shrink &&
@@ -1568,7 +1572,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                           props?.InputLabelProps?.shrink ||
                           type === "date" ||
                           type === "datetime" || props.InputProps?.startAdornment,
-                        "max-w-[0.01px]":
+                        "max-w-[0.001px]":
                           !state.focused &&
                           !state.filled &&
                           !props?.InputLabelProps?.shrink &&

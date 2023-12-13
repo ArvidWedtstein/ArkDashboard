@@ -17,7 +17,6 @@ type InputFieldProps = {
   name?: string;
   required?: boolean;
   placeholder?: string;
-  btnClassName?: string;
   InputProps?: {
     style?: CSSProperties;
   };
@@ -342,7 +341,6 @@ const DatePicker = ({
   readOnly = false,
   defaultValue = new Date(),
   margin = "normal",
-  btnClassName,
   label,
   name,
   helperText,
@@ -438,7 +436,6 @@ const DatePicker = ({
         variant={variant}
         color={color}
         required={required}
-        className={btnClassName}
         onClick={handleClick}
       >
         <InputLabel

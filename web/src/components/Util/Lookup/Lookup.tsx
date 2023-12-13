@@ -22,7 +22,7 @@ import {
   usePreviousProps,
   useEventCallback,
 } from "src/lib/formatters";
-import { FormControl, InputBase, InputLabel } from "../Input/Input";
+import { FormControl, InputBase, InputBaseProps, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
 
 function stripDiacritics(string) {
@@ -158,8 +158,6 @@ type SelectProps<
   label?: string;
   name?: string;
   className?: string;
-
-  btnClassName?: string;
   // defaultValue?: number | string; //LookupValue<Value, Multiple, DisableClearable>;
   defaultValue?: number | string | string[]; //LookupValue<Value, Multiple, DisableClearable>;
   value?: LookupValue<Value, Multiple, DisableClearable>;
@@ -208,18 +206,16 @@ type SelectProps<
   openOnFocus?: boolean;
   autoSelect?: boolean;
   inputValue?: string;
-  // TODO: remove
-  componentName?: string;
   validation?: RegisterOptions;
   margin?: "none" | "dense" | "normal";
   size?: "small" | "medium" | "large";
   color?: "primary" | "secondary" | "success" | "warning" | "error";
   variant?: 'filled' | 'outlined' | 'standard'
   valueKey?: keyof Value;
-  SuffixProps?: Partial<HTMLAttributes<HTMLFieldSetElement>>;
+  SuffixProps?: HTMLAttributes<HTMLFieldSetElement>;
   InputProps?: {
     style?: CSSProperties;
-  };
+  } & Partial<InputBaseProps>
   placeholder?: string;
   /**
    * @default -1
@@ -284,7 +280,6 @@ export const Lookup = <
     defaultValue = multiple ? [] : null,
     value: valueProp,
     className,
-    btnClassName,
     placeholder,
     inputValue: inputValueProp,
     helperText,
@@ -312,7 +307,6 @@ export const Lookup = <
     open: openProp,
     loading = false,
     disabled = false,
-    componentName = "Lookup",
     readOnly = false,
     autoComplete = false,
     clearOnEscape = false,
@@ -348,7 +342,7 @@ export const Lookup = <
 
     if (typeof optionLabel !== "string") {
       console.error(
-        `${componentName}: The valueProp provided to the getOptionLabel prop must be a string. Received ${typeof optionLabel} instead`
+        `Lookup: The valueProp provided to the getOptionLabel prop must be a string. Received ${typeof optionLabel} instead`
       );
     }
 
@@ -391,13 +385,13 @@ export const Lookup = <
             (typeof option === "object" ? option[valueKey] : option) ===
             defaultValue
         ) || null,
-    name: componentName,
+    name: 'Lookup',
   });
 
   const [inputValue, setInputValueState] = useControlled({
     controlled: inputValueProp,
     default: "",
-    name: componentName,
+    name: 'Lookup',
     state: "inputValue",
   });
 
@@ -512,7 +506,7 @@ export const Lookup = <
       if (missingValue.length > 0) {
         console.warn(
           [
-            `ArkDashboard: The value provided to ${componentName} is invalid.`,
+            `ArkDashboard: The value provided to Lookup is invalid.`,
             `None of the options match with \`${missingValue.length > 1
               ? JSON.stringify(missingValue)
               : JSON.stringify(missingValue[0])
@@ -887,7 +881,7 @@ export const Lookup = <
         if (inputRef.current && inputRef.current.nodeName === "TEXTAREA") {
           console.warn(
             [
-              `A textarea element was provided to ${componentName} where input was expected.`,
+              `A textarea element was provided to Lookup where input was expected.`,
               `This is not a supported scenario but it may work under certain conditions.`,
               `A textarea keyboard navigation may conflict with Autocomplete controls (e.g. enter and arrow keys).`,
               `Make sure to test keyboard navigation and add custom event handlers if necessary.`,
@@ -897,12 +891,12 @@ export const Lookup = <
           console.error(
             [
               `ArkDashboard: Unable to find the input element. It was resolved to ${inputRef.current} while an HTMLInputElement was expected.`,
-              `Instead, ${componentName} expects an input element.`,
+              `Instead, Lookup expects an input element.`,
             ].join("\n")
           );
         }
       }
-    }, [componentName]);
+    }, []);
   }
 
   useEffect(() => {
@@ -1000,7 +994,7 @@ export const Lookup = <
         if (matches.length > 1) {
           console.error(
             [
-              `ArkDashboard: The \`isOptionEqualToValue\` method of ${componentName} does not handle the arguments correctly.`,
+              `ArkDashboard: The \`isOptionEqualToValue\` method of Lookup does not handle the arguments correctly.`,
               `The component expects a single value to match a given option but found ${matches.length} matches.`,
             ].join("\n")
           );
@@ -1437,7 +1431,7 @@ export const Lookup = <
         if (process.env.NODE_ENV !== "production") {
           if (indexBy.get(group) && !warn) {
             console.warn(
-              `ArkDashboard: The options provided combined with the \`groupBy\` method of ${componentName} returns duplicated headers.`,
+              `ArkDashboard: The options provided combined with the \`groupBy\` method of Lookup returns duplicated headers.`,
               "You can solve the issue by sorting the options with the output of `groupBy`."
             );
             warn = true;
@@ -1561,7 +1555,6 @@ export const Lookup = <
 
     const image = getOptionImage ? getOptionImage(option) : null;
 
-    // TODO: add check if group is over or under
     const optionClassNames = clsx("flex items-center last:rounded-b-lg", {
       "px-2 py-1": size === "small",
       "py-2 px-4": size === "medium",
@@ -1647,7 +1640,6 @@ export const Lookup = <
       return renderOption(option, index);
     });
   };
-
   return (
     <div
       className={clsx(
@@ -1674,7 +1666,6 @@ export const Lookup = <
         variant={variant}
         color={color}
         required={required}
-        className={btnClassName}
       >
         <InputLabel
           children={label ?? name}
@@ -1683,16 +1674,17 @@ export const Lookup = <
             inputValue.length > 0 ||
             (Array.isArray(value) && value.length > 0)}
         />
-        {renderChips()}
-
         <InputBase
           {...InputProps}
+          renderTags={renderChips()}
           renderSuffix={(state) => (
             variant === 'outlined' ? (
-              <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, SuffixProps?.className)}>
+              <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
+                "border-2": state.focused
+              }, SuffixProps?.className)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-                  "max-w-full": state.focused || state.filled,
-                  "max-w-[0.01px]": !state.focused && !state.filled
+                  "max-w-full": state.focused || state.filled || (multiple && (Array.isArray(value) && value.length > 0)),
+                  "max-w-[0.01px]": !state.focused && !state.filled && !(multiple && (Array.isArray(value) && value.length > 0))
                 })}>
                   {label && label !== "" && (
                     <span className={"px-[5px] inline-block opacity-0 visible"}>
@@ -1727,7 +1719,7 @@ export const Lookup = <
             onBlur: handleBlur,
           }}
           endAdornmentProps={{
-            className: multiple ? "absolute top-[calc(50%-12px)] right-2" : null
+            className: multiple ? "absolute top-[calc(50%-0px)] right-2" : null
           }}
           endAdornment={(
             <Fragment>

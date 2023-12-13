@@ -29,7 +29,7 @@ import Toast from "src/components/Util/Toast/Toast";
 import { useAuth } from "src/auth";
 import Switch from "src/components/Util/Switch/Switch";
 import Button from "src/components/Util/Button/Button";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input, InputOutlined } from "src/components/Util/Input/Input";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -190,8 +190,8 @@ const BasespotForm = (props: BasespotFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        <div className="flex md:flex-col flex-wrap">
-          <InputOutlined
+        <div className="flex md:flex-col flex-wrap justify-start">
+          <Input
             name="name"
             label="Name"
             margin="normal"
@@ -199,13 +199,14 @@ const BasespotForm = (props: BasespotFormProps) => {
             validation={{ required: true }}
           />
 
-          <InputOutlined
+          <Input
             name="description"
             label="Description"
-            type="textarea"
-            defaultValue={props.basespot?.description}
-            rows={5}
+            multiline
+            margin="normal"
+            defaultValue={props.basespot?.name}
             validation={{ required: true }}
+            rows={5}
           />
         </div>
 
@@ -238,20 +239,18 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <div className="flex flex-row items-start space-x-3">
-          <InputOutlined
+          <Input
             name="latitude"
             label="Latitude"
             margin="normal"
-            emptyAs={null}
             defaultValue={props?.basespot?.latitude}
             validation={{ required: true, valueAsNumber: true }}
           />
 
-          <InputOutlined
+          <Input
             name="longitude"
             label="Longitude"
             margin="normal"
-            emptyAs={null}
             defaultValue={props?.basespot?.longitude}
             validation={{ required: true, valueAsNumber: true }}
           />
@@ -419,7 +418,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
         <FieldError name="level" className="rw-field-error" />
 
-        <InputOutlined
+        <Input
           label="Estimated for (n) players"
           name="estimated_for_players"
           margin="normal"
@@ -470,7 +469,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="has_air" className="rw-field-error" />
 
-        {/* TODO: Fix select list for turretsetup images */}
+        {/* TODO: Phase out Turretsetup_image? */}
         {/*
         <Label
           name="turretsetup_image"
