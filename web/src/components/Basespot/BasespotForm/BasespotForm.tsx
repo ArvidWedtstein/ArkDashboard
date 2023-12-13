@@ -20,7 +20,7 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup, Lookup2 } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
@@ -209,6 +209,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             rows={5}
           />
         </div>
+
 
         <Lookup
           name="map_id"
