@@ -111,13 +111,15 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
   };
 
   const swapColor = () => {
-
     setFormat((prevFormat) => {
-      console.log(prevFormat)
-      const newFormat = [...prevFormat];
-      const currentIndex = newFormat.findIndex(item => item.active);
+      console.log("Before Update:", prevFormat);
+
+      const currentIndex = prevFormat.findIndex((item) => item.active);
 
       if (currentIndex !== -1) {
+        // Create a new array to avoid modifying the previous state directly
+        const newFormat = prevFormat.map((item) => ({ ...item }));
+
         // Deactivate the current active format
         newFormat[currentIndex].active = false;
 
@@ -126,12 +128,23 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
 
         // Activate the next format
         newFormat[nextIndex].active = true;
-      }
-      console.log(prevFormat, newFormat)
-      setSelectedColor(convertColor(prevFormat?.find((item) => item.active).value, newFormat?.find((item) => item.active).value, selectedColor));
 
-      return newFormat;
-    })
+        console.log("After Update:", newFormat);
+
+        setSelectedColor(
+          convertColor(
+            prevFormat.find((item) => item.active).value,
+            newFormat.find((item) => item.active).value,
+            selectedColor
+          )
+        );
+
+        return newFormat;
+      }
+
+      // If no active format found, return the previous state
+      return prevFormat;
+    });
   };
 
   // Color Converting Functions
