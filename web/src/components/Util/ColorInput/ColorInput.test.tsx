@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import ThemeContext from './ThemeContext'
+import ColorInput from './ColorInput'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
 
-describe('ThemeContext', () => {
+describe('ColorInput', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<ThemeContext />)
+      render(<ColorInput />)
     }).not.toThrow()
   })
 })

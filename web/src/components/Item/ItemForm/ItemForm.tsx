@@ -4,7 +4,6 @@ import {
   FieldError,
   Label,
   TextField,
-  Submit,
   useFieldArray,
   useForm,
 } from "@redwoodjs/forms";
@@ -12,10 +11,9 @@ import {
 import type { EditItemById, UpdateItemInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useEffect, useState } from "react";
-import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
-import { ColorInput, Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input, InputOutlined } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Switch from "src/components/Util/Switch/Switch";
 import EditItemRecipeCell from "src/components/ItemRecipe/EditItemRecipeCell";
@@ -23,6 +21,7 @@ import ItemRecipesList from "src/components/ItemRecipe/ItemRecipes/ItemRecipes";
 import ItemRecipesCell from "src/components/ItemRecipe/ItemRecipesCell";
 import NewItemRecipe from "src/components/ItemRecipe/NewItemRecipe/NewItemRecipe";
 import Button from "src/components/Util/Button/Button";
+import ColorInput from "src/components/Util/ColorInput/ColorInput";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 
@@ -162,8 +161,8 @@ const ItemForm = (props: ItemFormProps) => {
                 },
               }}
             />
-            {/* TODO: test, fix conversion to HWB */}
-            <ColorInput />
+            {/* TODO: test*/}
+            <ColorInput label="Color" />
           </div>
           <FileUpload
             name="image"
@@ -191,22 +190,6 @@ const ItemForm = (props: ItemFormProps) => {
               ),
             }}
           />
-          {/* <InputOutlined
-            name="weight"
-            label="Weight"
-            margin="normal"
-            type="number"
-            defaultValue={props.item?.weight ?? 0}
-            validation={{ valueAsNumber: true, setValueAs: (v) => Number(v) }}
-            InputProps={{
-              endAdornment: (
-                <img
-                  src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                  className="w-5"
-                />
-              ),
-            }}
-          /> */}
 
           <Input
             label="Max Stack"
@@ -219,14 +202,6 @@ const ItemForm = (props: ItemFormProps) => {
               min: 0,
             }}
           />
-          {/* <InputOutlined
-            name="max_stack"
-            label="Max Stack"
-            margin="normal"
-            type="number"
-            defaultValue={props.item?.max_stack || 1}
-            validation={{ valueAsNumber: true }}
-          /> */}
 
           <Input
             label="Blueprint"
@@ -238,12 +213,6 @@ const ItemForm = (props: ItemFormProps) => {
               min: 0,
             }}
           />
-          {/* <InputOutlined
-            name="blueprint"
-            label="Blueprint"
-            margin="normal"
-            defaultValue={props.item?.blueprint}
-          /> */}
         </div>
         <div className="flex flex-wrap space-x-1">
           <InputOutlined

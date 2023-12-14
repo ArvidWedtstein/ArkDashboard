@@ -84,7 +84,6 @@ const Slideshow = ({
         className={`whitespace-nowrap w-full transition-transform duration-500 ease-in-out`}
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
       >
-        {/* TODO: implement renderSlide */}
         {renderSlide ? slides.map((slide, idx) => renderSlide(slide, idx)) :
           slides.map((slide, idx) => (
             <div

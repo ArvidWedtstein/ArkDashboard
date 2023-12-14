@@ -591,7 +591,7 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
   }
 );
 
-type InputLabelProps = {
+export type InputLabelProps = {
   color?: "primary" | "secondary" | "warning" | "success" | "error" | "DEFAULT";
   variant?: "outlined" | "filled" | "standard";
   className?: string;
@@ -676,7 +676,6 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
     };
 
     const formControl = useFormControl();
-
     let shrink = shrinkProp;
     if (typeof shrink === "undefined" && formControl) {
       shrink =
@@ -722,7 +721,7 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
         aria-disabled={disabled}
         className={clsx(
           labelClasses[state.variant],
-          labelSize[state.variant][size][focused || shrink ? "open" : "close"],
+          labelSize[state.variant][size][shrink || focused ? "open" : "close"],
           className,
           colors[
           state.error
@@ -1279,7 +1278,6 @@ type InputProps = {
   };
 };
 
-// TODO: implement custom for date
 export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const {
     autoComplete,
@@ -1382,7 +1380,6 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                 <InputLabel
                   htmlFor={id}
                   id={inputLabelId}
-                  required={Boolean(validation?.required)}
                   {...InputLabelProps}
                 >
                   {label}
@@ -1447,12 +1444,14 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
                             "max-w-full":
                               state.focused ||
                               state.filled ||
+                              state.startAdornment ||
                               props?.InputLabelProps?.shrink ||
                               type === "date" ||
                               type === "datetime" || props.InputProps?.startAdornment,
                             "max-w-[0.001px]":
                               !state.focused &&
                               !state.filled &&
+                              !state.startAdornment &&
                               !props?.InputLabelProps?.shrink &&
                               !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
                           }
@@ -1614,369 +1613,3 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
     </>
   );
 });
-
-export const ColorInput = () => {
-  const [color, setColor] = useState("#000000");
-  const [format, setFormat] = useState([
-    {
-      value: "hex",
-      label: "HEX",
-      active: true,
-    },
-    {
-      value: "rgb",
-      label: "RGB",
-      active: false,
-    },
-    {
-      value: "hsl",
-      label: "HSL",
-      active: false,
-    },
-  ]);
-
-  const handleColorChange = (event) => {
-    setColor(event.target.value);
-  };
-
-  const arrayRotate = <T extends {}>(arr: T[], count: number = 1) => {
-    const len = arr.length;
-    arr.push(...arr.splice(0, ((-count % len) + len) % len));
-    return arr;
-  };
-
-  const swapColor = () => {
-    let newFormat = arrayRotate(format).map((item, index) => ({
-      ...item,
-      active: index === 0,
-    }));
-    setFormat(newFormat);
-    convertColor(newFormat?.find((item) => item.active).value);
-  };
-
-  function hexToColor(hex, format = "rgb") {
-    // Remove the hash symbol if present
-    hex = hex.replace(/^#/, "");
-
-    // Parse the hex value into RGB components
-    const bigint = parseInt(hex, 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-
-    if (format === "rgb") {
-      return `rgb(${r}, ${g}, ${b})`;
-    } else if (format === "hsl") {
-      // Convert RGB to HSL
-      const max = Math.max(r, g, b) / 255;
-      const min = Math.min(r, g, b) / 255;
-      let h,
-        s,
-        l = (max + min) / 2;
-
-      if (max === min) {
-        h = s = 0; // achromatic
-      } else {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-        switch (max) {
-          case r / 255:
-            h = (g / 255 - b / 255) / d + (g < b ? 6 : 0);
-            break;
-          case g / 255:
-            h = (b / 255 - r / 255) / d + 2;
-            break;
-          case b / 255:
-            h = (r / 255 - g / 255) / d + 4;
-            break;
-        }
-
-        h /= 6;
-      }
-
-      // Convert HSL to CSS hsl() format
-      h = Math.round(h * 360);
-      s = Math.round(s * 100);
-      l = Math.round(l * 100);
-      return `hsl(${h}, ${s}%, ${l}%)`;
-    } else {
-      return "Invalid format";
-    }
-  }
-  function colorToHex(color) {
-    // Handle RGB format
-    if (/^rgb\(/.test(color)) {
-      const rgbValues = color.match(/\d+/g);
-      if (rgbValues.length === 3) {
-        const [r, g, b] = rgbValues.map(Number);
-        const hex = ((1 << 24) | (r << 16) | (g << 8) | b)
-          .toString(16)
-          .slice(1);
-        return `#${hex}`;
-      }
-    }
-
-    // Handle HSL format
-    if (/^hsl\(/.test(color)) {
-      const hslValues = color.match(/\d+/g);
-      if (hslValues.length === 3) {
-        const [h, s, l] = hslValues.map(Number);
-        const hslToRgb = (h, s, l) => {
-          h /= 360;
-          s /= 100;
-          l /= 100;
-          let r, g, b;
-          if (s === 0) {
-            r = g = b = l;
-          } else {
-            const hue2rgb = (p, q, t) => {
-              if (t < 0) t += 1;
-              if (t > 1) t -= 1;
-              if (t < 1 / 6) return p + (q - p) * 6 * t;
-              if (t < 1 / 2) return q;
-              if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-              return p;
-            };
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1 / 3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1 / 3);
-          }
-          return [
-            Math.round(r * 255),
-            Math.round(g * 255),
-            Math.round(b * 255),
-          ];
-        };
-        const [r, g, b] = hslToRgb(h, s, l);
-        const hex = ((1 << 24) | (r << 16) | (g << 8) | b)
-          .toString(16)
-          .slice(1);
-        return `#${hex}`;
-      }
-    }
-
-    return color;
-  }
-  const HslToHex = (color: string) => {
-    const hslValues = color
-      .replace("hsl(", "")
-      .split(",")
-      .map((val) => parseFloat(val));
-    const h = hslValues[0];
-    const s = hslValues[1] / 100;
-    const l = hslValues[2] / 100;
-    const c = (1 - Math.abs(2 * l - 1)) * s;
-    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-    const m = l - c / 2;
-    let r, g, bValue;
-
-    if (h >= 0 && h < 60) {
-      r = c;
-      g = x;
-      bValue = 0;
-    } else if (h >= 60 && h < 120) {
-      r = x;
-      g = c;
-      bValue = 0;
-    } else if (h >= 120 && h < 180) {
-      r = 0;
-      g = c;
-      bValue = x;
-    } else if (h >= 180 && h < 240) {
-      r = 0;
-      g = x;
-      bValue = c;
-    } else if (h >= 240 && h < 300) {
-      r = x;
-      g = 0;
-      bValue = c;
-    } else {
-      r = c;
-      g = 0;
-      bValue = x;
-    }
-
-    r = Math.round((r + m) * 255);
-    g = Math.round((g + m) * 255);
-    bValue = Math.round((bValue + m) * 255);
-
-    return `#${((1 << 24) | (r << 16) | (g << 8) | bValue)
-      .toString(16)
-      .slice(1)}`;
-  };
-
-  const convertColor = (currentformat: string) => {
-    switch (currentformat) {
-      case "rgb":
-        if (color.startsWith("#")) {
-          // Convert HEX to RGB
-          let hex = color.replace(/^#/, ""); // Remove the '#' symbol if present
-          let r = parseInt(hex.slice(0, 2), 16);
-          let g = parseInt(hex.slice(2, 4), 16);
-          let b = parseInt(hex.slice(4, 6), 16);
-          console.log(`RGB: ${r}, ${g}, ${b}`);
-          setColor(`rgb(${r}, ${g}, ${b})`);
-        } else if (color.startsWith("hsl")) {
-          // Convert HSL to RGB (Note: This is a simplified example)
-          const hslValues = color.split(",").map((val) => parseFloat(val.replace(/\D/g, '')));
-          const h = hslValues[0];
-          const s = hslValues[1] / 100;
-          const l = hslValues[2] / 100;
-          const c = (1 - Math.abs(2 * l - 1)) * s;
-          const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-          const m = l - c / 2;
-          let r, g, b;
-
-          if (h >= 0 && h < 60) {
-            r = c;
-            g = x;
-            b = 0;
-          } else if (h >= 60 && h < 120) {
-            r = x;
-            g = c;
-            b = 0;
-          } else if (h >= 120 && h < 180) {
-            r = 0;
-            g = c;
-            b = x;
-          } else if (h >= 180 && h < 240) {
-            r = 0;
-            g = x;
-            b = c;
-          } else if (h >= 240 && h < 300) {
-            r = x;
-            g = 0;
-            b = c;
-          } else {
-            r = c;
-            g = 0;
-            b = x;
-          }
-
-          r = Math.round((r + m) * 255);
-          g = Math.round((g + m) * 255);
-          b = Math.round((b + m) * 255);
-
-          console.log(`RGB: ${r}, ${g}, ${b}`);
-          setColor(`rgb(${r}, ${g}, ${b})`);
-        } else {
-          console.error("Invalid input format for RGB conversion");
-        }
-        break;
-
-      case "hex":
-        if (color.startsWith("rgb")) {
-          // Convert RGB to HEX (Note: This is a simplified example)
-          const rgbValues = color
-            .replace("rgb(", "")
-            .split(",")
-            .map((val) => parseInt(val));
-          const r = rgbValues[0];
-          const g = rgbValues[1];
-          const b = rgbValues[2];
-          const hex = `#${((1 << 24) | (r << 16) | (g << 8) | b)
-            .toString(16)
-            .slice(1)}`;
-          console.log(`HEX: ${hex}`);
-          setColor(hex);
-        } else if (color.startsWith("hsl")) {
-          // Convert HSL to HEX (Note: This is a simplified example)
-
-          setColor(HslToHex(color));
-        } else {
-          console.error("Invalid input format for HEX conversion");
-        }
-        break;
-      case "hsl":
-        if (color.startsWith("#")) {
-          // Convert HEX to HSL (Note: This is a simplified example)
-          const hex = color.replace(/^#/, ""); // Remove the '#' symbol if present
-          const r = parseInt(hex.slice(0, 2), 16) / 255;
-          const g = parseInt(hex.slice(2, 4), 16) / 255;
-          const b = parseInt(hex.slice(4, 6), 16) / 255;
-
-          const max = Math.max(r, g, b);
-          const min = Math.min(r, g, b);
-          const delta = max - min;
-          let h, s, l;
-
-          if (delta === 0) {
-            h = 0;
-          } else if (max === r) {
-            h = ((g - b) / delta) % 6;
-          } else if (max === g) {
-            h = (b - r) / delta + 2;
-          } else {
-            h = (r - g) / delta + 4;
-          }
-
-          h = Math.round((h * 60 + 360) % 360);
-          l = (max + min) / 2;
-
-          if (delta === 0) {
-            s = 0;
-          } else {
-            s = delta / (1 - Math.abs(2 * l - 1));
-          }
-
-          s = Math.round(s * 100);
-          l = Math.round(l * 100);
-
-          console.log(`HSL: ${h}, ${s}%, ${l}%`);
-          setColor(`hsl(${h}, ${s}%, ${l}%)`);
-        } else {
-          console.error("Invalid input format for HSL conversion");
-        }
-        break;
-
-      default:
-        console.error("Invalid format");
-        break;
-    }
-  };
-
-  return (
-    <div className="rw-button-group">
-      <input
-        type="text"
-        value={color}
-        onChange={handleColorChange}
-        className="rw-input border-r-none"
-      />
-      <input
-        className="rw-input h-full max-w-[2rem] appearance-none border-l-0 border-none p-0"
-        onChange={debounce((e) => {
-          setColor(
-            hexToColor(
-              e.target.value,
-              format?.find((item) => item.active).value
-            )
-          );
-        }, 500)}
-        type="color"
-        value={colorToHex(color)}
-      />
-      <input
-        className="rw-input max-w-[4rem] select-none border-l-0"
-        readOnly
-        value={format?.find((item) => item.active).label}
-      />
-      <button
-        type="button"
-        className="rw-button rw-button-gray -ml-px"
-        onClick={swapColor}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 512 512"
-          className="rw-button-icon"
-        >
-          <path d="M464 32C455.2 32 448 39.16 448 48v129.3C416.2 99.72 340.6 48 256 48c-102 0-188.3 72.91-205.1 173.3C49.42 230.1 55.3 238.3 64.02 239.8C64.91 239.9 65.8 240 66.67 240c7.672 0 14.45-5.531 15.77-13.34C96.69 141.7 169.7 80 256 80c72.49 0 137.3 44.88 163.6 112H304C295.2 192 288 199.2 288 208S295.2 224 304 224h160C472.8 224 480 216.8 480 208v-160C480 39.16 472.8 32 464 32zM447.1 272.2c-8.766-1.562-16.97 4.406-18.42 13.12C415.3 370.3 342.3 432 255.1 432c-72.49 0-137.3-44.88-163.6-112H208C216.8 320 224 312.8 224 304S216.8 288 208 288h-160C39.16 288 32 295.2 32 304v160C32 472.8 39.16 480 48 480S64 472.8 64 464v-129.3C95.84 412.3 171.4 464 256 464c101.1 0 188.3-72.91 205.1-173.3C462.6 281.9 456.7 273.7 447.1 272.2z" />
-        </svg>
-      </button>
-    </div>
-  );
-};

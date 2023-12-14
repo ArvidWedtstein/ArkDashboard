@@ -1665,11 +1665,10 @@ export const Lookup = <
         size={size}
         variant={variant}
         color={color}
-        required={required}
+        required={required || Boolean(validation?.required)}
       >
         <InputLabel
           children={label ?? name}
-          required={required || Boolean(validation?.required)}
           shrink={popupOpen ||
             inputValue.length > 0 ||
             (Array.isArray(value) && value.length > 0)}
@@ -1680,14 +1679,15 @@ export const Lookup = <
           renderSuffix={(state) => (
             variant === 'outlined' ? (
               <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
-                "border-2": state.focused
+                "border-2": state.focused,
+                "ring-8 ring-red-500": !state.required
               }, SuffixProps?.className)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
                   "max-w-full": state.focused || state.filled || (multiple && (Array.isArray(value) && value.length > 0)),
-                  "max-w-[0.01px]": !state.focused && !state.filled && !(multiple && (Array.isArray(value) && value.length > 0))
+                  "max-w-[0.01px]": !state.focused && !state.filled && !(multiple && (Array.isArray(value) && value.length > 0)),
                 })}>
                   {label && label !== "" && (
-                    <span className={"px-[5px] inline-block opacity-0 visible"}>
+                    <span className={"px-1 inline-block opacity-0 visible"}>
                       {state.required ? (
                         <React.Fragment>
                           {label}
@@ -1706,6 +1706,7 @@ export const Lookup = <
           value={inputValue}
           placeholder={placeholder}
           className={className}
+          required
           inputProps={{
             role: "combobox",
             spellCheck: false,
