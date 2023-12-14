@@ -1,18 +1,15 @@
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Form,
   Label,
-  PasswordField,
   FieldError,
-  Submit,
-  EmailField,
   CheckboxField,
 } from "@redwoodjs/forms";
-import { Link, RouteFocus, routes } from "@redwoodjs/router";
+import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import Button from "src/components/Util/Button/Button";
 
 type FormSignupPage = NonNullable<{

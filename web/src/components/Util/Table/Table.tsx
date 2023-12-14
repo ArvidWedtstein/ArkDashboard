@@ -6,7 +6,7 @@ import { toast } from "@redwoodjs/web/dist/toast";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import Button, { ButtonGroup } from "../Button/Button";
-import { Input, InputOutlined } from "../Input/Input";
+import { Input } from "../Input/Input";
 import { Lookup } from "../Lookup/Lookup";
 import { useSubscription } from "@redwoodjs/web";
 type Filter<Row extends Record<string, any>> = {

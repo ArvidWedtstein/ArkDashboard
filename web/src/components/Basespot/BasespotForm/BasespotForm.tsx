@@ -29,7 +29,7 @@ import Toast from "src/components/Util/Toast/Toast";
 import { useAuth } from "src/auth";
 import Switch from "src/components/Util/Switch/Switch";
 import Button from "src/components/Util/Button/Button";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 

@@ -10,7 +10,7 @@ import {
 import type { EditItemRecipeById, UpdateItemRecipeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Button from "src/components/Util/Button/Button";
 

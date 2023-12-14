@@ -13,7 +13,7 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import { useEffect, useState } from "react";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Switch from "src/components/Util/Switch/Switch";
 import EditItemRecipeCell from "src/components/ItemRecipe/EditItemRecipeCell";
@@ -147,7 +147,7 @@ const ItemForm = (props: ItemFormProps) => {
               color="DEFAULT"
             />
 
-            <InputOutlined
+            <Input
               name="color"
               label="Color"
               margin="normal"
@@ -215,14 +215,14 @@ const ItemForm = (props: ItemFormProps) => {
           />
         </div>
         <div className="flex flex-wrap space-x-1">
-          <InputOutlined
+          <Input
             name="affinity"
             label="Affinity"
             margin="normal"
             type="number"
             defaultValue={props.item?.affinity}
           />
-          <InputOutlined
+          <Input
             name="health"
             label="Health"
             margin="normal"
@@ -238,7 +238,7 @@ const ItemForm = (props: ItemFormProps) => {
             }}
           />
 
-          <InputOutlined
+          <Input
             name="damage"
             label="Damage"
             margin="normal"
@@ -573,7 +573,7 @@ const ItemForm = (props: ItemFormProps) => {
                               .includes(search.toLowerCase());
                           }}
                         />
-                        <InputOutlined
+                        <Input
                           type="number"
                           label="Amount"
                           defaultValue={recipe.amount}
@@ -585,7 +585,7 @@ const ItemForm = (props: ItemFormProps) => {
                           )}
                         />
 
-                        <InputOutlined
+                        <Input
                           type="number"
                           label="Yields"
                           defaultValue={recipe.yields}
@@ -730,7 +730,7 @@ const ItemForm = (props: ItemFormProps) => {
             />
 
             {/* TODO: fix */}
-            <InputOutlined
+            <Input
               label={"Value"}
               {...register(`stats.${index}.value`)}
               type="number"

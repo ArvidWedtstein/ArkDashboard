@@ -1,15 +1,11 @@
 import {
   Form,
   FormError,
-  FieldError,
-  Label,
-  CheckboxField,
-  Submit,
 } from "@redwoodjs/forms";
 
 import type { EditLootcrateById, UpdateLootcrateInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { Lookup } from "src/components/Util/Lookup/Lookup";

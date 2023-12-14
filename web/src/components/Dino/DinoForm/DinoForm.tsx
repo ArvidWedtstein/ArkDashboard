@@ -19,7 +19,7 @@ import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
 import NewDinoStat from "src/components/DinoStat/NewDinoStat/NewDinoStat";

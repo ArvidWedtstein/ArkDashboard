@@ -11,7 +11,7 @@ import { useMemo, useState } from "react";
 import clsx from "clsx";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import {
   Card,

@@ -16,7 +16,7 @@ import {
   CardMedia,
 } from "src/components/Util/Card/Card";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";

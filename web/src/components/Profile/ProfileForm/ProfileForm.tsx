@@ -18,7 +18,7 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import Avatar from "src/components/Util/Avatar/Avatar";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useAuth } from "src/auth";
-import { Input, InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import Button from "src/components/Util/Button/Button";
 
 type FormProfile = NonNullable<EditProfileById["profile"]>;
