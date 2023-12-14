@@ -112,7 +112,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                          12
+                        12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -139,7 +139,8 @@ const Profile = ({ profile }: Props) => {
                 <p className="text-sm tracking-wide">@{profile.username}</p>
               </div>
 
-              <hr className="my-6 border-gray-600 dark:border-stone-300" />
+              <hr className="rw-divider mt-3 w-full mx-auto max-w-md fill-white bg-zinc-500 h-px" />
+
               <div className="">
                 <p className="mb-2 block text-xs font-bold uppercase tracking-wide ">
                   Biography
@@ -310,7 +311,7 @@ const Profile = ({ profile }: Props) => {
                       (a, b) =>
                         a.for.localeCompare(b.for) ||
                         ["create", "update", "delete", "read"].indexOf(a.type) -
-                          ["create", "update", "delete", "read"].indexOf(b.type)
+                        ["create", "update", "delete", "read"].indexOf(b.type)
                     )
                     .reduce((result, item) => {
                       const existingItem = result.find(
@@ -354,11 +355,11 @@ const Profile = ({ profile }: Props) => {
                                 "rounded-bl-lg":
                                   arrayToRows(profile.TimelineSeasonPerson, 2)
                                     .length ===
-                                    i + 1 && sIdx === 0,
+                                  i + 1 && sIdx === 0,
                                 "rounded-br-lg":
                                   arrayToRows(profile.TimelineSeasonPerson, 2)
                                     .length ===
-                                    i + 1 &&
+                                  i + 1 &&
                                   sIdx === row.length - 1 &&
                                   row.length % 2 === 0,
                                 "rounded-tr-lg":
@@ -398,10 +399,10 @@ const Profile = ({ profile }: Props) => {
                             {
                               "rounded-bl-lg":
                                 arrayToRows(profile.Basespot, 2).length ===
-                                  i + 1 && bsIdx === 0,
+                                i + 1 && bsIdx === 0,
                               "rounded-br-lg":
                                 arrayToRows(profile.Basespot, 2).length ===
-                                  i + 1 &&
+                                i + 1 &&
                                 bsIdx === row.length - 1 &&
                                 row.length % 2 === 0,
                               "rounded-tr-lg":

@@ -1534,7 +1534,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 </section>
               )}
 
-              <section className="my-12 grid grid-cols-1 gap-3 border-t md:grid-cols-2">
+              <div className="rw-divide">
+                <span>Movement</span>
+              </div>
+
+              <section className="my-12 grid grid-cols-1 gap-3 md:grid-cols-2">
                 {dino.movement && (
                   <section className="col-span-1 space-y-2">
                     <h4 className="rw-label">Movement</h4>

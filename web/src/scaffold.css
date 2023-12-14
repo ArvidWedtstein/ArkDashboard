@@ -580,8 +580,12 @@
   }
 
   /* || Divider */
+  /* Example: <div role="seperator" className="rw-divider">child</div> */
   .rw-divider {
     @apply relative m-[initial] shrink-0 list-none self-stretch [border:medium] [inline-size:1px] [margin-inline:initial] [block-size:initial];
+  }
+  .rw-divide {
+    @apply m-0 flex shrink-0 whitespace-nowrap border-[0px] text-center before:w-full before:self-center before:border-t before:border-white/20 before:content-[""] after:w-full after:self-center after:border-t after:border-white/20 after:content-[''] [&>span]:inline-block [&>span]:px-2.5 [&>:not(style)~:not(style)]:mt-4 [&.left]:before:w-[10%] [&.left]:after:w-[90%] [&.right]:before:w-[90%] [&.right]:after:w-[10%];
   }
 
   .parchment {

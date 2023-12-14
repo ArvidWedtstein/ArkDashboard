@@ -138,21 +138,6 @@ const ItemForm = (props: ItemFormProps) => {
                 },
               }}
             />
-            {/* <InputOutlined
-              name="name"
-              label="Name"
-              defaultValue={props.item?.name}
-              margin="normal"
-              type="text"
-              validation={{
-                required: true,
-                minLength: 3,
-                pattern: {
-                  value: /^[a-zA-Z0-9 ]*$/i,
-                  message: "Invalid name",
-                },
-              }}
-            /> */}
 
             <Input
               label="Description"
@@ -162,14 +147,7 @@ const ItemForm = (props: ItemFormProps) => {
               defaultValue={props.item?.description}
               color="DEFAULT"
             />
-            {/* <InputOutlined
-              name="description"
-              label="Description"
-              margin="normal"
-              rows={4}
-              type="textarea"
-              defaultValue={props.item?.description}
-            /> */}
+
             <InputOutlined
               name="color"
               label="Color"
@@ -185,7 +163,7 @@ const ItemForm = (props: ItemFormProps) => {
               }}
             />
             {/* TODO: test, fix conversion to HWB */}
-            {/* <ColorInput /> */}
+            <ColorInput />
           </div>
           <FileUpload
             name="image"

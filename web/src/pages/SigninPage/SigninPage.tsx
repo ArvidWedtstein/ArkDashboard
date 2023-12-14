@@ -1,18 +1,13 @@
 import { useEffect } from "react";
 import {
   Form,
-  Label,
-  PasswordField,
-  Submit,
-  FieldError,
-  EmailField,
 } from "@redwoodjs/forms";
-import { Link, navigate, routes } from "@redwoodjs/router";
+import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { RouteFocus } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
+import Button from "src/components/Util/Button/Button";
 
 type FormSigninPage = NonNullable<{
   email: string;
@@ -66,37 +61,35 @@ const SigninPage = () => {
           onSubmit={onSubmit}
           className="order-2 col-span-2 flex w-full flex-col items-center justify-center p-12 sm:order-1 sm:rounded-l"
         >
-          <RouteFocus>
-            <InputOutlined
-              name="email"
-              label="Email"
-              type="email"
-              autoFocus
-              autoComplete="email"
-              validation={{
-                pattern: {
-                  message: "Email must be valid",
-                  value: /[^@]+@[^\.]+\..+/,
-                },
-              }}
-              InputProps={{
-                startAdornment: (
-                  <svg
-                    aria-hidden="true"
-                    className="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                  </svg>
-                ),
-              }}
-            />
-          </RouteFocus>
+          <Input
+            name="email"
+            label="Email"
+            type="email"
+            autoComplete="email"
+            autoFocus
+            validation={{
+              pattern: {
+                message: "Email must be valid",
+                value: /[^@]+@[^\.]+\..+/,
+              },
+            }}
+            placeholder="olanordmann@gmail.com"
+            InputProps={{
+              startAdornment: (
+                <svg
+                  aria-hidden="true"
+                  className="w-5 fill-current"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+              ),
+            }}
+          />
 
-          <InputOutlined
+          <Input
             name="password"
             label="Password"
             type={showPassword ? "text" : "password"}
@@ -104,13 +97,20 @@ const SigninPage = () => {
             autoComplete="current-password"
             InputProps={{
               endAdornment: (
-                <button
+                <Button
+                  variant="icon"
+                  color="DEFAULT"
                   onClick={(e) => {
                     e.preventDefault();
                     setShowPassword(!showPassword);
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-4" viewBox="0 0 576 512">
+                  <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 fill-current"
+                    viewBox="0 0 576 512"
+                  >
                     {showPassword ? (
                       <path d="M272.9 137.2l30.91 24.41c5.301-.9102 10.67-1.638 16.23-1.638c50.78 0 92.05 39.74 95.36 89.74l30.82 24.33C447 268.1 448 262.2 448 256.1C448 185.4 390.7 128 320 128C303.3 128 287.5 131.4 272.9 137.2zM320 448c-106.5 0-204.3-71.98-255-187.3C64.58 259.6 64.05 256.9 63.1 256.2c.0547-1.146 .5859-3.783 .7695-4.363c12.84-29.22 28.7-55.61 46.89-78.8l-25.05-19.78c-20.06 25.52-37.34 54.31-51.13 85.71C33.56 243.4 31.1 251 31.1 256c0 4.977 1.562 12.6 3.469 17.03c54.25 123.4 161.6 206.1 284.5 206.1c48.13 0 93.81-12.96 134.9-35.96l-27.74-21.9C393.6 438.7 357.4 448 320 448zM320 64c106.5 0 204.3 71.98 255 187.3c.3945 1.08 .9238 3.713 .9785 4.443c-.0547 1.145-.5859 3.783-.7695 4.361c-12.84 29.22-28.69 55.61-46.88 78.79l25.05 19.78c20.06-25.52 37.33-54.3 51.13-85.7c1.906-4.43 3.469-12.07 3.469-17.03c0-4.977-1.562-12.6-3.469-17.03c-54.25-123.4-161.6-206.1-284.5-206.1c-48.13 0-93.8 12.96-134.9 35.95l27.74 21.9C246.4 73.33 282.6 64 320 64zM320 384c16.68 0 32.56-3.42 47.17-9.229l-30.92-24.41c-5.307 .9121-10.68 1.644-16.25 1.644c-50.8 0-92.09-39.78-95.37-89.76L193.8 237.9C192.1 243.9 192 249.8 192 256C192 326.7 249.3 384 320 384zM633.9 483.4L25.9 3.42C18.1-2.033 8.936-.8301 3.436 6.061c-5.469 6.938-4.281 17 2.656 22.49l608 480C617 510.9 620.5 512 624 512c4.719 0 9.406-2.094 12.56-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
                     ) : (
@@ -120,18 +120,25 @@ const SigninPage = () => {
                   <span className="sr-only">
                     {showPassword ? 'Hide' : 'Show'}
                   </span>
-                </button>
+                </Button>
               ),
             }}
           />
 
           <div className="rw-link mt-1">
-            <Link to={routes.forgotPassword()} className="rw-forgot-link">
+            <Link to={routes.forgotPassword()} className="rw-link">
               Forgot da Password?
             </Link>
           </div>
 
-          <Submit className="rw-button rw-button-blue my-3">Login</Submit>
+          <Button
+            type="submit"
+            color="success"
+            variant="contained"
+            className="my-3"
+          >
+            Login
+          </Button>
 
           <div className="space-x-2 text-sm text-gray-300 dark:text-stone-300">
             <span>Don&apos;t have an account?</span>

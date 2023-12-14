@@ -19,7 +19,7 @@ import {
   CardHeader,
 } from "src/components/Util/Card/Card";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input, InputOutlined } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
@@ -205,7 +205,7 @@ const LootcratesList = ({
                 direction: prev.direction === "asc" ? "desc" : "asc",
               }));
             }}
-              title={sort.direction == "asc" ? "Ascending " : "Descending"} variant="outlined" className="-ml-[0.5px] rounded-l-none" color="secondary">
+              title={sort.direction == "asc" ? "Ascending " : "Descending"} variant="outlined" className="-mr-px rounded-l-none" color="secondary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 320 512"
@@ -234,14 +234,17 @@ const LootcratesList = ({
               <span className="sr-only">Filters</span>
             </Button>
 
-            <InputOutlined
+            <Input
               name="search"
               type="search"
               label="Search"
-              className="grow not-only:rounded-l-none"
+              margin="none"
               fullWidth
               defaultValue={search}
               disabled={loading}
+              SuffixProps={{
+                className: "rounded-l-none lg:rounded-l"
+              }}
               InputProps={{
                 endAdornment: (
                   <>

@@ -4,14 +4,13 @@ import {
   FieldError,
   Label,
   TextField,
-  RadioField,
   Submit,
 } from "@redwoodjs/forms";
 
 import type { EditDinoStatById, UpdateDinoStatInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 
 type FormDinoStat = NonNullable<EditDinoStatById["dinoStat"]>;
 
@@ -72,7 +71,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
             label="Type"
           />
 
-          <InputOutlined
+          <Input
             name="value"
             type="number"
             defaultValue={props.dinoStat?.value}

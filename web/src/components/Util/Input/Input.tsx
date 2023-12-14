@@ -1133,20 +1133,19 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
             formControl.shrink
           )
         ) ||
-          formControl.filled ||
-          formControl.adornedStart ||
+          // formControl.filled ||
+          // formControl.adornedStart ||
           type === "date" ||
           type === "datetime"
           ? "placeholder:opacity-0"
-          : "placeholder:opacity-100"
-        } focus:outline-none box-content disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent
+          : "placeholder:opacity-50"
+        } placeholder:transition-opacity placeholder:duration-200 placeholder:text-current focus:outline-none box-content disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent
         ${inputSize[ownerState.variant][ownerState.size]}`, {
         "pl-0": startAdornment && (ownerState.variant === "filled" || ownerState.variant === "outlined"),
         "pr-0": endAdornment && (ownerState.variant === "filled" || ownerState.variant === "outlined")
       }),
     };
 
-    inputProps = { ...inputProps };
     return (
       <Fragment>
         <div
@@ -1630,11 +1629,6 @@ export const ColorInput = () => {
       active: false,
     },
     {
-      value: "hwb",
-      label: "HWB",
-      active: false,
-    },
-    {
       value: "hsl",
       label: "HSL",
       active: false,
@@ -1706,17 +1700,6 @@ export const ColorInput = () => {
       s = Math.round(s * 100);
       l = Math.round(l * 100);
       return `hsl(${h}, ${s}%, ${l}%)`;
-    } else if (format === "hwb") {
-      // Convert RGB to HWB
-      const max = Math.max(r, g, b) / 255;
-      const min = Math.min(r, g, b) / 255;
-      const c = max - min;
-      const bValue = 1 - max;
-      const w = (1 - max) * 100;
-
-      return `hwb(${Math.round((r / 255) * 360)}, ${Math.round(
-        (g / 255) * 100
-      )}%, ${Math.round((b / 255) * 100)}%, ${w}%)`;
     } else {
       return "Invalid format";
     }
@@ -1773,60 +1756,6 @@ export const ColorInput = () => {
           .slice(1);
         return `#${hex}`;
       }
-    }
-
-    // Handle HWB format
-    if (/^hwb\(/.test(color)) {
-      const hwbValues = color.match(/\d+/g);
-      const [h2, w2, b2] = hwbValues.map(Number);
-
-      console.log(h2, w2, b2);
-      // Convert HWB to HEX (Note: This is a simplified example)
-      const h = h2;
-      const w = w2 / 100;
-      const b = b2 / 100;
-      const s = 1 - w / (1 - b);
-      const l = (1 - b) * (1 - s / 2);
-      const c = 2 * (1 - l) - 1;
-      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-      const m = l - c / 2;
-      let r, g, bValue;
-
-      if (h >= 0 && h < 60) {
-        r = c;
-        g = x;
-        bValue = 0;
-      } else if (h >= 60 && h < 120) {
-        r = x;
-        g = c;
-        bValue = 0;
-      } else if (h >= 120 && h < 180) {
-        r = 0;
-        g = c;
-        bValue = x;
-      } else if (h >= 180 && h < 240) {
-        r = 0;
-        g = x;
-        bValue = c;
-      } else if (h >= 240 && h < 300) {
-        r = x;
-        g = 0;
-        bValue = c;
-      } else {
-        r = c;
-        g = 0;
-        bValue = x;
-      }
-
-      r = Math.round((r + m) * 255);
-      g = Math.round((g + m) * 255);
-      bValue = Math.round((bValue + m) * 255);
-
-      const hex = `#${((1 << 24) | (r << 16) | (g << 8) | bValue)
-        .toString(16)
-        .slice(1)}`;
-      console.log(hex);
-      return hex;
     }
 
     return color;
@@ -1890,63 +1819,9 @@ export const ColorInput = () => {
           let b = parseInt(hex.slice(4, 6), 16);
           console.log(`RGB: ${r}, ${g}, ${b}`);
           setColor(`rgb(${r}, ${g}, ${b})`);
-        } else if (color.startsWith("hwb")) {
-          // Convert HWB to RGB (Note: This is a simplified example)
-          const hwbValues = color
-            .replace("hwb(", "")
-            .split(",")
-            .map((val) => parseFloat(val));
-          const h = hwbValues[0];
-          const w = hwbValues[1];
-          const b1 = hwbValues[2];
-          const i = Math.floor(h / 60);
-          const f = h / 60 - i;
-          const q = 1 - w;
-          const p = 1 - b1 * q;
-          let r, g, b;
-
-          switch (i) {
-            case 0:
-              r = 1;
-              g = f;
-              b = 0;
-              break;
-            case 1:
-              r = 1 - f;
-              g = 1;
-              b = 0;
-              break;
-            case 2:
-              r = 0;
-              g = 1;
-              b = f;
-              break;
-            case 3:
-              r = 0;
-              g = 1 - f;
-              b = 1;
-              break;
-            case 4:
-              r = f;
-              g = 0;
-              b = 1;
-              break;
-            default:
-              r = 1;
-              g = 0;
-              b = 1 - f;
-              break;
-          }
-
-          r = Math.round(r * 255);
-          g = Math.round(g * 255);
-          b = Math.round(b * 255);
-
-          console.log(`RGB: ${r}, ${g}, ${b}`);
-          setColor(`rgb(${r}, ${g}, ${b})`);
         } else if (color.startsWith("hsl")) {
           // Convert HSL to RGB (Note: This is a simplified example)
-          const hslValues = color.split(",").map((val) => parseFloat(val));
+          const hslValues = color.split(",").map((val) => parseFloat(val.replace(/\D/g, '')));
           const h = hslValues[0];
           const s = hslValues[1] / 100;
           const l = hslValues[2] / 100;
@@ -2007,57 +1882,6 @@ export const ColorInput = () => {
             .slice(1)}`;
           console.log(`HEX: ${hex}`);
           setColor(hex);
-        } else if (color.startsWith("hwb")) {
-          // Convert HWB to HEX (Note: This is a simplified example)
-          const hwbValues = color
-            .replace("hwb(", "")
-            .split(",")
-            .map((val) => parseFloat(val));
-          const h = hwbValues[0];
-          const w = hwbValues[1] / 100;
-          const b = hwbValues[2] / 100;
-          const s = 1 - w / (1 - b);
-          const l = (1 - b) * (1 - s / 2);
-          const c = 2 * (1 - l) - 1;
-          const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-          const m = l - c / 2;
-          let r, g, bValue;
-
-          if (h >= 0 && h < 60) {
-            r = c;
-            g = x;
-            bValue = 0;
-          } else if (h >= 60 && h < 120) {
-            r = x;
-            g = c;
-            bValue = 0;
-          } else if (h >= 120 && h < 180) {
-            r = 0;
-            g = c;
-            bValue = x;
-          } else if (h >= 180 && h < 240) {
-            r = 0;
-            g = x;
-            bValue = c;
-          } else if (h >= 240 && h < 300) {
-            r = x;
-            g = 0;
-            bValue = c;
-          } else {
-            r = c;
-            g = 0;
-            bValue = x;
-          }
-
-          r = Math.round((r + m) * 255);
-          g = Math.round((g + m) * 255);
-          bValue = Math.round((bValue + m) * 255);
-
-          const hex = `#${((1 << 24) | (r << 16) | (g << 8) | bValue)
-            .toString(16)
-            .slice(1)}`;
-          console.log(`HEX: ${hex}`);
-          setColor(hex);
         } else if (color.startsWith("hsl")) {
           // Convert HSL to HEX (Note: This is a simplified example)
 
@@ -2066,65 +1890,6 @@ export const ColorInput = () => {
           console.error("Invalid input format for HEX conversion");
         }
         break;
-
-      case "hwb":
-        if (color.startsWith("#")) {
-          // Convert HEX to HWB (Note: This is a simplified example)
-          const hex = color.replace(/^#/, ""); // Remove the '#' symbol if present
-          const r = parseInt(hex.slice(0, 2), 16) / 255;
-          const g = parseInt(hex.slice(2, 4), 16) / 255;
-          const b = parseInt(hex.slice(4, 6), 16) / 255;
-
-          const max = Math.max(r, g, b);
-          const min = Math.min(r, g, b);
-          const delta = max - min;
-          let h, w, bValue;
-
-          if (delta === 0) {
-            h = 0;
-            w = 1 - max;
-            bValue = max;
-          } else if (max === r) {
-            h = ((g - b) / delta) % 6;
-          } else if (max === g) {
-            h = (b - r) / delta + 2;
-          } else {
-            h = (r - g) / delta + 4;
-          }
-
-          h = Math.round((h * 60 + 360) % 360);
-          w = Math.round((1 - max) * 100);
-          bValue = Math.round(max * 100);
-
-          console.log(`HWB: ${h}, ${w}%, ${bValue}%`);
-          setColor(`hwb(${h}, ${w}%, ${bValue}%)`);
-        } else if (color.startsWith("hsl")) {
-          console.log("HSL", arrayRotate(format, -1)[0].value);
-          // Convert HSL to HWB (Note: This is a simplified example)
-          const hslValues = color
-            .replace("hsl(", "")
-            .split(",")
-            .map((val) => parseFloat(val));
-          console.log("HSLVALUES", hslValues);
-
-          let h = (hslValues[0] % 360) / 360;
-          let s = Math.min(1, Math.max(0, hslValues[1] / 100));
-          let l = Math.min(1, Math.max(0, hslValues[2] / 100));
-
-          let W = s / (s + l);
-          let B = l / (s + l);
-          const w = (1 - s) * l;
-          const bValue = 1 - l;
-          console.log(`HWB: ${h * 360}, ${W}%, ${B}%`);
-          console.log(
-            `HWB: ${h}, ${Math.round(w * 100)}%, ${Math.round(bValue * 100)}%`
-          );
-          setColor(`hwb(${h * 360} ${Math.floor(W)}% ${Math.floor(B)}%)`);
-        } else {
-          console.error("Invalid input format for HWB conversion");
-        }
-        break;
-
       case "hsl":
         if (color.startsWith("#")) {
           // Convert HEX to HSL (Note: This is a simplified example)
@@ -2162,23 +1927,6 @@ export const ColorInput = () => {
 
           console.log(`HSL: ${h}, ${s}%, ${l}%`);
           setColor(`hsl(${h}, ${s}%, ${l}%)`);
-        } else if (color.startsWith("hwb")) {
-          // Convert HWB to HSL (Note: This is a simplified example)
-          const hwbValues = color
-            .replace("hwb(", "")
-            .split(" ")
-            .map((val) => parseFloat(val));
-          const h = hwbValues[0];
-          const w = hwbValues[1] / 100;
-          const b = hwbValues[2] / 100;
-          const s = 1 - w / (1 - b);
-          const l = (1 - b) * (1 - s / 2);
-          console.log(
-            `HSL: ${h}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%`
-          );
-          setColor(
-            `hsl(${h}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`
-          );
         } else {
           console.error("Invalid input format for HSL conversion");
         }
