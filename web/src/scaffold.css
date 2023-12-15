@@ -630,8 +630,6 @@
     z-index: -1;
   }
 
-  /* || Transitions */
-
   /* || Toasts */
   .rw-toast {
     @apply rounded-lg border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-700 dark:text-white;

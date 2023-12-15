@@ -80,44 +80,7 @@ function createFilterOptions<Value>(
       : filteredOptions;
   };
 }
-type SelectOption = {
-  label?: string;
-  value?: string | number;
-  image?: string;
-  disabled?: boolean;
-  /**
-   * @private
-   * @ignore
-   */
-  isSelected?: boolean;
-  /**
-   * @private
-   * @ignore
-   */
-  inSearch?: boolean;
-};
 
-type MultiSelectLookupProps = {
-  multiple: true;
-  defaultValue?: string[] | number[];
-  /**
-   * The value must have reference equality with the option in order to be selected.
-   * You can customize the equality behavior with the `isOptionEqualToValue` prop.
-   */
-  value?: SelectOption[];
-  onSelect?: (value: SelectOption[]) => void;
-};
-
-type SingleSelectLookupProps = {
-  multiple?: false;
-  defaultValue?: string | number;
-  /**
-   * The value must have reference equality with the option in order to be selected.
-   * You can customize the equality behavior with the `isOptionEqualToValue` prop.
-   */
-  value?: SelectOption;
-  onSelect?: (value: SelectOption) => void;
-};
 
 export type LookupChangeReason =
   | "createOption"

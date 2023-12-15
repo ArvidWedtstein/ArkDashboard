@@ -4,14 +4,16 @@ import { Transition } from 'react-transition-group';
 import clsx from "clsx";
 import { Controller, FieldError, RegisterOptions, UseControllerReturn } from "@redwoodjs/forms";
 import Button from "../Button/Button";
+import { useControlled } from "src/lib/formatters";
 type ColorInputProps = {
   autoComplete?: string;
   autoFocus?: boolean;
   children?: ReactNode;
   className?: string;
   color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
-  defaultValue?: string | number | readonly string[];
+  defaultValue?: string;
   disabled?: boolean;
+  outputColorFormat?: 'hex' | 'rgb' | 'hsl'
   error?: boolean;
   FormHelperTextProps?: Partial<HTMLAttributes<HTMLParagraphElement>>;
   fullWidth?: boolean;
@@ -22,7 +24,6 @@ type ColorInputProps = {
   SuffixProps?: Partial<HTMLAttributes<HTMLFieldSetElement>>;
   inputRef?: React.Ref<any>;
   label?: ReactNode;
-  multiline?: boolean;
   name?: string;
   onBlur?: InputBaseProps["onBlur"];
   onFocus?: InputBaseProps["onFocus"];
@@ -31,14 +32,10 @@ type ColorInputProps = {
   >;
   placeholder?: string;
   required?: boolean;
-  rows?: number;
-  maxRows?: string | number;
-  minRows?: string | number;
   margin?: "dense" | "normal" | "none";
   variant?: "standard" | "filled" | "outlined";
   size?: "small" | "medium" | "large";
-  type?: InputHTMLAttributes<HTMLInputElement>["type"];
-  value?: string | number | readonly string[];
+  value?: string;
   validation?: RegisterOptions & {
     valueAsBoolean?: boolean;
     valueAsJSON?: boolean;
@@ -51,9 +48,9 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
     children,
     className,
     color = "DEFAULT",
-    defaultValue,
+    defaultValue = "#000000",
+    outputColorFormat = "hex",
     disabled = false,
-    error = false,
     FormHelperTextProps,
     fullWidth = false,
     helperText,
@@ -62,56 +59,83 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
     InputProps,
     inputRef,
     label,
-    maxRows,
-    minRows,
-    multiline = false,
     name,
     onBlur,
     onChange,
     onFocus,
     placeholder,
-    rows,
     SuffixProps,
-    type,
-    value,
+    value: valueProp,
     variant = "outlined",
     size = "medium",
     margin = "normal",
     validation,
     ...other
   } = props;
-  const [selectedColor, setSelectedColor] = useState("#000000");
+
+  const [value, setValueState] = useControlled({
+    controlled: valueProp,
+    default: defaultValue,
+    name: 'ColorInput',
+  });
+
+  const [inputValue, setInputValueState] = useControlled({
+    default: defaultValue,
+    name: 'ColorInput',
+    state: "inputValue",
+  });
+
+  const [error, setError] = useState(false);
+
   type FormatType = {
     value: 'hex' | 'rgb' | 'hsl'
     label: string
+    regex: RegExp;
     active: boolean
   }
   const [format, setFormat] = useState<FormatType[]>([
     {
       value: "hex",
       label: "HEX",
+      regex: /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i,
       active: true,
     },
     {
       value: "rgb",
       label: "RGB",
+      regex: /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i,
       active: false,
     },
     {
       value: "hsl",
       label: "HSL",
+      regex: /^hsl\(\s*(\d+)\s*,\s*(\d+%)\s*,\s*(\d+%)\s*\)$/i,
       active: false,
     },
   ]);
 
-  const handleColorChange = (event) => {
+  const isValidColor = (input: string, formats: 'hex' | 'rgb' | 'hsl'): boolean => {
+    const formatRegex = format.find((f) => f.value === formats)?.regex;
+    return formatRegex.test(input) ?? false;
+  }
+
+  const handleColorChange = (event, field, colorPicker: boolean = false) => {
     const { value } = event.target;
-    setSelectedColor(convertColor('hex', format.find((item) => item.active).value, value));
+    setInputValueState(convertColor(colorPicker ? 'hex' : format.find((item) => item.active).value, format.find((item) => item.active).value, value));
+
+    field?.onChange(convertColor(colorPicker ? 'hex' : format.find((item) => item.active).value, outputColorFormat, value));
+
+    // console.log(convertColor(colorPicker ? 'hex' : format.find((item) => item.active).value, format.find((item) => item.active).value, value))
+    const isColorValid = isValidColor(convertColor(colorPicker ? 'hex' : format.find((item) => item.active).value, format.find((item) => item.active).value, value), format.find((item) => item.active).value)
+    setError(!isColorValid);
+    if (value && isColorValid) {
+      setValueState(convertColor(colorPicker ? 'hex' : format.find((item) => item.active).value, outputColorFormat, value));
+      console.log('VALID')
+    }
   };
 
   const swapColor = () => {
     setFormat((prevFormat) => {
-      console.log("Before Update:", prevFormat);
 
       const currentIndex = prevFormat.findIndex((item) => item.active);
 
@@ -128,15 +152,12 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
         // Activate the next format
         newFormat[nextIndex].active = true;
 
-        console.log("After Update:", newFormat);
 
-        setSelectedColor(
-          convertColor(
-            prevFormat.find((item) => item.active).value,
-            newFormat.find((item) => item.active).value,
-            selectedColor
-          )
-        );
+        setInputValueState(convertColor(
+          prevFormat.find((item) => item.active).value,
+          newFormat.find((item) => item.active).value,
+          inputValue
+        ))
 
         return newFormat;
       }
@@ -332,7 +353,6 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
     disabled,
     error,
     fullWidth,
-    multiline,
     variant,
     ...validation,
   };
@@ -342,7 +362,7 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
       <FormControl
         className={className}
         disabled={disabled || field?.disabled}
-        error={error || Boolean(fieldState?.error)}
+        error={error || Boolean(fieldState?.error) || fieldState?.invalid}
         fullWidth={fullWidth}
         ref={ref}
         required={Boolean(validation?.required)}
@@ -363,22 +383,14 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
           </InputLabel>
         )}
 
-        <input hidden name={name} value={selectedColor} />
-
         <InputBase
           label={label}
           aria-describedby={helperTextId}
           autoComplete={autoComplete}
           autoFocus={autoFocus}
-          defaultValue={defaultValue}
           fullWidth={fullWidth}
-          multiline={multiline}
-          // name={name}
-          rows={rows}
-          maxRows={maxRows}
-          minRows={minRows}
-          type={type}
-          value={value}
+          type={"text"}
+          value={inputValue}
           id={id}
           ref={field ? field.ref : null}
           inputRef={inputRef}
@@ -388,9 +400,7 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
           }}
           onChange={(e) => {
             onChange?.(e);
-            field?.onChange(e);
-
-            handleColorChange(e);
+            handleColorChange(e, field);
           }}
           onFocus={onFocus}
           placeholder={placeholder}
@@ -425,15 +435,12 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
                         state.focused ||
                         state.filled ||
                         state.startAdornment ||
-                        props?.InputLabelProps?.shrink ||
-                        type === "date" ||
-                        type === "datetime" || props.InputProps?.startAdornment,
+                        props?.InputLabelProps?.shrink || props.InputProps?.startAdornment,
                       "max-w-[0.001px]":
                         !state.focused &&
                         !state.filled &&
                         !state.startAdornment &&
-                        !props?.InputLabelProps?.shrink &&
-                        !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
+                        !props?.InputLabelProps?.shrink && !props.InputProps?.startAdornment,
                     }
                   )}
                 >
@@ -457,9 +464,13 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
             <div className="overflow-hidden inline-flex items-center justify-center rounded-full border border-black/20 dark:border-white/20 ">
               <input
                 className="w-8 h-8 appearance-none rounded-full overflow-hidden outline-transparent p-0 m-0"
-                onChange={(e) => setSelectedColor(convertColor('hex', format?.find((item) => item.active).value, e.target.value))}
+                onChange={(e) => {
+                  handleColorChange(e, field, true);
+                  onChange?.(e);
+                }}
                 type="color"
-                value={convertColor(format?.find((item) => item.active).value, 'hex', selectedColor)}
+                name={name}
+                value={value}
               />
             </div>
           )}
@@ -467,21 +478,11 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
             <>
               <div className="p-0 relative max-w-[3rem] select-none overflow-hidden text-center">
                 <div className="relative flex justify-start items-center w-full transition-transform transform" style={{ transform: `translate3d(${-format.indexOf(format.find(f => f.active)) * 100}%, 0, 0)` }}>
-                  <div className={clsx("min-w-[3rem] h-full text-center")}>
-                    <span className="">
-                      HEX
-                    </span>
-                  </div>
-                  <div className={clsx("min-w-[3rem] h-full text-center")}>
-                    <span className="">
-                      RGB
-                    </span>
-                  </div>
-                  <div className={clsx("min-w-[3rem] h-full text-center")}>
-                    <span className="">
-                      HSL
-                    </span>
-                  </div>
+                  {format.map((f) => (
+                    <div className={clsx("min-w-[3rem] h-full text-center")} key={f.value}>
+                      {f.label}
+                    </div>
+                  ))}
                 </div>
               </div>
               <Button
@@ -540,13 +541,13 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
       {name ? (
         <Controller
           name={name}
-          defaultValue={defaultValue || value}
+          defaultValue={value}
           rules={validation}
           render={renderFormControl}
         />
       ) : renderFormControl({ field: null, fieldState: null, formState: null })}
 
-      <div className="rw-button-group">
+      {/* <div className="rw-button-group">
         <input
           type="text"
           value={selectedColor}
@@ -606,7 +607,7 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
           </Transition>
         </button>
 
-      </div>
+      </div> */}
     </>
   );
 });

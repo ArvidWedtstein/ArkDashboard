@@ -2,6 +2,7 @@ import {
   Controller,
   FieldError,
   RegisterOptions,
+  useController,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
 import {
@@ -1063,262 +1064,141 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   const helperTextId = helperText && id ? `${id}-helper-text` : undefined;
   const inputLabelId = label && id ? `${id}-label` : undefined;
 
+
+  const { field, fieldState, formState } = !!name &&
+    useController({
+      name: name,
+      defaultValue: defaultValue || value,
+      rules: validation,
+    });
+
   return (
-    <>
-      {name ? (
-        <Controller
-          name={name}
-          defaultValue={defaultValue || value}
-          rules={validation}
-          render={({ field, fieldState, formState }) => (
-            <FormControl
-              className={className}
-              disabled={disabled || field.disabled}
-              error={error || Boolean(fieldState.error)}
-              fullWidth={fullWidth}
-              ref={ref}
-              required={Boolean(validation?.required)}
-              color={color}
-              variant={variant}
-              ownerState={ownerState}
-              margin={margin}
-              size={size}
-              {...other}
-            >
-              {label != null && label !== "" && (
-                <InputLabel
-                  htmlFor={id}
-                  id={inputLabelId}
-                  {...InputLabelProps}
-                >
-                  {label}
-                </InputLabel>
-              )}
-
-              <InputBase
-                label={label}
-                aria-describedby={helperTextId}
-                autoComplete={autoComplete}
-                autoFocus={autoFocus}
-                defaultValue={defaultValue}
-                fullWidth={fullWidth}
-                multiline={multiline}
-                name={name}
-                rows={rows}
-                maxRows={maxRows}
-                minRows={minRows}
-                type={type}
-                value={value}
-                id={id}
-                ref={field ? field.ref : null}
-                inputRef={inputRef}
-                onBlur={(e) => {
-                  onBlur?.(e);
-                  field?.onBlur();
-                }}
-                onChange={(e) => {
-                  onChange?.(e);
-                  field?.onChange(e);
-                }}
-                onFocus={onFocus}
-                placeholder={placeholder}
-                // inputProps={InputProps?.inputProps}
-                {...InputProps}
-                renderSuffix={(state) =>
-                  variant === "outlined" ? (
-                    <fieldset
-                      {...SuffixProps}
-                      aria-hidden
-                      className={clsx(
-                        `absolute border text-left transition-colors duration-75 ease-in ${borders[
-                        disabled || state.disabled
-                          ? "disabled"
-                          : error || state.error || Boolean(fieldState?.error) || fieldState?.invalid
-                            ? 'error'
-                            : state.focused
-                              ? color
-                              : "DEFAULTNOFOCUS"
-                        ]
-                        } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
-                        {
-                          "border-2": state.focused,
-                        },
-                        SuffixProps?.className
-                      )}
-                    >
-                      <legend
-                        className={clsx(
-                          "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
-                          {
-                            "max-w-full":
-                              state.focused ||
-                              state.filled ||
-                              state.startAdornment ||
-                              props?.InputLabelProps?.shrink ||
-                              type === "date" ||
-                              type === "datetime" || props.InputProps?.startAdornment,
-                            "max-w-[0.001px]":
-                              !state.focused &&
-                              !state.filled &&
-                              !state.startAdornment &&
-                              !props?.InputLabelProps?.shrink &&
-                              !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
-                          }
-                        )}
-                      >
-                        {label && label !== "" && (
-                          <span className={"visible inline-block px-[5px] opacity-0"}>
-                            {state.required ? (
-                              <React.Fragment>
-                                {label}
-                                &thinsp;{"*"}
-                              </React.Fragment>
-                            ) : (
-                              label
-                            )}
-                          </span>
-                        )}
-                      </legend>
-                    </fieldset>
-                  ) : null
-                }
-              />
-              {helperText && (
-                <p
-                  id={helperTextId}
-                  className={clsx("rw-helper-text", {
-                    "!text-red-500": error || fieldState.error || fieldState.invalid,
-                    "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field.disabled) && !(error || fieldState.error || fieldState.invalid)
-                  })}
-                  {...FormHelperTextProps}
-                >
-                  {helperText}
-                </p>
-              )}
-
-              <FieldError name={name} className="rw-field-error" />
-            </FormControl>
-          )}
-        />
-      ) : (
-        <FormControl
-          className={className}
-          disabled={disabled}
-          error={error}
-          fullWidth={fullWidth}
-          ref={ref}
-          required={Boolean(validation?.required)}
-          color={color}
-          variant={variant}
-          ownerState={ownerState}
-          margin={margin}
-          size={size}
-          {...other}
+    <FormControl
+      className={className}
+      disabled={disabled || field?.disabled}
+      error={error || Boolean(fieldState?.error)}
+      fullWidth={fullWidth}
+      ref={ref}
+      required={Boolean(validation?.required)}
+      color={color}
+      variant={variant}
+      ownerState={ownerState}
+      margin={margin}
+      size={size}
+      {...other}
+    >
+      {label != null && label !== "" && (
+        <InputLabel
+          htmlFor={id}
+          id={inputLabelId}
+          {...InputLabelProps}
         >
-          {label != null && label !== "" && (
-            <InputLabel
-              htmlFor={id}
-              id={inputLabelId}
-              required={Boolean(validation?.required)}
-              {...InputLabelProps}
-            >
-              {label}
-            </InputLabel>
-          )}
-
-          <InputBase
-            label={label}
-            aria-describedby={helperTextId}
-            autoComplete={autoComplete}
-            autoFocus={autoFocus}
-            defaultValue={defaultValue}
-            fullWidth={fullWidth || false}
-            multiline={multiline}
-            name={name}
-            rows={rows}
-            maxRows={maxRows}
-            minRows={minRows}
-            type={type}
-            value={value}
-            id={id}
-            inputRef={inputRef}
-            onBlur={onBlur}
-            onChange={onChange}
-            onFocus={onFocus}
-            placeholder={placeholder}
-            {...InputProps}
-            renderSuffix={(state) =>
-              variant === "outlined" ? (
-                <fieldset
-                  {...SuffixProps}
-                  aria-hidden
-                  className={clsx(
-                    `absolute border text-left transition-colors duration-75 ease-in ${borders[
-                    disabled || state.disabled
-                      ? "disabled"
-                      : error || state.error
-                        ? 'error'
-                        : state.focused
-                          ? color
-                          : "DEFAULTNOFOCUS"
-                    ]
-                    } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
-                    {
-                      "border-2": state.focused,
-                    },
-                    SuffixProps?.className
-                  )}
-                >
-                  <legend
-                    className={clsx(
-                      "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
-                      {
-                        "max-w-full":
-                          state.focused ||
-                          state.filled ||
-                          props?.InputLabelProps?.shrink ||
-                          type === "date" ||
-                          type === "datetime" || props.InputProps?.startAdornment,
-                        "max-w-[0.001px]":
-                          !state.focused &&
-                          !state.filled &&
-                          !props?.InputLabelProps?.shrink &&
-                          !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
-                      }
-                    )}
-                  >
-                    {label && label !== "" && (
-                      <span className={"visible inline-block px-[5px] opacity-0"}>
-                        {state.required ? (
-                          <React.Fragment>
-                            {label}
-                            &thinsp;{"*"}
-                          </React.Fragment>
-                        ) : (
-                          label
-                        )}
-                      </span>
-                    )}
-                  </legend>
-                </fieldset>
-              ) : null
-            }
-          />
-
-          {helperText && (
-            <p
-              id={helperTextId}
-              className={clsx("rw-helper-text", {
-                "!text-red-500": error,
-                "dark:!text-white/50 !text-black/50": disabled && !error
-              })}
-              {...FormHelperTextProps}
-            >
-              {helperText}
-            </p>
-          )}
-        </FormControl>
+          {label}
+        </InputLabel>
       )}
-    </>
+
+      <InputBase
+        label={label}
+        aria-describedby={helperTextId}
+        autoComplete={autoComplete}
+        autoFocus={autoFocus}
+        defaultValue={defaultValue}
+        fullWidth={fullWidth}
+        multiline={multiline}
+        name={name}
+        rows={rows}
+        maxRows={maxRows}
+        minRows={minRows}
+        type={type}
+        value={value}
+        id={id}
+        ref={field ? field.ref : null}
+        inputRef={inputRef}
+        onBlur={(e) => {
+          onBlur?.(e);
+          field?.onBlur();
+        }}
+        onChange={(e) => {
+          onChange?.(e);
+          field?.onChange(e);
+        }}
+        onFocus={onFocus}
+        placeholder={placeholder}
+        // inputProps={InputProps?.inputProps}
+        {...InputProps}
+        renderSuffix={(state) =>
+          variant === "outlined" ? (
+            <fieldset
+              {...SuffixProps}
+              aria-hidden
+              className={clsx(
+                `absolute border text-left transition-colors duration-75 ease-in ${borders[
+                disabled || state.disabled
+                  ? "disabled"
+                  : error || state.error || Boolean(fieldState?.error) || fieldState?.invalid
+                    ? 'error'
+                    : state.focused
+                      ? color
+                      : "DEFAULTNOFOCUS"
+                ]
+                } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
+                {
+                  "border-2": state.focused,
+                },
+                SuffixProps?.className
+              )}
+            >
+              <legend
+                className={clsx(
+                  "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
+                  {
+                    "max-w-full":
+                      state.focused ||
+                      state.filled ||
+                      state.startAdornment ||
+                      props?.InputLabelProps?.shrink ||
+                      type === "date" ||
+                      type === "datetime" || props.InputProps?.startAdornment,
+                    "max-w-[0.001px]":
+                      !state.focused &&
+                      !state.filled &&
+                      !state.startAdornment &&
+                      !props?.InputLabelProps?.shrink &&
+                      !(type === "date" || type === "datetime") && !props.InputProps?.startAdornment,
+                  }
+                )}
+              >
+                {label && label !== "" && (
+                  <span className={"visible inline-block px-[5px] opacity-0"}>
+                    {state.required ? (
+                      <React.Fragment>
+                        {label}
+                        &thinsp;{"*"}
+                      </React.Fragment>
+                    ) : (
+                      label
+                    )}
+                  </span>
+                )}
+              </legend>
+            </fieldset>
+          ) : null
+        }
+      />
+      {helperText && (
+        <p
+          id={helperTextId}
+          className={clsx("rw-helper-text", {
+            "!text-red-500": error || fieldState?.error || fieldState?.invalid,
+            "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
+          })}
+          {...FormHelperTextProps}
+        >
+          {helperText}
+        </p>
+      )}
+
+      {field && (<FieldError name={name} className="rw-field-error" />)}
+    </FormControl>
   );
 });
