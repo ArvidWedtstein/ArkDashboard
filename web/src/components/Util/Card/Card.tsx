@@ -16,7 +16,7 @@ import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
 import { IntRange } from "src/lib/formatters";
 
-type CardProps = {
+export type CardProps = {
   sx?: CSSProperties;
   children?: ReactNode | ReactNode[];
   variant?: "standard" | "outlined" | "elevation" | "gradient";
@@ -151,13 +151,13 @@ type CardMediaDiv = CardMediaBaseProps & {
 type CardMediaProps = CardMediaDiv | CardMediaImg;
 export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
   if (component === "img") {
-    const { alt, height, className, image, ...imgprops } =
+    const { alt, height, className, image, sx, ...imgprops } =
       props as CardMediaImg;
     return (
       <img
         className={className}
         src={image}
-        style={props.sx}
+        style={sx}
         title={props.title}
         alt={alt}
         height={height}
@@ -165,16 +165,17 @@ export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
       />
     );
   } else {
-    const { sx, image, title, className, children } = props;
+    const { sx, image, title, className, children, ...divProps } = props;
     return (
       <div
         className={clsx("block !bg-cover bg-center bg-no-repeat", className)}
         role="img"
         style={{
           ...sx,
-          backgroundImage: `url(${image})`,
+          background: `url(${image})`,
         }}
         title={title}
+        {...divProps}
       >
         {children}
       </div>

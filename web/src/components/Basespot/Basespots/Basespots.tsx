@@ -21,7 +21,7 @@ import { Input } from "src/components/Util/Input/Input";
 
 
 const QUERY = gql`
-  query FindNewBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String) {
+  query FindMoreBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String) {
     basespotPagination(cursorId: $cursorId, take: $take, skip: $skip, map: $map, type: $type) {
       __typename
       basespots {

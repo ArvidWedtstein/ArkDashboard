@@ -1771,6 +1771,8 @@ export const Lookup = <
             {helperText}
           </p>
         )}
+
+        {field && (<FieldError name={name} className="rw-field-error" />)}
       </FormControl>
 
       {/* Dropdown Menu */}

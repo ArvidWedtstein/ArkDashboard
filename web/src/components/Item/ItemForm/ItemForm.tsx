@@ -22,6 +22,7 @@ import ItemRecipesCell from "src/components/ItemRecipe/ItemRecipesCell";
 import NewItemRecipe from "src/components/ItemRecipe/NewItemRecipe/NewItemRecipe";
 import Button from "src/components/Util/Button/Button";
 import ColorInput from "src/components/Util/ColorInput/ColorInput";
+import Slideshow from "src/components/Util/Slideshow/Slideshow";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 
@@ -105,7 +106,13 @@ const ItemForm = (props: ItemFormProps) => {
   //   control,
   //   name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert", // the name of the field array in your form data
   // });
-
+  const pics = [
+    "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
+    "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
+    "https://wallpapercave.com/wp/wp10504822.jpg",
+    "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
+    "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
+  ]
   return (
     <div className="rw-form-wrapper">
       <Form<FormItem>
@@ -163,6 +170,64 @@ const ItemForm = (props: ItemFormProps) => {
             />
             {/* TODO: test*/}
             <ColorInput label="Color" />
+
+
+            <Slideshow imageTabs autoPlay={false} slides={pics.map((img) => ({ url: img }))} />
+            <Slideshow
+              className="mb-6"
+              controls={true}
+              autoPlay={false}
+              slides={[
+                {
+                  title: "Tip #1",
+                  content: (
+                    <div className="flex justify-center px-5 py-12">
+                      <div className="text-center lg:w-3/4 xl:w-1/2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          className="mb-8 inline-block h-8 w-8 text-black dark:text-white"
+                          viewBox="0 0 975.036 975.036"
+                        >
+                          <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+                        </svg>
+
+                        <p className="whitespace-pre-wrap text-lg leading-relaxed text-black dark:text-white">
+                          Configure the turrets so that they have different
+                          ranges and different angles of fire. This will make it
+                          harder for raiders to find a blind spot.
+                        </p>
+
+                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  title: "Tip #2",
+                  content: (
+                    <div className="flex justify-center px-5 py-12">
+                      <div className="text-center lg:w-3/4 xl:w-1/2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          className="mb-8 inline-block h-8 w-8 text-black dark:text-white"
+                          viewBox="0 0 975.036 975.036"
+                        >
+                          <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+                        </svg>
+
+                        <p className="text-lg leading-relaxed text-black dark:text-white">
+                          Build multiple turret walls if possible
+                        </p>
+
+                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                      </div>
+                    </div>
+                  ),
+                },
+              ]}
+            />
           </div>
           <FileUpload
             name="image"

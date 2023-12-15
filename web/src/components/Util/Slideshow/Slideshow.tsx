@@ -1,8 +1,11 @@
 import clsx from "clsx";
-import { useCallback, useEffect, useState, useRef } from "react";
-import { ArrayElement, BgColor } from "src/lib/formatters";
+import { useCallback, useEffect, useState, useRef, forwardRef, cloneElement } from "react";
+import { ArrayElement } from "src/lib/formatters";
+import { TransitionGroup, CSSTransition, Transition } from 'react-transition-group';
+import Button from "../Button/Button";
+import { Card, CardActionArea, CardContent, CardHeader, CardMedia, CardProps } from "../Card/Card";
 
-interface ISlideshowProps {
+type SlideshowProps = {
   className?: string;
   controls?: boolean;
   arrows?: boolean;
@@ -10,9 +13,9 @@ interface ISlideshowProps {
   imageTabs?: boolean;
   delay?: number;
   slide?: number;
-  border?: boolean;
+  CardProps?: CardProps;
   onSlideChange?: (index: number) => void;
-  renderSlide?: (slide: ArrayElement<ISlideshowProps["slides"]>, index: number) => React.ReactNode;
+  renderSlide?: (slide: ArrayElement<SlideshowProps["slides"]>, index: number) => React.ReactNode;
   slides: {
     url?: string;
     content?: React.ReactNode;
@@ -20,21 +23,26 @@ interface ISlideshowProps {
     subtitle?: string;
   }[];
 }
-const Slideshow = ({
-  slides,
-  className,
-  controls = true,
-  arrows = true,
-  autoPlay = true,
-  imageTabs = false,
-  delay = 5000,
-  onSlideChange,
-  renderSlide,
-  slide = 0,
-  border = true,
-  ...props
-}: ISlideshowProps) => {
-  const [index, setIndex] = useState<number>(slide);
+const Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
+  const {
+    slides,
+    className,
+    controls = true,
+    arrows = true,
+    autoPlay = true,
+    imageTabs = false,
+    delay = 5000,
+    onSlideChange,
+    renderSlide,
+    slide = 0,
+    CardProps,
+    ...other
+  } = props;
+  const [state, setState] = useState<{ slideNo: number; slideDirection: 'left' | 'right' }>({
+    slideNo: slide || 0,
+    slideDirection: 'right',
+  });
+
   const timeoutRef = useRef(null);
 
   const resetTimeout = useCallback(() => {
@@ -45,8 +53,12 @@ const Slideshow = ({
 
   useEffect(() => {
     const playSlideshow = () => {
-      setIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
-      onSlideChange?.(index === slides.length - 1 ? 0 : index + 1);
+      const currentSlide = state.slideNo;
+      setState((prevState) => ({
+        slideNo: (prevState.slideNo === slides.length - 1 ? 0 : prevState.slideNo + 1),
+        slideDirection: (prevState.slideNo === slides.length - 1 ? 0 : prevState.slideNo + 1) < prevState.slideNo ? 'right' : 'left'
+      }))
+      onSlideChange?.(currentSlide === slides.length - 1 ? 0 : currentSlide + 1);
     };
 
     if (autoPlay && slides.length > 1) {
@@ -57,129 +69,161 @@ const Slideshow = ({
     return () => {
       resetTimeout();
     };
-  }, [index, autoPlay, delay, resetTimeout, slides.length, onSlideChange]);
+  }, [state, autoPlay, delay, resetTimeout, slides.length, onSlideChange]);
 
   useEffect(() => {
     if (slide) {
-      setIndex(slide);
+      setState({ slideNo: slide, slideDirection: 'left' })
     }
   }, [slide]);
 
   const handlePrevSlide = useCallback(() => {
-    const prevIndex = index === 0 ? slides.length - 1 : index - 1;
-    setIndex(prevIndex);
+    const currentSlide = state.slideNo;
+    const prevIndex = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
+
+    setState({ slideNo: prevIndex, slideDirection: 'right' })
     onSlideChange?.(prevIndex);
-  }, [index, slides.length, onSlideChange]);
+  }, [state, slides.length, onSlideChange]);
 
   const handleNextSlide = useCallback(() => {
-    const nextIndex = index === slides.length - 1 ? 0 : index + 1;
-    setIndex(nextIndex);
-    onSlideChange?.(nextIndex);
-  }, [index, slides.length, onSlideChange]);
+    const currentSlide = state.slideNo;
+    const nextIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
 
+    setState({ slideNo: nextIndex, slideDirection: 'left' })
+    onSlideChange?.(nextIndex);
+  }, [state, slides.length, onSlideChange]);
+
+  const childFactoryCreator = (slideDirection: 'left' | 'right') => (child) => {
+    return cloneElement(child, {
+      classNames: slideDirection,
+    });
+  };
 
   return (
-    <div className={clsx("relative my-0 w-full overflow-x-hidden", className)} {...props}>
-      <div
-        className={`whitespace-nowrap w-full transition-transform duration-500 ease-in-out`}
-        style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
-      >
-        {renderSlide ? slides.map((slide, idx) => renderSlide(slide, idx)) :
-          slides.map((slide, idx) => (
-            <div
-              className={`relative aspect-auto w-full max-h-[900px] h-fit overflow-y-hidden inline-block rounded-lg ${border ? 'border border-zinc-500' : 'border-none'}`}
-              key={`slide-${idx}`}
-            >
-              {slide && (
-                <>
-                  {slide.content && !slide.url ? (
-                    <div className="relative top-0 bottom-0 left-0 right-0 h-full w-full">
-                      {slide.content}
-                    </div>
-                  ) : (
-                    <img
-                      src={slide.url}
-                      className="h-full max-h-fit w-full object-cover rounded-lg object-center"
-                      loading="lazy"
-                    />
-                  )}
+    <div className={clsx("relative my-0 w-full overflow-x-hidden", className)} {...other} ref={ref}>
+      <div className="flex justify-center items-center relative overflow-hidden">
+        <TransitionGroup
+          childFactory={childFactoryCreator(state.slideDirection)}
+          className="relative"
+        >
+          <CSSTransition
+            key={state.slideNo}
+            classNames={state.slideDirection}
+            timeout={1000}
+          >
+            <div className="slide">
+              <Card
+                key={`slide-${state?.slideNo}`}
+                variant="outlined"
+                className={clsx("w-full overflow-hidden max-h-[900px] h-fit inline-block", CardProps?.className)}
+                {...CardProps}
+              >
+                {renderSlide ? renderSlide(slides[state?.slideNo], state?.slideNo) : (
+                  <>
+                    {slides[state.slideNo].content && !slides[state.slideNo].url ? (
+                      <CardContent>
+                        {slides[state.slideNo].content}
+                      </CardContent>
+                    ) : (
+                      <CardMedia
+                        image={slides[state.slideNo].url}
+                        loading="lazy"
+                        className="h-full max-h-fit w-full object-cover rounded-[inherit] object-center"
+                      />
+                    )}
 
-                  {(slide.title || slide.subtitle) && (
-                    <div className="absolute top-0 left-0 flex h-full w-full flex-col items-start justify-end">
-                      <div className="relative my-1 mx-3 divide-y rounded-lg bg-zinc-700/60 bg-opacity-40 px-3 py-2 text-gray-300 border border-zinc-500 border-opacity-60">
-                        <p className="text-sm font-medium">{slide.title}</p>
-                        <p className="text-xs font-light">{slide.subtitle}</p>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
+                    {(slides[state.slideNo].title || slides[state.slideNo].subtitle) && (
+                      <CardHeader
+                        title={slides[state.slideNo].title}
+                        subheader={slides[state.slideNo].subtitle}
+                      />
+                    )}
+                  </>
+                )}
+              </Card>
             </div>
-          ))}
+          </CSSTransition>
+        </TransitionGroup>
+
+        {arrows && slides.length > 1 && (
+          <div className="absolute inset-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
+            <Button
+              variant="icon"
+              color="DEFAULT"
+              onClick={handlePrevSlide}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+                className="fill-current w-8"
+              >
+                <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
+              </svg>
+            </Button>
+            <Button
+              variant="icon"
+              color="DEFAULT"
+              onClick={handleNextSlide}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+                className="fill-current w-8"
+              >
+                <path d="M85.14 475.8c-3.438-3.141-5.156-7.438-5.156-11.75c0-3.891 1.406-7.781 4.25-10.86l181.1-197.1L84.23 58.86c-6-6.5-5.625-16.64 .9062-22.61c6.5-6 16.59-5.594 22.59 .8906l192 208c5.688 6.156 5.688 15.56 0 21.72l-192 208C101.7 481.3 91.64 481.8 85.14 475.8z" />
+              </svg>
+            </Button>
+          </div>
+        )}
       </div>
-      {arrows && slides.length > 1 && (
-        <div className="absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
-          <button className="p-3" onClick={handlePrevSlide}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-              fill="currentColor"
-              className="w-8 rounded-lg p-2 transition hover:scale-125 hover:fill-white"
-            >
-              <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
-            </svg>
-          </button>
-          <button className="p-3" onClick={handleNextSlide}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-              fill="currentColor"
-              className="w-8 rounded-lg p-2 transition hover:scale-125 hover:fill-white"
-            >
-              <path d="M85.14 475.8c-3.438-3.141-5.156-7.438-5.156-11.75c0-3.891 1.406-7.781 4.25-10.86l181.1-197.1L84.23 58.86c-6-6.5-5.625-16.64 .9062-22.61c6.5-6 16.59-5.594 22.59 .8906l192 208c5.688 6.156 5.688 15.56 0 21.72l-192 208C101.7 481.3 91.64 481.8 85.14 475.8z" />
-            </svg>
-          </button>
-        </div>
-      )}
       {controls && slides.length > 1 && (
         <div className="relative w-full p-3 text-center">
           {slides.map(({ title }, idx) => (
             <div
               key={`slide-control-${idx}`}
               title={title || `Slide ${idx + 1}`}
-              className={`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer bg-pea-500 bg-clip-padding p-0 transition-opacity ${index === idx ? "opacity-100" : "opacity-50"
-                }`}
+              className={clsx(`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer bg-pea-500 bg-clip-padding p-0 transition-opacity`, {
+                "opacity-100": state.slideNo === idx,
+                "opacity-50": state.slideNo !== idx
+              })}
               onClick={() => {
-                setIndex(idx);
+                setState((prevState) => ({
+                  slideNo: idx,
+                  slideDirection: idx < prevState.slideNo ? 'right' : 'left'
+                }))
                 onSlideChange?.(idx);
               }}
             ></div>
           ))}
         </div>
       )}
+
       {imageTabs && (
         <div className="relative grid grid-cols-5 flex-nowrap gap-4 overflow-hidden">
           {slides.map(({ url, title }, idx) => (
-            <div
-              key={`image-slider-${idx}`}
-              className="rounded-lg border border-zinc-500 transition-all ease-in hover:rounded-[50px] cursor-pointer"
-              onClick={() => {
-                setIndex(idx);
+            <Card key={`image-slider-${idx}`} variant="outlined" className="hover:border-pea-500 border border-transparent transition-all cursor-pointer ease-in-out">
+              <CardActionArea onClick={() => {
+                setState((prevState) => ({
+                  slideNo: idx,
+                  slideDirection: idx < prevState.slideNo ? 'right' : 'left'
+                }))
                 onSlideChange?.(idx);
               }}
-            >
-              <img
-                className="aspect-auto w-full rounded-lg object-cover"
-                src={url}
-                alt={title}
-              />
-            </div>
+                className="h-full overflow-hidden"
+              >
+                <CardMedia
+                  className="h-full object-cover object-center"
+                  image={url}
+                  loading="lazy"
+                />
+              </CardActionArea>
+            </Card>
           ))}
         </div>
       )}
     </div>
   );
-};
+});
 
 // https://tinloof.com/blog/how-to-build-an-auto-play-slideshow-with-react
 export default React.memo(Slideshow, (prevProps, nextProps) => {

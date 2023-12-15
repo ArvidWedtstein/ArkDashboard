@@ -505,7 +505,7 @@ const DatePicker = ({
             </Button>
           )}
         />
-
+        {/* TODO: add formerror */}
         {helperText && (
           <p className="rw-helper-text" {...HelperTextProps}>
             {helperText}

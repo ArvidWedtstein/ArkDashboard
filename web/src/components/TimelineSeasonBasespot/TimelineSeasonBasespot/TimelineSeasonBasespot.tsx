@@ -235,7 +235,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               <Slideshow
                 className="mb-6"
                 aria-labelledby="event-heading"
-                border={false}
                 controls={true}
                 autoPlay={false}
                 slides={timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.map(

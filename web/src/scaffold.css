@@ -588,6 +588,37 @@
     @apply m-0 flex shrink-0 whitespace-nowrap border-[0px] text-center before:w-full before:self-center before:border-t before:border-white/20 before:content-[""] after:w-full after:self-center after:border-t after:border-white/20 after:content-[''] [&>span]:inline-block [&>span]:px-2.5 [&>:not(style)~:not(style)]:mt-4 [&.left]:before:w-[10%] [&.left]:after:w-[90%] [&.right]:before:w-[90%] [&.right]:after:w-[10%];
   }
 
+  /* Slideshow Transitions */
+  .slide.left-enter-active,
+  .slide.left-exit-active,
+  .slide.right-enter-active,
+  .slide.right-exit-active {
+    transition: transform 1000ms ease-in-out;
+  }
+
+  .slide.left-enter,
+  .slide.right-enter {
+    position: absolute;
+    inset: 0;
+  }
+
+  .slide.left-enter,
+  .slide.right-exit-active {
+    transform: translate(100%, 0);
+  }
+
+  .slide.left-enter-active,
+  .slide.right-enter-active,
+  .slide.left-exit,
+  .slide.right-exit {
+    transform: translate(0, 0);
+  }
+
+  .slide.left-exit-active,
+  .slide.right-enter {
+    transform: translate(-100%, 0);
+  }
+
   .parchment {
     position: absolute;
     display: flex;

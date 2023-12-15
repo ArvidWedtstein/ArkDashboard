@@ -2,9 +2,8 @@ import { HTMLAttributes, InputHTMLAttributes, ReactNode, forwardRef, useId, useS
 import { FormControl, InputBase, InputBaseProps, InputLabel, InputLabelProps } from "../Input/Input";
 import { Transition } from 'react-transition-group';
 import clsx from "clsx";
-import { Controller, ControllerRenderProps, FieldError, RegisterOptions, UseControllerReturn } from "@redwoodjs/forms";
+import { Controller, FieldError, RegisterOptions, UseControllerReturn } from "@redwoodjs/forms";
 import Button from "../Button/Button";
-
 type ColorInputProps = {
   autoComplete?: string;
   autoFocus?: boolean;
@@ -613,3 +612,4 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
 });
 
 export default ColorInput
+

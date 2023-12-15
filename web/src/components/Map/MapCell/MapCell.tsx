@@ -32,6 +32,7 @@ export const QUERY = gql`
           item_id
           latitude
           longitude
+          note_index
           type
           Item {
             name
