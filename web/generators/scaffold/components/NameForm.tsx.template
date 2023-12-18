@@ -4,7 +4,6 @@ import {
   FieldError,
   Label,
   ${fieldsToImport.join(',\n  ')},
-  Submit,
 } from '@redwoodjs/forms'
 
 <% if (fieldsToImport.includes('DatetimeLocalField')) { %>
@@ -55,6 +54,9 @@ const ${singularPascalName}Form = (props: ${singularPascalName}FormProps) => {
         <Input
           label="${column.label}"
           name="${column.name}"
+          ${column.defaultProp}={${column.deserializeFunction && column.deserializeFunction + '('}props.${singularCamelName}?.<%= column.name %>${column.deserializeFunction && ')'}}
+          <%= !column.validation ? '' : `validation=${column.validation}` %>
+          <%= column.isRelationalField && !column.isRequired ? `emptyAs={'undefined'}` : '' %>
         />
         <Label
           name="${column.name}"

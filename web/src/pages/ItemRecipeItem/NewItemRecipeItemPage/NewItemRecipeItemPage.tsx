@@ -1,7 +1,7 @@
-import NewItemRecipeItem from 'src/components/ItemRecipeItem/NewItemRecipeItem'
+import NewItemRecipeItemCell from 'src/components/ItemRecipeItem/NewItemRecipeItemCell'
 
 const NewItemRecipeItemPage = () => {
-  return <NewItemRecipeItem />
+  return <NewItemRecipeItemCell />
 }
 
 export default NewItemRecipeItemPage

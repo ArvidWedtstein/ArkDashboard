@@ -1,14 +1,12 @@
 import {
   CSSProperties,
   ChangeEvent,
-  ForwardedRef,
   Fragment,
   HTMLAttributes,
   KeyboardEvent,
   MouseEvent,
   MouseEventHandler,
   SyntheticEvent,
-  forwardRef,
   useCallback,
   useEffect,
   useId,
@@ -229,6 +227,7 @@ type SelectProps<
     state: FilterOptionsState<Value>
   ) => Value[];
   getOptionLabel?: (option: Value) => string;
+  getOptionValue?: (option: Value) => string | number | boolean;
   getOptionImage?: (option: Value) => string;
   isOptionEqualToValue?: (option: Value, value: Value) => boolean;
   getOptionDisabled?: (option: Value) => boolean;
@@ -259,6 +258,7 @@ export const Lookup = (<
     HelperTextProps,
     validation,
     // TODO: remove this crap
+    // TODO: replace this with getOptionValue
     valueKey = options && options.length > 0
       ? Object.keys(options[0]).includes("value")
         ? ("value" as keyof Value)
@@ -307,10 +307,20 @@ export const Lookup = (<
       }
       return option;
     },
+    getOptionValue: getOptionValueProp = (option: Value | string) => {
+      if (!option) return option;
+      if (typeof option === "object" && option !== null && "value" in option) {
+        return option.value;
+      } else if (typeof option === "object" && option !== null && "id" in option) {
+        return option.id;
+      }
+      return option;
+    },
     getOptionImage = (option: Value) => option && option["image"],
     isOptionEqualToValue = (option: Value, value: Value) => option === value,
   } = props;
   let getOptionLabel = getOptionLabelProp;
+  let getOptionValue = getOptionValueProp;
 
   getOptionLabel = (option: Value) => {
     const optionLabel = getOptionLabelProp(option);
@@ -352,14 +362,28 @@ export const Lookup = (<
           defaultValue.some(
             (value) =>
               value ===
-              (typeof option === "object" ? option[valueKey] : option)
+              getOptionValue(option)
           )
         )
         : options.find(
           (option) =>
-            (typeof option === "object" ? option[valueKey] : option) ===
+            getOptionValue(option) ===
             defaultValue
         ) || null,
+    // default:
+    //   multiple && Array.isArray(defaultValue)
+    //     ? options.filter((option) =>
+    //       defaultValue.some(
+    //         (value) =>
+    //           value ===
+    //             (typeof option === "object" ? option[valueKey] : option)
+    //       )
+    //     )
+    //     : options.find(
+    //       (option) =>
+    //         (typeof option === "object" ? option[valueKey] : option) ===
+    //         defaultValue
+    //     ) || null,
     name: 'Lookup',
   });
 
@@ -929,7 +953,7 @@ export const Lookup = (<
           ? Array.isArray(newValue)
             ? newValue.map((f) => f[valueKey])
             : newValue
-          : newValue
+          : getOptionValue(newValue)
       );
     }
 
@@ -1557,6 +1581,7 @@ export const Lookup = (<
           <img
             className="mr-2 h-6 w-6"
             src={image}
+            loading="lazy"
             alt={getOptionLabel(option) as string}
           />
         )}

@@ -1,19 +1,17 @@
 import {
   Form,
   FormError,
-  FieldError,
-  Label,
-  TextField,
-  Submit,
 } from '@redwoodjs/forms'
 
 import type {
   EditItemRecipeItemById,
+  NewItemRecipeItem,
   UpdateItemRecipeItemInput,
 } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 import { Input } from 'src/components/Util/Input/Input'
 import Button from 'src/components/Util/Button/Button'
+import { Lookup } from 'src/components/Util/Lookup/Lookup'
 
 type FormItemRecipeItem = NonNullable<EditItemRecipeItemById['itemRecipeItem']>
 
@@ -25,13 +23,14 @@ interface ItemRecipeItemFormProps {
   ) => void
   error: RWGqlError
   loading: boolean
+  items: NewItemRecipeItem["items"]
 }
 
 const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
   const onSubmit = (data: FormItemRecipeItem) => {
-    props.onSave(data, props?.itemRecipeItem?.id)
+    console.log(data)
+    // props.onSave(data, props?.itemRecipeItem?.id)
   }
-
   return (
     <div className="rw-form-wrapper">
       <Form<FormItemRecipeItem> onSubmit={onSubmit} error={props.error}>
@@ -42,62 +41,32 @@ const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Input label="Item recipe id" name="item_recipe_id" />
-        <Label
-          name="item_recipe_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Item recipe id
-        </Label>
-
-        <TextField
+        <Input
+          label="Item recipe id"
           name="item_recipe_id"
           defaultValue={props.itemRecipeItem?.item_recipe_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
         />
-
-        <FieldError name="item_recipe_id" className="rw-field-error" />
-
-        <Input label="Item id" name="item_id" />
-        <Label
+        <Lookup
+          label="Item"
           name="item_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Item id
-        </Label>
-
-        <TextField
-          name="item_id"
+          loading={props.loading}
+          isOptionEqualToValue={(opt, val) => opt.id === val.id}
+          getOptionValue={(opt) => opt.id}
+          valueKey='id'
+          getOptionLabel={(opt) => opt.name}
           defaultValue={props.itemRecipeItem?.item_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          options={props?.items || []}
           validation={{ required: true }}
         />
 
-        <FieldError name="item_id" className="rw-field-error" />
-
-        <Input label="Amount" name="amount" />
-        <Label
-          name="amount"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Amount
-        </Label>
-
-        <TextField
+        <Input
+          label="Amount"
           name="amount"
           defaultValue={props.itemRecipeItem?.amount}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
           validation={{ valueAsNumber: true, required: true }}
+          type="number"
         />
-
-        <FieldError name="amount" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Button
