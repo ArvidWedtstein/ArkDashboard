@@ -11,9 +11,8 @@ export const schema = gql`
   }
 
   type Query {
-    itemRecipeItems: [ItemRecipeItem!]! @skipAuth
-    itemRecipeItem(id: String!): ItemRecipeItem @skipAuth
-    itemRecipeItemsByIds(ids: [String!]): [ItemRecipeItem] @skipAuth
+    itemRecipeItems: [ItemRecipeItem!]! @requireAuth
+    itemRecipeItem(id: String!): ItemRecipeItem @requireAuth
   }
 
   input CreateItemRecipeItemInput {
@@ -35,15 +34,10 @@ export const schema = gql`
   type Mutation {
     createItemRecipeItem(input: CreateItemRecipeItemInput!): ItemRecipeItem!
       @requireAuth
-      @hasPermission(permission: "gamedata_create")
     updateItemRecipeItem(
       id: String!
       input: UpdateItemRecipeItemInput!
-    ): ItemRecipeItem!
-      @requireAuth
-      @hasPermission(permission: "gamedata_update")
-    deleteItemRecipeItem(id: String!): ItemRecipeItem!
-      @requireAuth
-      @hasPermission(permission: "gamedata_delete")
+    ): ItemRecipeItem! @requireAuth
+    deleteItemRecipeItem(id: String!): ItemRecipeItem! @requireAuth
   }
-`;
+`

@@ -7,9 +7,9 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route, Private } from "@redwoodjs/router";
+import { Set, Router, Route, Private } from '@redwoodjs/router'
 
-import ScaffoldLayout from "src/layouts/ScaffoldLayout";
+import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
 
 import MainLayout from "src/layouts/MainLayout/MainLayout";
 
@@ -165,6 +165,17 @@ const Routes = () => {
             page={ItemRecipeItemRecipesPage}
             name="itemRecipes"
           />
+        </Set>
+        <Set wrap={ScaffoldLayout} title="ItemRecipeItems" titleTo="itemRecipeItems" buttonLabel="New ItemRecipeItem" buttonTo="newItemRecipeItem">
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/item-recipe-items/new" page={ItemRecipeItemNewItemRecipeItemPage} name="newItemRecipeItem" />
+            <Route path="/item-recipe-items/{id}/edit" page={ItemRecipeItemEditItemRecipeItemPage} name="editItemRecipeItem" />
+          </Private>
+          <Route path="/item-recipe-items/{id}" page={ItemRecipeItemItemRecipeItemPage} name="itemRecipeItem" />
+          <Route path="/item-recipe-items" page={ItemRecipeItemItemRecipeItemsPage} name="itemRecipeItems" />
         </Set>
         <Set
           wrap={ScaffoldLayout}
