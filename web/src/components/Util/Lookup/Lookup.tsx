@@ -1,12 +1,14 @@
 import {
   CSSProperties,
   ChangeEvent,
+  ForwardedRef,
   Fragment,
   HTMLAttributes,
   KeyboardEvent,
   MouseEvent,
   MouseEventHandler,
   SyntheticEvent,
+  forwardRef,
   useCallback,
   useEffect,
   useId,
@@ -104,6 +106,7 @@ interface FilterOptionsState<Value> {
 }
 
 type LookupInputChangeReason = "input" | "reset" | "clear";
+
 type LookupValue<Value, Multiple, DisableClearable> =
   Multiple extends true
   ? Array<Value | never>
@@ -184,6 +187,12 @@ type SelectProps<
    * @default -1
    */
   limitTags?: number;
+  onBlur?: (
+    event?: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onFocus?: (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   /**
    * Callback fired when the value changes.
    *
@@ -225,10 +234,10 @@ type SelectProps<
   getOptionDisabled?: (option: Value) => boolean;
   onOpen?: (event: React.SyntheticEvent) => void;
   onClose?: (event: React.SyntheticEvent, reason: LookupCloseReason) => void;
+  ref?: React.ForwardedRef<HTMLInputElement>
 };
 
-// TODO: fix error styles
-export const Lookup = <
+export const Lookup = (<
   Value,
   Multiple extends boolean | undefined = false,
   DisableClearable extends boolean | undefined = false
@@ -236,6 +245,7 @@ export const Lookup = <
   props: SelectProps<Value, Multiple, DisableClearable>
 ) => {
   const {
+    ref,
     multiple,
     options,
     label,
@@ -283,6 +293,8 @@ export const Lookup = <
     getOptionDisabled,
     filterOptions = createFilterOptions<Value>(),
     groupBy,
+    onBlur,
+    onFocus,
     renderTags,
     onSelect,
     onChange,
@@ -1235,6 +1247,7 @@ export const Lookup = <
 
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     setFocused(true);
+    onFocus?.(event);
 
     if (openOnFocus && !ignoreFocus.current) {
       handleOpen(event);
@@ -1242,6 +1255,7 @@ export const Lookup = <
   };
 
   const handleBlur = (event = null) => {
+    onBlur?.(event);
     if (
       listboxRef.current !== null &&
       listboxRef.current.parentElement?.contains(document.activeElement)
@@ -1647,7 +1661,7 @@ export const Lookup = <
               }, SuffixProps?.className)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
                   "max-w-full": state.focused || state.filled || (multiple && (Array.isArray(value) && value.length > 0)),
-                  "max-w-[0.01px]": !state.focused && !state.filled && !(multiple && (Array.isArray(value) && value.length > 0)),
+                  "max-w-[0.001px]": !state.focused && !state.filled && !(multiple && (Array.isArray(value) && value.length > 0)),
                 })}>
                   {label && label !== "" && (
                     <span className={"px-1 inline-block opacity-0 visible"}>
@@ -1666,6 +1680,7 @@ export const Lookup = <
             ) : null
           )}
           inputRef={inputRef}
+          ref={ref}
           value={inputValue}
           placeholder={placeholder}
           className={className}
@@ -1777,4 +1792,4 @@ export const Lookup = <
       </Popper>
     </div>
   );
-};
+});

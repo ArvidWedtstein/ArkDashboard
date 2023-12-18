@@ -382,304 +382,15 @@ const ItemForm = (props: ItemFormProps) => {
           onChange={(e) => setCraftable(e.target.checked)}
         />
 
-        {/* TODO: show list of itemrecipes */}
         {craftable && (
-          <>{props.item?.id ? <ItemRecipesCell /> : <NewItemRecipe />}</>
-        )}
-
-        {craftable && (
-          <fieldset className="rw-form-group">
-            <legend>Crafting</legend>
-            <div>
-              <div>
-                <Label
-                  name="engram_points"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Engram points
-                </Label>
-
-                <TextField
-                  name="engram_points"
-                  defaultValue={
-                    props.item?.engram_points
-                      ? props.item.engram_points.toString()
-                      : 0
-                  }
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
-                  validation={{ valueAsNumber: true }}
-                />
-                <p className="rw-helper-text">
-                  Engram points earned by crafting this item
-                </p>
-
-                <FieldError name="engram_points" className="rw-field-error" />
-              </div>
-            </div>
-            <div>
-              <div>
-                {/* TODO: redo replace. / Move to own form */}
-                <Label
-                  name="recipe"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Recipe
-                </Label>
-
-                {/* {recipeFields.map(
-                  (
-                    recipe: {
-                      id?: number | string;
-                      crafting_station?: string;
-                      item_id?: number;
-                      amount?: number;
-                      yields?: number;
-                    },
-                    index
-                  ) => (
-                    <div
-                      className="rounded-md bg-zinc-800 p-3"
-                      key={`recipe-${index}`}
-                    >
-                      <p>{recipe.crafting_station}</p>
-                      <CheckboxGroup
-                        defaultValue={[recipe?.crafting_station?.toString()]}
-                        validation={{ single: true, valueAsNumber: true }}
-                        name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.crafting_station`}
-                        options={[
-                          {
-                            value: 606,
-                            label: "Beer Barrel",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/beer-barrel.webp",
-                          },
-                          {
-                            value: 39,
-                            label: "Campfire",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/campfire.webp",
-                          },
-                          {
-                            value: 607,
-                            label: "Chemistry Bench",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chemistry-bench.webp",
-                          },
-                          {
-                            value: 128,
-                            label: "Cooking Pot",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/cooking-pot.webp",
-                          },
-                          {
-                            value: 127,
-                            label: "Compost Bin",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/compost-bin.webp",
-                          },
-                          {
-                            value: 185,
-                            label: "Fabricator",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/fabricator.webp",
-                          },
-                          {
-                            value: 601,
-                            label: "Industrial Cooker",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-cooker.webp",
-                          },
-                          {
-                            value: 600,
-                            label: "Industrial Forge",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-forge.webp",
-                          },
-                          {
-                            value: 360,
-                            label: "Industrial Grill",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grill.webp",
-                          },
-                          {
-                            value: 618,
-                            label: "Industrial Grinder",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grinder.webp",
-                          },
-                          {
-                            value: 107,
-                            label: "Mortar And Pestle",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/mortar-and-pestle.webp",
-                          },
-                          {
-                            value: 125,
-                            label: "Refining Forge",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/refining-forge.webp",
-                          },
-                          {
-                            value: 126,
-                            label: "Smithy",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/smithy.webp",
-                          },
-                          {
-                            value: 652,
-                            label: "Tek Replicator",
-                            image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-replicator.webp",
-                          },
-                        ]}
-                      />
-                      <div
-                        className="rw-button-group items-center justify-start"
-                        role="group"
-                        key={`recipe-${index}`}
-                      >
-                        <Lookup
-                          margin="none"
-                          {...register(
-                            `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
-                            {
-                              required: true,
-                            }
-                          )}
-                          name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`}
-                          label={"Item"}
-                          options={data.itemsByCategory.items.map((item) => ({
-                            category: item.category,
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image?.replaceAll(
-                              " ",
-                              "-"
-                            )}`,
-                          }))}
-                          className="!mt-0 !rounded-none !rounded-l-md"
-                          defaultValue={[recipe.item_id.toString()]}
-                          filterFn={(item, search) => {
-                            if (!search) return true;
-                            return item.label
-                              .toLowerCase()
-                              .includes(search.toLowerCase());
-                          }}
-                        />
-                        <Input
-                          type="number"
-                          label="Amount"
-                          defaultValue={recipe.amount}
-                          {...register(
-                            `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.amount`,
-                            {
-                              required: true,
-                            }
-                          )}
-                        />
-
-                        <Input
-                          type="number"
-                          label="Yields"
-                          defaultValue={recipe.yields}
-                          {...register(
-                            `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`,
-                            {
-                              required: true,
-                            }
-                          )}
-                        />
-
-                        <FieldError
-                          name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`}
-                          className="rw-field-error"
-                        />
-
-                        <button
-                          type="button"
-                          className="rw-button rw-button-red rw-button-large !ml-0 rounded-none  !rounded-r-md"
-                          onClick={() => removeRecipe(index)}
-                        >
-                          Remove Recipe
-                        </button>
-                      </div>
-                    </div>
-                  )
-                )}
-                <div className="rw-button-group justify-start">
-                  <button
-                    type="button"
-                    className="rw-button rw-button-gray"
-                    onClick={() =>
-                      appendRecipe({
-                        item_id: 1,
-                        amount: 1,
-                        crafting_station: 126,
-                        yields: 1,
-                      })
-                    }
-                  >
-                    Add Recipe
-                  </button>
-                </div> */}
-
-                {/* <div className="mt-2 flex flex-col">
-                  {recipe.map((rec) => (
-                    <div className="rw-button-group !mt-0 mb-0 justify-start text-sm font-medium">
-                      <span
-                        onClick={() => {
-                          setRecipe({ type: "REMOVE", id: rec.id });
-                        }}
-                        className="rw-input mt-0 inline-flex min-w-full items-center"
-                      >
-                        <img
-                          className="mr-2 h-4"
-                          src={rec.image}
-                          alt={rec.name}
-                        />
-                        <span className="block truncate text-left">
-                          {rec.name}
-                        </span>
-                      </span>
-                      <input
-                        className="rw-input mt-0 w-20"
-                        defaultValue={rec.amount}
-                        onChange={(e) => {
-                          setRecipe({
-                            type: "UPDATE_AMOUNT",
-                            item: rec,
-                            amount: e.target.value,
-                          });
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div> */}
-
-                <p className="rw-helper-text">
-                  Items needed for crafting this item
-                </p>
-
-                {/* <FieldError name="recipe" className="rw-field-error" /> */}
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 384 512"
-                  className="m-2 h-10 w-10 fill-current"
-                >
-                  <path d="M374.6 310.6l-160 160C208.4 476.9 200.2 480 192 480s-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 370.8V64c0-17.69 14.33-31.1 31.1-31.1S224 46.31 224 64v306.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0S387.1 298.1 374.6 310.6z" />
-                </svg>
-                <p className="rw-helper-text">
-                  The amount of this item gained when crafting
-                </p>
-                <FieldError name="yields" className="rw-field-error" />
-              </div>
-            </div>
-          </fieldset>
+          <Input
+            label="Engram Points"
+            name="engram_points"
+            defaultValue={props.item?.engram_points}
+            type="number"
+            validation={{ valueAsNumber: true }}
+            helperText={"Engram points earned by crafting this item"}
+          />
         )}
 
         <Label
@@ -696,13 +407,19 @@ const ItemForm = (props: ItemFormProps) => {
             role="group"
             key={`stat-${index}`}
           >
+
             <Lookup
               margin="none"
               defaultValue={stat.id}
               label="Stat Type"
-              {...register(`stats.${index}.id`)}
               isOptionEqualToValue={(option, value) => option.value === value.value}
               getOptionLabel={(option) => option.label}
+              disabled={register(`stats.${index}.id`).disabled}
+              required={register(`stats.${index}.id`).required}
+              onBlur={register(`stats.${index}.id`).onBlur}
+              onChange={register(`stats.${index}.id`).onChange}
+              name={register(`stats.${index}.id`).name}
+              ref={register(`stats.${index}.id`).ref}
               options={[
                 { value: 2, label: "Armor" },
                 { value: 3, label: "Hypothermal Insulation" },
@@ -724,139 +441,46 @@ const ItemForm = (props: ItemFormProps) => {
                 { value: 11, label: "Water" },
                 { value: 20, label: "Other" },
               ]}
+              SuffixProps={{
+                style: {
+                  borderRadius: `0.25rem 0 0 0.25rem`,
+                  marginRight: '-1px'
+                }
+              }}
             />
 
-            {/* TODO: fix */}
             <Input
               label={"Value"}
               {...register(`stats.${index}.value`)}
               type="number"
               defaultValue={stat.value}
+              margin="none"
+              SuffixProps={{
+                style: {
+                  borderRadius: `0`
+                }
+              }}
             />
-            {/* <select
-              className="rw-input mt-0"
-              defaultValue={stat.id}
-              {...register(`stats.${index}.id`)}
-            >
-              <optgroup label="Consumable">
-                <option value={8}>Food</option>
-                <option value={9}>Spoils</option>
-                <option value={10}>Torpor</option>
-                <option value={15}>Affinity</option>
-                <option value={12}>Stamina</option>
-                <option value={11}>Water</option>
-                <option value={7}>Health</option>
-              </optgroup>
-              <optgroup label="Tool/Armor">
-                <option value={2}>Armor</option>
-                <option value={3}>Hypothermal Insulation</option>
-                <option value={4}>Hyperthermal Insulation</option>
-                <option value={5}>Durability</option>
-                <option value={6}>Weapon Damage</option>
-                <option value={16}>Ammo For Item</option>
-                <option value={17}>Weight Reduction</option>
-                <option value={19}>Gather Efficiency</option>
-                <option value={18}>Fuel</option>
-              </optgroup>
-              <optgroup label="Structure">
-                <option value={7}>Health</option>
-                <option value={18}>Fuel</option>
-              </optgroup>
-              <option value={13}>Cooldown</option>
-              <option value={14}>Fertilizer Points</option>
-              <option value={20}>Other</option>
-            </select>
-            <input
-              {...register(`stats.${index}.value`, { required: true })}
-              type="number"
-              className="rw-input mt-0"
-              defaultValue={stat.value}
-            /> */}
-            <button
-              type="button"
-              className="rw-button rw-button-red rw-button-large !ml-0 rounded-none !rounded-r-md"
+            <Button
+              variant="contained"
+              color="error"
               onClick={() => removeStat(index)}
+              className="rounded-l-none"
             >
-              Remove Stat
-            </button>
+              Remove
+            </Button>
           </div>
         ))}
-        <div className="rw-button-group justify-start">
-          <button
-            type="button"
-            className="rw-button rw-button-gray"
+
+        <div className="flex justify-start">
+          <Button
+            variant="outlined"
+            color="secondary"
             onClick={() => appendStat({ id: 0, value: 0 })}
           >
             Add Stat
-          </button>
+          </Button>
         </div>
-
-        {/* <div className="flex flex-col">
-          {stats && stats.map((stat, index) =>
-            <div className="rw-button-group !mt-0 justify-start" key={`stat-${index}`}>
-              <select
-                className="rw-input mt-0"
-                defaultValue={stat.id}
-                onChange={(e) => {
-                  setStatType(e.target.selectedOptions[0].value)
-                }}>
-                <option value={2}>Armor</option>
-                <option value={3}>Hypothermal Insulation</option>
-                <option value={4}>Hyperthermal Insulation</option>
-                <option value={5}>Durability</option>
-                <option value={7}>Health</option>
-                <option value={8}>Food</option>
-                <option value={6}>Weapon Damage</option>
-                <option value={9}>Spoils</option>
-                <option value={10}>Torpor</option>
-                <option value={15}>Affinity</option>
-                <option value={16}>Ammo</option>
-                <option value={12}>Stamina</option>
-                <option value={13}>Cooldown</option>
-                <option value={14}>Fertilizer Points</option>
-                <option value={17}>Weight Reduction</option>
-                <option value={18}>Fuel</option>
-                <option value={19}>Gather</option>
-                <option value={11}>Water</option>
-              </select>
-              <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={stat.value} />
-              <button className="rw-button rw-button-red" onClick={() => setStats((s) => s.filter((v) => v.id !== stat.id))}>
-                Remove Stat
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="rw-button-group justify-start">
-          <select
-            className="rw-input mt-0"
-            defaultValue={statType}
-            onChange={(e) => {
-              setStatType(e.target.selectedOptions[0].value)
-            }}>
-            <option value={2}>Armor</option>
-            <option value={3}>Hypothermal Insulation</option>
-            <option value={4}>Hyperthermal Insulation</option>
-            <option value={5}>Durability</option>
-            <option value={7}>Health</option>
-            <option value={8}>Food</option>
-            <option value={6}>Weapon Damage</option>
-            <option value={9}>Spoils</option>
-            <option value={10}>Torpor</option>
-            <option value={15}>Affinity</option>
-            <option value={16}>Ammo</option>
-            <option value={12}>Stamina</option>
-            <option value={13}>Cooldown</option>
-            <option value={14}>Fertilizer Points</option>
-            <option value={17}>Weight Reduction</option>
-            <option value={18}>Fuel</option>
-            <option value={19}>Gather</option>
-            <option value={11}>Water</option>
-          </select>
-          <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={statValue} onChange={(e) => setStatValue(e.currentTarget.valueAsNumber)} />
-          <button className="rw-button rw-button-green" onClick={addStat}>
-            Add stat
-          </button>
-        </div> */}
 
         <FieldError name="stats" className="rw-field-error" />
 
