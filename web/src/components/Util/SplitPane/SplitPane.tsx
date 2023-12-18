@@ -19,7 +19,7 @@ const SplitPane = forwardRef<HTMLDivElement, SplitterProps>((props, ref) => {
   if (React.Children.count(children) !== 2) {
     throw new Error('SplitPane component requires exactly two children.');
   }
-
+  // TODO: FIX. does not work
 
 
   const [splitterPosition, setSplitterPosition] = useState(50);

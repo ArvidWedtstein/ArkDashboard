@@ -9,7 +9,6 @@ import debounce from "lodash.debounce";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { Input } from "src/components/Util/Input/Input";
 import MatrixGrid from "src/components/Util/MatrixGrid/MatrixGrid";
-import ColorInput from "src/components/Util/ColorInput/ColorInput";
 interface GTWPageProps {
   error: RWGqlError;
   loading: boolean;
@@ -241,10 +240,6 @@ const GtwPage = (props: GTWPageProps) => {
   //   return true;
   // }
 
-  const handleSubmit = (data) => {
-    console.log(data)
-  }
-
 
   return (
     <>
@@ -264,16 +259,13 @@ const GtwPage = (props: GTWPageProps) => {
             {getWord(word)}
           </h1>
         </div>
-        <Form error={props.error} onSubmit={handleSubmit} className="m-6 p-3 flex justify-center">
+        <Form error={props.error} className="m-6 p-3 flex justify-center">
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"
             titleClassName="rw-form-error-title"
             listClassName="rw-form-error-list"
           />
-
-          <ColorInput label="Color" name="color" />
-
           <Input
             type="text"
             variant="outlined"

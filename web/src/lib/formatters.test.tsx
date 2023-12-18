@@ -15,6 +15,11 @@ import {
   random,
   getDateDiff,
   groupBy,
+  RgbToHex,
+  RgbToHsl,
+  HexToHsl,
+  HexToRgb,
+  HslToHex,
 } from './formatters'
 
 // https://dev.to/jbranchaud/test-timing-based-js-functions-with-jest-5be
@@ -338,3 +343,45 @@ describe('groupBy', () => {
     })
   })
 })
+
+describe('Color Conversion Functions', () => {
+  describe('rgbToHex', () => {
+    test('converts RGB to Hex', () => {
+      expect(RgbToHex('rgb(255, 0, 0)')).toBe('#ff0000');
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('rgbToHsl', () => {
+    test('converts RGB to HSL', () => {
+      expect(RgbToHsl(255, 0, 0)).toEqual([0, 100, 50]);
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('hexToHsl', () => {
+    test('converts Hex to HSL', () => {
+      expect(HexToHsl('#ff0000')).toEqual([0, 100, 50]);
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('hexToRgb', () => {
+    test('converts Hex to RGB', () => {
+      expect(HexToRgb('#ff0000')).toBe('rgb(255, 0, 0)');
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('hslToHex', () => {
+    test('converts HSL to Hex', () => {
+      expect(HslToHex(0, 100, 50)).toBe('#ff0000');
+    });
+
+    // Add more test cases as needed
+  });
+});
