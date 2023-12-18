@@ -3,7 +3,6 @@ import {
   FormError,
   FieldError,
   Label,
-  TextField,
   useFieldArray,
   useForm,
 } from "@redwoodjs/forms";
@@ -16,13 +15,8 @@ import { useLazyQuery } from "@apollo/client";
 import { Input } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Switch from "src/components/Util/Switch/Switch";
-import EditItemRecipeCell from "src/components/ItemRecipe/EditItemRecipeCell";
-import ItemRecipesList from "src/components/ItemRecipe/ItemRecipes/ItemRecipes";
-import ItemRecipesCell from "src/components/ItemRecipe/ItemRecipesCell";
-import NewItemRecipe from "src/components/ItemRecipe/NewItemRecipe/NewItemRecipe";
 import Button from "src/components/Util/Button/Button";
 import ColorInput from "src/components/Util/ColorInput/ColorInput";
-import Slideshow from "src/components/Util/Slideshow/Slideshow";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 
@@ -98,21 +92,6 @@ const ItemForm = (props: ItemFormProps) => {
     control,
     name: "stats", // the name of the field array in your form data
   });
-  // const {
-  //   fields: recipeFields,
-  //   append: appendRecipe,
-  //   remove: removeRecipe,
-  // } = useFieldArray({
-  //   control,
-  //   name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert", // the name of the field array in your form data
-  // });
-  const pics = [
-    "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
-    "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
-    "https://wallpapercave.com/wp/wp10504822.jpg",
-    "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
-    "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
-  ]
   return (
     <div className="rw-form-wrapper">
       <Form<FormItem>
