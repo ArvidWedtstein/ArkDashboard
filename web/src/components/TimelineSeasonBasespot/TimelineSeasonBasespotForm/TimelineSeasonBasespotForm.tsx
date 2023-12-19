@@ -81,6 +81,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           options={props?.basespots || []}
           name="basespot_id"
           label="Basespot"
+          getOptionValue={(opt) => opt.id}
           getOptionLabel={(option) => option.name}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           defaultValue={props.timelineSeasonBasespot?.basespot_id}
@@ -94,6 +95,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           name="map_id"
           label="Map"
           getOptionLabel={(option) => option.name}
+          getOptionValue={(opt) => opt.id}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
           defaultValue={props.timelineSeasonBasespot?.map_id}

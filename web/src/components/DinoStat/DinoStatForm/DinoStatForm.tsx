@@ -47,6 +47,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
             options={[]}
             name="item_id"
             defaultValue={props.dinoStat?.item_id}
+            // getOptionValue={(opt) => opt.value}
             label="Item"
             validation={{ required: true }}
           />
@@ -54,6 +55,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
             margin="none"
             isOptionEqualToValue={(option, value) => option.value === value.value}
             getOptionLabel={(option) => option.label}
+            getOptionValue={(opt) => opt.value}
             options={[
               { value: "food", label: "Food" },
               { value: "gather_efficiency", label: "Gather Efficiency" },

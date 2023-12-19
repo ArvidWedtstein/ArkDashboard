@@ -271,6 +271,7 @@ const Gantt = <T extends Record<string, unknown>>({
           defaultValue={"week"}
           disableClearable
           isOptionEqualToValue={(option, value) => option.value === value.value}
+          getOptionValue={(opt) => opt.value}
           multiple={false}
           options={[
             { label: "Day View", value: "day" },

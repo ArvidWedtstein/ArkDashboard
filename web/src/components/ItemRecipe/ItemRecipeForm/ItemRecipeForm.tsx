@@ -7,7 +7,7 @@ import {
   Submit,
 } from "@redwoodjs/forms";
 
-import type { EditItemRecipeById, UpdateItemRecipeInput } from "types/graphql";
+import type { EditItemRecipeById, NewItemRecipe, UpdateItemRecipeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { Input } from "src/components/Util/Input/Input";
@@ -22,12 +22,15 @@ interface ItemRecipeFormProps {
   error: RWGqlError;
   loading: boolean;
   item_id?: number;
+  items: NewItemRecipe["items"]
 }
 
 const ItemRecipeForm = (props: ItemRecipeFormProps) => {
   const onSubmit = (data: FormItemRecipe) => {
     props.onSave(data, props?.itemRecipe?.id);
   };
+
+  console.log(props)
 
   return (
     <div className="rw-form-wrapper">
@@ -51,8 +54,12 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           //   value: item.id,
           //   image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
           // }))}
-          options={[{ label: "test", value: 1 }]}
+          loading={props.loading}
+          isOptionEqualToValue={(opt, val) => opt.id === val.id}
+          getOptionValue={(opt) => opt.id}
+          getOptionLabel={(opt) => opt.name}
           defaultValue={props.itemRecipe?.crafted_item_id}
+          options={props?.items || []}
           validation={{ required: true }}
         />
 

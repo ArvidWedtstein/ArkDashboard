@@ -184,6 +184,7 @@ const MapForm = (props: MapFormProps) => {
           defaultValue={props.map?.parent_map_id}
           getOptionLabel={(val) => val.label}
           isOptionEqualToValue={(val, opt) => val.id === opt.id}
+          getOptionValue={(opt) => opt.id}
           options={[
             { label: 'Valguero', id: 1 },
             { label: 'The Island', id: 2 },

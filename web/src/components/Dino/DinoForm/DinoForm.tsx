@@ -432,6 +432,7 @@ const DinoForm = (props: DinoFormProps) => {
               defaultValue={props.dino?.targeting_team_name ?? "TargetOnlyPlayers"}
               getOptionLabel={(option) => option.label}
               isOptionEqualToValue={(option, value) => option.value === value.value}
+              getOptionValue={(opt) => opt.value}
               options={[
                 { value: "Herbivores", label: "Herbivores" },
                 { value: "Herbivore_Small", label: "Herbivore Small" },
@@ -595,6 +596,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               getOptionLabel={(opt) => opt.name}
               isOptionEqualToValue={(opt, val) => opt.value === val.value}
+              getOptionValue={(opt) => opt.value}
               options={[
                 { name: 'Knockout', value: 'KO' },
                 { name: 'Non Violent', value: 'NV' },
@@ -826,6 +828,7 @@ const DinoForm = (props: DinoFormProps) => {
                 label="Carryable By"
                 name="carryable_by"
                 getOptionLabel={(option) => option.label}
+                getOptionValue={(opt) => opt.value}
                 getOptionImage={(option) => option.label === 'Human' ? "https://www.dododex.com/media/item/Pet.png" : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_${option.label.replaceAll(' ', '').toLowerCase()}.webp`}
                 options={[
                   {
@@ -899,6 +902,7 @@ const DinoForm = (props: DinoFormProps) => {
                 getOptionLabel={(option) => option.label}
                 defaultValue={props.dino?.can_destroy}
                 isOptionEqualToValue={(option, value) => option.value === value.value}
+                getOptionValue={(opt) => opt.value}
                 getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${option.label.replaceAll(' ', '').toLowerCase()}-wall.webp`}
                 options={[
                   {

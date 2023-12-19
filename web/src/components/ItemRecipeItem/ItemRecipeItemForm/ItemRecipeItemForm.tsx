@@ -29,7 +29,7 @@ interface ItemRecipeItemFormProps {
 const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
   const onSubmit = (data: FormItemRecipeItem) => {
     console.log(data)
-    // props.onSave(data, props?.itemRecipeItem?.id)
+    props.onSave(data, props?.itemRecipeItem?.id)
   }
   return (
     <div className="rw-form-wrapper">

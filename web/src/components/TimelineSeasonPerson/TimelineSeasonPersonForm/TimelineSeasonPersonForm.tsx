@@ -54,6 +54,7 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
           options={props?.profiles ?? []}
           getOptionLabel={(option) => option.username}
           isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionValue={(opt) => opt.id}
           defaultValue={props.timelineSeasonPerson?.user_id}
         />
 
@@ -66,6 +67,7 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
             { label: 'Admin', value: 'admin' },
           ]}
           getOptionLabel={(option) => option.label}
+          getOptionValue={(opt) => opt.value}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           defaultValue={props.timelineSeasonPerson?.user_id}
         />

@@ -392,6 +392,7 @@ const ItemForm = (props: ItemFormProps) => {
               defaultValue={stat.id}
               label="Stat Type"
               isOptionEqualToValue={(option, value) => option.value === value.value}
+              getOptionValue={(opt) => opt.value}
               getOptionLabel={(option) => option.label}
               disabled={register(`stats.${index}.id`).disabled}
               required={register(`stats.${index}.id`).required}

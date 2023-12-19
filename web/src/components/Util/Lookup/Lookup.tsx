@@ -235,6 +235,7 @@ type SelectProps<
   ref?: React.ForwardedRef<HTMLInputElement>
 };
 
+// TODO: improve lookup when loading hundreds of items
 export const Lookup = (<
   Value,
   Multiple extends boolean | undefined = false,

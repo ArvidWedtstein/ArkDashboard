@@ -201,6 +201,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                       name="role_id"
                       defaultValue={props.profile?.role_id}
                       getOptionLabel={(opt) => opt.name}
+                      getOptionValue={(opt) => opt.id}
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       options={props?.roles || []}
                     />

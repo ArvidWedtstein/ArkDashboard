@@ -55,6 +55,7 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.map_id}
           getOptionLabel={(val) => val.label}
           isOptionEqualToValue={(val, opt) => val.id === opt.id}
+          getOptionValue={(opt) => opt.id}
           validation={{ required: true }}
           options={[
             { label: 'Valguero', id: 1 },

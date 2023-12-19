@@ -273,6 +273,7 @@ const ItemsList = ({
               isOptionEqualToValue={(option, value) =>
                 option.value === value.value
               }
+              getOptionValue={(opt) => opt.value}
               getOptionLabel={(option) => option.label}
               value={categories[0]}
               disabled={loading}

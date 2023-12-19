@@ -117,6 +117,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             getOptionLabel={(option) => option.name}
             loading={props.loading}
             isOptionEqualToValue={(option, value) => option.id === value.id}
+            getOptionValue={(opt) => opt.id}
             getOptionImage={(option) =>
               `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`
             }
