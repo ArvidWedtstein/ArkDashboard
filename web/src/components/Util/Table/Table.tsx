@@ -934,7 +934,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       className={clsx("relative !overflow-x-hidden overflow-y-auto sm:rounded-lg", className)}
     >
       {(checkSelect || mergedSettings.export || mergedSettings.filter || mergedSettings.search || toolbar.length > 0) && (
-        <div className="rw-button-group">
+        <ButtonGroup className="my-2">
           {mergedSettings.filter && (
             <>
               {/* Filter Button */}
@@ -1148,7 +1148,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   </svg>
                 ),
                 endAdornment: (
-                  <Button type="submit" variant="contained" color="success" startIcon={(
+                  <Button type="submit" className="!rounded-l" variant="contained" color="success" startIcon={(
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512"
@@ -1165,7 +1165,8 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           {toolbar.map((item, index) => (
             <div key={`toolbar-${index}`}>{item}</div>
           ))}
-        </div>
+
+        </ButtonGroup>
       )}
       <div
         className={"w-full overflow-x-auto rounded-lg border border-zinc-500"}

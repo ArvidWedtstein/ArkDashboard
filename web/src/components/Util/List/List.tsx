@@ -19,10 +19,10 @@ type ListItemProps = {
   secondaryActionProps?: React.DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
   to?: string;
   href?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | React.MouseEventHandler<HTMLLIElement>
 } & React.DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
 export const ListItem = (props: ListItemProps) => {
-  const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, children, className, size = "medium", ...other } = props;
+  const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, children, className, size = "medium", onClick, ...other } = props;
   const rippleRef = useRef(null);
   const { enableRipple, getRippleHandlers } = useRipple({
     disabled,
@@ -39,7 +39,11 @@ export const ListItem = (props: ListItemProps) => {
       <Root className={clsx("flex justify-start w-full items-center relative box-border", {
         "px-4 py-1.5": size === 'small',
         "py-2 px-4": size === "medium"
-      })} href={props?.to || props?.href} type="button" onClick={(e) => other?.onClick(e)}>
+      })} href={props?.to || props?.href} type="button" onClick={(e) => {
+        if (!(props.href || props.to)) {
+          onClick?.(e)
+        }
+      }}>
         {icon && (
           <div className="inline-flex shrink-0 min-w-[36px]">
             {icon}

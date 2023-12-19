@@ -392,18 +392,6 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-          <Private unauthenticated="tribes">
-            <Route
-              path="/tribes/new"
-              page={TribeNewTribePage}
-              name="newTribe"
-            />
-            <Route
-              path="/tribes/{id}/edit"
-              page={TribeEditTribePage}
-              name="editTribe"
-            />
-          </Private>
           <Route path="/tribes/{id}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>

@@ -1,23 +1,20 @@
 import {
   Form,
   FormError,
-  FieldError,
-  Label,
-  TextField,
-  Submit,
-  TextAreaField,
 } from "@redwoodjs/forms";
 
-import type { EditTribeById, UpdateTribeInput } from "types/graphql";
+import type { CreateTribeInput, Tribe, UpdateTribeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useAuth } from "src/auth";
 import { permission } from ".prisma/client";
 import { Input } from "src/components/Util/Input/Input";
-type FormTribe = NonNullable<EditTribeById["tribe"]>;
+type FormTribe = NonNullable<Tribe>;
 
 interface TribeFormProps {
-  tribe?: EditTribeById["tribe"];
-  onSave: (data: UpdateTribeInput, id?: FormTribe["id"]) => void;
+  tribe?: FormTribe & {
+    [key: string]: any
+  };
+  onSave: (data: UpdateTribeInput | CreateTribeInput, id?: FormTribe["id"]) => void;
   error: RWGqlError;
   loading: boolean;
 }
@@ -54,24 +51,6 @@ const TribeForm = (props: TribeFormProps) => {
           defaultValue={props.tribe?.name}
           color="DEFAULT"
         />
-
-        {props?.tribe?.id && (
-          <div className="rw-button-group">
-            <Submit
-              disabled={
-                props.loading ||
-                !currentUser?.permissions.includes(
-                  props?.tribe?.id
-                    ? "tribe_update"
-                    : ("tribe_create" as permission)
-                )
-              }
-              className="rw-button rw-button-blue"
-            >
-              Save
-            </Submit>
-          </div>
-        )}
       </Form>
     </div>
   );

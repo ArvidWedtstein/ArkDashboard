@@ -1,19 +1,37 @@
-import { Link, routes } from "@redwoodjs/router";
 import { toast } from "@redwoodjs/web/toast";
 import { useRef, useState } from "react";
 import { useAuth } from "src/auth";
-
 import Table from "src/components/Util/Table/Table";
-import { getISOWeek, pluralize, timeTag } from "src/lib/formatters";
-
-import type { FindTribes, permission } from "types/graphql";
-import NewTribe from "../NewTribe/NewTribe";
+import { ArrayElement, getISOWeek, pluralize, timeTag } from "src/lib/formatters";
+import type { CreateTribeInput, FindTribes, Tribe, permission } from "types/graphql";
 import Popper from "src/components/Util/Popper/Popper";
 import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
 import { Card, CardActionArea } from "src/components/Util/Card/Card";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
 import Button from "src/components/Util/Button/Button";
 import List, { ListItem } from "src/components/Util/List/List";
+import TribeForm from "../TribeForm/TribeForm";
+import { useMutation } from "@redwoodjs/web";
+
+const CREATE_TRIBE_MUTATION = gql`
+  mutation CreateTribeMutation($input: CreateTribeInput!) {
+    createTribe(input: $input) {
+      id
+    }
+  }
+`;
+
+const UPDATE_TRIBE_MUTATION = gql`
+  mutation UpdateTribeMutation($id: String!, $input: UpdateTribeInput!) {
+    updateTribe(id: $id, input: $input) {
+      id
+      name
+      created_at
+      updated_at
+      created_by
+    }
+  }
+`;
 
 const TribesList = ({ tribes }: FindTribes) => {
   const [anchorRef, setAnchorRef] = useState<{
@@ -22,7 +40,11 @@ const TribesList = ({ tribes }: FindTribes) => {
     open: boolean;
   }>({ element: null, link: null, open: false });
   const { currentUser } = useAuth();
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState<{ open: boolean; edit?: boolean, tribe?: ArrayElement<FindTribes["tribes"]> }>({
+    open: false,
+    edit: false,
+    tribe: null
+  });
 
   const filterDatesByCurrentWeek = (dates: FindTribes["tribes"]) => {
     return dates.filter(
@@ -43,12 +65,36 @@ const TribesList = ({ tribes }: FindTribes) => {
 
   const modalRef = useRef<HTMLDivElement>();
 
+
+  const [createTribe, { loading, error }] = useMutation(openModal.edit ? UPDATE_TRIBE_MUTATION : CREATE_TRIBE_MUTATION, {
+    onCompleted: () => {
+      setOpenModal({ open: false, edit: false, tribe: null })
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+
+  const onSave = (input: CreateTribeInput, id?: Tribe["id"]) => {
+    toast.promise(createTribe({ variables: { id, input } }), {
+      loading: `${openModal.edit ? 'Updating' : 'Creating new'} tribe...`,
+      success: `Tribe successfully ${openModal.edit ? 'updated' : 'created'}`,
+      error: <b>Failed to {openModal.edit ? 'update' : 'create new'} Tribe.</b>,
+    });
+  };
+
   return (
     <div className="relative">
-      <Dialog ref={modalRef} open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>Add New Tribe</DialogTitle>
+      <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, edit: false, tribe: null })}>
+        <DialogTitle>{openModal.edit ? 'Edit' : 'Add New'} Tribe</DialogTitle>
         <DialogContent dividers>
-          <NewTribe />
+          <TribeForm
+            tribe={openModal.tribe ? { id: openModal.tribe.id, name: openModal.tribe.name, created_at: openModal.tribe.created_at } : null}
+            onSave={onSave}
+            loading={loading}
+            error={error}
+          />
         </DialogContent>
         <DialogActions className="space-x-1">
           <Button
@@ -59,7 +105,6 @@ const TribesList = ({ tribes }: FindTribes) => {
               if (modalRef?.current) {
                 modalRef.current.querySelector("form")?.requestSubmit();
               }
-              setOpenModal(false)
             }}
             startIcon={
               <svg
@@ -77,7 +122,7 @@ const TribesList = ({ tribes }: FindTribes) => {
           <Button
             type="reset"
             color="error"
-            onClick={() => setOpenModal(false)}
+            onClick={() => setOpenModal({ open: false, edit: false })}
           >
             Cancel
           </Button>
@@ -88,7 +133,7 @@ const TribesList = ({ tribes }: FindTribes) => {
         <Card className="hover:ring-pea-400 transition ease-in-out duration-100 focus:ring-pea-400 hover:shadow-sm dark:ring-pea-600 ring-1 ring-zinc-500 disabled:ring-transparent shadow-lg">
           <CardActionArea
             className="relative flex m-0 justify-start items-center w-full h-full p-4"
-            onClick={() => setOpenModal(true)}
+            onClick={() => setOpenModal({ open: true, edit: false })}
             disabled={
               !currentUser ||
               !currentUser?.permissions?.some(
@@ -232,7 +277,7 @@ const TribesList = ({ tribes }: FindTribes) => {
           rows={tribes}
         />
       </div>
-      <Popper anchorEl={anchorRef?.element} open={anchorRef.open}>
+      <Popper anchorEl={anchorRef?.element} open={anchorRef?.open}>
         <ClickAwayListener onClickAway={handleClose}>
           <div
             className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
@@ -251,16 +296,26 @@ const TribesList = ({ tribes }: FindTribes) => {
               </ListItem>
               {currentUser?.permissions?.some(
                 (p: permission) => p === "tribe_update"
-              ) && (<ListItem size="small" className="hover:bg-white/10" icon={<svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                className="inline-block h-4 w-4 shrink-0 select-none fill-current"
-                focusable="false"
-              >
-                <path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z" />
-              </svg>}>
-                Edit
-              </ListItem>
+              ) && (
+                  <ListItem
+                    size="small"
+                    className="hover:bg-white/10"
+                    onClick={(e) => {
+                      setOpenModal({ open: true, edit: true, tribe: tribes.find((t) => t.id === anchorRef.link) })
+                    }}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                        className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                        focusable="false"
+                      >
+                        <path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z" />
+                      </svg>
+                    }
+                  >
+                    Edit
+                  </ListItem>
                 )}
             </List>
           </div>

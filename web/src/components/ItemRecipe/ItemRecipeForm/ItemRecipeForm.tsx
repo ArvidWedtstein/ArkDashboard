@@ -22,7 +22,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Badge from "src/components/Util/Badge/Badge";
 
 const REFRESHQUERY = gql`
-  query EditItemRecipeById($id: String!) {
+  query EditItemRecipeByIdWithoutItems($id: String!) {
     itemRecipe: itemRecipe(id: $id) {
       id
       created_at
