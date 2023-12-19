@@ -24,6 +24,7 @@ import {
 } from "src/lib/formatters";
 import { FormControl, InputBase, InputBaseProps, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
+import ImageContainer from "../ImageContainer/ImageContainer";
 
 function stripDiacritics(string) {
   return typeof string.normalize !== "undefined"
@@ -1555,11 +1556,11 @@ export const Lookup = (<
         role="option"
       >
         {image && (
-          <img
-            className="mr-2 h-6 w-6"
-            src={image}
-            loading="lazy"
+          <ImageContainer
+            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+            defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-craftable-resource.webp"
             alt={getOptionLabel(option) as string}
+            className="mr-2 h-6 w-6"
           />
         )}
 

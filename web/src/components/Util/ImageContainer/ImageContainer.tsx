@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, forwardRef, useEffect, useRef, useState } from "react";
 import useIntersectionObserver from "src/components/useIntersectionObserver";
 
 interface ImageContainerProps
@@ -20,10 +20,10 @@ interface ImageContainerProps
   height?: number;
   key?: string;
 }
-const ImageContainer = ({ ...props }: ImageContainerProps) => {
+const ImageContainer = forwardRef<HTMLElement, ImageContainerProps>((props, ref) => {
   const {
     src,
-    defaultsrc,
+    defaultsrc = "",
     alt,
     caption,
     className,
@@ -57,59 +57,72 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
   //     }
   //   };
   // }, []);
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const imageRef = useRef(null);
 
   useIntersectionObserver({
-    target: ref.current,
-    onIntersect: ([{ isIntersecting }], observerElement) => {
-      if (isIntersecting) {
-        setIsVisible(true);
-        observerElement.unobserve(ref.current);
-      }
+    target: imageRef.current,
+    onIntersect: (entries, observerElement) => {
+      entries.forEach(({ isIntersecting, target }) => {
+        if (isIntersecting) {
+
+          (target as HTMLImageElement).src = src;
+          observerElement.unobserve(imageRef.current);
+        }
+      })
     },
   });
 
   // const aspectRatio = (width / height) * 100
-
   return (
-    <div
-      key={key}
-      ref={ref}
-      className={clsx(
-        "relative overflow-hidden transition-opacity duration-300 ease-linear",
-        className
+    <figure ref={ref} className={clsx("relative overflow-hidden transition-opacity duration-300 ease-linear", className)}>
+      <img
+        className="h-auto max-w-full rounded-lg transition-all duration-1000"
+        // onLoad={() => console.log('load')}
+        ref={imageRef}
+        alt={alt}
+        loading="lazy"
+        {...props}
+        onError={(e) => {
+          if (defaultsrc) e.currentTarget.src = defaultsrc;
+        }}
+      />
+      {!!caption && (
+        <figcaption className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+          {caption}
+        </figcaption>
       )}
-    // style={{ paddingBottom: `${aspectRatio}%` }}
-    >
-      {/*
-      {imageLoaded ? (
-        <img src={src} alt={alt} ref={imageRef} />
-      ) : (
-        <img src={defaultsrc} alt="Placeholder" />
-      )} */}
-      {isVisible && (
-        <figure className="max-w-3xl">
-          <img
-            className="h-auto max-w-full rounded-lg transition-all duration-1000"
-            // onLoad={() => setImageLoaded(true)}
-            src={src}
-            alt={alt}
-            {...props}
-            onError={(e) => {
-              if (defaultsrc) e.currentTarget.src = defaultsrc;
-            }}
-          // style={{ opacity: imageLoaded ? 1 : 0 }}
-          />
-          {!!caption && (
-            <figcaption className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
-              {caption}
-            </figcaption>
-          )}
-        </figure>
-      )}
-    </div>
-  );
-};
+    </figure>
+  )
+  // return (
+  //   <div
+  //     key={key}
+  //     ref={ref}
+  //     className={clsx(
+  //       "relative overflow-hidden transition-opacity duration-300 ease-linear",
+  //       className
+  //     )}
+  //   >
+  //     {isVisible && (
+  //       <figure className={"max-w-3xl w-fit"}>
+  //         <img
+  //           className="h-auto max-w-full rounded-lg transition-all duration-1000"
+  //           // onLoad={() => console.log('load')}
+  //           src={src}
+  //           alt={alt}
+  //           {...props}
+  //           onError={(e) => {
+  //             if (defaultsrc) e.currentTarget.src = defaultsrc;
+  //           }}
+  //         />
+  //         {!!caption && (
+  //           <figcaption className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+  //             {caption}
+  //           </figcaption>
+  //         )}
+  //       </figure>
+  //     )}
+  //   </div>
+  // );
+});
 
 export default ImageContainer;

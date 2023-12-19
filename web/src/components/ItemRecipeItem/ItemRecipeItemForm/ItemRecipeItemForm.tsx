@@ -28,8 +28,11 @@ interface ItemRecipeItemFormProps {
 
 const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
   const onSubmit = (data: FormItemRecipeItem) => {
-    console.log(data)
-    props.onSave(data, props?.itemRecipeItem?.id)
+    props.onSave({
+      ...data,
+      amount: parseInt(data.amount.toString()),
+      created_at: new Date().toISOString()
+    }, props?.itemRecipeItem?.id)
   }
   return (
     <div className="rw-form-wrapper">
@@ -47,6 +50,7 @@ const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
           defaultValue={props.itemRecipeItem?.item_recipe_id}
           validation={{ required: true }}
         />
+
         <Lookup
           label="Item"
           name="item_id"
@@ -63,16 +67,17 @@ const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
           label="Amount"
           name="amount"
           defaultValue={props.itemRecipeItem?.amount}
-          validation={{ valueAsNumber: true, required: true }}
+          validation={{ valueAsNumber: true, required: true, setValueAs: (v) => parseInt(v) }}
           type="number"
         />
 
-        <div className="rw-button-group">
+        {/* <div className="rw-button-group">
           <Button
             variant="outlined"
             color="success"
             type="submit"
             disabled={props.loading}
+            permission="gamedata_create"
             startIcon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +91,7 @@ const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
           >
             Save
           </Button>
-        </div>
+        </div> */}
       </Form>
     </div>
   )

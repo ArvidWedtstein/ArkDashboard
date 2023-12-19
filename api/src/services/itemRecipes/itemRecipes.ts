@@ -20,8 +20,16 @@ export const itemRecipesByCraftingStations: QueryResolvers["itemRecipesByCraftin
     });
   };
 
-export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
+export const itemRecipesByItem: QueryResolvers["itemRecipesByItem"] = ({
+  crafted_item_id,
+}) => {
   return db.itemRecipe.findMany({
+    where: { crafted_item_id: crafted_item_id },
+  });
+};
+
+export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
+  const recipes = db.itemRecipe.findMany({
     where: { crafting_station_id: { notIn: [572, 525, 214] } },
     // distinct: ["crafted_item_id"],
     select: {
@@ -53,6 +61,7 @@ export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
       // },
     },
   });
+  return recipes;
 };
 
 export const itemRecipe: QueryResolvers["itemRecipe"] = ({ id }) => {

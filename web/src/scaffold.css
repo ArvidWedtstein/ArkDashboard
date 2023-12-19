@@ -652,7 +652,7 @@
 
   /* Error */
   .rw-toast.rw-toast-error {
-    @apply border-red-300 text-red-800 dark:border-red-600 dark:text-red-400;
+    @apply border-red-300 text-black dark:border-red-600 dark:text-white;
   }
 
   /* Table */

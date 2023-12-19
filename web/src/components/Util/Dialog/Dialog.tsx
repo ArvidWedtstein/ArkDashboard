@@ -80,7 +80,7 @@ export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     exited: { opacity: 0 },
   };
   return ReactDOM.createPortal((
-    <div className="fixed inset-0 z-50" onClick={handleBackdropClick} {...other} ref={ref}>
+    <div className="fixed inset-0 z-50" role="dialog" onClick={handleBackdropClick} {...other} ref={ref}>
       <div aria-label="backdrop" className="fixed flex items-center justify-center inset-0 bg-black/50 -z-10" />
       <Transition
         appear
@@ -121,7 +121,7 @@ export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
         )}
       </Transition>
     </div>
-  ), document.documentElement)
+  ), document.body)
 })
 
 type DialogActionsProps = {

@@ -135,6 +135,27 @@ const Routes = () => {
         </Set>
         <Set
           wrap={ScaffoldLayout}
+          title="Items"
+          titleTo="items"
+          buttonLabel="New Item"
+          buttonTo="newItem"
+        >
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
+            <Route
+              path="/items/{id:Int}/edit"
+              page={ItemEditItemPage}
+              name="editItem"
+            />
+          </Private>
+          <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
+          <Route path="/items" page={ItemItemsPage} name="items" />
+        </Set>
+        <Set
+          wrap={ScaffoldLayout}
           title="ItemRecipes"
           titleTo="itemRecipes"
           buttonLabel="New ItemRecipe"
@@ -167,13 +188,6 @@ const Routes = () => {
           />
         </Set>
         <Set wrap={ScaffoldLayout} title="ItemRecipeItems" titleTo="itemRecipeItems" buttonLabel="New ItemRecipeItem" buttonTo="newItemRecipeItem">
-          <Private
-            unauthenticated="home"
-            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
-          >
-            <Route path="/item-recipe-items/new" page={ItemRecipeItemNewItemRecipeItemPage} name="newItemRecipeItem" />
-            <Route path="/item-recipe-items/{id}/edit" page={ItemRecipeItemEditItemRecipeItemPage} name="editItemRecipeItem" />
-          </Private>
           <Route path="/item-recipe-items/{id}" page={ItemRecipeItemItemRecipeItemPage} name="itemRecipeItem" />
           <Route path="/item-recipe-items" page={ItemRecipeItemItemRecipeItemsPage} name="itemRecipeItems" />
         </Set>
@@ -296,27 +310,6 @@ const Routes = () => {
             page={MapResourceMapResourcesPage}
             name="mapResources"
           />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
-          title="Items"
-          titleTo="items"
-          buttonLabel="New Item"
-          buttonTo="newItem"
-        >
-          <Private
-            unauthenticated="home"
-            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
-          >
-            <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
-            <Route
-              path="/items/{id:Int}/edit"
-              page={ItemEditItemPage}
-              name="editItem"
-            />
-          </Private>
-          <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
-          <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
         <Set
           wrap={ScaffoldLayout}

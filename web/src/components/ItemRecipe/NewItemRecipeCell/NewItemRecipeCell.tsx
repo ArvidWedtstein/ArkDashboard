@@ -19,13 +19,10 @@ export const QUERY = gql`
     items {
       id
       name
+      image
     }
   }
 `;
-
-export const beforeQuery = ({ item_id }) => {
-  return { variables: { item_id } };
-};
 
 
 export const Loading = () => (

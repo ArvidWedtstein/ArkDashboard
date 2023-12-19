@@ -18,6 +18,16 @@ export const QUERY = gql`
       crafting_time
       yields
       required_level
+      ItemRecipeItem {
+        id
+        amount
+        item_id
+      }
+    }
+    items {
+      id
+      name
+      image
     }
   }
 `
@@ -47,6 +57,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   itemRecipe,
+  items
 }: CellSuccessProps<EditItemRecipeById>) => {
   const [updateItemRecipe, { loading, error }] = useMutation(
     UPDATE_ITEM_RECIPE_MUTATION,
@@ -81,6 +92,7 @@ export const Success = ({
       </header>
       <div className="rw-segment-main">
         <ItemRecipeForm
+          items={items}
           itemRecipe={itemRecipe}
           onSave={onSave}
           error={error}
