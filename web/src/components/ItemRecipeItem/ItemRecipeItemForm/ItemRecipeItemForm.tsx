@@ -53,7 +53,6 @@ const ItemRecipeItemForm = (props: ItemRecipeItemFormProps) => {
           loading={props.loading}
           isOptionEqualToValue={(opt, val) => opt.id === val.id}
           getOptionValue={(opt) => opt.id}
-          valueKey='id'
           getOptionLabel={(opt) => opt.name}
           defaultValue={props.itemRecipeItem?.item_id}
           options={props?.items || []}

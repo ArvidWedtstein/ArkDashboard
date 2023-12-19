@@ -595,7 +595,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   margin="none"
                   getOptionLabel={(option) => option.name}
                   defaultValue={value}
-                  valueKey="id"
+                  getOptionValue={(opt) => opt.id}
                   isOptionEqualToValue={(val, opt) => opt.id === val.id}
                   options={roles || []}
                   onChange={(e, val) => {

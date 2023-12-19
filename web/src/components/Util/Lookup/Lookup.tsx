@@ -175,7 +175,6 @@ type SelectProps<
   size?: "small" | "medium" | "large";
   color?: "primary" | "secondary" | "success" | "warning" | "error";
   variant?: 'filled' | 'outlined' | 'standard'
-  valueKey?: keyof Value;
   SuffixProps?: HTMLAttributes<HTMLFieldSetElement>;
   InputProps?: {
     style?: CSSProperties;
@@ -257,15 +256,6 @@ export const Lookup = (<
     helperText,
     HelperTextProps,
     validation,
-    // TODO: remove this crap
-    // TODO: replace this with getOptionValue
-    valueKey = options && options.length > 0
-      ? Object.keys(options[0]).includes("value")
-        ? ("value" as keyof Value)
-        : options.every((d) => typeof d === "object")
-          ? (Object.keys(options[0])[0] as keyof Value)
-          : null
-      : null,
     loadingText = "Loading…",
     noOptionsText = "No options",
     margin = "normal",
@@ -370,20 +360,6 @@ export const Lookup = (<
             getOptionValue(option) ===
             defaultValue
         ) || null,
-    // default:
-    //   multiple && Array.isArray(defaultValue)
-    //     ? options.filter((option) =>
-    //       defaultValue.some(
-    //         (value) =>
-    //           value ===
-    //             (typeof option === "object" ? option[valueKey] : option)
-    //       )
-    //     )
-    //     : options.find(
-    //       (option) =>
-    //         (typeof option === "object" ? option[valueKey] : option) ===
-    //         defaultValue
-    //     ) || null,
     name: 'Lookup',
   });
 
@@ -951,8 +927,8 @@ export const Lookup = (<
       field.onChange(
         multiple
           ? Array.isArray(newValue)
-            ? newValue.map((f) => f[valueKey])
-            : newValue
+            ? newValue.map((nv) => getOptionValue(nv))
+            : getOptionValue(newValue)
           : getOptionValue(newValue)
       );
     }

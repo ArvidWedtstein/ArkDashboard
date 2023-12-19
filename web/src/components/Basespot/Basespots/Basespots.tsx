@@ -279,7 +279,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
               }
               isOptionEqualToValue={(option, value) => option.id === value.id}
               defaultValue={params.map}
-              valueKey="id"
+              getOptionValue={(opt) => opt.id}
               onSelect={(e) => {
                 setParams({
                   map: e ? e?.id : null,
