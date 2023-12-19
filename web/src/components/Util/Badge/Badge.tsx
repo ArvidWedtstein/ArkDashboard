@@ -20,6 +20,7 @@ type BadgeProps = {
   };
   children?: ReactNode;
   max?: number;
+  size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
   showZero?: boolean;
   standalone?: boolean;
@@ -35,6 +36,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
     },
     color = "DEFAULT",
     variant = "standard",
+    size = 'medium',
     content,
     max = 99,
     showZero = false,
@@ -67,8 +69,20 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       DEFAULT: "dark:bg-white/10 bg-black/10 ring-1 ring-inset dark:ring-white/30 ring-black/30 dark:text-white/90 text-black/70"
     }
   }
+  const sizes = {
+    small: clsx({
+      "px-1 min-w-[20px] h-5": !standalone,
+      "px-1.5 py-0.5": standalone
+    }),
+    medium: clsx({
+      "px-1 min-w-[20px] h-5": !standalone,
+      "px-2.5 py-1": standalone
+    }),
+    large: ``,
+  }
   const classes = clsx("items-center text-xs",
     variants[variant][color],
+    sizes[size],
     {
       "w-full": fullWidth,
       "-translate-x-1/2 left-0": anchor.horizontal == "left" && !standalone,
@@ -83,22 +97,17 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
         anchor.vertical === "bottom" && anchor.horizontal === "left" && !standalone,
       "origin-bottom-right":
         anchor.vertical === "bottom" && anchor.horizontal === "right" && !standalone,
-      "rounded-xl absolute h-5 min-w-[20px] box-border flex flex-wrap place-content-center transition-all ease-in-out pl-1 pr-1": !standalone,
-      "inline-flex px-2.5 py-1 rounded font-medium": standalone
+      "rounded-xl absolute box-border flex flex-wrap place-content-center transition-all ease-in-out": !standalone,
+      "inline-flex rounded font-medium": standalone
     }
   );
-
-  // let child: ReactNode | number = isNaN(parseInt(content.toString()))
-  //   ? content
-  //   : typeof content === "string"
-  //     ? parseInt(content)
-  //     : content;
 
   let child: ReactNode | number = isValidElement(content)
     ? content
     : typeof content === "string" && /^\d+$/.test(content)
       ? parseInt(content)
       : content;
+
   return (
     <span className={clsx("inline-flex flex-shrink-0", className, {
       "relative": !isEmpty(children),
@@ -111,9 +120,9 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
         {max && typeof child === "number"
           ? child > max
             ? `${max}+`
-            : child === 0 && showZero
-              ? child
-              : ""
+            : child === 0 && !showZero
+              ? ""
+              : child
           : child}
       </span>
     </span>

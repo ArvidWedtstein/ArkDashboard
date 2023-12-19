@@ -140,7 +140,7 @@ export const Success = ({ basespot, maps, basespotTypes }: CellSuccessProps<Edit
           onSave={onSave}
           error={error}
           loading={loading}
-          basespotTypes={basespotTypes}
+          basespotTypes={basespotTypes.map((g) => ({ id: g.type, type: g.type, name: g.type }))}
           maps={maps}
         />
       </div>

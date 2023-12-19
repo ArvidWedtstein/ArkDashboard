@@ -619,6 +619,25 @@
     transform: translate(-100%, 0);
   }
 
+  /* List */
+  .fadetransition.item-enter {
+    opacity: 0.01;
+  }
+
+  .fadetransition.item-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+  }
+
+  .fadetransition.item-exit {
+    opacity: 1;
+  }
+
+  .fadetransition.item-exit-active {
+    opacity: 0.01;
+    transition: opacity 500ms ease-in;
+  }
+
   .parchment {
     position: absolute;
     display: flex;

@@ -25,6 +25,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { ButtonGroupButtonContext } from "../Button/Button";
 
 
 function formControlState({ props, states, formControl }) {
@@ -556,6 +557,10 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       ...other
     } = props;
 
+    const buttonGroupButtonContextPositionClassName = useContext(
+      ButtonGroupButtonContext
+    );
+
     const inputRef = useRef();
     const [focused, setFocused] = useState(false);
     const formControl = useFormControl();
@@ -810,7 +815,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       filled: `before:content-[''] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-colors before:ease-in-out before:duration-75 hover:before:border-black hover:before:dark:border-white`,
       standard: `before:content-['"\\00a0"'] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-all before:ease-in-out before:duration-75 hover:before:border-b-2 hover:before:border-black hover:before:dark:border-white`,
     };
-    // TODO: add react-form-hook error classes here instead
+
     const inputBaseClassesAfter = {
       outlined: '',
       filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused
@@ -829,7 +834,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
         }`,
     };
     const classes = {
-      root: clsx(`relative box-border inline-flex cursor-text items-center text-base font-normal leading-6`, {
+      root: clsx(`relative box-border inline-flex cursor-text items-center text-base font-normal leading-6`, buttonGroupButtonContextPositionClassName, {
         "w-full": ownerState.fullWidth
       }),
       input: clsx(`block w-full font-[inherit] leading-[inherit] text-current m-0 h-6 min-w-0
@@ -842,8 +847,6 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
             formControl.shrink
           )
         ) ||
-          // formControl.filled ||
-          // formControl.adornedStart ||
           type === "date" ||
           type === "datetime"
           ? "placeholder:opacity-0"
@@ -1071,7 +1074,6 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       defaultValue: defaultValue || value,
       rules: validation,
     });
-
   return (
     <FormControl
       className={className}

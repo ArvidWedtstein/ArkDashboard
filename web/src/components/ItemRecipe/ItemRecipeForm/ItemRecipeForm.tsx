@@ -1,29 +1,45 @@
 import {
   Form,
   FormError,
-  FieldError,
   Label,
-  TextField,
-  Submit,
 } from "@redwoodjs/forms";
 
-import type { CreateItemRecipeItemInput, DeleteItemRecipeItemMutationVariables, EditItemRecipeById, EditItemRecipeItemById, NewItemRecipe, UpdateItemRecipeInput, UpdateItemRecipeItemInput } from "types/graphql";
+import type { CreateItemRecipeItemInput, DeleteItemRecipeItemMutationVariables, EditItemRecipeById, NewItemRecipe, UpdateItemRecipeInput, UpdateItemRecipeItemInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
-import Button from "src/components/Util/Button/Button";
-import { routes } from "@redwoodjs/router";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { useRef, useState } from "react";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
-import NewItemRecipeItemCell from "src/components/ItemRecipeItem/NewItemRecipeItemCell";
 import ItemRecipeItemForm from "src/components/ItemRecipeItem/ItemRecipeItemForm/ItemRecipeItemForm";
 import { ArrayElement } from "src/lib/formatters";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Toast from "src/components/Util/Toast/Toast";
+import { QUERY } from "../EditItemRecipeCell";
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import Badge from "src/components/Util/Badge/Badge";
 
-
+const REFRESHQUERY = gql`
+  query EditItemRecipeById($id: String!) {
+    itemRecipe: itemRecipe(id: $id) {
+      id
+      created_at
+      updated_at
+      crafted_item_id
+      crafting_station_id
+      crafting_time
+      yields
+      required_level
+      ItemRecipeItem {
+        id
+        amount
+        item_id
+      }
+    }
+  }
+`
 const CREATE_ITEM_RECIPE_ITEM_MUTATION = gql`
   mutation CreateItemRecipeItemMutation($input: CreateItemRecipeItemInput!) {
     createItemRecipeItem(input: $input) {
@@ -31,7 +47,6 @@ const CREATE_ITEM_RECIPE_ITEM_MUTATION = gql`
     }
   }
 `
-
 const UPDATE_ITEM_RECIPE_ITEM_MUTATION = gql`
   mutation UpdateItemRecipeItemMutation(
     $id: String!
@@ -47,7 +62,6 @@ const UPDATE_ITEM_RECIPE_ITEM_MUTATION = gql`
     }
   }
 `
-
 const DELETE_ITEM_RECIPE_ITEM_MUTATION = gql`
   mutation DeleteItemRecipeItemMutation($id: String!) {
     deleteItemRecipeItem(id: $id) {
@@ -68,12 +82,22 @@ interface ItemRecipeFormProps {
 
 const ItemRecipeForm = (props: ItemRecipeFormProps) => {
   const onSubmit = (data: FormItemRecipe) => {
-    props.onSave(data, props?.itemRecipe?.id);
+    console.log(data)
+    props.onSave({
+      ...data,
+      created_at: data.created_at ?? new Date().toISOString(),
+      crafting_time: parseFloat(data?.crafting_time.toString()) || 0,
+    }, props?.itemRecipe?.id);
   };
 
   const [createItemRecipeItem, { loading: createLoading, error: createError }] = useMutation(
     CREATE_ITEM_RECIPE_ITEM_MUTATION,
     {
+      refetchQueries: [{ query: REFRESHQUERY, variables: { id: props?.itemRecipe?.id }, partialRefetch: true, }],
+      awaitRefetchQueries: true,
+      onCompleted: () => {
+        setOpenModal({ open: false, item_recipe_item: null, edit: null });
+      },
       onError: (error) => {
         if (process.env.NODE_ENV !== "production") {
           console.error(error)
@@ -86,6 +110,9 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
   const [updateItemRecipeItem, { loading: updateLoading, error: updateError }] = useMutation(
     UPDATE_ITEM_RECIPE_ITEM_MUTATION,
     {
+      onCompleted: () => {
+        setOpenModal({ open: false, item_recipe_item: null, edit: null });
+      },
       onError: (error) => {
         if (process.env.NODE_ENV !== "production") {
           console.error(error)
@@ -95,7 +122,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
     }
   )
 
-  const onSave = (input: CreateItemRecipeItemInput | UpdateItemRecipeItemInput, id?: EditItemRecipeItemById['itemRecipeItem']['id']) => {
+  const onSave = (input: CreateItemRecipeItemInput | UpdateItemRecipeItemInput, id?: FormItemRecipe["id"]) => {
     toast.promise(
       openModal.edit
         ? updateItemRecipeItem({ variables: { id, input } })
@@ -114,6 +141,8 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
     onError: (error) => {
       toast.error(error.message)
     },
+    refetchQueries: [{ query: QUERY, variables: { id: props?.itemRecipe?.id }, partialRefetch: true, }],
+    awaitRefetchQueries: true
   })
 
   const onDeleteClick = (id: DeleteItemRecipeItemMutationVariables['id']) => {
@@ -146,8 +175,8 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
         <DialogContent dividers>
           <ItemRecipeItemForm
             itemRecipeItem={openModal.item_recipe_item ?
-              { ...openModal.item_recipe_item, item_recipe_id: props.itemRecipe.id }
-              : { id: null, item_recipe_id: props.itemRecipe.id, amount: 1, item_id: null }
+              { ...openModal?.item_recipe_item, item_recipe_id: props?.itemRecipe?.id }
+              : { id: null, item_recipe_id: props?.itemRecipe?.id, amount: 1, item_id: null }
             }
             error={props.error || createError || updateError}
             loading={props.loading || createLoading || updateLoading}
@@ -160,12 +189,11 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             type="button"
             color="success"
             variant="contained"
+            permission={openModal.edit ? 'gamedata_update' : 'gamedata_create'}
             onClick={() => {
               if (modalRef?.current) {
                 modalRef.current.querySelector("form")?.requestSubmit();
               }
-
-              setOpenModal({ open: false, item_recipe_item: null, edit: null });
             }}
             startIcon={
               <svg
@@ -221,13 +249,6 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           margin="none"
           name="crafted_item_id"
           label={"Item"}
-          // options={data.itemsByCategory.items.map((item) => ({
-          //   category: item.category,
-          //   type: item.type,
-          //   label: item.name,
-          //   value: item.id,
-          //   image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
-          // }))}
           loading={props.loading}
           isOptionEqualToValue={(opt, val) => opt.id === val.id}
           getOptionValue={(opt) => opt.id}
@@ -337,105 +358,98 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           ]}
         />
 
+        <ButtonGroup className="my-3">
+          <Input
+            label="Crating Time"
+            name="crafting_time"
+            color="DEFAULT"
+            variant="outlined"
+            type="number"
+            margin="none"
+            defaultValue={props.itemRecipe?.crafting_time || 0}
+            validation={{ valueAsNumber: true }}
+            InputProps={{
+              endAdornment: (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" shapeRendering="auto" className="w-4 fill-current">
+                  <path shapeRendering={"auto"} d="M256 16C247.2 16 240 23.16 240 32v80C240 120.8 247.2 128 256 128s16-7.156 16-16V48.59C379.3 56.81 464 146.7 464 256c0 114.7-93.31 208-208 208S48 370.7 48 256c0-48.84 17.28-96.34 48.66-133.7c5.688-6.75 4.812-16.84-1.969-22.53S77.84 94.94 72.16 101.7C35.94 144.8 16 199.6 16 256c0 132.3 107.7 240 239.1 240S496 388.3 496 256S388.3 16 256 16zM244.7 267.3C247.8 270.4 251.9 272 256 272s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62l-80-80c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L244.7 267.3z" />
+                </svg>
+              )
+            }}
+          />
+          <Input
+            label="Yields"
+            name="yields"
+            color="DEFAULT"
+            variant="outlined"
+            margin="none"
+            type="number"
+            defaultValue={props.itemRecipe?.yields || 1}
+            validation={{ valueAsNumber: true, required: true }}
+          />
+          <Input
+            label="Required Level"
+            name="required_level"
+            color="DEFAULT"
+            variant="outlined"
+            margin="none"
+            type="number"
+            defaultValue={props.itemRecipe?.required_level || 0}
+            validation={{ valueAsNumber: true }}
+            InputProps={{
+              endAdornment: 'lvl'
+            }}
+          />
+        </ButtonGroup>
 
-        <Input
-          label="Crating Time"
-          name="crafting_time"
-          color="DEFAULT"
-          variant="outlined"
-          type="number"
-          defaultValue={props.itemRecipe?.crafting_time || 0}
-          validation={{ valueAsNumber: true }}
-          InputProps={{
-            endAdornment: (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" shapeRendering="auto" className="w-4 fill-current">
-                <path shapeRendering={"auto"} d="M256 16C247.2 16 240 23.16 240 32v80C240 120.8 247.2 128 256 128s16-7.156 16-16V48.59C379.3 56.81 464 146.7 464 256c0 114.7-93.31 208-208 208S48 370.7 48 256c0-48.84 17.28-96.34 48.66-133.7c5.688-6.75 4.812-16.84-1.969-22.53S77.84 94.94 72.16 101.7C35.94 144.8 16 199.6 16 256c0 132.3 107.7 240 239.1 240S496 388.3 496 256S388.3 16 256 16zM244.7 267.3C247.8 270.4 251.9 272 256 272s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62l-80-80c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L244.7 267.3z" />
-              </svg>
-            )
-          }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0.375rem 0 0 0.375rem",
-              marginRight: "-0.5px",
-            },
-          }}
-        />
-        <Input
-          label="Yields"
-          name="yields"
-          color="DEFAULT"
-          variant="outlined"
-          type="number"
-          defaultValue={props.itemRecipe?.yields || 1}
-          validation={{ valueAsNumber: true, required: true }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0",
-              marginRight: "-0.5px",
-              marginLeft: '-0.5px'
-            },
-          }}
-        />
-        <Input
-          label="Required Level"
-          name="required_level"
-          color="DEFAULT"
-          variant="outlined"
-          type="number"
-          defaultValue={props.itemRecipe?.required_level || 0}
-          validation={{ valueAsNumber: true }}
-          InputProps={{
-            endAdornment: 'lvl'
-          }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0 0.375rem 0.375rem 0",
-              marginLeft: '-0.5px'
-            },
-          }}
-        />
+        <div className="flex flex-row flex-wrap gap-3 mt-6">
+          <TransitionGroup component={null}>
+            {props.itemRecipe?.ItemRecipeItem?.map((itemrecipeitem) => {
+              const item = props.items.find((item) => item.id === itemrecipeitem.item_id)
+              return (
+                <CSSTransition
+                  key={`recipe-${itemrecipeitem.item_id}`}
+                  timeout={500}
+                  classNames="item"
+                >
+                  <Button
+                    className="fadetransition aspect-square"
+                    variant="outlined"
+                    color="DEFAULT"
+                    onClick={() => setOpenModal({ open: true, edit: true, item_recipe_item: itemrecipeitem })}
+                  >
+                    <div className="flex flex-col items-center justify-center w-12 p-1">
+                      <img
+                        className="h-10 w-10"
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                        alt={item.name}
+                      />
+                      <span className="text-xs">{item.name}</span>
+                    </div>
+                    <Badge color="DEFAULT" variant="standard" size="small" className="absolute top-0 right-2.5" max={10000000} content={itemrecipeitem.amount} />
+                  </Button>
+                </CSSTransition>
+              )
+            })}
+          </TransitionGroup>
 
-        <div className="flex flex-wrap gap-3">
-          {props.itemRecipe?.ItemRecipeItem?.map((itemrecipeitem) => {
-            const item = props.items.find((item) => item.id === itemrecipeitem.item_id)
-            return (
-              <Button
-                className="aspect-square"
-                variant="outlined"
-                color="DEFAULT"
-                key={`recipe-${itemrecipeitem.item_id}`}
-                onClick={() => setOpenModal({ open: true, edit: true, item_recipe_item: itemrecipeitem })}
-              >
-                <div className="flex flex-col items-center justify-center">
-                  <img
-                    className="h-10 w-10"
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                    alt={item.name}
-                  />
-                  <span>{item.name}</span>
-                </div>
-                <div className="absolute -bottom-0 right-1 inline-flex h-6 items-center justify-center text-right rounded-full bg-transparent text-xs font-bold">
-                  {itemrecipeitem.amount}
-                </div>
-              </Button>
-            )
-          })}
-          <Button
-            className="aspect-square"
-            variant="contained"
-            color="success"
-            onClick={() => setOpenModal({ open: true })}
-            startIcon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-              >
-                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-              </svg>
-            }
-          >
-            Add
-          </Button>
+          {props?.itemRecipe?.id && (
+            <Button
+              className="aspect-square"
+              variant="contained"
+              color="success"
+              onClick={() => setOpenModal({ open: true })}
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              Add
+            </Button>
+          )}
         </div>
 
         <div className="rw-button-group">

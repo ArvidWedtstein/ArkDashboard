@@ -72,9 +72,9 @@ export const Success = ({
   const [createItemRecipe, { loading, error }] = useMutation(
     CREATE_ITEM_RECIPE_MUTATION,
     {
-      onCompleted: () => {
+      onCompleted: ({ createItemRecipe }) => {
         toast.success('ItemRecipe created')
-        navigate(routes.itemRecipes())
+        navigate(routes.itemRecipe({ id: createItemRecipe.id }))
       },
       onError: (error) => {
         toast.error(error.message)
@@ -85,7 +85,7 @@ export const Success = ({
   const onSave = (input: CreateItemRecipeInput) => {
     toast.promise(createItemRecipe({ variables: { input } }), {
       loading: "Creating new item recipe ...",
-      success: "Item recupe successfully created",
+      success: "Item recipe successfully created",
       error: <b>Failed to create new item recipe .</b>,
     });
   }

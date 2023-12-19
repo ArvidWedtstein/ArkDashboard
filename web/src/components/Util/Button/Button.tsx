@@ -27,8 +27,8 @@ type IButtonGroupContext = {
   variant?: "text" | "contained" | "outlined" | "icon";
 };
 
-const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
-const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
+export const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
+export const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
 
 // TODO: fix button events handlers for link and button
 type ButtonProps = {
@@ -335,7 +335,7 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>((props, 
 
   return (
     <div
-      className={clsx("inline-flex rounded", { "flex-col": orientation === "vertical", "w-full": fullWidth })}
+      className={clsx("inline-flex rounded", { "flex-col": orientation === "vertical", "w-full": fullWidth }, className)}
       role="group"
       ref={ref}
     >

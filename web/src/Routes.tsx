@@ -187,10 +187,6 @@ const Routes = () => {
             name="itemRecipes"
           />
         </Set>
-        <Set wrap={ScaffoldLayout} title="ItemRecipeItems" titleTo="itemRecipeItems" buttonLabel="New ItemRecipeItem" buttonTo="newItemRecipeItem">
-          <Route path="/item-recipe-items/{id}" page={ItemRecipeItemItemRecipeItemPage} name="itemRecipeItem" />
-          <Route path="/item-recipe-items" page={ItemRecipeItemItemRecipeItemsPage} name="itemRecipeItems" />
-        </Set>
         <Set
           wrap={ScaffoldLayout}
           title="Lootcrates"

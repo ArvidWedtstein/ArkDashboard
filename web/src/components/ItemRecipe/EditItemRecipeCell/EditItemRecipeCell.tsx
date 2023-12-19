@@ -63,7 +63,6 @@ export const Success = ({
     UPDATE_ITEM_RECIPE_MUTATION,
     {
       onCompleted: () => {
-        toast.success('ItemRecipe updated')
         navigate(routes.itemRecipes())
       },
       onError: (error) => {
