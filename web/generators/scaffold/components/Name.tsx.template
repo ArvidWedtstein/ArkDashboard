@@ -37,7 +37,7 @@ const ${singularPascalName} = ({ ${singularCamelName} }: Props) => {
     toast.custom((t) => (
       <Toast
         t={t}
-        title={`You are about to delete ${singularCamelName}`}
+        title={`Confirm deletion`}
         message={`Are you sure you want to delete ${singularCamelName}?`}
         actionType="YesNo"
         primaryAction={() => delete${singularPascalName}({ variables: { id } })}

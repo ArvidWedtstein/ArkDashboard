@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import Table from "src/components/Util/Table/Table";
 import { ArrayElement, getISOWeek, pluralize, timeTag } from "src/lib/formatters";
-import type { CreateTribeInput, FindTribes, Tribe, permission } from "types/graphql";
+import { CreateTribeMutationVariables, type CreateTribeInput, type Exact, type FindTribes, type Tribe, type permission, CreateTribeMutation, UpdateTribeMutation, DeleteTribeMutation, UpdateTribeMutationVariables, UpdateTribeInput } from "types/graphql";
 import Popper from "src/components/Util/Popper/Popper";
 import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
 import { Card, CardActionArea } from "src/components/Util/Card/Card";
@@ -12,11 +12,22 @@ import Button from "src/components/Util/Button/Button";
 import List, { ListItem } from "src/components/Util/List/List";
 import TribeForm from "../TribeForm/TribeForm";
 import { useMutation } from "@redwoodjs/web";
+import Toast from "src/components/Util/Toast/Toast";
+import { QUERY } from "../TribesCell";
 
 const CREATE_TRIBE_MUTATION = gql`
   mutation CreateTribeMutation($input: CreateTribeInput!) {
     createTribe(input: $input) {
       id
+      name
+      created_at
+      updated_at
+      created_by
+      Profile {
+        id
+        full_name
+        avatar_url
+      }
     }
   }
 `;
@@ -29,22 +40,51 @@ const UPDATE_TRIBE_MUTATION = gql`
       created_at
       updated_at
       created_by
+      Profile {
+        id
+        full_name
+        avatar_url
+      }
     }
   }
 `;
 
-const TribesList = ({ tribes }: FindTribes) => {
+
+const DELETE_TRIBE_MUTATION = gql`
+  mutation DeleteTribeMutation($id: String!) {
+    deleteTribe(id: $id) {
+      id
+    }
+  }
+`;
+
+
+type Props = {
+  tribes: FindTribes["tribes"];
+  queryResult?: Partial<Omit<QueryOperationResult<FindTribes, Exact<{
+    [key: string]: never;
+  }>>, "loading" | "error" | "data">>
+  updating?: boolean
+}
+const TribesList = ({ tribes, queryResult }: Props) => {
+  const { currentUser } = useAuth();
+
   const [anchorRef, setAnchorRef] = useState<{
     element: HTMLButtonElement | null;
-    link: string;
+    row_id: ArrayElement<FindTribes["tribes"]>["id"];
     open: boolean;
-  }>({ element: null, link: null, open: false });
-  const { currentUser } = useAuth();
-  const [openModal, setOpenModal] = useState<{ open: boolean; edit?: boolean, tribe?: ArrayElement<FindTribes["tribes"]> }>({
+  }>({ element: null, row_id: null, open: false });
+
+  const [openModal, setOpenModal] = useState<{
+    open: boolean;
+    edit?: boolean,
+    tribe?: ArrayElement<FindTribes["tribes"]>
+  }>({
     open: false,
     edit: false,
     tribe: null
   });
+  const modalRef = useRef<HTMLDivElement>();
 
   const filterDatesByCurrentWeek = (dates: FindTribes["tribes"]) => {
     return dates.filter(
@@ -60,28 +100,112 @@ const TribesList = ({ tribes }: FindTribes) => {
       return;
     }
 
-    setAnchorRef({ element: null, open: false, link: null });
+    setAnchorRef({ element: null, open: false, row_id: null });
   };
 
-  const modalRef = useRef<HTMLDivElement>();
-
-
-  const [createTribe, { loading, error }] = useMutation(openModal.edit ? UPDATE_TRIBE_MUTATION : CREATE_TRIBE_MUTATION, {
+  /**
+   * RefetchQueries in Apollo Client is a mechanism to refetch specific queries after a mutation is performed.
+   * It allows you to specify the queries that should be refetched to update the client-side cache with the latest data.
+   * By default, when you use refetchQueries, the specified queries will be refetched in their entirety,
+   * meaning they will request all the data from the server again.
+   * This is because Apollo Client assumes that the entire query data might be affected by the mutation, and it refreshes the entire query result.
+   * If you want to refetch only specific fields or get only the modified data, you might consider using the update function within the mutation.
+   * The update function allows you to manually update the cache with the new data that was returned from the mutation.
+   */
+  const [createTribe, { loading: loadingCreate, error: errorCreate }] = useMutation<CreateTribeMutation, CreateTribeMutationVariables>(CREATE_TRIBE_MUTATION, {
+    update: (cache, { data: { createTribe } }) => {
+      const existingData = cache.readQuery<FindTribes>({ query: QUERY });
+      if (existingData && createTribe) {
+        cache.writeQuery({
+          query: QUERY,
+          data: {
+            ...existingData,
+            tribes: [...existingData.tribes, createTribe]
+          }
+        });
+      }
+    },
     onCompleted: () => {
-      setOpenModal({ open: false, edit: false, tribe: null })
+      setOpenModal({ open: false, edit: false, tribe: null });
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
 
+  const [updateTribe, { loading, error }] = useMutation<UpdateTribeMutation, UpdateTribeMutationVariables>(UPDATE_TRIBE_MUTATION, {
+    update: (cache, { data: { updateTribe } }) => {
+      const existingData = cache.readQuery({ query: QUERY });
+
+      if (existingData && updateTribe) {
+        cache.modify({
+          id: cache.identify(updateTribe),
+          fields: {
+            name: () => updateTribe.name,
+          }
+        })
+      }
+    },
+    onCompleted: () => {
+      setOpenModal({ open: false, edit: false, tribe: null })
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    // refetchQueries: [{ query: QUERY }],
+    // awaitRefetchQueries: true,
+  });
+
+  // https://shopify.engineering/apollo-cache
+
+  const [deleteTribe] = useMutation<DeleteTribeMutation>(DELETE_TRIBE_MUTATION, {
+    update: (cache, { data: { deleteTribe: deletedTribe } }) => {
+      const existingData = cache.readQuery({ query: QUERY });
+      if (existingData && deletedTribe) {
+        cache.writeQuery({
+          query: QUERY,
+          data: {
+            tribes: existingData["tribes"]?.filter((tribe) => tribe.id !== deletedTribe?.id)
+          }
+        })
+      }
+    },
+    onCompleted: () => {
+      toast.success("Tribe deleted");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onDeleteClick = async (tribe: ArrayElement<FindTribes["tribes"]>) => {
+    if (!currentUser?.permissions.some((p: permission) => p === "tribe_delete")) return;
+
+    await toast.custom((t) => (
+      <Toast
+        t={t}
+        title={`Confirm deletion`}
+        message={`Are you sure you want to delete '${tribe.name}' tribe?`}
+        primaryAction={() => deleteTribe({ variables: { id: tribe.id } })}
+        actionType="YesNo"
+      />
+    ));
+  };
 
   const onSave = (input: CreateTribeInput, id?: Tribe["id"]) => {
-    toast.promise(createTribe({ variables: { id, input } }), {
-      loading: `${openModal.edit ? 'Updating' : 'Creating new'} tribe...`,
-      success: `Tribe successfully ${openModal.edit ? 'updated' : 'created'}`,
-      error: <b>Failed to {openModal.edit ? 'update' : 'create new'} Tribe.</b>,
-    });
+    if (openModal.edit) {
+      toast.promise(updateTribe({ variables: { id, input } }), {
+        loading: `${openModal.edit ? 'Updating' : 'Creating new'} tribe...`,
+        success: `Tribe successfully ${openModal.edit ? 'updated' : 'created'}`,
+        error: <b>Failed to {openModal.edit ? 'update' : 'create new'} Tribe.</b>,
+      });
+    } else {
+      toast.promise(createTribe({ variables: { input } }), {
+        loading: `${openModal.edit ? 'Updating' : 'Creating new'} tribe...`,
+        success: `Tribe successfully ${openModal.edit ? 'updated' : 'created'}`,
+        error: <b>Failed to {openModal.edit ? 'update' : 'create new'} Tribe.</b>,
+      });
+    }
   };
 
   return (
@@ -92,8 +216,8 @@ const TribesList = ({ tribes }: FindTribes) => {
           <TribeForm
             tribe={openModal.tribe ? { id: openModal.tribe.id, name: openModal.tribe.name, created_at: openModal.tribe.created_at } : null}
             onSave={onSave}
-            loading={loading}
-            error={error}
+            loading={loading || loadingCreate}
+            error={error || errorCreate}
           />
         </DialogContent>
         <DialogActions className="space-x-1">
@@ -226,6 +350,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             {
               field: "created_at",
               header: "Created At",
+              datatype: "date",
               sortable: true,
               valueFormatter: ({ value }) => timeTag(value.toString()),
             },
@@ -248,7 +373,7 @@ const TribesList = ({ tribes }: FindTribes) => {
               ),
             },
             {
-              field: "created_at",
+              field: "id",
               header: "",
               width: 30,
               render: ({ row }) => (
@@ -259,7 +384,7 @@ const TribesList = ({ tribes }: FindTribes) => {
                     setAnchorRef({
                       open: anchorRef?.element ? !anchorRef?.open : true,
                       element: e.currentTarget,
-                      link: row["id"],
+                      row_id: row["id"],
                     });
                   }}
                 >
@@ -284,16 +409,6 @@ const TribesList = ({ tribes }: FindTribes) => {
             onClick={() => setAnchorRef(null)}
           >
             <List>
-              <ListItem size="small" className="hover:bg-white/10" icon={<svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 576 512"
-                className="inline-block h-4 w-4 shrink-0 select-none fill-current"
-                focusable="false"
-              >
-                <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
-              </svg>}>
-                View
-              </ListItem>
               {currentUser?.permissions?.some(
                 (p: permission) => p === "tribe_update"
               ) && (
@@ -301,7 +416,7 @@ const TribesList = ({ tribes }: FindTribes) => {
                     size="small"
                     className="hover:bg-white/10"
                     onClick={(e) => {
-                      setOpenModal({ open: true, edit: true, tribe: tribes.find((t) => t.id === anchorRef.link) })
+                      setOpenModal({ open: true, edit: true, tribe: tribes.find((t) => t.id === anchorRef.row_id) })
                     }}
                     icon={
                       <svg
@@ -315,6 +430,27 @@ const TribesList = ({ tribes }: FindTribes) => {
                     }
                   >
                     Edit
+                  </ListItem>
+                )}
+              {currentUser?.permissions?.some(
+                (p: permission) => p === "tribe_delete"
+              ) && (
+                  <ListItem
+                    size="small"
+                    className="hover:bg-white/10"
+                    onClick={(e) => onDeleteClick(tribes.find((t) => t.id === anchorRef.row_id))}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        className="inline-block h-4 w-4 shrink-0 select-none fill-current"
+                        focusable="false"
+                      >
+                        <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
+                      </svg>
+                    }
+                  >
+                    Delete
                   </ListItem>
                 )}
             </List>

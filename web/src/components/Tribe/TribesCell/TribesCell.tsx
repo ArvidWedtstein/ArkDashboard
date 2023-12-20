@@ -1,10 +1,9 @@
-import type { FindTribes } from "types/graphql";
+import type { FindTribes, FindTribesVariables } from "types/graphql";
 
 import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Tribes from "src/components/Tribe/Tribes";
-import { toast } from "@redwoodjs/web/dist/toast";
 
 export const QUERY = gql`
   query FindTribes {
@@ -141,9 +140,6 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {"No tribes yet. "}
-      <Link to={routes.newTribe()} className="rw-link">
-        {"Create one?"}
-      </Link>
     </div>
   );
 };
@@ -168,6 +164,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   </section>
 );
 
-export const Success = ({ tribes }: CellSuccessProps<FindTribes>) => {
-  return <Tribes tribes={tribes} />;
+export const Success = ({ tribes, queryResult, updating }: CellSuccessProps<FindTribes, FindTribesVariables>) => {
+  return <Tribes tribes={tribes} queryResult={queryResult} updating={updating} />;
 };

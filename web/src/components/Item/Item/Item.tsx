@@ -9,6 +9,7 @@ import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import List, { ListItem } from "src/components/Util/List/List";
 import Map from "src/components/Util/Map/Map";
+import Toast from "src/components/Util/Toast/Toast";
 
 import { getHexCodeFromPercentage, getWordType } from "src/lib/formatters";
 
@@ -44,9 +45,15 @@ const Item = ({ item }: Props) => {
   });
 
   const onDeleteClick = (id: DeleteItemMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete item " + id + "?")) {
-      deleteItem({ variables: { id } });
-    }
+    toast.custom((t) => (
+      <Toast
+        t={t}
+        title={`Are you sure you want to delete item ${id}?`}
+        message={`Are you sure you want to delete item ${id}?`}
+        primaryAction={() => deleteItem({ variables: { id } })}
+        actionType="YesNo"
+      />
+    ));
   };
   const ItemStats = {
     2: {

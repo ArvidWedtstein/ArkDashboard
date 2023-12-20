@@ -1,4 +1,4 @@
-import { ElementType, Fragment, HTMLAttributes, ReactElement, forwardRef, useCallback, useMemo, useRef, useState } from "react";
+import { ElementType, Fragment, HTMLAttributes, forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { IntRange, debounce, formatNumber } from "src/lib/formatters";
 import clsx from "clsx";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
@@ -8,7 +8,8 @@ import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import Button, { ButtonGroup } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { Lookup } from "../Lookup/Lookup";
-import { useSubscription } from "@redwoodjs/web";
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+
 type Filter<Row extends Record<string, any>> = {
   /**
    * The column name.
@@ -264,10 +265,10 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     if (column) {
       const sortDirection = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
+
       data.sort((a, b) => {
         let c = a[sortKey];
         let d = b[sortKey];
-
 
         // Compare based on data type
         if (!columnDataType) {
@@ -284,7 +285,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         } else if (columnDataType === "date") {
           if (typeof c === "string") c = new Date(c).getTime();
           if (typeof d === "string") d = new Date(d).getTime();
-
           return (d as number) - (c as number);
         }
 
@@ -483,12 +483,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         size={size}
         handleResize={handleResize}
         onClick={() => {
-          other.sortable &&
-            setSort((prev) => ({
-              column: other.field,
-              columnDataType: other.datatype,
-              direction: prev.direction === "asc" ? "desc" : "asc",
-            }));
+          if (!other.sortable) return
+          setSort((prev) => ({
+            column: other.field,
+            columnDataType: other.datatype,
+            direction: prev.direction === "asc" ? "desc" : "asc",
+          }));
         }}
       >
         {label}
@@ -1119,18 +1119,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           )}
           {mergedSettings.search && (
             <Input
-              className="-ml-px"
               fullWidth
               color="DEFAULT"
               margin="none"
               label="Search"
               type="search"
               onChange={handleSearch}
-              SuffixProps={{
-                style: {
-                  borderRadius: "0 0.375rem 0.375rem 0",
-                },
-              }}
               InputProps={{
                 startAdornment: (
                   <svg
@@ -1179,79 +1173,79 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   tableSelect({ header: true, rowIndex: -1, select: false })}
                 {checkSelect &&
                   tableSelect({ header: true, rowIndex: -1, select: checkSelect })}
-                {columns &&
-                  columnSettings
-                    .filter((col) => !col.hidden)
-                    .map(({ ...other }, index) =>
-                      headerRenderer({
-                        label: other.header,
-                        columnIndex: index,
-                        ...other,
-                      })
-                    )}
+                {columnSettings
+                  ?.filter((col) => !col.hidden)
+                  .map(({ ...other }, index) => {
+                    return headerRenderer({
+                      label: other.header,
+                      columnIndex: index,
+                      ...other,
+                    });
+                  })}
               </TableRow>
             </thead>
           )}
-          <tbody
-            className={classes.tableBody}
-          >
+          <TransitionGroup component="tbody" className={classes.tableBody}>
             {dataRows &&
               PaginatedData.map((datarow, i) => (
-                <Fragment key={datarow.row_id.toString()}>
-                  <TableRow borders={mergedSettings.borders}>
-                    {dataRows.some((row) => row.collapseContent) &&
-                      tableSelect({
-                        datarow,
-                        rowIndex: i,
-                        select: false,
-                      })}
-                    {checkSelect &&
-                      tableSelect({ datarow, rowIndex: i, select: true })}
-                    {columnSettings &&
-                      columnSettings.map(
-                        (
-                          {
-                            field,
-                            render,
-                            valueFormatter,
-                            className,
-                            datatype,
-                            header,
-                            ...other
-                          },
-                          index
-                        ) =>
-                          cellRenderer({
-                            rowData: datarow,
-                            cellData: datarow[field],
-                            // cellData: field && field.toString()?.includes(".")
-                            //   ? getValueByNestedKey(datarow, field)
-                            //   : datarow[field],
-                            columnIndex: index,
-                            header,
-                            rowIndex: i,
-                            render,
-                            valueFormatter,
-                            field,
-                            className,
-                            datatype,
-                            ...other,
-                          })
-                      )}
-                  </TableRow>
-                  {datarow?.collapseContent && (
-                    <TableRow className={isRowOpen(datarow.row_id.toString()) ? 'table-row' : 'hidden'} borders={mergedSettings.borders}>
-                      <TableCell size={size} variant={variant} colSpan={100}>{datarow.collapseContent}</TableCell>
+                <CSSTransition
+                  timeout={500}
+                  classNames={"item"}
+                  key={datarow.row_id.toString()}
+                >
+                  <Fragment>
+                    <TableRow className="fadetransition" borders={mergedSettings.borders}>
+                      {dataRows.some((row) => row.collapseContent) &&
+                        tableSelect({
+                          datarow,
+                          rowIndex: i,
+                          select: false,
+                        })}
+                      {checkSelect &&
+                        tableSelect({ datarow, rowIndex: i, select: true })}
+                      {columnSettings &&
+                        columnSettings.map(
+                          (
+                            {
+                              field,
+                              render,
+                              valueFormatter,
+                              className,
+                              datatype,
+                              header,
+                              ...other
+                            },
+                            index
+                          ) =>
+                            cellRenderer({
+                              rowData: datarow,
+                              cellData: datarow[field],
+                              columnIndex: index,
+                              header,
+                              rowIndex: i,
+                              render,
+                              valueFormatter,
+                              field,
+                              className,
+                              datatype,
+                              ...other,
+                            })
+                        )}
                     </TableRow>
-                  )}
-                </Fragment>
+                    {datarow?.collapseContent && (
+                      <TableRow className={isRowOpen(datarow.row_id.toString()) ? 'table-row' : 'hidden'} borders={mergedSettings.borders}>
+                        <TableCell size={size} variant={variant} colSpan={100}>{datarow.collapseContent}</TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                </CSSTransition>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
               <TableRow borders={mergedSettings.borders}>
                 <TableCell size={size} variant={variant} colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
               </TableRow>
             )}
-          </tbody>
+          </TransitionGroup>
           {columnSettings.some((col) => col.aggregate) && tableFooter()}
         </table>
       </div>
@@ -1285,7 +1279,7 @@ const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) 
     "py-0.5 px-3": size === 'small' && header,
     "p-3 px-4": size === 'medium' && header,
     "py-4 px-6": size === 'large' && header,
-    "bg-zinc-300 dark:bg-zinc-700": selected && !header,
+    "bg-zinc-300 dark:bg-zinc-600": selected && !header,
   }, header ? `sticky z-10 align-middle leading-6 min-w-[50px] line-clamp-1` : `align-middle`, className, variantClasses[variant])
 
   const Component: ElementType = header ? 'th' : 'td';
