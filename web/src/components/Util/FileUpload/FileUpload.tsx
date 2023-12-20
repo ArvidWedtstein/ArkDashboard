@@ -553,7 +553,7 @@ const FileUpload = ({
           </button>
           <img
             src={files.find((f) => f.preview)?.url}
-            className="ascpect-square w-max max-w-full object-cover"
+            className="aspect-square w-max max-w-full object-cover"
           />
         </div>
       )}

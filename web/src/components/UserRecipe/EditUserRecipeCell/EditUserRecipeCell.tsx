@@ -19,6 +19,7 @@ export const QUERY = gql`
       UserRecipeItemRecipe {
         id
         amount
+        item_recipe_id
         ItemRecipe {
           id
           Item_ItemRecipe_crafted_item_idToItem {

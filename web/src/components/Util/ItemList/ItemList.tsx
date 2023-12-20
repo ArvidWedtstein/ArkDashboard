@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Fragment, ReactNode, useState } from "react";
 import { debounce, generateUniqueId } from "src/lib/formatters";
 
@@ -18,6 +19,7 @@ interface ItemListProps {
   ) => void;
   defaultSearch?: boolean;
   onCheck?: (event: React.ChangeEvent<HTMLInputElement>, item: Item) => void;
+  className?: string;
 }
 
 const ItemList = ({
@@ -26,6 +28,7 @@ const ItemList = ({
   onSelect,
   onCheck,
   defaultSearch = true,
+  className,
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
   const [openItemIds, setOpenItemIds] = useState<string[]>([]); // Store open item IDs
@@ -73,11 +76,11 @@ const ItemList = ({
     return (
       <Fragment key={`${itemId}-${index + subindex}`}>
         {item?.value &&
-        item?.value?.filter(({ label }) =>
-          label
-            .toLowerCase()
-            .includes(defaultSearch ? search.toLowerCase() : "")
-        ).length > 0 ? (
+          item?.value?.filter(({ label }) =>
+            label
+              .toLowerCase()
+              .includes(defaultSearch ? search.toLowerCase() : "")
+          ).length > 0 ? (
           <li>
             <details
               className="[&>summary:after]:open:rotate-90"
@@ -114,8 +117,8 @@ const ItemList = ({
                   {
                     (defaultSearch
                       ? item?.value?.filter(({ label }) =>
-                          label.toLowerCase().includes(search.toLowerCase())
-                        )
+                        label.toLowerCase().includes(search.toLowerCase())
+                      )
                       : item?.value
                     ).length
                   }
@@ -140,7 +143,7 @@ const ItemList = ({
   };
 
   return (
-    <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto overflow-x-hidden rounded-lg border border-zinc-500 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:bg-zinc-600 dark:text-white">
+    <div className={clsx("relative max-h-screen w-fit max-w-[14rem] overflow-y-auto overflow-x-hidden rounded-lg border border-zinc-500 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:bg-zinc-600 dark:text-white", className)}>
       <ul className="relative space-y-1 font-medium">
         <li>
           <label className="sr-only mb-2 text-sm text-gray-900 dark:text-white">

@@ -13,6 +13,10 @@ export const QUERY = gql`
       user_id
       private
       name
+      Profile {
+        avatar_url
+        full_name
+      }
       UserRecipeItemRecipe {
         id
         ItemRecipe {
@@ -20,14 +24,6 @@ export const QUERY = gql`
           Item_ItemRecipe_crafted_item_idToItem  {
             name
             image
-          }
-          ItemRecipeItem {
-            Item {
-              id
-              name
-              image
-            }
-            amount
           }
         }
         amount

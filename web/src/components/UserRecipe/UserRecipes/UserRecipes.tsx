@@ -1,4 +1,4 @@
-import { navigate, routes } from "@redwoodjs/router";
+import { routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 
@@ -10,7 +10,7 @@ import type {
 } from "types/graphql";
 import { useAuth } from "src/auth";
 import { ArrayElement } from "src/lib/formatters";
-import { Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
+import { Card, CardActionArea, CardActions, CardHeader } from "src/components/Util/Card/Card";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 
 const DELETE_USER_RECIPE_MUTATION = gql`

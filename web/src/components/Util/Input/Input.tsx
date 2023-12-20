@@ -290,7 +290,8 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
               "max-w-sm": !fullWidth,
               "mt-4 mb-2": ownerState.margin === "normal",
               "mt-2 mb-1": ownerState.margin === "dense",
-            }
+            },
+            className
           )}
           ref={ref}
           {...other}

@@ -12,7 +12,6 @@ import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { useRef, useState } from "react";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
-import ItemRecipeItemForm from "src/components/ItemRecipeItem/ItemRecipeItemForm/ItemRecipeItemForm";
 import { ArrayElement } from "src/lib/formatters";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
@@ -168,21 +167,58 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
 
   const modalRef = useRef<HTMLDivElement>();
 
+  type FormItemRecipeItem = NonNullable<{
+    __typename?: "ItemRecipeItem";
+    id: string;
+    amount: number;
+    item_id: number;
+    item_recipe_id: string;
+  }>
+
+  const onSubmitItemRecipeItem = (data: FormItemRecipeItem) => {
+    onSave({
+      ...data,
+      amount: parseInt(data.amount.toString()),
+      created_at: new Date().toISOString(),
+      item_recipe_id: props?.itemRecipe?.id
+    }, openModal?.item_recipe_item?.id);
+  }
+
   return (
     <div className="rw-form-wrapper">
       <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, edit: false, item_recipe_item: null })}>
         <DialogTitle>{openModal.edit ? 'Edit' : 'Add'} Item</DialogTitle>
         <DialogContent dividers>
-          <ItemRecipeItemForm
-            itemRecipeItem={openModal.item_recipe_item ?
-              { ...openModal?.item_recipe_item, item_recipe_id: props?.itemRecipe?.id }
-              : { id: null, item_recipe_id: props?.itemRecipe?.id, amount: 1, item_id: null }
-            }
-            error={props.error || createError || updateError}
-            loading={props.loading || createLoading || updateLoading}
-            onSave={onSave}
-            items={props.items}
-          />
+          <div className="rw-form-wrapper">
+            <Form<FormItemRecipeItem> onSubmit={onSubmitItemRecipeItem} error={createError || updateError}>
+              <FormError
+                error={createError || updateError}
+                wrapperClassName="rw-form-error-wrapper"
+                titleClassName="rw-form-error-title"
+                listClassName="rw-form-error-list"
+              />
+
+              <Lookup
+                label="Item"
+                name="item_id"
+                loading={props.loading}
+                isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                getOptionValue={(opt) => opt.id}
+                getOptionLabel={(opt) => opt.name}
+                defaultValue={openModal.item_recipe_item?.item_id}
+                options={props?.items || []}
+                validation={{ required: true }}
+              />
+
+              <Input
+                label="Amount"
+                name="amount"
+                defaultValue={openModal.item_recipe_item?.amount}
+                validation={{ valueAsNumber: true, required: true, setValueAs: (v) => parseInt(v) }}
+                type="number"
+              />
+            </Form>
+          </div>
         </DialogContent>
         <DialogActions className="space-x-1">
           <Button

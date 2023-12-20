@@ -25,7 +25,8 @@ type BadgeProps = {
   showZero?: boolean;
   standalone?: boolean;
   className?: string;
-  onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void
+  onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
+  title?: string;
 };
 
 const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
@@ -44,6 +45,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
     fullWidth = false,
     children,
     className,
+    title,
     onClick,
   } = props;
 
@@ -114,6 +116,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       "cursor-pointer select-none": onClick
     })}
       onClick={onClick}
+      title={title}
     >
       {children}
       <span className={classes} ref={ref}>
