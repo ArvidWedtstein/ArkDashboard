@@ -177,12 +177,19 @@ const Collapse = forwardRef((props: CollapseProps, ref) => {
           ref={handleRef}
           {...childProps}
         >
-          <div aria-label="CollapseWrapper" className={clsx("flex w-full", {
-            "w-auto h-full": orientation === 'horizontal'
-          })} ref={wrapperRef}>
-            <div aria-label="CollapseWrapperInner" className={clsx("w-full", {
+          <div
+            aria-label="CollapseWrapper"
+            className={clsx("flex w-full", {
               "w-auto h-full": orientation === 'horizontal'
-            })}>
+            })}
+            ref={wrapperRef}
+          >
+            <div
+              aria-label="CollapseWrapperInner"
+              className={clsx("w-full", {
+                "w-auto h-full": orientation === 'horizontal'
+              })}
+            >
               {children}
             </div>
           </div>

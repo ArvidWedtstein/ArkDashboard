@@ -209,7 +209,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               titleClassName="rw-form-error-title"
               listClassName="rw-form-error-list"
             />
-
+            {/* TODO: fix itemrecipes on new form too */}
             <Lookup
               label="Item Recipe"
               name="item_recipe_id"
@@ -218,6 +218,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               getOptionValue={(opt) => opt.id}
               getOptionLabel={(opt) => opt.Item_ItemRecipe_crafted_item_idToItem.name}
               defaultValue={openModal.itemRecipe?.item_recipe_id}
+              groupBy={(d) => d.Item_ItemRecipe_crafted_item_idToItem.category}
               options={props?.itemRecipes || []}
               validation={{ required: true }}
             />

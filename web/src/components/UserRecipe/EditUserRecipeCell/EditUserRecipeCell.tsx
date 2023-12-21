@@ -51,15 +51,6 @@ export const QUERY = gql`
         category
         type
       }
-      ItemRecipeItem {
-        id
-        amount
-        Item {
-          id
-          name
-          image
-        }
-      }
     }
   }
 `;

@@ -9,6 +9,7 @@ import Button, { ButtonGroup } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { Lookup } from "../Lookup/Lookup";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import Collapse from "../Collapse/Collapse";
 
 type Filter<Row extends Record<string, any>> = {
   /**
@@ -562,19 +563,27 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       : valueFormatted;
 
     return (
-      <TableCell key={key} size={size} variant={variant} headers={`headcell-${field}`} selected={isSelected(rowData.row_id)} columnWidth={columnSizes.find((d) => d.columnIndex === columnIndex).width} className={clsx(className, {
-        "rounded-bl-lg":
-          rowIndex === PaginatedData.length - 1 &&
-          columnIndex === 0 &&
-          !checkSelect &&
-          !columnSettings.some((col) => col.aggregate) &&
-          !dataRows.some((row) => row.collapseContent),
-        "rounded-br-lg":
-          rowIndex === PaginatedData.length - 1 &&
-          columnIndex === columns.length - 1 &&
-          !columnSettings.some((col) => col.aggregate) &&
-          !dataRows.some((row) => row.collapseContent)
-      })}>
+      <TableCell
+        key={key}
+        size={size}
+        variant={variant}
+        headers={`headcell-${field}`}
+        selected={isSelected(rowData.row_id)}
+        columnWidth={columnSizes?.find((d) => d.columnIndex === columnIndex)?.width}
+        className={clsx(className, {
+          "rounded-bl-lg":
+            rowIndex === PaginatedData.length - 1 &&
+            columnIndex === 0 &&
+            !checkSelect &&
+            !columnSettings.some((col) => col.aggregate) &&
+            !dataRows.some((row) => row.collapseContent),
+          "rounded-br-lg":
+            rowIndex === PaginatedData.length - 1 &&
+            columnIndex === columns.length - 1 &&
+            !columnSettings.some((col) => col.aggregate) &&
+            !dataRows.some((row) => row.collapseContent)
+        })}
+      >
         {content}
       </TableCell>
     );
@@ -717,7 +726,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
   const tableFooter = () => (
     <tfoot>
-      <TableRow className="rounded-b-lg font-semibold text-gray-900 dark:text-white">
+      <TableRow className="font-semibold text-gray-900 dark:text-white border-t">
         {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
           <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
@@ -732,9 +741,11 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               { header, field, datatype, aggregate, className, valueFormatter },
               index
             ) => {
+              const key = `${field}-${header}`; // Use a unique identifier for the key
+
               if (!aggregate) {
                 return (
-                  <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
+                  <TableCell key={key} size={size} variant={variant} className="first:rounded-bl-lg" />
                 );
               }
 
@@ -744,7 +755,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                 valueFormatter,
               });
 
-              const key = `${field}-${header}`; // Use a unique identifier for the key
               return (
                 <TableCell size={size} variant={variant} key={key} className={clsx("first:rounded-bl-lg last:rounded-br-lg", className)}>
                   {datatype === "number"
@@ -1232,18 +1242,32 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                             })
                         )}
                     </TableRow>
+                    {/* TODO: add collapse here */}
                     {datarow?.collapseContent && (
-                      <TableRow className={isRowOpen(datarow.row_id.toString()) ? 'table-row' : 'hidden'} borders={mergedSettings.borders}>
-                        <TableCell size={size} variant={variant} colSpan={100}>{datarow.collapseContent}</TableCell>
+                      <TableRow className={clsx({
+                        "table-row": isRowOpen(datarow.row_id.toString()),
+                        "h-0 [&>td]:p-0": !isRowOpen(datarow.row_id.toString())
+                      })} borders={mergedSettings.borders}>
+
+                        <TableCell size={size} variant={variant} colSpan={100}>
+                          <Collapse in={isRowOpen(datarow.row_id.toString())}>
+                            {datarow.collapseContent}
+                          </Collapse>
+                        </TableCell>
                       </TableRow>
                     )}
                   </Fragment>
                 </CSSTransition>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <TableRow borders={mergedSettings.borders}>
-                <TableCell size={size} variant={variant} colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
-              </TableRow>
+              <CSSTransition
+                timeout={500}
+                classNames={"item"}
+              >
+                <TableRow className="fadetransition" borders={mergedSettings.borders}>
+                  <TableCell size={size} variant={variant} colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
+                </TableRow>
+              </CSSTransition>
             )}
           </TransitionGroup>
           {columnSettings.some((col) => col.aggregate) && tableFooter()}
