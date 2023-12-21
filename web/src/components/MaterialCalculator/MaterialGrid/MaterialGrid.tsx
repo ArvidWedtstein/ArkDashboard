@@ -449,6 +449,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         </div>
         <div className="w-full overflow-hidden">
           <div className="flex flex-row space-x-3">
+            {/* TODO: disable if none of the items used the crafting station */}
             <ToggleButtonGroup
               orientation="horizontal"
               size="medium"
