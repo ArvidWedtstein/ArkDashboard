@@ -10,7 +10,7 @@ import type {
 } from 'types/graphql'
 
 const DELETE_ITEM_RECIPE_MUTATION = gql`
-  mutation DeleteItemRecipeMutation($id: String!) {
+  mutation DeleteItemRecipeMutation($id: BigInt!) {
     deleteItemRecipe(id: $id) {
       id
     }
@@ -51,14 +51,6 @@ const ItemRecipe = ({ itemRecipe }: Props) => {
             <tr>
               <th>Id</th>
               <td>{itemRecipe.id}</td>
-            </tr>
-            <tr>
-              <th>Created at</th>
-              <td>{timeTag(itemRecipe.created_at)}</td>
-            </tr>
-            <tr>
-              <th>Updated at</th>
-              <td>{timeTag(itemRecipe.updated_at)}</td>
             </tr>
             <tr>
               <th>Crafted item id</th>

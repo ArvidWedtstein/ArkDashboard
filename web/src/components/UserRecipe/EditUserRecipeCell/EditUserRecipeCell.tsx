@@ -27,15 +27,6 @@ export const QUERY = gql`
             name
             image
           }
-          ItemRecipeItem {
-            id
-            amount
-            Item {
-              id
-              name
-              image
-            }
-          }
         }
       }
     }

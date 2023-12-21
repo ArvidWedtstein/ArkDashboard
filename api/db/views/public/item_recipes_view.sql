@@ -17,10 +17,10 @@ FROM
   (
     (
       (
-        "ItemRecipe" ir
+        "ItemRecipes" ir
         JOIN "Item" i1 ON ((ir.crafted_item_id = i1.id))
       )
-      JOIN "ItemRecipeItem" iri ON ((ir.id = iri.item_recipe_id))
+      JOIN "ItemRecipeItems" iri ON ((ir.id = iri.item_recipe_id))
     )
     JOIN "Item" i2 ON ((iri.item_id = i2.id))
   )

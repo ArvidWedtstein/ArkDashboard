@@ -29,7 +29,7 @@ export const QUERY = gql`
 //   #   }
 //   # }
 export const ITEMRECIPEITEMQUERY = gql`
-query FindRecipeItemsByIds($ids: [String!]) {
+query FindRecipeItemsByIds($ids: [BigInt!]) {
     itemRecipeItemsByIds(ids: $ids) {
       id
       item_recipe_id

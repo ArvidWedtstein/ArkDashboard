@@ -145,6 +145,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const [query, setQuery] = useState<string>("");
   const deferredQuery = useDeferredValue(query);
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
+  // TODO: fix
   const [selectedCraftingStations, selectCraftingStations] = useState<number[]>(
     [107, 125]
   );
@@ -565,11 +566,12 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 header: "Amount",
                 datatype: "number",
                 aggregate: "sum",
-                className: "text-center",
+                className: "text-center min-w-[16rem]",
                 render: ({ rowIndex, value, row }) => (
                   <Input
                     color="primary"
                     value={value}
+                    fullWidth
                     onChange={(e) => {
                       setRecipes({
                         type: "CHANGE_AMOUNT",
@@ -583,12 +585,13 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       });
                     }}
                     InputProps={{
-                      className: "max-w-[10rem] w-fit",
+                      className: "w-fit",
                       endAdornment: (
                         <Fragment>
                           <Button
                             variant="icon"
                             color="secondary"
+                            aria-valuetext={value}
                             disabled={value === 1}
                             onClick={() =>
                               setRecipes({

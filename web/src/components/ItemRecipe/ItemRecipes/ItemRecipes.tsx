@@ -13,7 +13,7 @@ import type {
 } from 'types/graphql'
 
 const DELETE_ITEM_RECIPE_MUTATION = gql`
-  mutation DeleteItemRecipeMutation($id: String!) {
+  mutation DeleteItemRecipeMutations($id: BigInt!) {
     deleteItemRecipe(id: $id) {
       id
     }

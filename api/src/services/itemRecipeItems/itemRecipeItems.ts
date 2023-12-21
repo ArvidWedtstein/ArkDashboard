@@ -16,6 +16,7 @@ export const itemRecipeItemsByIds: QueryResolvers["itemRecipeItemsByIds"] = ({
     where: { item_recipe_id: { in: ids } },
   });
 };
+
 export const itemRecipeItem: QueryResolvers["itemRecipeItem"] = ({ id }) => {
   return db.itemRecipeItem.findUnique({
     where: { id },
@@ -45,12 +46,12 @@ export const deleteItemRecipeItem: MutationResolvers["deleteItemRecipeItem"] =
   };
 
 export const ItemRecipeItem: ItemRecipeItemRelationResolvers = {
-  Item: (_obj, { root }) => {
-    return db.itemRecipeItem.findUnique({ where: { id: root?.id } }).Item();
-  },
   ItemRecipe: (_obj, { root }) => {
     return db.itemRecipeItem
       .findUnique({ where: { id: root?.id } })
       .ItemRecipe();
+  },
+  Item: (_obj, { root }) => {
+    return db.itemRecipeItem.findUnique({ where: { id: root?.id } }).Item();
   },
 };

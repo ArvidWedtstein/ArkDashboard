@@ -21,20 +21,21 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Badge from "src/components/Util/Badge/Badge";
 
 const REFRESHQUERY = gql`
-  query EditItemRecipeByIdWithoutItems($id: String!) {
+  query EditItemRecipeByIdWithoutItems($id: BigInt!) {
     itemRecipe: itemRecipe(id: $id) {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
       crafting_time
       yields
       required_level
+      xp
+      skill_quality_multiplier_min
+      skill_quality_multiplier_max
       ItemRecipeItem {
         id
         amount
-        item_id
+        resource_item_id
       }
     }
   }
@@ -48,21 +49,19 @@ const CREATE_ITEM_RECIPE_ITEM_MUTATION = gql`
 `
 const UPDATE_ITEM_RECIPE_ITEM_MUTATION = gql`
   mutation UpdateItemRecipeItemMutation(
-    $id: String!
+    $id: BigInt!
     $input: UpdateItemRecipeItemInput!
   ) {
     updateItemRecipeItem(id: $id, input: $input) {
       id
-      created_at
-      updated_at
       item_recipe_id
-      item_id
+      resource_item_id
       amount
     }
   }
 `
 const DELETE_ITEM_RECIPE_ITEM_MUTATION = gql`
-  mutation DeleteItemRecipeItemMutation($id: String!) {
+  mutation DeleteItemRecipeItemMutation($id: BigInt!) {
     deleteItemRecipeItem(id: $id) {
       id
     }
@@ -84,8 +83,10 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
     console.log(data)
     props.onSave({
       ...data,
-      created_at: data.created_at ?? new Date().toISOString(),
       crafting_time: parseFloat(data?.crafting_time.toString()) || 0,
+      skill_quality_multiplier_min: parseFloat(data?.skill_quality_multiplier_min.toString()) || 0,
+      skill_quality_multiplier_max: parseFloat(data?.skill_quality_multiplier_max.toString()) || 0,
+      xp: parseFloat(data?.xp.toString()) || 0,
     }, props?.itemRecipe?.id);
   };
 
@@ -179,7 +180,6 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
     onSave({
       ...data,
       amount: parseInt(data.amount.toString()),
-      created_at: new Date().toISOString(),
       item_recipe_id: props?.itemRecipe?.id
     }, openModal?.item_recipe_item?.id);
   }
@@ -200,12 +200,12 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
 
               <Lookup
                 label="Item"
-                name="item_id"
+                name="resource_item_id"
                 loading={props.loading}
                 isOptionEqualToValue={(opt, val) => opt.id === val.id}
                 getOptionValue={(opt) => opt.id}
                 getOptionLabel={(opt) => opt.name}
-                defaultValue={openModal.item_recipe_item?.item_id}
+                defaultValue={openModal.item_recipe_item?.resource_item_id}
                 options={props?.items || []}
                 validation={{ required: true }}
               />
@@ -303,7 +303,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
         </Label>
 
         <CheckboxGroup
-          defaultValue={[props.itemRecipe?.crafting_station_id?.toString()]}
+          defaultValue={props.itemRecipe?.crafting_station_id?.toString()}
           validation={{ single: true, valueAsNumber: true }}
           name="crafting_station_id"
           options={[
@@ -391,12 +391,18 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
               image:
                 "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-replicator.webp",
             },
+            {
+              value: 1343,
+              label: "Inventory",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-craftable-resource.webp",
+            },
           ]}
         />
 
         <ButtonGroup className="my-3">
           <Input
-            label="Crating Time"
+            label="Crafting Time"
             name="crafting_time"
             color="DEFAULT"
             variant="outlined"
@@ -435,15 +441,53 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
               endAdornment: 'lvl'
             }}
           />
+          <Input
+            label="XP"
+            name="xp"
+            color="DEFAULT"
+            variant="outlined"
+            margin="none"
+            type="text"
+            defaultValue={props.itemRecipe?.xp || 0}
+            InputProps={{
+              inputProps: {
+                inputMode: "decimal"
+              },
+              endAdornment: 'xp'
+            }}
+          />
+        </ButtonGroup>
+
+        <ButtonGroup className="my-3">
+          <Input
+            label="Skill Quality Multiplier Min"
+            name="skill_quality_multiplier_min"
+            color="DEFAULT"
+            variant="outlined"
+            type="text"
+            margin="none"
+            defaultValue={props.itemRecipe?.skill_quality_multiplier_min || 0}
+            validation={{ valueAsNumber: true }}
+          />
+          <Input
+            label="Skill Quality Multiplier Max"
+            name="skill_quality_multiplier_max"
+            color="DEFAULT"
+            variant="outlined"
+            margin="none"
+            type="text"
+            defaultValue={props.itemRecipe?.skill_quality_multiplier_max || 0}
+            validation={{ valueAsNumber: true }}
+          />
         </ButtonGroup>
 
         <div className="flex flex-row flex-wrap gap-3 mt-6">
           <TransitionGroup component={null}>
             {props.itemRecipe?.ItemRecipeItem?.map((itemrecipeitem) => {
-              const item = props.items.find((item) => item.id === itemrecipeitem.item_id)
+              const item = props.items.find((item) => item.id === itemrecipeitem.resource_item_id)
               return (
                 <CSSTransition
-                  key={`recipe-${itemrecipeitem.item_id}`}
+                  key={`recipe-${itemrecipeitem.resource_item_id}`}
                   timeout={500}
                   classNames="item"
                 >

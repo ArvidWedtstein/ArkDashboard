@@ -279,7 +279,7 @@ const ItemsList = ({
               disabled={loading}
               InputProps={{
                 style: {
-                  borderRadius: "0.375rem 0 0 0.375rem",
+                  borderRadius: "0.25rem 0 0 0.25rem",
                   marginRight: "-0.5px",
                 },
               }}

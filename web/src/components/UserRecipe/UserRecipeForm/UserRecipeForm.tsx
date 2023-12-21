@@ -209,7 +209,6 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               titleClassName="rw-form-error-title"
               listClassName="rw-form-error-list"
             />
-            {/* TODO: fix itemrecipes on new form too */}
             <Lookup
               label="Item Recipe"
               name="item_recipe_id"
@@ -218,8 +217,16 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               getOptionValue={(opt) => opt.id}
               getOptionLabel={(opt) => opt.Item_ItemRecipe_crafted_item_idToItem.name}
               defaultValue={openModal.itemRecipe?.item_recipe_id}
-              groupBy={(d) => d.Item_ItemRecipe_crafted_item_idToItem.category}
-              options={props?.itemRecipes || []}
+              // groupBy={(d) => d.Item_ItemRecipe_crafted_item_idToItem.category || ""}
+              options={[...props?.itemRecipes]?.sort((a, b) => {
+                if (a.Item_ItemRecipe_crafted_item_idToItem.category || "" < b.Item_ItemRecipe_crafted_item_idToItem.category) {
+                  return -1;
+                }
+                if (a.Item_ItemRecipe_crafted_item_idToItem.category > b.Item_ItemRecipe_crafted_item_idToItem.category) {
+                  return 1;
+                }
+                return 0;
+              }) || []}
               validation={{ required: true }}
             />
 
@@ -328,35 +335,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
         <FieldError name="private" className="rw-field-error" />
 
         <div className="my-3">
-          {/* <ItemList
-            className="col-span-1"
-            options={Object.entries(
-              groupBy(
-                (props.itemRecipes || []).map(
-                  (f) => f.Item_ItemRecipe_crafted_item_idToItem
-                ),
-                "category"
-              )
-            ).map(([k, v]) => ({
-              label: k,
-              value: Object.entries(groupBy(v, "type")).map(([k2, v2]) => ({
-                label: k2,
-                value: v2.map((itm) => ({
-                  ...itm,
-                  label: itm.name,
-                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                  value: [],
-                })),
-              })),
-              icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
-            }))}
-            onSelect={(_, item) => {
-              let recipe = props.itemRecipes.find(
-                (f) => f.Item_ItemRecipe_crafted_item_idToItem.id == item.id
-              );
-              setRecipes([...recipes, recipe?.id]);
-            }}
-          /> */}
+
           <div className="col-span-5 flex flex-row flex-wrap gap-3 text-black dark:text-white">
             {props.userRecipe?.UserRecipeItemRecipe.map(({ id, amount, ItemRecipe, ...other }) => {
               return (

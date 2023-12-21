@@ -5,11 +5,9 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import ItemRecipe from 'src/components/ItemRecipe/ItemRecipe'
 
 export const QUERY = gql`
-  query FindItemRecipeById($id: String!) {
+  query FindItemRecipeById($id: BigInt!) {
     itemRecipe: itemRecipe(id: $id) {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
       crafting_time

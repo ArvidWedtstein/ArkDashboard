@@ -8,20 +8,21 @@ import { toast } from '@redwoodjs/web/toast'
 import ItemRecipeForm from 'src/components/ItemRecipe/ItemRecipeForm'
 
 export const QUERY = gql`
-  query EditItemRecipeById($id: String!) {
+  query EditItemRecipeById($id: BigInt!) {
     itemRecipe: itemRecipe(id: $id) {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
       crafting_time
       yields
       required_level
+      xp
+      skill_quality_multiplier_min
+      skill_quality_multiplier_max
       ItemRecipeItem {
         id
         amount
-        item_id
+        resource_item_id
       }
     }
     items {
@@ -33,18 +34,19 @@ export const QUERY = gql`
 `
 const UPDATE_ITEM_RECIPE_MUTATION = gql`
   mutation UpdateItemRecipeMutation(
-    $id: String!
+    $id: BigInt!
     $input: UpdateItemRecipeInput!
   ) {
     updateItemRecipe(id: $id, input: $input) {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
       crafting_time
       yields
       required_level
+      xp
+      skill_quality_multiplier_min
+      skill_quality_multiplier_max
     }
   }
 `

@@ -64,6 +64,10 @@ export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
   return recipes;
 };
 
+// export const itemRecipes: QueryResolvers['itemRecipes'] = () => {
+//   return db.itemRecipe.findMany()
+// }
+
 export const itemRecipe: QueryResolvers["itemRecipe"] = ({ id }) => {
   return db.itemRecipe.findUnique({
     where: { id },
