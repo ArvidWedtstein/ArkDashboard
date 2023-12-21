@@ -30,6 +30,7 @@ import { useLazyQuery } from "@apollo/client";
 import Switch from "src/components/Util/Switch/Switch";
 import Button from "src/components/Util/Button/Button";
 import { Input } from "src/components/Util/Input/Input";
+import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -145,10 +146,13 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const [query, setQuery] = useState<string>("");
   const deferredQuery = useDeferredValue(query);
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
-  // TODO: fix
-  const [selectedCraftingStations, selectCraftingStations] = useState<number[]>(
-    [107, 125]
-  );
+
+  const [craftingStations, setCraftingStations] = useState({
+    "mortar-chem": "107",
+    "forge": "125",
+    "cooking": "128",
+    "grill": "39"
+  });
 
   type RecipeActionType =
     | "ADD_AMOUNT_BY_NUM"
@@ -227,68 +231,52 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   let [recipes, setRecipes] = useReducer(reducer, []);
 
   const items = useMemo(() => {
+    console.log('ITEMS')
     const recipesGroupedByItemId = groupBy(
       itemRecipes,
       "Item_ItemRecipe_crafted_item_idToItem.id"
     );
 
-    const craftingStations: { [groupKey: string]: ItemRecipe[][] } = {};
-
-    for (const [key, value] of Object.entries(recipesGroupedByItemId)) {
-      Object.assign(craftingStations, {
-        [key]: groupBy(value, "crafting_station_id"),
-      });
-    }
-
     const result: ItemRecipe[] = [];
 
-    for (const recipePerCraftingstation of Object.values(craftingStations)) {
-      const craftingStationIds = Object.keys(recipePerCraftingstation);
-      // If the item is crafted in either chem bench, mortar, refining or industrial forge, we need to find the one that is selected
-      if (
-        craftingStationIds.some((id) =>
-          [107, 607, 125, 600].includes(Number(id))
-        )
-      ) {
-        const itemRecipeFilteredByCraftingStation = craftingStationIds
-          .filter((k) => selectedCraftingStations.includes(parseInt(k)))
-          .map((k) => recipePerCraftingstation[k][0]);
-
-        if (itemRecipeFilteredByCraftingStation.length > 0) {
-          result.push({
-            ...itemRecipeFilteredByCraftingStation[0],
-            ItemRecipeItem:
-              data?.itemRecipeItemsByIds.filter(
-                (iri) =>
-                  iri.item_recipe_id ==
-                  itemRecipeFilteredByCraftingStation[0].id
-              ) || itemRecipeFilteredByCraftingStation[0].ItemRecipeItem,
-          });
-        }
-      } else {
-        const craftingStation: ItemRecipe =
-          recipePerCraftingstation[craftingStationIds[0]][0];
-        result.push({
-          ...craftingStation,
-          ItemRecipeItem:
-            data?.itemRecipeItemsByIds.filter(
-              (iri) => iri.item_recipe_id == craftingStation.id
-            ) || craftingStation.ItemRecipeItem,
-        });
-      }
+    for (const recipe of itemRecipes) {
+      result.push({
+        ...recipe as unknown as ItemRecipe,
+        // ItemRecipeItem:
+        //   data?.itemRecipeItemsByIds.filter(
+        //     (iri) =>
+        //       iri.item_recipe_id ==
+        //       recipe.id
+        //   ) || recipe.ItemRecipeItem,
+      });
     }
 
     const modifiedRecipes = [...recipes];
 
     for (const recipe of modifiedRecipes) {
-      const itemfound = result.find(
+      console.log(recipe)
+      const itemfound = itemRecipes.find(
         (i) =>
           i.Item_ItemRecipe_crafted_item_idToItem.id ===
           recipe.Item_ItemRecipe_crafted_item_idToItem.id
-      );
+      ) as unknown as ItemRecipe;
       if (itemfound) {
         setRecipes({ type: "REMOVE_BY_ID", payload: { item: itemfound } });
-        const amountToAdd = recipe.amount || 0;
+
+        // If Mortar Pestle
+
+        // TODO: calculate amount
+        // recipe.crafting_station_id === 107 && craftingStations["mortar-chem"] === '607'
+        let amountToAdd = recipe.amount || 0;
+        let yields = itemfound.yields || 1;
+
+        if (recipe.crafting_station_id === 107 && craftingStations["mortar-chem"] === '607') {
+          console.log('CHEM BENCH')
+
+
+          yields *= 6
+          amountToAdd = amountToAdd < yields ? yields : amountToAdd
+        }
         setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
           payload: {
@@ -298,13 +286,13 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 (iri) => iri.item_recipe_id == itemfound.id
               ),
             },
-            amount: amountToAdd / (itemfound.yields || 1),
+            amount: amountToAdd > yields ? amountToAdd / yields : amountToAdd,
           },
         });
       }
     }
     return result;
-  }, [selectedCraftingStations]);
+  }, [craftingStations]);
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
@@ -330,7 +318,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
     recipes,
-    selectedCraftingStations,
+    craftingStations,
   ]);
 
   const [createRecipe, { loading }] = useMutation(CREATE_USERRECIPE_MUTATION, {
@@ -391,12 +379,13 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     }
   };
 
+
   return (
     <div className="mx-1 flex w-full max-w-full flex-col gap-3">
       <UserRecipesCell onSelect={onRecipeSelect} />
 
       <section className="flex h-full w-full flex-col gap-3 sm:flex-row">
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-1">
           <Button color="success" variant="outlined" disabled={loading || recipes.length === 0} permission="authenticated" onClick={saveRecipe} startIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -459,50 +448,119 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           />
         </div>
         <div className="w-full overflow-hidden">
-          <div className="space-y-3">
-            <Switch
-              className="mt-0"
-              offLabel="Mortar And Pestle"
-              onLabel="Chemistry Bench"
-              checked={selectedCraftingStations.includes(607)}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  return selectCraftingStations((prev) => [
-                    ...prev.filter((h) => h !== 107),
-                    607,
-                  ]);
-                }
-                return selectCraftingStations((prev) => [
-                  ...prev.filter((h) => h !== 607),
-                  107,
-                ]);
-              }}
-            />
-
-            <Switch
-              offLabel="Refining Forge"
-              onLabel="Industrial Forge"
-              checked={selectedCraftingStations.includes(600)}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  return selectCraftingStations((prev) => [
-                    ...prev.filter((h) => h !== 125),
-                    600,
-                  ]);
-                }
-                return selectCraftingStations((prev) => [
-                  ...prev.filter((h) => h !== 600),
-                  125,
-                ]);
-              }}
-            />
-
-            <Switch
-              offLabel="Materials"
-              onLabel="Base materials"
-              checked={viewBaseMaterials}
-              onChange={(e) => setViewBaseMaterials(e.currentTarget.checked)}
-            />
+          <div className="flex flex-row space-x-3">
+            <ToggleButtonGroup
+              orientation="horizontal"
+              size="medium"
+              value={craftingStations["mortar-chem"]}
+              exclusive
+              enforce
+              onChange={(_, value) => setCraftingStations((prev) => ({
+                ...prev,
+                "mortar-chem": value
+              }))}
+            >
+              <ToggleButton value={"107"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/mortar-and-pestle.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+              <ToggleButton value={"607"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chemistry-bench.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <ToggleButtonGroup
+              orientation="horizontal"
+              size="medium"
+              value={craftingStations.forge}
+              exclusive
+              enforce
+              onChange={(_, value) => setCraftingStations((prev) => ({
+                ...prev,
+                "forge": value
+              }))}
+            >
+              <ToggleButton value={"125"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/refining-forge.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+              <ToggleButton value={"600"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-forge.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <ToggleButtonGroup
+              orientation="horizontal"
+              size="medium"
+              value={craftingStations.cooking}
+              exclusive
+              enforce
+              onChange={(_, value) => setCraftingStations((prev) => ({
+                ...prev,
+                "cooking": value
+              }))}
+            >
+              <ToggleButton value={"128"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/cooking-pot.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+              <ToggleButton value={"601"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-cooker.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <ToggleButtonGroup
+              orientation="horizontal"
+              size="medium"
+              value={craftingStations.grill}
+              exclusive
+              enforce
+              onChange={(_, value) => setCraftingStations((prev) => ({
+                ...prev,
+                "grill": value
+              }))}
+            >
+              <ToggleButton value={"39"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/campfire.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+              <ToggleButton value={"360"}>
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grill.webp`}
+                  loading="lazy"
+                  className="w-12"
+                />
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <div>
+              <Switch
+                offLabel="Materials"
+                onLabel="Base materials"
+                checked={viewBaseMaterials}
+                onChange={(e) => setViewBaseMaterials(e.currentTarget.checked)}
+              />
+            </div>
           </div>
 
           <Table
@@ -514,7 +572,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   <div className="flex flex-col items-start justify-center gap-3 divide-y divide-zinc-500 p-4">
                     <div className="tree">
                       <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
-                        {mergeItemRecipe(viewBaseMaterials, true, items, {
+                        {mergeItemRecipe(viewBaseMaterials, true, items, Object.values(craftingStations).map(Number), {
                           ...recipe,
                         }).map((itemrecipe, i) => (
                           <TreeBranch
@@ -659,6 +717,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 viewBaseMaterials,
                 false,
                 items,
+                Object.values(craftingStations).map(Number),
                 ...recipes
               ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
                 field: Item_ItemRecipe_crafted_item_idToItem.name,
@@ -667,7 +726,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 aggregate: "sum" as const,
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => {
-                  const itm = mergeItemRecipe(false, false, items, {
+                  const itm = mergeItemRecipe(false, false, items, Object.values(craftingStations).map(Number), {
                     ...row,
                   }).filter(
                     (v) =>

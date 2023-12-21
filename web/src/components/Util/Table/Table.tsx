@@ -458,7 +458,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     .filter((col) => !col.hidden).map((e, i) => {
       return {
         ...e,
-        width: e.width || 500,
+        width: e.width || 300,
         columnIndex: i
       }
     }));
@@ -601,7 +601,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     select?: boolean;
   }) => {
     return (
-      <TableCell header={header} size={size} variant={variant} scope="col" columnWidth={30} selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
+      <TableCell header={header} size={size} variant={variant} scope="col" columnWidth={20} selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
         {select ? (
           <div className="flex items-center">
             <input
@@ -1180,7 +1180,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             <thead className={classes.tableHead}>
               <TableRow borders={mergedSettings.borders}>
                 {dataRows.some((row) => row.collapseContent) &&
-                  tableSelect({ header: true, rowIndex: -1, select: false })}
+                  tableSelect({ header: true, rowIndex: -1, select: false, })}
                 {checkSelect &&
                   tableSelect({ header: true, rowIndex: -1, select: checkSelect })}
                 {columnSettings
@@ -1304,12 +1304,12 @@ const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) 
     "p-3 px-4": size === 'medium' && header,
     "py-4 px-6": size === 'large' && header,
     "bg-zinc-300 dark:bg-zinc-600": selected && !header,
-  }, header ? `sticky z-10 align-middle leading-6 min-w-[50px] line-clamp-1` : `align-middle`, className, variantClasses[variant])
+  }, header ? `sticky z-10 align-middle leading-6 min-w-[20px] line-clamp-1` : `align-middle`, className, variantClasses[variant])
 
   const Component: ElementType = header ? 'th' : 'td';
 
   return (
-    <Component className={classes} ref={ref} style={{ width: columnWidth }} {...other}>
+    <Component className={classes} ref={ref} style={{ width: columnWidth, maxWidth: columnWidth }} {...other}>
       {children}
     </Component>
     // <Component

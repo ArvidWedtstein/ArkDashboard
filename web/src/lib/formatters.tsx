@@ -356,9 +356,11 @@ export const getBaseMaterials = (
   baseMaterials: boolean = false,
   path: boolean = false,
   items: ItemRecipe[],
+  crafting_stations: number[],
   ...objects: RecipeState[]
 ): RecipeState[] => {
   let materials = [];
+
   const findBaseMaterials = (
     item: ItemRecipe,
     amount: number,
@@ -368,6 +370,8 @@ export const getBaseMaterials = (
     if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
       return;
     }
+
+    console.log(item)
 
     // Go through each crafting station? For crafting time reduction osv..
     // 128 - cooking pot
@@ -393,8 +397,10 @@ export const getBaseMaterials = (
     // 800 - Desmodus Saddle
     // 531 - Equus Saddle
     // Loop through each recipe grouped on crafting station
-    const recipeItems = item.ItemRecipeItem;
-    for (const { Item, amount: recipeAmount } of recipeItems) {
+
+    // TODO: rewrite or fix?
+    // https://www.arkresourcecalculator.com/
+    for (const { Item, amount: recipeAmount } of item.ItemRecipeItem) {
       let newRecipe = items.find(
         (i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id
       );
@@ -403,6 +409,13 @@ export const getBaseMaterials = (
         const materialId = newRecipe
           ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
           : Item.id;
+
+        let crafting_time = newRecipe?.crafting_time || 0
+
+        if (item.crafting_station_id === 107 && crafting_stations.some(c => c === 607)) {
+          yields *= 6
+          crafting_time /= 2
+        }
 
         let material = materials.find(
           (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
@@ -417,11 +430,12 @@ export const getBaseMaterials = (
           material = {
             ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
             amount: count,
-            crafting_time: count * (newRecipe?.crafting_time || 1),
+            crafting_time: count * crafting_time,
           };
           materials.push(material);
         }
       } else if (newRecipe) {
+        // Dig down deeper
         findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
       }
     }

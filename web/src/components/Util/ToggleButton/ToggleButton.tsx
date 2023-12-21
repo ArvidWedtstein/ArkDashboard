@@ -155,7 +155,9 @@ export const ToggleButtonGroup = forwardRef<
         if (enforce && value.length <= 1) {
           return;
         }
-
+        if (!Array.isArray(value)) {
+          return console.error('Value must be array if not exclusive')
+        }
         newValue = value.slice();
         newValue.splice(index, 1);
       } else {

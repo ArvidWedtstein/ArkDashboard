@@ -15,6 +15,16 @@ export const QUERY = gql`
         category
         type
       }
+#       ItemRecipeItem {
+#         id
+#  item_recipe_id
+#   amount
+#   Item {
+#     id
+#    name
+#   image
+#    }
+#       }
     }
   }
 `;
