@@ -22,6 +22,9 @@ type BadgeProps = {
   max?: number;
   size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
+  /**
+   * @default false
+   */
   showZero?: boolean;
   standalone?: boolean;
   className?: string;
@@ -119,13 +122,13 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       title={title}
     >
       {children}
-      <span className={classes} ref={ref}>
+      <span className={clsx(classes, {
+        "hidden": typeof child === "number" && child === 0 && !showZero
+      })} ref={ref}>
         {max && typeof child === "number"
           ? child > max
             ? `${max}+`
-            : child === 0 && !showZero
-              ? ""
-              : child
+            : child
           : child}
       </span>
     </span>

@@ -21,6 +21,7 @@ type ListItemProps = {
   href?: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | React.MouseEventHandler<HTMLLIElement>
 } & React.DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
+
 export const ListItem = (props: ListItemProps) => {
   const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, children, className, size = "medium", onClick, ...other } = props;
   const rippleRef = useRef(null);
@@ -49,9 +50,13 @@ export const ListItem = (props: ListItemProps) => {
             {icon}
           </div>
         )}
-        <div className={clsx("min-w-0 flex-auto", {
-          "my-1": size !== "small"
-        })}>{children}</div>
+        <div
+          className={clsx("min-w-0 flex-auto", {
+            "my-1": size !== "small"
+          })}
+        >
+          {children}
+        </div>
         {secondaryAction && (
           <div {...secondaryActionProps} className={clsx("ml-4", secondaryActionProps?.className)}>{secondaryAction}</div>
         )}
@@ -60,5 +65,7 @@ export const ListItem = (props: ListItemProps) => {
     </li>
   );
 };
+
+
 
 export default List;

@@ -177,10 +177,11 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       sizes[variant][size],
       buttonGroupButtonContextPositionClassName,
       colors[variant][color],
+      props.className,
       {
         [disabledClasses[variant]]: disabled,
+        "w-full": fullWidth
       },
-      props.className
     );
 
     const renderIcon = (iconProp: ReactNode, side: 'start' | 'end' = 'start') => {

@@ -14,6 +14,7 @@ type CollapseProps = {
   collapsedSize?: number
   orientation?: 'horizontal' | 'vertical'
   style?: CSSProperties
+  timeout?: number | "auto"
 }
 
 const Collapse = forwardRef((props: CollapseProps, ref) => {
@@ -29,10 +30,10 @@ const Collapse = forwardRef((props: CollapseProps, ref) => {
     collapsedSize: collapsedSizeProp = 0,
     orientation = 'vertical',
     style,
+    timeout = "auto",
     ...other
   } = props
 
-  const timeout = 'auto';
   const timer = useRef(null);
   const wrapperRef = useRef(null);
   const autoTransitionDuration = useRef(null);

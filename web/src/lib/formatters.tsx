@@ -2,6 +2,30 @@ import React from "react";
 
 import humanize from "humanize-string";
 
+export const Log = (...message: any) => {
+  let severity = "info"
+  let title = ""
+  // , title: string = "", severity: 'info' | 'warning' | 'error' = "info"
+
+  let color = "";
+  let bg = ""
+
+  switch (severity) {
+    case 'info':
+      color = "#c6ccff"
+      bg = "#000000";
+      break;
+    case 'warning':
+      color = "#CC8824";
+      bg = "#000000";
+      break;
+    case 'error':
+      color = "#ff0000"
+      bg = "#ffffff";
+      break;
+  }
+  return console.info(`%c${title === "" ? severity : `${title}`}\n%c${message.map((msg) => typeof msg === "object" ? JSON.stringify(msg, null, 2) : msg === null ? 'null' : msg === undefined ? 'undefined' : msg.toString()).join('\n')}`, `background: ${color}; color: ${bg}; padding: 0px 4px; border: 1px solid #000000; border-radius: 4px;`, `color: #ffffff;`)
+}
 export const formatEnum = (values: string | string[] | null | undefined) => {
   let output = "";
 
@@ -185,6 +209,7 @@ export const isDate = (dateString: string | Date | number): boolean => {
  */
 export const average = (arr) => arr.reduce((p, c) => p + c, 0) / arr.length;
 
+
 /**
  * Sorts an array of objects based on a specified property and sorting order.
  *
@@ -194,15 +219,21 @@ export const average = (arr) => arr.reduce((p, c) => p + c, 0) / arr.length;
  * @param {boolean} ascending - If true, sorts the array in ascending order; otherwise, in descending order.
  * @returns {Array<ItemType>} - The sorted array.
  */
-export const dynamicSort = <T extends {}>(
+export const dynamicSort = <T extends Record<string, any>>(
   array: Array<T>,
-  property: string,
+  property: keyof T | string,
   ascending: boolean = true
 ): Array<T> =>
   property != "" && array
-    ? [...array].sort((a: T, b: T) => {
-      const aValue = a[property];
-      const bValue = b[property];
+    ? array.toSorted((a: T, b: T) => {
+      const properties = (typeof property === 'string' ? property.split(".") : [property]) as Array<string | keyof T>;
+      let aValue: any = a;
+      let bValue: any = b;
+
+      for (const prop of properties) {
+        aValue = aValue[prop];
+        bValue = bValue[prop];
+      }
 
       if (ascending) {
         if (aValue < bValue) return -1;
@@ -1575,9 +1606,9 @@ export const HslToHex = (h: number, s: number, l: number): string => {
 
 export const groupBy = <T extends {}>(
   array: T[],
-  key: string
+  key: keyof T | string,
 ): { [groupKey: string]: T[] } => {
-  const nestedKeys = key.split(".");
+  const nestedKeys = (typeof key === 'string' ? key.split(".") : [key]) as Array<string | keyof T>;
 
   return array.reduce((acc: { [groupKey: string]: T[] }, obj: T) => {
     let groupKey: any = obj; // Use 'any' type for indexing
@@ -1613,23 +1644,23 @@ type NestedKey<T> = string | (string | number)[];
  * getValueByNestedKey(obj, ["a", "b", "c"]); // 1
  * getValueByNestedKey(obj, "a.b.d"); // undefined
  */
-export const getValueByNestedKey = <T extends object>(
-  obj: T,
-  nestedKey: NestedKey<T>
-): unknown => {
-  const keys = Array.isArray(nestedKey) ? nestedKey : nestedKey.split(".");
-  let value: unknown = obj;
+// export const getValueByNestedKey = <T extends object>(
+//   obj: T,
+//   nestedKey: NestedKey<T>
+// ): unknown => {
+//   const keys = Array.isArray(nestedKey) ? nestedKey : nestedKey.split(".");
+//   let value: unknown = obj;
 
-  for (const key of keys) {
-    if (value && typeof value === "object" && key in value) {
-      value = (value as Record<string, unknown>)[key];
-    } else {
-      return undefined;
-    }
-  }
+//   for (const key of keys) {
+//     if (value && typeof value === "object" && key in value) {
+//       value = (value as Record<string, unknown>)[key];
+//     } else {
+//       return undefined;
+//     }
+//   }
 
-  return value;
-};
+//   return value;
+// };
 
 /**
  * @description debounce function for search fields

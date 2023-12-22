@@ -52,7 +52,7 @@ interface FormControlOwnProps {
   margin?: "dense" | "normal" | "none";
   required?: boolean;
   size?: "small" | "medium" | "large";
-  variant?: "standard" | "outlined" | "filled";
+  variant?: "standard" | "outlined" | "contained";
   label?: ReactNode;
   shrink?: boolean;
   ownerState?: any;
@@ -305,7 +305,7 @@ export const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
 
 export type InputLabelProps = {
   color?: "primary" | "secondary" | "warning" | "success" | "error" | "DEFAULT";
-  variant?: "outlined" | "filled" | "standard";
+  variant?: "outlined" | "contained" | "standard";
   className?: string;
   shrink?: boolean;
   disabled?: boolean;
@@ -341,7 +341,7 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
           open: `scale-75 translate-x-3.5 -translate-y-[9px] max-w-[calc(133%-32px)] pointer-events-auto`,
         },
       },
-      filled: {
+      contained: {
         small: {
           close: `max-w-[calc(100%-24px)] translate-x-3 translate-y-3 scale-100`,
           open: `scale-75 translate-x-3 translate-y-1 max-w-[calc(133%-24px)] pointer-events-auto`,
@@ -383,7 +383,7 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
 
     const labelClasses = {
       outlined: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
-      filled: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
+      contained: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 z-10 pointer-events-none select-none transition-transform`,
       standard: `text-base leading-6 p-0 block origin-top-left whitespace-nowrap overflow-hidden text-ellipsis absolute left-0 top-0 transition-transform`,
     };
 
@@ -459,7 +459,7 @@ export type InputBaseProps = {
   autoComplete?: string;
   autoFocus?: boolean;
   color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
-  variant?: "outlined" | "filled" | "standard";
+  variant?: "outlined" | "contained" | "standard";
   defaultValue?: string | number | readonly string[];
   disabled?: boolean;
   endAdornment?: React.ReactNode;
@@ -781,7 +781,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
         medium: `py-4 px-3.5`,
         large: `py-6 px-3.5`,
       },
-      filled: {
+      contained: {
         small: `pt-5 px-3 pb-1`, // py-2 px-3 without label
         medium: `py-6 px-3 pb-2`, // py-4 px-3 if no label
         large: `pt-7 px-3 pb-3`,
@@ -806,20 +806,20 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
             ? "pr-3.5"
             : ""
         }`,
-      filled: `dark:bg-white/10 hover:dark:bg-white/[.13] bg-black/10 hover:bg-black/[.13] rounded-t transition-colors ${startAdornment ? "pl-3" : endAdornment ? "pr-3" : ""
+      contained: `dark:bg-white/10 hover:dark:bg-white/[.13] bg-black/10 hover:bg-black/[.13] rounded-t transition-colors ${startAdornment ? "pl-3" : endAdornment ? "pr-3" : ""
         }`,
       standard: `mt-4`,
     };
 
     const inputBaseClassesBefore = {
       outlined: ``,
-      filled: `before:content-[''] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-colors before:ease-in-out before:duration-75 hover:before:border-black hover:before:dark:border-white`,
+      contained: `before:content-[''] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-colors before:ease-in-out before:duration-75 hover:before:border-black hover:before:dark:border-white`,
       standard: `before:content-['"\\00a0"'] before:border-b before:dark:border-white/70 before:border-black/40 before:absolute before:left-0 before:bottom-0 before:right-0 before:pointer-events-none before:transition-all before:ease-in-out before:duration-75 hover:before:border-b-2 hover:before:border-black hover:before:dark:border-white`,
     };
 
     const inputBaseClassesAfter = {
       outlined: '',
-      filled: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused
+      contained: `after:content-[''] after:border-b-2 after:absolute after:left-0 after:bottom-0 after:right-0 after:pointer-events-none after:transform after:transition-transform ${ownerState.focused
         ? "after:transform after:scale-x-100 after:translate-x-0"
         : "after:scale-x-0"
         } ${fcs.error
@@ -854,8 +854,8 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
           : "placeholder:opacity-50"
         } placeholder:transition-opacity placeholder:duration-200 placeholder:text-current focus:outline-none box-content disabled:pointer-events-none rounded-[inherit] border-0 bg-transparent
         ${inputSize[ownerState.variant][ownerState.size]}`, {
-        "pl-0": startAdornment && (ownerState.variant === "filled" || ownerState.variant === "outlined"),
-        "pr-0": endAdornment && (ownerState.variant === "filled" || ownerState.variant === "outlined")
+        "pl-0": startAdornment && (ownerState.variant === "contained" || ownerState.variant === "outlined"),
+        "pr-0": endAdornment && (ownerState.variant === "contained" || ownerState.variant === "outlined")
       }),
     };
 
@@ -885,7 +885,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
                 "mr-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap",
                 startAdornmentProps?.className,
                 {
-                  "mt-4": ownerState.variant === "filled",
+                  "mt-4": ownerState.variant === "contained",
                 }
               )}
               {...startAdornmentProps}
@@ -982,7 +982,7 @@ type InputProps = {
   maxRows?: string | number;
   minRows?: string | number;
   margin?: "dense" | "normal" | "none";
-  variant?: "standard" | "filled" | "outlined";
+  variant?: "standard" | "contained" | "outlined";
   size?: "small" | "medium" | "large";
   type?: InputHTMLAttributes<unknown>["type"];
   value?: string | number | readonly string[];

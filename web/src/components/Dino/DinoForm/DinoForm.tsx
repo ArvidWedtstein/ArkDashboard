@@ -303,7 +303,7 @@ const DinoForm = (props: DinoFormProps) => {
                 defaultValue={props.dino?.description}
                 color="DEFAULT"
                 label="Description"
-                variant="filled"
+                variant="contained"
                 rows={5}
                 multiline
               />
@@ -312,7 +312,7 @@ const DinoForm = (props: DinoFormProps) => {
                 name="admin_note"
                 defaultValue={props.dino?.admin_note}
                 color="DEFAULT"
-                variant="filled"
+                variant="contained"
                 rows={5}
                 multiline
                 helperText="Some admin related info about this dino"
@@ -472,7 +472,7 @@ const DinoForm = (props: DinoFormProps) => {
 
             {/* <Input
               label="Release Date"
-              variant="filled"
+              variant="contained"
               color="success"
               type="date"
               name="released"
