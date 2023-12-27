@@ -490,6 +490,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
   const testMaterialCalculation = () => {
     console.log(data)
+    console.log(data.craftingItems.filter((f) => f.id === 73))
     // let item = data.items.find((item) => item.id === 109)
     // let recipe = itemRecipes.find((recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === 109)
     // if (item.itemRecipes.length > 0) {

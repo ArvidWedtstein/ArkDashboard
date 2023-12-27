@@ -8,24 +8,29 @@ import { db } from "src/lib/db";
 import { validate, validateWithSync } from "@redwoodjs/api";
 
 export const craftingItems: QueryResolvers["craftingItems"] = () => {
+  // Returns the items that are either used in a recipe or have a recipe or are a crafting station.
   return db.item.findMany({
-    include: {
-      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
-      ItemRecipe_ItemRecipe_crafting_station_idToItem: true,
-    },
+    // include: {
+    //   ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+    //   ItemRecipe_ItemRecipe_crafting_station_idToItem: true,
+    // },
     where: {
       OR: [
         {
-          ItemRecipeItem: {
-            some: {
-              id: {
-                not: null,
-              },
-            },
+          ItemRecipe_ItemRecipe_crafted_item_idToItem: {
+            some: {},
           },
         },
-        // { ItemRecipe_ItemRecipe_crafted_item_idToItem: null, NOT: null },
-        // { ItemRecipe_ItemRecipe_crafting_station_idToItem: null, NOT: null },
+        {
+          ItemRecipeItem: {
+            some: {},
+          },
+        },
+        {
+          ItemRecipe_ItemRecipe_crafting_station_idToItem: {
+            some: {},
+          },
+        },
       ],
     },
   });
