@@ -34,6 +34,19 @@ export const TESTQUERY = gql`
       name
       type
       category
+      image
+      itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        id
+        crafting_station_id
+        crafting_time
+        yields
+        ItemRecipeItem {
+          id
+          item_recipe_id
+          resource_item_id
+          amount
+        }
+      }
      }
   }
 `
