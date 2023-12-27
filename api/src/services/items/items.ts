@@ -7,22 +7,30 @@ import type {
 import { db } from "src/lib/db";
 import { validate, validateWithSync } from "@redwoodjs/api";
 
-
 export const craftingItems: QueryResolvers["craftingItems"] = () => {
-
   return db.item.findMany({
-    select: {
-      it
-    }
+    include: {
+      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+      ItemRecipe_ItemRecipe_crafting_station_idToItem: true,
+    },
     where: {
-      ItemRecipe_ItemRecipe_crafting_station_idToItem: {
-        some: {
-          isN
-        }
-      }
-    }
-  })
-}
+      OR: [
+        {
+          ItemRecipeItem: {
+            some: {
+              id: {
+                not: null,
+              },
+            },
+          },
+        },
+        // { ItemRecipe_ItemRecipe_crafted_item_idToItem: null, NOT: null },
+        // { ItemRecipe_ItemRecipe_crafting_station_idToItem: null, NOT: null },
+      ],
+    },
+  });
+};
+
 export const itemsPage: QueryResolvers["itemsPage"] = ({
   page = 1,
   search = "",

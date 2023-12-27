@@ -138,11 +138,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     {
       initialFetchPolicy: "cache-and-network",
       nextFetchPolicy: "cache-only",
-      variables: {
-        ids: itemRecipes.map((f) => f.id),
-      },
+      // variables: {
+      //   ids: itemRecipes.map((f) => f.id),
+      // },
       onError: (error) => {
-        console.error(error);
+        console.error("Items loading error", error);
       },
     }
   );
@@ -433,7 +433,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   let materials = [];
   let usedCraftingStations: number[] = []
   const newFindBaseMaterials = (
-    item: ArrayElement<FindItemsForMaterialCalculator["items"]>,//ArrayElement<FindItemsMats["itemRecipes"]>,
+    item: any, //ArrayElement<FindItemsForMaterialCalculator["items"]>,//ArrayElement<FindItemsMats["itemRecipes"]>,
     amount: number,
     yields: number = 1,
   ) => {
@@ -451,7 +451,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     }
     // Loop through child Items.
     item.itemRecipes[0].ItemRecipeItem.forEach((itemRecipeItem) => {
-      let itemRecipe = data.items.find((ir) => ir.id === itemRecipeItem.resource_item_id);
+      let itemRecipe = null //data.items.find((ir) => ir.id === itemRecipeItem.resource_item_id);
 
       if (!itemRecipe) {
         return console.warn(`Item was not found`);
@@ -489,14 +489,15 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   }
 
   const testMaterialCalculation = () => {
-    let item = data.items.find((item) => item.id === 109)
+    console.log(data)
+    // let item = data.items.find((item) => item.id === 109)
     // let recipe = itemRecipes.find((recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === 109)
-    if (item.itemRecipes.length > 0) {
+    // if (item.itemRecipes.length > 0) {
 
-      newFindBaseMaterials(item, 1, 1);
-    }
+    //   newFindBaseMaterials(item, 1, 1);
+    // }
 
-    console.log("MATERIALS", materials)
+    // console.log("MATERIALS", materials)
   }
 
   // Go through each crafting station? For crafting time reduction osv..

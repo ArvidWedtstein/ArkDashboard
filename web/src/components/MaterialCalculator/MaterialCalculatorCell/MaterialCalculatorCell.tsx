@@ -29,27 +29,34 @@ export const QUERY = gql`
 // TODO: filter items by items that have a recipe or are used in a recipe
 export const TESTQUERY = gql`
   query FindItemsForMaterialCalculator {
-    items {
+     craftingItems {
       id
       name
-      category
       type
-      image
-      itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
-        id
-        crafting_station_id
-        yields
-        crafting_time
-        ItemRecipeItem {
-          id
-          item_recipe_id
-          resource_item_id
-          amount
-        }
-      }
-    }
+      category
+     }
   }
 `
+
+// items {
+//   id
+//   name
+//   category
+//   type
+//   image
+//   itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//     id
+//     crafting_station_id
+//     yields
+//     crafting_time
+//     ItemRecipeItem {
+//       id
+//       item_recipe_id
+//       resource_item_id
+//       amount
+//     }
+//   }
+// }
 
 export const ITEMRECIPEITEMQUERY = gql`
 query FindRecipeItemsByIds($ids: [BigInt!]) {
