@@ -7,6 +7,22 @@ import type {
 import { db } from "src/lib/db";
 import { validate, validateWithSync } from "@redwoodjs/api";
 
+
+export const craftingItems: QueryResolvers["craftingItems"] = () => {
+
+  return db.item.findMany({
+    select: {
+      it
+    }
+    where: {
+      ItemRecipe_ItemRecipe_crafting_station_idToItem: {
+        some: {
+          isN
+        }
+      }
+    }
+  })
+}
 export const itemsPage: QueryResolvers["itemsPage"] = ({
   page = 1,
   search = "",

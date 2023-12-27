@@ -43,6 +43,7 @@ export const schema = gql`
     ): ItemsPage @skipAuth
     itemsByCategory(category: String!): ItemsPage @skipAuth
     itemsByIds(ids: [BigInt!]!): [Item!]! @skipAuth
+    craftingItems: [Item!]! @skipAuth
   }
 
   input CreateItemInput {

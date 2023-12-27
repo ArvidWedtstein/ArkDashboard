@@ -1,6 +1,7 @@
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 import { FindItemsMats } from "types/graphql";
+// TODO: query Items instead?
 export const QUERY = gql`
   query FindItemsMats {
     itemRecipes {
@@ -15,29 +16,41 @@ export const QUERY = gql`
         category
         type
       }
-#       ItemRecipeItem {
-#         id
-#  item_recipe_id
-#   amount
-#   Item {
-#     id
-#    name
-#   image
-#    }
-#       }
+      ItemRecipeItem {
+        id
+        item_recipe_id
+        resource_item_id
+        amount
+      }
     }
   }
 `;
-// # ItemRecipeItem {
-//   #   id
-//   #   item_recipe_id
-//   #   amount
-//   #   Item {
-//   #     id
-//   #     name
-//   #     image
-//   #   }
-//   # }
+
+// TODO: filter items by items that have a recipe or are used in a recipe
+export const TESTQUERY = gql`
+  query FindItemsForMaterialCalculator {
+    items {
+      id
+      name
+      category
+      type
+      image
+      itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        id
+        crafting_station_id
+        yields
+        crafting_time
+        ItemRecipeItem {
+          id
+          item_recipe_id
+          resource_item_id
+          amount
+        }
+      }
+    }
+  }
+`
+
 export const ITEMRECIPEITEMQUERY = gql`
 query FindRecipeItemsByIds($ids: [BigInt!]) {
     itemRecipeItemsByIds(ids: $ids) {

@@ -20,11 +20,11 @@ import {
   timeFormatL,
 } from "src/lib/formatters";
 import Table from "src/components/Util/Table/Table";
-import { FindItemsMats } from "types/graphql";
+import { FindItemsForMaterialCalculator, FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
-import { ITEMRECIPEITEMQUERY } from "../MaterialCalculatorCell";
+import { ITEMRECIPEITEMQUERY, TESTQUERY } from "../MaterialCalculatorCell";
 import UserRecipesCell, {
   QUERY as USERRECIPEQUERY,
 } from "src/components/UserRecipe/UserRecipesCell";
@@ -131,8 +131,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     Consumable: "any-berry-seed",
   };
 
-  const [loadItems, { called, loading: load, data }] = useLazyQuery(
-    ITEMRECIPEITEMQUERY,
+  // TODO: redo this, cant be more effective than fetching on load
+  const [loadItems, { called, loading: load, data }] = useLazyQuery<FindItemsForMaterialCalculator>(
+    // ITEMRECIPEITEMQUERY,
+    TESTQUERY,
     {
       initialFetchPolicy: "cache-and-network",
       nextFetchPolicy: "cache-only",
@@ -155,12 +157,64 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const deferredQuery = useDeferredValue(query);
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
 
+  // TODO: redo
   const [craftingStations, setCraftingStations] = useState({
     "mortar-chem": "107",
     "forge": "125",
     "cooking": "128",
     "grill": "39"
   });
+  // New
+  // const [craftingStationsActive, setCraftingStationsActive] = useState({
+  //   "mortar-chem": [
+  //     {
+  //       id: 107,
+  //       name: 'Mortar & Pestle',
+  //       active: true,
+  //     },
+  //     {
+  //       id: 607,
+  //       name: 'Chemistry Bench',
+  //       active: false,
+  //     }
+  //   ],
+  //   "forge": [
+  //     {
+  //       id: 125,
+  //       name: 'Refining Forge',
+  //       active: true,
+  //     },
+  //     {
+  //       id: 600,
+  //       name: 'Industrial Forge',
+  //       active: false,
+  //     }
+  //   ],
+  //   "cooking": [
+  //     {
+  //       id: 128,
+  //       name: 'Cooking Pot',
+  //       active: true,
+  //     },
+  //     {
+  //       id: 601,
+  //       name: 'Industrial Cooker',
+  //       active: false
+  //     }
+  //   ],
+  //   "grill": [
+  //     {
+  //       id: 39,
+  //       name: 'Campfire',
+  //       active: true,
+  //     },
+  //     {
+  //       id: 360,
+  //       name: 'Industrial Grill',
+  //       active: false,
+  //     }
+  //   ]
+  // });
 
   type RecipeActionType =
     | "ADD_AMOUNT_BY_NUM"
@@ -362,9 +416,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       ...chosenItem,
       yields: yields,
       crafting_time: crafting_time,
-      ItemRecipeItem: data.itemRecipeItemsByIds.filter(
-        (iri) => iri.item_recipe_id == chosenItem.id
-      ),
+      // ItemRecipeItem: data.itemRecipeItemsByIds.filter(
+      //   (iri) => iri.item_recipe_id == chosenItem.id
+      // ),
     } as unknown as ItemRecipe
 
     // console.log('ITEM', item)
@@ -375,6 +429,75 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       },
     });
   };
+
+  let materials = [];
+  let usedCraftingStations: number[] = []
+  const newFindBaseMaterials = (
+    item: ArrayElement<FindItemsForMaterialCalculator["items"]>,//ArrayElement<FindItemsMats["itemRecipes"]>,
+    amount: number,
+    yields: number = 1,
+  ) => {
+
+    console.log('ITEM', item)
+    if (item?.itemRecipes.length == 0) {
+      return console.warn('NO RECIPES')
+    }
+    if (!usedCraftingStations.some((c) => c === item.itemRecipes[0].crafting_station_id)) {
+      usedCraftingStations.push(item?.itemRecipes[0].crafting_station_id)
+    }
+
+    if (item.itemRecipes.length == 0) {
+      return console.warn(`${item.name} has no recipe`)
+    }
+    // Loop through child Items.
+    item.itemRecipes[0].ItemRecipeItem.forEach((itemRecipeItem) => {
+      let itemRecipe = data.items.find((ir) => ir.id === itemRecipeItem.resource_item_id);
+
+      if (!itemRecipe) {
+        return console.warn(`Item was not found`);
+      }
+
+      if (itemRecipe.itemRecipes.length > 0 && itemRecipe.itemRecipes[0].ItemRecipeItem.length > 0) {
+        return newFindBaseMaterials(itemRecipe, itemRecipeItem.amount * amount, itemRecipe.itemRecipes[0].yields);
+      }
+
+      if (!usedCraftingStations.some((c) => c === itemRecipe.itemRecipes[0]?.crafting_station_id)) {
+        usedCraftingStations.push(itemRecipe.itemRecipes[0]?.crafting_station_id)
+      }
+
+
+      let material = materials.find(
+        (m) => m.id === itemRecipe.id
+      );
+
+      const count = (itemRecipeItem.amount * amount) / yields;
+
+      if (material) {
+        material = {
+          ...material,
+          amount: material.amount + count,
+          crafting_time: material.crafting_time + (itemRecipe.itemRecipes[0]?.crafting_time || 0)
+        }
+      } else {
+        materials.push({
+          ...itemRecipe,
+          amount: count,
+          crafting_time: count * (itemRecipe.itemRecipes[0]?.crafting_time || 0),
+        });
+      }
+    });
+  }
+
+  const testMaterialCalculation = () => {
+    let item = data.items.find((item) => item.id === 109)
+    // let recipe = itemRecipes.find((recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === 109)
+    if (item.itemRecipes.length > 0) {
+
+      newFindBaseMaterials(item, 1, 1);
+    }
+
+    console.log("MATERIALS", materials)
+  }
 
   // Go through each crafting station? For crafting time reduction osv..
   // 128 - cooking pot
@@ -412,6 +535,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     let materials = [];
     let usedCraftingStations: number[] = []
 
+
     const findBaseMaterials = (
       item: ItemRecipe,
       amount: number,
@@ -430,7 +554,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         );
         let craftedItemAmount = recipeItem.amount;
 
-        if (!usedCraftingStations.some((c) => c === newRecipe.crafting_station_id)) {
+        if (!usedCraftingStations.some((c) => c === newRecipe?.crafting_station_id)) {
           usedCraftingStations.push(newRecipe.crafting_station_id)
         }
 
@@ -441,6 +565,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
           let crafting_time = newRecipe?.crafting_time || 0
 
+          // TODO: remove this hardcode and add as modifier to craftingstation in db instead.
           if (newRecipe.crafting_station_id === 107 && crafting_stations.some(c => c === 607)) {
             crafting_time /= 2
           }
@@ -586,11 +711,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             payload: {
               item: {
                 ...itemfound,
-                ItemRecipeItem: data.itemRecipeItemsByIds
-                  ? data.itemRecipeItemsByIds.filter(
-                    (iri) => iri.item_recipe_id === item_recipe_id
-                  )
-                  : [],
+                // ItemRecipeItem: data.itemRecipeItemsByIds
+                //   ? data.itemRecipeItemsByIds.filter(
+                //     (iri) => iri.item_recipe_id === item_recipe_id
+                //   )
+                //   : [],
               },
               amount: amount,
             },
@@ -625,17 +750,37 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
       <section className="flex h-full w-full flex-col gap-3 sm:flex-row">
         <div className="flex flex-col space-y-1">
-          <Button color="success" variant="outlined" disabled={loading || recipes.length === 0} permission="authenticated" onClick={saveRecipe} startIcon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              fill="currentColor"
-            >
-              <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
-            </svg>
-          }>
-            Save Recipe
-          </Button>
+          <div className="flex">
+            <Button color="success" variant="outlined" disabled={loading || recipes.length === 0} permission="authenticated" onClick={saveRecipe} startIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                fill="currentColor"
+              >
+                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+              </svg>
+            }>
+              Save Recipe
+            </Button>
+            <Button
+              color="warning"
+              variant="outlined"
+              disabled={loading}
+              permission="authenticated"
+              onClick={testMaterialCalculation}
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="currentColor"
+                >
+                  <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+                </svg>
+              }>
+              Test Gunpowder
+            </Button>
+
+          </div>
 
           <Button title="Clear all items" color="error" variant="outlined" disabled={loading} onClick={() => setRecipes({ type: "RESET" })} startIcon={
             <svg
