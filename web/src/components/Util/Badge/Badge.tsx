@@ -13,7 +13,8 @@ type BadgeProps = {
   | "purple"
   | "success"
   | "warning"
-  | "error";
+  | "error"
+  | "none";
   anchor?: {
     vertical?: "top" | "bottom";
     horizontal?: "left" | "right";
@@ -62,6 +63,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       warning: "text-black/90 bg-orange-400",
       error: "bg-red-500 text-white",
       DEFAULT: "dark:text-black/90 text-white bg-black dark:bg-white",
+      none: "dark:text-white/90 text-black",
     },
     outlined: {
       primary: "bg-blue-400/10 text-blue-600 ring-1 ring-inset ring-blue-500/10 dark:text-blue-500 dark:ring-blue-400/30",
@@ -71,7 +73,8 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       success: "bg-pea-50 text-pea-700 ring-pea-600/20 dark:bg-pea-500/10 dark:text-pea-400 dark:ring-pea-500/20 ring-1 ring-inset",
       warning: "bg-yellow-50 text-yellow-800 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-500 dark:ring-yellow-400/20",
       error: "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20",
-      DEFAULT: "dark:bg-white/10 bg-black/10 ring-1 ring-inset dark:ring-white/30 ring-black/30 dark:text-white/90 text-black/70"
+      DEFAULT: "dark:bg-white/10 bg-black/10 ring-1 ring-inset dark:ring-white/30 ring-black/30 dark:text-white/90 text-black/70",
+      none: "ring-1 ring-inset dark:ring-white/30 ring-black/30 dark:text-white/90 text-black/70"
     }
   }
   const sizes = {

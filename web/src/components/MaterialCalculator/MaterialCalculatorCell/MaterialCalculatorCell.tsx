@@ -35,6 +35,7 @@ export const TESTQUERY = gql`
       type
       category
       image
+      visible
       itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
         id
         crafting_station_id

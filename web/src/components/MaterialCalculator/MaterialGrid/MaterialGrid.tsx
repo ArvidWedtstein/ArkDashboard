@@ -37,6 +37,8 @@ import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButto
 import List, { ListItem } from "src/components/Util/List/List";
 import Collapse from "src/components/Util/Collapse/Collapse";
 import clsx from "clsx";
+import Badge from "src/components/Util/Badge/Badge";
+import { routes } from "@redwoodjs/router";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -75,40 +77,61 @@ type ItemRecipe = {
     };
   }[];
 };
-interface RecipeState extends ItemRecipe {
+interface RecipeState extends ArrayElement<FindItemsForMaterialCalculator["craftingItems"]> {
   // Item?: ItemRecipe["Item_ItemRecipe_crafted_item_idToItem"];
   amount: number;
+  crafting_time?: number;
+  children?: RecipeState[];
 }
 interface MaterialGridProps {
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   error?: RWGqlError;
 }
 
-const TreeBranch = memo(({ itemRecipe }: { itemRecipe: RecipeState }) => {
-  const { Item, amount, crafting_time } = itemRecipe;
-  const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
+const TreeBranch = memo(({ item }: { item: RecipeState }) => {
+  const { id, name, image, amount, crafting_time, itemRecipes, children } = item;
+
+  const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`;
   return (
     <li className="relative -ml-1 -mr-1 inline-block list-none px-2 pt-4 text-center align-top before:absolute before:top-0 before:right-1/2 before:h-4 before:w-1/2 before:border-t before:border-zinc-500 before:content-[''] after:absolute after:top-0 after:right-auto after:left-1/2 after:h-4 after:w-1/2 after:border-t after:border-l after:border-zinc-500 after:content-[''] first:before:border-0 first:after:rounded-tl-2xl last:before:rounded-tr-2xl last:before:border-r last:before:border-zinc-500 last:after:border-0 only:pt-0 only:before:hidden only:after:hidden">
-      {Item && (
-        <div
-          className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
-          title={Item.name}
+      {item && (
+        <Button
+          className="text-xs w-full aspect-square max-w-[5rem] flex flex-col items-center justify-center"
+          variant="outlined"
+          color="DEFAULT"
+          to={routes.item({ id })}
         >
-          <img className="h-8 w-8" src={imageUrl} alt={Item.name} />
-          <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end justify-end bg-transparent p-1 text-xs font-bold">
-            {formatNumber(amount)}
-          </div>
-          <div className="absolute top-0 right-0 inline-flex h-6 w-full items-start justify-end bg-transparent p-1 text-xs font-medium">
-            {timeFormatL(crafting_time, true)}
-          </div>
-        </div>
+          <img
+            className="h-10 w-10 aspect-square p-1"
+            src={imageUrl}
+            alt={name}
+          />
+          <span className="sr-only text-xs box-border w-full break-words whitespace-pre-wrap max-w-max">
+            {name}
+          </span>
+
+          <Badge
+            size="small"
+            content={timeFormatL(crafting_time, true)}
+            variant="standard"
+            color="none"
+            className="absolute top-3 right-3 [&>span]:text-right ![&>span]:items-end [&>span]:justify-end"
+          />
+          <Badge
+            size="small"
+            content={formatNumber(amount)}
+            variant="standard"
+            color="none"
+            className="absolute bottom-3 right-3 [&>span]:text-right ![&>span]:items-end [&>span]:justify-end"
+          />
+        </Button>
       )}
-      {itemRecipe?.ItemRecipeItem?.length > 0 && (
+      {children?.length > 0 && (
         <ul className="relative whitespace-nowrap py-4 text-center before:absolute before:top-0 before:left-1/2 before:h-4 before:w-0 before:border-l before:border-zinc-500 before:content-[''] after:clear-both after:table after:content-['']">
-          {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
+          {children.map((subItemRecipe, i) => (
             <TreeBranch
-              key={`subItem-${subItemRecipe?.Item?.id}`}
-              itemRecipe={subItemRecipe as RecipeState}
+              key={`subItem-${subItemRecipe?.id}`}
+              item={subItemRecipe}
             />
           ))}
         </ul>
@@ -157,64 +180,56 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const deferredQuery = useDeferredValue(query);
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
 
-  // TODO: redo
   const [craftingStations, setCraftingStations] = useState({
-    "mortar-chem": "107",
-    "forge": "125",
-    "cooking": "128",
-    "grill": "39"
+    "mortar-chem": [
+      {
+        id: 107,
+        name: 'Mortar & Pestle',
+        active: true,
+      },
+      {
+        id: 607,
+        name: 'Chemistry Bench',
+        active: false,
+      }
+    ],
+    "forge": [
+      {
+        id: 125,
+        name: 'Refining Forge',
+        active: true,
+      },
+      {
+        id: 600,
+        name: 'Industrial Forge',
+        active: false,
+      }
+    ],
+    "cooking": [
+      {
+        id: 128,
+        name: 'Cooking Pot',
+        active: true,
+      },
+      {
+        id: 601,
+        name: 'Industrial Cooker',
+        active: false
+      }
+    ],
+    "grill": [
+      {
+        id: 39,
+        name: 'Campfire',
+        active: true,
+      },
+      {
+        id: 360,
+        name: 'Industrial Grill',
+        active: false,
+      }
+    ]
   });
-  // New
-  // const [craftingStationsActive, setCraftingStationsActive] = useState({
-  //   "mortar-chem": [
-  //     {
-  //       id: 107,
-  //       name: 'Mortar & Pestle',
-  //       active: true,
-  //     },
-  //     {
-  //       id: 607,
-  //       name: 'Chemistry Bench',
-  //       active: false,
-  //     }
-  //   ],
-  //   "forge": [
-  //     {
-  //       id: 125,
-  //       name: 'Refining Forge',
-  //       active: true,
-  //     },
-  //     {
-  //       id: 600,
-  //       name: 'Industrial Forge',
-  //       active: false,
-  //     }
-  //   ],
-  //   "cooking": [
-  //     {
-  //       id: 128,
-  //       name: 'Cooking Pot',
-  //       active: true,
-  //     },
-  //     {
-  //       id: 601,
-  //       name: 'Industrial Cooker',
-  //       active: false
-  //     }
-  //   ],
-  //   "grill": [
-  //     {
-  //       id: 39,
-  //       name: 'Campfire',
-  //       active: true,
-  //     },
-  //     {
-  //       id: 360,
-  //       name: 'Industrial Grill',
-  //       active: false,
-  //     }
-  //   ]
-  // });
 
   type RecipeActionType =
     | "ADD_AMOUNT_BY_NUM"
@@ -230,7 +245,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       itemRecipeItems?: ItemRecipe["ItemRecipeItem"];
       amount?: number;
       index?: number;
-      item?: ItemRecipe
+      item?: ArrayElement<FindItemsForMaterialCalculator["craftingItems"]>//ItemRecipe
       // | ArrayElement<MaterialGridProps["itemRecipes"]> & {
       //   ItemRecipeItem?: {
       //     __typename: string;
@@ -257,9 +272,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     switch (type) {
       case "ADD_AMOUNT_BY_NUM":
       case "ADD": {
-        const itemIndex = state.findIndex(
-          (item) => item.id === payload.item.id
-        );
+        const itemIndex = state.findIndex(({ id }) => id === payload.item.id);
 
         let amountToAdd = payload.amount || 1;
 
@@ -268,7 +281,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             i === itemIndex
               ? {
                 ...item,
-                amount: (item.amount + amountToAdd) % payload.item?.yields === 0 ? (item.amount + amountToAdd) : (item.amount + amountToAdd) + (payload.item?.yields - (item.amount + amountToAdd) % payload.item?.yields)
+                amount: (item.amount + amountToAdd) % payload.item?.itemRecipes[0]?.yields === 0 ? (item.amount + amountToAdd) : (item.amount + amountToAdd) + (payload.item?.itemRecipes[0]?.yields - (item.amount + amountToAdd) % payload.item?.itemRecipes[0]?.yields)
               }
               : item
           );
@@ -278,7 +291,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           ...state,
           {
             ...payload.item,
-            amount: amountToAdd % payload.item?.yields === 0 ? amountToAdd : amountToAdd + (payload.item?.yields - amountToAdd % payload.item?.yields),
+            amount: amountToAdd % payload.item?.itemRecipes[0]?.yields === 0 ? amountToAdd : amountToAdd + (payload.item?.itemRecipes[0]?.yields - amountToAdd % payload.item?.itemRecipes[0]?.yields),
           },
         ];
       }
@@ -287,8 +300,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         console.log("CHANGE AMOUNT", payload)
         if (itemIndex !== -1) {
           return state.map((item, i) => {
-            let remainder = payload.amount % item.yields;
-            return i === itemIndex ? { ...item, amount: remainder === 0 ? payload.amount : payload.amount + (item.yields - remainder) } : item
+            let remainder = (payload.amount || 0) % item.itemRecipes[0]?.yields;
+            return i === itemIndex ? { ...item, amount: remainder === 0 ? payload.amount : payload.amount + (item.itemRecipes[0]?.yields - remainder) } : item
           });
         }
         return state;
@@ -297,20 +310,20 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         return state.filter((_, i) => i !== payload.index);
       }
       case "REMOVE_BY_ID": {
-        return state.filter((itm) => itm.id !== payload.item.id);
+        return state.filter(({ id }) => id !== payload.item.id);
       }
       case "RESET": {
         return [];
       }
       case "CRAFTING_STATION": {
-        const selectedCraftingStation = (id: number) => Object.values(craftingStations).some(c => parseInt(c) === id)
+        const selectedCraftingStation = (id: number) => Object.values(craftingStations).some(c => c.some(b => b.active === true && b.id === id))
         return state.map((recipe) => {
-          let yields = recipe.yields;
-          let crafting_time = recipe.crafting_time;
+          let yields = recipe.itemRecipes[0]?.yields;
+          let crafting_time = recipe.itemRecipes[0]?.crafting_time;
 
-          // TODO: add calculations for the othetr crafting stations too.
-          if (recipe.crafting_station_id === 107) {
-            let originalRecipe = itemRecipes.find((rec) => rec.id === parseInt(recipe.id));
+          // TODO: add calculations for the other crafting stations too.
+          if (recipe.itemRecipes[0]?.crafting_station_id === 107) {
+            let originalRecipe = itemRecipes.find(({ id }) => id === recipe.id);
 
             yields = selectedCraftingStation(607) ? originalRecipe.yields * 6 : originalRecipe.yields;
             crafting_time = selectedCraftingStation(607) ? originalRecipe.crafting_time / 2 : originalRecipe.crafting_time;
@@ -332,83 +345,24 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
   let [recipes, setRecipes] = useReducer(reducer, []);
 
-  // TODO: scrap this
-  const items = useMemo(() => {
-    console.log('ITEMS')
-
-    const result: ItemRecipe[] = [];
-
-    for (const recipe of itemRecipes) {
-      result.push({
-        ...recipe as unknown as ItemRecipe,
-        // ItemRecipeItem:
-        //   data?.itemRecipeItemsByIds.filter(
-        //     (iri) =>
-        //       iri.item_recipe_id ==
-        //       recipe.id
-        //   ) || recipe.ItemRecipeItem,
-      });
-    }
-
-    const modifiedRecipes = [...recipes];
-
-    for (const recipe of modifiedRecipes) {
-      const itemfound = itemRecipes.find(
-        (i) =>
-          i.Item_ItemRecipe_crafted_item_idToItem.id ===
-          recipe.Item_ItemRecipe_crafted_item_idToItem.id
-      ) as unknown as ItemRecipe;
-      if (itemfound) {
-        // setRecipes({ type: "REMOVE_BY_ID", payload: { item: itemfound } });
-
-        // If Mortar Pestle
-
-
-        // recipe.crafting_station_id === 107 && craftingStations["mortar-chem"] === '607'
-        let amountToAdd = recipe.amount || 0;
-        let yields = itemfound.yields || 1;
-
-        if (recipe.crafting_station_id === 107 && craftingStations["mortar-chem"] === '607') {
-          console.log('CHEM BENCH')
-
-
-          yields *= 6
-          amountToAdd = amountToAdd < yields ? yields : amountToAdd
-        }
-        // setRecipes({
-        //   type: "ADD_AMOUNT_BY_NUM",
-        //   payload: {
-        //     item: {
-        //       ...itemfound,
-        //       ItemRecipeItem: data.itemRecipeItemsByIds.filter(
-        //         (iri) => iri.item_recipe_id == itemfound.id
-        //       ),
-        //     },
-        //     amount: amountToAdd > yields ? amountToAdd / yields : amountToAdd,
-        //   },
-        // });
-      }
-    }
-    return result;
-  }, [craftingStations]);
-
   // Item recipe is selected from menu
   const onAdd = (itemId: ArrayElement<MaterialGridProps["itemRecipes"]>["Item_ItemRecipe_crafted_item_idToItem"]["id"]) => {
     if (!itemId) return;
 
-    let chosenItem = itemRecipes.find(
-      (item) =>
-        item.Item_ItemRecipe_crafted_item_idToItem.id === itemId
-    );
+    // let chosenItem = itemRecipes.find(
+    //   (item) =>
+    //     item.Item_ItemRecipe_crafted_item_idToItem.id === itemId
+    // );
+    let chosenItem = data.craftingItems.find(({ id }) => id === itemId);
 
     if (!chosenItem) return toast.error("Item could not be found");
     if (!data) return toast.error("Items not loaded");
 
-    let yields = chosenItem.yields || 1;
-    let crafting_time = chosenItem.crafting_time || 0;
+    let yields = chosenItem.itemRecipes[0].yields || 1;
+    let crafting_time = chosenItem.itemRecipes[0].crafting_time || 0;
 
     // TODO: make generic function for calculating crafting stations? or make a own array of all recipes with the adjusted rates?
-    if (chosenItem.crafting_station_id === 107 && Object.values(craftingStations).some(c => parseInt(c) === 607)) {
+    if (chosenItem.itemRecipes[0].crafting_station_id === 107 && Object.values(craftingStations).flat().some(c => c.id === 607 && c.active)) {
       yields *= 6
       crafting_time /= 2
     }
@@ -425,81 +379,19 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     setRecipes({
       type: "ADD",
       payload: {
-        item
+        item: {
+          ...chosenItem,
+          itemRecipes: [
+            {
+              ...chosenItem.itemRecipes[0],
+              yields: yields,
+              crafting_time: crafting_time,
+            }
+          ]
+        }
       },
     });
   };
-
-  let materials = [];
-  let usedCraftingStations: number[] = []
-  const newFindBaseMaterials = (
-    item: any, //ArrayElement<FindItemsForMaterialCalculator["items"]>,//ArrayElement<FindItemsMats["itemRecipes"]>,
-    amount: number,
-    yields: number = 1,
-  ) => {
-
-    console.log('ITEM', item)
-    if (item?.itemRecipes.length == 0) {
-      return console.warn('NO RECIPES')
-    }
-    if (!usedCraftingStations.some((c) => c === item.itemRecipes[0].crafting_station_id)) {
-      usedCraftingStations.push(item?.itemRecipes[0].crafting_station_id)
-    }
-
-    if (item.itemRecipes.length == 0) {
-      return console.warn(`${item.name} has no recipe`)
-    }
-    // Loop through child Items.
-    item.itemRecipes[0].ItemRecipeItem.forEach((itemRecipeItem) => {
-      let itemRecipe = null //data.items.find((ir) => ir.id === itemRecipeItem.resource_item_id);
-
-      if (!itemRecipe) {
-        return console.warn(`Item was not found`);
-      }
-
-      if (itemRecipe.itemRecipes.length > 0 && itemRecipe.itemRecipes[0].ItemRecipeItem.length > 0) {
-        return newFindBaseMaterials(itemRecipe, itemRecipeItem.amount * amount, itemRecipe.itemRecipes[0].yields);
-      }
-
-      if (!usedCraftingStations.some((c) => c === itemRecipe.itemRecipes[0]?.crafting_station_id)) {
-        usedCraftingStations.push(itemRecipe.itemRecipes[0]?.crafting_station_id)
-      }
-
-
-      let material = materials.find(
-        (m) => m.id === itemRecipe.id
-      );
-
-      const count = (itemRecipeItem.amount * amount) / yields;
-
-      if (material) {
-        material = {
-          ...material,
-          amount: material.amount + count,
-          crafting_time: material.crafting_time + (itemRecipe.itemRecipes[0]?.crafting_time || 0)
-        }
-      } else {
-        materials.push({
-          ...itemRecipe,
-          amount: count,
-          crafting_time: count * (itemRecipe.itemRecipes[0]?.crafting_time || 0),
-        });
-      }
-    });
-  }
-
-  const testMaterialCalculation = () => {
-    console.log(data)
-    console.log(data.craftingItems.filter((f) => f.id === 73))
-    // let item = data.items.find((item) => item.id === 109)
-    // let recipe = itemRecipes.find((recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === 109)
-    // if (item.itemRecipes.length > 0) {
-
-    //   newFindBaseMaterials(item, 1, 1);
-    // }
-
-    // console.log("MATERIALS", materials)
-  }
 
   // Go through each crafting station? For crafting time reduction osv..
   // 128 - cooking pot
@@ -530,136 +422,199 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const getBaseMaterials = (
     baseMaterials: boolean = false,
     path: boolean = false,
-    items: ItemRecipe[],
-    crafting_stations: number[],
     ...objects: RecipeState[]
   ): RecipeState[] => {
-    let materials = [];
-    let usedCraftingStations: number[] = []
+    let materials: RecipeState[] = [];
+    let usedCraftingStations: ArrayElement<RecipeState["itemRecipes"]>["crafting_station_id"][] = [];
 
+    const pushUniqueCraftingStation = (id: number) => {
+      if (!usedCraftingStations.includes(id) && id) {
+        usedCraftingStations.push(id);
+      }
+    }
 
     const findBaseMaterials = (
-      item: ItemRecipe,
+      item: ArrayElement<FindItemsForMaterialCalculator["craftingItems"]>,
       amount: number,
-      yields: number = 1
     ) => {
-      // If has no crafting recipe, return
-      if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
+      if (!item?.itemRecipes.length || !item.itemRecipes[0]) {
+        console.warn(`${item.name} has no recipe`)
         return;
       }
-      if (!usedCraftingStations.some((c) => c === item.crafting_station_id)) {
-        usedCraftingStations.push(item.crafting_station_id)
-      }
-      item?.ItemRecipeItem.map((recipeItem) => {
-        let newRecipe = items.find(
-          (recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeItem.Item.id
-        );
-        let craftedItemAmount = recipeItem.amount;
 
-        if (!usedCraftingStations.some((c) => c === newRecipe?.crafting_station_id)) {
-          usedCraftingStations.push(newRecipe.crafting_station_id)
+      // Add crafting Station if it does not already exist
+      pushUniqueCraftingStation(item?.itemRecipes[0].crafting_station_id)
+
+      const children: RecipeState[] = [];
+
+      // Loop through child Items.
+      item.itemRecipes[0].ItemRecipeItem.forEach((itemRecipeItem) => {
+        let resourceItem = data.craftingItems.find((ir) => ir.id === itemRecipeItem.resource_item_id);
+        let resourceItemRecipe = resourceItem?.itemRecipes[0];
+
+        if (!resourceItem) {
+          return console.warn(`Item was not found`);
         }
 
-        if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !recipeItem.Item) {
-          const materialId = newRecipe
-            ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
-            : recipeItem.Item.id;
+        // Unneccessary?
+        // pushUniqueCraftingStation(resourceItemRecipe?.crafting_station_id)
 
-          let crafting_time = newRecipe?.crafting_time || 0
+        const count = (itemRecipeItem.amount * amount) / (item.itemRecipes[0].yields || 1);
 
-          // TODO: remove this hardcode and add as modifier to craftingstation in db instead.
-          if (newRecipe.crafting_station_id === 107 && crafting_stations.some(c => c === 607)) {
-            crafting_time /= 2
+        if (baseMaterials && resourceItemRecipe && resourceItemRecipe.ItemRecipeItem.length > 0) {
+          const childNode = findBaseMaterials(resourceItem, itemRecipeItem.amount * amount);
+          children.push(childNode);
+          // return findBaseMaterials(resourceItem, itemRecipeItem.amount * amount);
+        } else {
+          let material = materials.find(({ id }) => id === resourceItem.id);
+
+          // If item exists
+          if (material) {
+            material.amount += count;
+            material.crafting_time += count * (item.itemRecipes[0]?.crafting_time || 0);
+          } else {
+            children.push({
+              ...resourceItem,
+              amount: count,
+              crafting_time: count * (item.itemRecipes[0]?.crafting_time || 0)
+            })
+            // materials.push({
+            //   ...resourceItem,
+            //   amount: count,
+            //   crafting_time: count * (item.itemRecipes[0]?.crafting_time || 0),
+            // });
           }
+        }
 
-          if (newRecipe.crafting_station_id === 125 && crafting_stations.some(c => c === 600)) {
-            crafting_time /= 20;
-          }
+      });
 
-          // Basically a check for if material already exists
-          let material = materials.find(
-            (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
+      return {
+        ...item,
+        amount: amount,
+        crafting_time: amount * (item.itemRecipes[0]?.crafting_time || 0),
+        children: children.length > 0 ? children : undefined,
+      }
+    }
+
+    // const findBaseMaterials = (
+    //   item: ItemRecipe,
+    //   amount: number,
+    //   yields: number = 1
+    // ) => {
+    //   // If has no crafting recipe, return
+    //   if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
+    //     return;
+    //   }
+    //   if (!usedCraftingStations.some((c) => c === item.crafting_station_id)) {
+    //     usedCraftingStations.push(item.crafting_station_id)
+    //   }
+    //   item?.ItemRecipeItem.map((recipeItem) => {
+    //     let newRecipe = items.find(
+    //       (recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeItem.Item.id
+    //     );
+    //     let craftedItemAmount = recipeItem.amount;
+
+    //     if (!usedCraftingStations.some((c) => c === newRecipe?.crafting_station_id)) {
+    //       usedCraftingStations.push(newRecipe.crafting_station_id)
+    //     }
+
+    //     if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !recipeItem.Item) {
+    //       const materialId = newRecipe
+    //         ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
+    //         : recipeItem.Item.id;
+
+    //       let crafting_time = newRecipe?.crafting_time || 0
+
+    //       // TODO: remove this hardcode and add as modifier to craftingstation in db instead.
+    //       if (newRecipe.crafting_station_id === 107 && crafting_stations.some(c => c === 607)) {
+    //         crafting_time /= 2
+    //       }
+
+    //       if (newRecipe.crafting_station_id === 125 && crafting_stations.some(c => c === 600)) {
+    //         crafting_time /= 20;
+    //       }
+
+    //       // Basically a check for if material already exists
+    //       let material = materials.find(
+    //         (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
+    //       );
+
+    //       const count = (craftedItemAmount * amount) / yields;
+
+
+    //       Log(newRecipe, material, amount, count)
+    //       if (material) {
+    //         // TODO: recalculate
+    //         material.amount += count;
+    //         material.crafting_time += count * (newRecipe?.crafting_time || 1);
+    //       } else {
+    //         material = {
+    //           ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: recipeItem.Item }), // !FIX
+    //           amount: count,
+    //           crafting_time: count * crafting_time,
+    //         };
+    //         materials.push(material);
+    //       }
+
+    //     } else if (newRecipe) {
+    //       // Dig down deeper
+    //       findBaseMaterials(newRecipe, craftedItemAmount * amount, newRecipe.yields);
+    //     }
+    //   })
+    // };
+
+
+    function calculateCraftingTree(
+      item: ArrayElement<FindItemsForMaterialCalculator["craftingItems"]>,
+      amountNeeded: number,
+      currentYields: number = 1
+    ): RecipeState {
+
+      if (!item) {
+        console.error(`Item with ID ${item.name} not found in crafting data.`);
+        return null;
+      }
+
+      const craftingRecipe = item.itemRecipes[0]; // Assuming only one recipe per item
+
+      const children: RecipeState[] = [];
+
+      if (craftingRecipe && craftingRecipe.ItemRecipeItem.length) {
+        for (const recipeItem of craftingRecipe?.ItemRecipeItem) {
+          const count = (recipeItem.amount * amountNeeded) / (craftingRecipe.yields || 1);
+          const resourceItem = data.craftingItems.find((i) => i.id === recipeItem.resource_item_id);
+          const itemTree = calculateCraftingTree(
+            resourceItem,
+            count,
+            craftingRecipe.yields
           );
 
-          const count = (craftedItemAmount * amount) / yields;
-
-
-          Log(newRecipe, material, amount, count)
-          if (material) {
-            // TODO: recalculate
-            material.amount += count;
-            material.crafting_time += count * (newRecipe?.crafting_time || 1);
-          } else {
-            material = {
-              ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: recipeItem.Item }), // !FIX
-              amount: count,
-              crafting_time: count * crafting_time,
-            };
-            materials.push(material);
-          }
-
-        } else if (newRecipe) {
-          // Dig down deeper
-          findBaseMaterials(newRecipe, craftedItemAmount * amount, newRecipe.yields);
+          children.push(itemTree);
         }
-      })
-    };
+      }
 
-    const getRecipeById = (recipeId: number, crafting_stations?: any[]) => {
-      return items.find(
-        (recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeId
-      );
-    };
-
-    const recipeTree = (recipe, amount: number = 1) => {
-      if (!recipe.ItemRecipeItem)
-        return {
-          ...recipe,
-          amount: recipe.amount * amount,
-          crafting_time: recipe.amount * (recipe.crafting_time || 1),
-        };
-
-      const processedItems = recipe.ItemRecipeItem.map((itemRecipeItem) => {
-        const processedItem = {
-          ...itemRecipeItem,
-          amount: (itemRecipeItem.amount * recipe.amount) / recipe.yields,
-          crafting_time:
-            (itemRecipeItem.amount / recipe.yields) * (recipe.crafting_time || 1),
-        };
-
-        const nestedRecipe = getRecipeById(itemRecipeItem.Item.id);
-
-        if (nestedRecipe) {
-          processedItem.Item = {
-            ...processedItem.Item,
-            ...nestedRecipe.Item_ItemRecipe_crafted_item_idToItem,
-          };
-
-          if (nestedRecipe.ItemRecipeItem) {
-            processedItem.ItemRecipeItem = nestedRecipe.ItemRecipeItem.map(
-              (nestedItemRecipeItem) =>
-                recipeTree(nestedItemRecipeItem, processedItem.amount)
-            );
-          }
-        }
-        return processedItem;
-      });
       return {
-        ...recipe,
-        crafting_time: (recipe.crafting_time || 1) * amount,
-        Item: recipe.Item_ItemRecipe_crafted_item_idToItem,
-        ItemRecipeItem: processedItems,
+        ...item,
+        amount: amountNeeded,
+        itemRecipes: [
+          {
+            ...item.itemRecipes[0],
+            crafting_time: amountNeeded * (craftingRecipe?.crafting_time || 0),
+          },
+        ],
+        children: children.length > 0 ? children : undefined,
       };
-    };
+    }
 
+    // Loop through all items
     objects.forEach((item) => {
       if (path) {
-        materials.push(recipeTree(item, item.amount));
-      } else findBaseMaterials(item, item.amount, item.yields);
+        materials.push(calculateCraftingTree(item, item.amount));
+      } else {
+        materials.push(findBaseMaterials(item, item.amount));
+      }
     });
 
-    Log(materials)
-    Log(usedCraftingStations)
     return materials;
   };
 
@@ -668,6 +623,35 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     craftingStations,
   ]);
 
+  const handleCraftingStationChange = (_, value: string) => {
+    setCraftingStations((prevCraftingStations) => {
+      Object.keys(prevCraftingStations).forEach((category) => {
+        if (prevCraftingStations[category].some((s) => s.id === Number(value))) {
+          prevCraftingStations[category] = prevCraftingStations[category].map((s) => {
+            return {
+              ...s,
+              active: !s.active
+            }
+          });
+        }
+      })
+      return prevCraftingStations
+    })
+    setRecipes({
+      type: "CRAFTING_STATION",
+    });
+  }
+
+
+  const calculatedRecipes = useMemo(() => {
+    return getBaseMaterials(
+      viewBaseMaterials,
+      false,
+      ...recipes
+    )
+  }, [craftingStations, recipes])
+
+  // Custom Recipe Stuff
   const [createRecipe, { loading }] = useMutation(CREATE_USERRECIPE_MUTATION, {
     onError: (error) => {
       toast.error(error.message);
@@ -706,7 +690,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const onRecipeSelect = async ({ UserRecipeItemRecipe }) => {
     if (UserRecipeItemRecipe && UserRecipeItemRecipe.length > 0) {
       UserRecipeItemRecipe.forEach(async ({ item_recipe_id, amount }) => {
-        let itemfound = items.find((item) => item.id === item_recipe_id);
+        let itemfound = data.craftingItems.find((item) => item.itemRecipes[0].id === item_recipe_id);
         if (itemfound && data) {
           setRecipes({
             type: "ADD",
@@ -727,24 +711,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     }
   };
 
-  const handleCraftingStationChange = (_, value: string) => {
-    setCraftingStations((prev) => ({
-      ...prev,
-      [value === "107" || value === "607"
-        ? "mortar-chem"
-        : value === "125" || value === "600"
-          ? "forge"
-          : value === "128" || value === "601"
-            ? "cooking"
-            : "grill"
-      ]: value,
-    }))
-    setRecipes({
-      type: "CRAFTING_STATION",
-    });
-  }
-
-
 
   return (
     <div className="mx-1 flex w-full max-w-full flex-col gap-3">
@@ -764,24 +730,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             }>
               Save Recipe
             </Button>
-            <Button
-              color="warning"
-              variant="outlined"
-              disabled={loading}
-              permission="authenticated"
-              onClick={testMaterialCalculation}
-              startIcon={
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  fill="currentColor"
-                >
-                  <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
-                </svg>
-              }>
-              Test Gunpowder
-            </Button>
-
           </div>
 
           <Button title="Clear all items" color="error" variant="outlined" disabled={loading} onClick={() => setRecipes({ type: "RESET" })} startIcon={
@@ -797,47 +745,51 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             Clear
           </Button>
 
-          <ItemList
-            defaultSearch={false}
-            onSearch={(e) => setQuery(e)}
-            onSelect={(_, item) => onAdd(parseInt(item.id.toString()))}
-            options={
-              Object.entries(groupBy(itemRecipes
-                .filter((recipe) => recipe?.Item_ItemRecipe_crafted_item_idToItem.name.includes(deferredQuery.toLowerCase())), "Item_ItemRecipe_crafted_item_idToItem.category"))
-                .sort()
-                .map(([category, categoryRecipes]) => {
-                  return ({
-                    label: category,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`,
-                    value: categoryRecipes.every(({ Item_ItemRecipe_crafted_item_idToItem: { type } }) => !type)
-                      ? categoryRecipes.map(({ Item_ItemRecipe_crafted_item_idToItem: { name, image } }) => ({
-                        label: name,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
-                      }))
-                      : Object.entries(groupBy(categoryRecipes, "Item_ItemRecipe_crafted_item_idToItem.type")).sort().map(([type, typeRecipes]) => ({
-                        label: type,
-                        value: typeRecipes.map(({ Item_ItemRecipe_crafted_item_idToItem: { id, name, image } }) => ({
-                          label: name,
-                          id,
-                          icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
+          {data && (
+            <ItemList
+              defaultSearch={false}
+              onSearch={(e) => setQuery(e)}
+              onSelect={(_, item) => onAdd(parseInt(item.id.toString()))}
+              options={
+                Object.entries(
+                  groupBy(data?.craftingItems.filter((item) => item?.name.toLowerCase().includes(deferredQuery.toLowerCase()) && item.visible), "category")
+                )
+                  .sort()
+                  .map(([category, categoryRecipes]) => {
+                    return ({
+                      label: category,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`,
+                      value: categoryRecipes.every(({ type }) => !type)
+                        ? categoryRecipes
+                          .filter((item) => item?.name.toLowerCase().includes(deferredQuery.toLowerCase())).map(({ name, image }) => ({
+                            label: name,
+                            icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
+                          }))
+                        : Object.entries(groupBy(categoryRecipes, "type")).sort().map(([type, typeRecipes]) => ({
+                          label: type,
+                          value: typeRecipes.map(({ id, name, image }) => ({
+                            label: name,
+                            id,
+                            icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
+                          }))
                         }))
-                      }))
+                    })
                   })
-                })
-            }
-          />
+              }
+            />
+          )}
         </div>
+
         <div className="w-full overflow-hidden">
           <div className="flex flex-row items-stretch space-x-3">
             <ToggleButtonGroup
               orientation="horizontal"
               size="medium"
-              value={craftingStations["mortar-chem"]}
+              value={craftingStations["mortar-chem"]?.find((s) => s.active)?.id.toString()}
               exclusive
               enforce
               onChange={handleCraftingStationChange}
-              // TODO: fix to check for underlying itemrecipes too.
-              disabled={!recipes.some(({ crafting_station_id }) => crafting_station_id === 107 || crafting_station_id === 607)}
+              disabled={!recipes.some(({ itemRecipes }) => itemRecipes.some(i => i.crafting_station_id === 107 || i.crafting_station_id === 607))}
             >
               <ToggleButton value={"107"}>
                 <img
@@ -857,11 +809,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             <ToggleButtonGroup
               orientation="horizontal"
               size="medium"
-              value={craftingStations.forge}
+              value={craftingStations["forge"]?.find((s) => s.active)?.id.toString()}
               exclusive
               enforce
               onChange={handleCraftingStationChange}
-              disabled={!recipes.some(({ crafting_station_id }) => crafting_station_id === 125 || crafting_station_id === 600)}
+              disabled={!recipes.some(({ itemRecipes }) => itemRecipes.some(i => i.crafting_station_id === 125 || i.crafting_station_id === 600))}
             >
               <ToggleButton value={"125"}>
                 <img
@@ -881,11 +833,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             <ToggleButtonGroup
               orientation="horizontal"
               size="medium"
-              value={craftingStations.cooking}
+              value={craftingStations["cooking"]?.find((s) => s.active)?.id.toString()}
               exclusive
               enforce
               onChange={handleCraftingStationChange}
-              disabled={!recipes.some(({ crafting_station_id }) => crafting_station_id === 128 || crafting_station_id === 601)}
+              disabled={!recipes.some(({ itemRecipes }) => itemRecipes.some(i => i.crafting_station_id === 128 || i.crafting_station_id === 601))}
             >
               <ToggleButton value={"128"}>
                 <img
@@ -905,11 +857,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             <ToggleButtonGroup
               orientation="horizontal"
               size="medium"
-              value={craftingStations.grill}
+              value={craftingStations["grill"]?.find((s) => s.active)?.id.toString()}
               exclusive
               enforce
               onChange={handleCraftingStationChange}
-              disabled={!recipes.some(({ crafting_station_id }) => crafting_station_id === 39 || crafting_station_id === 360)}
+              disabled={!recipes.some(({ itemRecipes }) => itemRecipes.some(i => i.crafting_station_id === 39 || i.crafting_station_id === 360))}
             >
               <ToggleButton value={"39"}>
                 <img
@@ -937,27 +889,60 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
           <Table
             className="animate-fade-in !divide-opacity-50 whitespace-nowrap mt-2"
-            rows={recipes.map((recipe, i) => {
+            rows={calculatedRecipes.map((recipe) => {
+              console.log(calculatedRecipes)
+
               return {
                 ...recipe,
-                // collapseContent: (
-                //   <div className="flex flex-col items-start justify-center gap-3 divide-y divide-zinc-500 p-4">
-                //     <div className="tree">
-                //       <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
-                //         {mergeItemRecipe(viewBaseMaterials, true, items, Object.values(craftingStations).map(Number), {
-                //           ...recipe,
-                //         }).map((itemrecipe, i) => (
-                //           <TreeBranch
-                //             key={`tree-${i}`}
-                //             itemRecipe={itemrecipe as RecipeState}
-                //           />
-                //         ))}
-                //       </ul>
-                //     </div>
-                //   </div>
-                // ),
+                collapseContent: (
+                  <div className="flex flex-col items-start justify-center gap-3 divide-y divide-zinc-500 p-4">
+                    <div className="tree">
+                      <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
+                        {/* {mergeItemRecipe(
+                          viewBaseMaterials,
+                          true,
+                          {
+                            ...recipe,
+                          }).map((itemrecipe, i) => (
+                            <TreeBranch
+                              key={`tree-${i}`}
+                              item={itemrecipe}
+                            />
+                          ))} */}
+                        <TreeBranch
+                          key={`tree-recipe`}
+                          item={recipe}
+                        />
+                      </ul>
+                    </div>
+                  </div>
+                ),
               };
             })}
+            // rows={recipes.map((recipe, i) => {
+            //   return {
+            //     ...recipe,
+            //     collapseContent: (
+            //       <div className="flex flex-col items-start justify-center gap-3 divide-y divide-zinc-500 p-4">
+            //         <div className="tree">
+            //           <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
+            //             {mergeItemRecipe(
+            //               viewBaseMaterials,
+            //               true,
+            //               {
+            //                 ...recipe,
+            //               }).map((itemrecipe, i) => (
+            //                 <TreeBranch
+            //                   key={`tree-${i}`}
+            //                   item={itemrecipe}
+            //                 />
+            //               ))}
+            //           </ul>
+            //         </div>
+            //       </div>
+            //     ),
+            //   };
+            // })}
             settings={{
               columnSelector: true,
               borders: {
@@ -967,14 +952,14 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             }}
             columns={[
               {
-                field: "Item_ItemRecipe_crafted_item_idToItem",
+                field: "name",
                 header: "Name",
-                render: ({ rowIndex, value: { name, image } }) => (
+                render: ({ rowIndex, row, value }) => (
                   <Button
                     variant="icon"
                     color="error"
                     size="large"
-                    title={`Remove ${name}`}
+                    title={`Remove ${value}`}
                     onClick={() => {
                       setRecipes({
                         type: "REMOVE",
@@ -984,7 +969,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   >
                     <div className="h-8 w-8">
                       <img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${row.image}`}
                         loading="lazy"
                       />
                     </div>
@@ -996,11 +981,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 header: "Amount",
                 datatype: "number",
                 aggregate: "sum",
-                className: "text-center min-w-[16rem]",
+                className: "text-center min-w-[14rem]",
                 render: ({ rowIndex, value, row }) => (
                   <Input
                     color="primary"
-                    value={value}
+                    value={value || 0}
                     fullWidth
                     onChange={(e) => {
                       setRecipes({
@@ -1023,18 +1008,18 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                             color="secondary"
                             aria-valuetext={value}
                             disabled={value === 1}
-                            onClick={() =>
+                            onClick={() => {
                               setRecipes({
                                 type: "CHANGE_AMOUNT",
                                 payload: {
                                   index: rowIndex,
                                   amount:
-                                    value - row.yields < 1
-                                      ? row.yields
-                                      : value - row.yields,
+                                    (value || 0) - row.itemRecipes[0]?.yields < 1
+                                      ? row.itemRecipes[0]?.yields
+                                      : (value || 0) - row.itemRecipes[0]?.yields,
                                 },
                               })
-                            }
+                            }}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -1055,7 +1040,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                                 type: "CHANGE_AMOUNT",
                                 payload: {
                                   index: rowIndex,
-                                  amount: value + row.yields,
+                                  amount: (value || 0) + row.itemRecipes[0]?.yields,
                                 },
                               })
                             }
@@ -1075,64 +1060,74 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   />
                 ),
               },
-              {
-                field: "crafting_time",
-                header: "Time pr item",
-                datatype: "number",
-                aggregate: "sum",
-                className: "w-0 text-center",
-                valueFormatter: ({ row, value }) =>
-                  parseFloat(value.toString()) * row.amount,
-                render: ({ value }) => `${timeFormatL(value, true)}`,
-              },
-              ...(mergeItemRecipe(
-                viewBaseMaterials,
-                false,
-                items,
-                Object.values(craftingStations).map(Number),
-                ...recipes
-              ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
-                field: Item_ItemRecipe_crafted_item_idToItem.name,
-                header: Item_ItemRecipe_crafted_item_idToItem.name,
-                datatype: "number",
-                aggregate: "sum" as const,
-                className: "w-0 text-center",
-                // valueFormatter: ({ row, value }) => {
-                //   const itm = mergeItemRecipe(false, false, items, Object.values(craftingStations).map(Number), {
-                //     ...row,
-                //   }).filter(
-                //     (v) =>
-                //       v.Item_ItemRecipe_crafted_item_idToItem.id ===
-                //       Item_ItemRecipe_crafted_item_idToItem.id
-                //   );
-                //   return itm.length > 0 ? itm[0].amount : 0;
-                // },
-                // render: ({ row }) => {
-                //   const itm = mergeItemRecipe(false, false, items, {
-                //     ...row,
-                //   }).filter(
-                //     (v) =>
-                //       v.Item_ItemRecipe_crafted_item_idToItem.id ===
-                //       Item_ItemRecipe_crafted_item_idToItem.id
-                //   );
-                //   return (
-                //     itm.length > 0 && (
-                //       <div
-                //         className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
-                //         key={`value`}
-                //       >
-                //         <img
-                //           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm[0].Item_ItemRecipe_crafted_item_idToItem.image}`}
-                //           className="h-6 w-6"
-                //         />
-                //         <span className="text-sm text-black dark:text-white">
-                //           {formatNumber(itm[0].amount)}
-                //         </span>
-                //       </div>
-                //     )
-                //   );
-                // },
-              })) as any[]),
+              // {
+              //   field: "crafting_time",
+              //   header: "Crafting Time",
+              //   datatype: "number",
+              //   aggregate: "sum",
+              //   className: "w-0 text-center",
+              //   valueFormatter: ({ row }) =>
+              //     parseFloat(row?.itemRecipes[0].crafting_time.toString()) * row.amount,
+              //   render: ({ value }) => `${timeFormatL(value, true)}`,
+              // },
+              // ...(mergeItemRecipe(
+              //   viewBaseMaterials,
+              //   false,
+              //   // data.craftingItems,
+              //   // Object.values(craftingStations).flat().filter(d => d.active).map((d) => d.id),
+              //   ...recipes
+              // ).map(({ name, id }) => ({
+              //   field: name,
+              //   header: name,
+              //   datatype: "number",
+              //   aggregate: "sum" as const,
+              //   className: "w-0 text-center",
+              //   valueFormatter: ({ row, value }) => {
+              //     // console.log(row, value)
+              //     const itm = mergeItemRecipe(
+              //       false,
+              //       false,
+              //       // data.craftingItems,
+              //       // Object.values(craftingStations).map(Number),
+              //       {
+              //         ...row,
+              //       }).filter(
+              //         (v) =>
+              //           v.id ===
+              //           id
+              //       );
+              //     return itm.length > 0 ? itm[0].amount : 0;
+              //   },
+              //   render: ({ row }) => {
+              //     const itm = mergeItemRecipe(
+              //       false,
+              //       false,
+              //       //  data.craftingItems,
+              //       {
+              //         ...row,
+              //       }).filter(
+              //         (v) =>
+              //           v.id ===
+              //           id
+              //       );
+              //     return (
+              //       itm.length > 0 && (
+              //         <div
+              //           className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
+              //           key={`value`}
+              //         >
+              //           <img
+              //             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm[0].image}`}
+              //             className="h-6 w-6"
+              //           />
+              //           <span className="text-sm text-black dark:text-white">
+              //             {formatNumber(itm[0].amount)}
+              //           </span>
+              //         </div>
+              //       )
+              //     );
+              //   },
+              // })) as any[]),
               // OLD
               // {
               //   field: "Item_ItemRecipe_crafted_item_idToItem",
