@@ -171,6 +171,9 @@ model Item {
   torpor_duration                                 Float?           @default(0)
   damage                                          Float?           @default(0)
   blueprint                                       String?
+  crafting_speed_modifier                         Float?           @default(1)
+  resource_consumption_multiplier                 Float?           @default(1)
+  item_production_multiplier                      Float?           @default(1)
   DinoStat                                        DinoStat[]
   ItemRecipe_ItemRecipe_crafted_item_idToItem     ItemRecipe[]     @relation("ItemRecipe_crafted_item_idToItem")
   ItemRecipe_ItemRecipe_crafting_station_idToItem ItemRecipe[]     @relation("ItemRecipe_crafting_station_idToItem")

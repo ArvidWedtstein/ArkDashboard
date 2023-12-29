@@ -20,6 +20,9 @@ export const schema = gql`
     torpor_duration: Float
     damage: Float
     blueprint: String
+    crafting_speed_modifier: Float
+    resource_consumption_multiplier: Float
+    item_production_multiplier: Float
     DinoStat: [DinoStat]!
     ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
     ItemRecipe_ItemRecipe_crafting_station_idToItem: [ItemRecipe]!
@@ -66,6 +69,9 @@ export const schema = gql`
     torpor_duration: Float
     damage: Float
     blueprint: String
+    crafting_speed_modifier: Float
+    resource_consumption_multiplier: Float
+    item_production_multiplier: Float
   }
 
   input UpdateItemInput {
@@ -88,6 +94,9 @@ export const schema = gql`
     torpor_duration: Float
     damage: Float
     blueprint: String
+    crafting_speed_modifier: Float
+    resource_consumption_multiplier: Float
+    item_production_multiplier: Float
   }
 
   type Mutation {

@@ -601,7 +601,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     select?: boolean;
   }) => {
     return (
-      <TableCell header={header} size={size} variant={variant} scope="col" columnWidth={20} selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
+      <TableCell header={header} size={size} variant={variant} scope="col" columnWidth={50} selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
         {select ? (
           <div className="flex items-center">
             <input
@@ -1242,12 +1242,15 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                             })
                         )}
                     </TableRow>
-                    {/* TODO: add collapse here */}
+
                     {datarow?.collapseContent && (
-                      <TableRow className={clsx({
-                        "table-row": isRowOpen(datarow.row_id.toString()),
-                        "h-0 [&>td]:p-0": !isRowOpen(datarow.row_id.toString())
-                      })} borders={mergedSettings.borders}>
+                      <TableRow
+                        className={clsx({
+                          "table-row": isRowOpen(datarow.row_id.toString()),
+                          "h-0 [&>td]:p-0": !isRowOpen(datarow.row_id.toString())
+                        })}
+                        borders={mergedSettings.borders}
+                      >
 
                         <TableCell size={size} variant={variant} colSpan={100}>
                           <Collapse in={isRowOpen(datarow.row_id.toString())}>

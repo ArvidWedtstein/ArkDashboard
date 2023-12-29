@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ReactNode, forwardRef, isValidElement } from "react";
-import { isEmpty } from "src/lib/formatters";
+import { formatNumber, isEmpty } from "src/lib/formatters";
 
 type BadgeProps = {
   variant?: "standard" | "outlined";
@@ -79,11 +79,11 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
   }
   const sizes = {
     small: clsx({
-      "px-1 min-w-[20px] h-5": !standalone,
+      "min-w-[20px] min-h-[20px] p-0.5": !standalone,
       "px-1.5 py-0.5": standalone
     }),
     medium: clsx({
-      "px-1 min-w-[20px] h-5": !standalone,
+      "px-1 min-w-[20px] min-h-[20px]": !standalone,
       "px-2.5 py-1": standalone
     }),
     large: ``,
@@ -117,7 +117,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       : content;
 
   return (
-    <span className={clsx("inline-flex flex-shrink-0", className, {
+    <span className={clsx("", className, {
       "relative": !isEmpty(children),
       "cursor-pointer select-none": onClick
     })}
@@ -131,7 +131,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
         {max && typeof child === "number"
           ? child > max
             ? `${max}+`
-            : child
+            : formatNumber(child)
           : child}
       </span>
     </span>

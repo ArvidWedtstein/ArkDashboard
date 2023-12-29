@@ -36,6 +36,9 @@ export const TESTQUERY = gql`
       category
       image
       visible
+      crafting_speed_modifier
+      resource_consumption_multiplier
+      item_production_multiplier
       itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
         id
         crafting_station_id

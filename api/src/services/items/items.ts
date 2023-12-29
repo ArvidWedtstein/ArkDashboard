@@ -7,6 +7,7 @@ import type {
 import { db } from "src/lib/db";
 import { validate, validateWithSync } from "@redwoodjs/api";
 
+// TODO: Outsource old, unused queries
 export const craftingItems: QueryResolvers["craftingItems"] = () => {
   // Returns the items that are either used in a recipe or have a recipe or are a crafting station.
   return db.item.findMany({
