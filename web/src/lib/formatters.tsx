@@ -611,7 +611,7 @@ export const timeFormatL = (seconds, onlyLast = false) => {
   if (minutes > 0) {
     time += `${minutes}m `;
     if (onlyLast) {
-      // return time.trim().split(" ").pop();
+      return time.trim().split(" ").pop();
     }
   }
   if (sec > 0 || time === "") {

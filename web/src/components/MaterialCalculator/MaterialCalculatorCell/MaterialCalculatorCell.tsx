@@ -1,35 +1,10 @@
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
-import { FindItemsMats } from "types/graphql";
-// TODO: query Items instead?
-export const QUERY = gql`
-  query FindItemsMats {
-    itemRecipes {
-      id
-      crafting_station_id
-      crafting_time
-      yields
-      Item_ItemRecipe_crafted_item_idToItem {
-        id
-        name
-        image
-        category
-        type
-      }
-      ItemRecipeItem {
-        id
-        item_recipe_id
-        resource_item_id
-        amount
-      }
-    }
-  }
-`;
+import { FindItemsMaterials } from "types/graphql";
 
-// TODO: filter items by items that have a recipe or are used in a recipe
-export const TESTQUERY = gql`
-  query FindItemsForMaterialCalculator {
-     craftingItems {
+export const QUERY = gql`
+  query FindItemsMaterials {
+    craftingItems {
       id
       name
       type
@@ -51,44 +26,9 @@ export const TESTQUERY = gql`
           amount
         }
       }
-     }
-  }
-`
-
-// items {
-//   id
-//   name
-//   category
-//   type
-//   image
-//   itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//     id
-//     crafting_station_id
-//     yields
-//     crafting_time
-//     ItemRecipeItem {
-//       id
-//       item_recipe_id
-//       resource_item_id
-//       amount
-//     }
-//   }
-// }
-
-export const ITEMRECIPEITEMQUERY = gql`
-query FindRecipeItemsByIds($ids: [BigInt!]) {
-    itemRecipeItemsByIds(ids: $ids) {
-      id
-      item_recipe_id
-      amount
-      Item {
-        id
-        name
-        image
-      }
     }
-}
-`
+  }
+`;
 
 export const Loading = () => {
   return (
@@ -122,6 +62,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ itemRecipes }: CellSuccessProps<FindItemsMats>) => {
-  return <MaterialGrid itemRecipes={itemRecipes} />;
+export const Success = ({ craftingItems }: CellSuccessProps<FindItemsMaterials>) => {
+  return <MaterialGrid craftingItems={craftingItems} />;
 };

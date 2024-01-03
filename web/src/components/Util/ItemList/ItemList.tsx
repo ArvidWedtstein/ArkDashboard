@@ -182,6 +182,7 @@ const ItemList = ({
               debounce((e) => {
                 onSearch?.(e.target.value);
                 defaultSearch && setSearch(e.target.value.trim());
+                setOpenItemIds([])
               }, 300)(e);
             }}
           />
