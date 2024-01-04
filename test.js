@@ -24,6 +24,80 @@ var partition = function (arr, length) {
   return result;
 };
 
+let stations = [
+  {
+    __typename: "Item",
+    id: 107,
+    name: "Mortar",
+    type: "Other",
+    category: "Resource",
+    image: "gunpowder.webp",
+    visible: true,
+    crafting_speed_modifier: 1,
+    resource_consumption_multiplier: 1,
+    item_production_multiplier: 1,
+  },
+  {
+    __typename: "Item",
+    id: 607,
+    name: "Chem",
+    type: "Other",
+    category: "Resource",
+    image: "gunpowder.webp",
+    visible: true,
+    crafting_speed_modifier: 2,
+    resource_consumption_multiplier: 4,
+    item_production_multiplier: 6,
+  },
+];
+let d = {
+  __typename: "Item",
+  id: 109,
+  name: "Gunpowder",
+  type: "Other",
+  category: "Resource",
+  image: "gunpowder.webp",
+  amount: 3,
+  itemRecipes: [
+    {
+      __typename: "ItemRecipe",
+      id: 115,
+      crafting_station_id: 107,
+      crafting_time: 1,
+      yields: 1,
+      ItemRecipeItem: [
+        {
+          __typename: "ItemRecipeItem",
+          id: 206,
+          item_recipe_id: 115,
+          resource_item_id: 108,
+          amount: 1,
+        },
+        {
+          __typename: "ItemRecipeItem",
+          id: 207,
+          item_recipe_id: 115,
+          resource_item_id: 77,
+          amount: 1,
+        },
+      ],
+    },
+  ],
+  amount: 100,
+  crafting_time: 100,
+};
+let c = stations.find((f) => f.id === d.itemRecipes[0].crafting_station_id);
+console.log(`${d.name} ${d.amount}`);
+console.log(`${c.name} ${d.itemRecipes[0].yields} `);
+console.log(
+  `${
+    d.itemRecipes[0].ItemRecipeItem[0].amount *
+    d.amount *
+    (c.resource_consumption_multiplier / c.item_production_multiplier)
+  }`
+);
+
+return;
 /**
  * For extracting biomes to MapRegions table
  */
@@ -64,11 +138,11 @@ let biomes = [
 //   );
 // });
 
-require("fs").writeFile(`insert.txt`, speciesAttacks.join("\n"), (error) => {
-  if (error) {
-    throw error;
-  }
-});
+// require("fs").writeFile(`insert.txt`, speciesAttacks.join("\n"), (error) => {
+//   if (error) {
+//     throw error;
+//   }
+// });
 
 [
   "isBigDino",
