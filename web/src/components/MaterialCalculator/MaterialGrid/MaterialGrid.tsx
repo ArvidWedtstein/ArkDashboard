@@ -207,8 +207,7 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
     | "REMOVE"
     | "RESET"
     | "CHANGE_AMOUNT"
-    | "EDIT_AMOUNT"
-    | "CRAFTING_STATION";
+    | "EDIT_AMOUNT";
 
   type RecipeAction = {
     type: RecipeActionType;
@@ -286,63 +285,30 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
         });
       }
       case "CHANGE_AMOUNT": {
-        const itemIndex = payload.index;
-        console.log("CHANGE AMOUNT", payload)
+        let { index: itemIndex, amount = 0 } = payload;
+        const normalizedAmount = isNaN(amount) ? 0 : amount;
+
+
+        if (itemIndex === -1) {
+          return;
+        }
 
         // TODO: calculate yields here.
-        if (itemIndex !== -1) {
-          return state.map((item, i) => {
-            let remainder = (payload.amount || 0) % item.itemRecipes[0]?.yields;
-            return i === itemIndex ? { ...item, amount: remainder === 0 ? payload.amount : payload.amount + (item.itemRecipes[0]?.yields - remainder) } : item
-          });
-        }
-        return state;
+        return state.map((item, i) => {
+          if (i === itemIndex) {
+            const { itemRecipes } = item;
+            const yields = itemRecipes[0]?.yields || 1;
+            const remainder = normalizedAmount % yields;
+
+            const newAmount = remainder === 0 ? normalizedAmount : normalizedAmount + (yields - remainder);
+
+            return { ...item, amount: newAmount };
+          }
+          return item;
+        });
       }
       case "REMOVE": {
         return state.filter((_, i) => i !== payload.index);
-      }
-      case "CRAFTING_STATION": {
-
-        return state.map((item) => {
-          return item;
-        })
-
-        // const selectedCraftingStation = (id: number) => Object.values(craftingStations).some(c => c.some(b => b.active === true && b.id === id));
-
-        // return state.map((recipe) => {
-        //   const stateRecipe = recipe?.itemRecipes[0];
-        //   let yields = stateRecipe.yields;
-        //   let crafting_time = stateRecipe.crafting_time;
-        //   let crafting_station = recipe.crafting_station;
-
-        //   // TODO: find better solution for this. Maybe calculate inside materialcalculation function?
-        //   // ! Calculate in materialcalc function instead. To much work looping through all childs
-
-
-        //   let originalRecipe = craftingItems.find(({ id }) => id === recipe.id);
-
-        //   Object.values(craftingStations).map((stations) => {
-        //     if (stations.some(({ id }) => id === stateRecipe?.crafting_station_id)) {
-        //       const activeStation = craftingItems.find(({ id }) => id === stations?.find((s) => s.active)?.id);
-        //       crafting_station = activeStation;
-        //       yields = originalRecipe.itemRecipes[0]?.yields * activeStation.item_production_multiplier;
-        //     }
-        //   })
-
-        //   return {
-        //     ...recipe,
-        //     crafting_time: crafting_time,
-        //     crafting_station: crafting_station,
-        //     itemRecipes: recipe.itemRecipes.map((f) => {
-        //       return {
-        //         ...f,
-        //         yields: yields,
-        //         crafting_station_id: crafting_station?.id
-        //       }
-        //     }),
-        //     amount: recipe.amount % yields === 0 ? recipe.amount : recipe.amount + (yields - recipe.amount % yields)
-        //   }
-        // })
       }
       case "RESET": {
         return [];
@@ -352,43 +318,6 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
       }
     }
   };
-
-  // function updateCraftingStation(
-  //   item: ArrayElement<MaterialGridProps["craftingItems"]>,
-  // ): ArrayElement<MaterialGridProps["craftingItems"]> {
-  //   const updatedItem: ArrayElement<MaterialGridProps["craftingItems"]> = { ...item };
-
-  //   if (updatedItem.itemRecipes) {
-  //     updatedItem.itemRecipes = updatedItem.itemRecipes.map((recipe) => {
-  //       for (const stationGroup in craftingStations) {
-  //         const station = craftingStations[stationGroup].find(
-  //           (s) => s.id === recipe.crafting_station_id
-  //         );
-
-  //         if (station && !station.active) {
-  //           // Replace the crafting station only if the opposite one is active
-  //           const activeStation = craftingStations[stationGroup].find(
-  //             (s) => s.active
-  //           );
-
-  //           if (activeStation) {
-  //             recipe.crafting_station_id = activeStation.id;
-  //           }
-  //         }
-  //       }
-
-  //       return recipe;
-  //     });
-  //   }
-
-  //   if (updatedItem.children) {
-  //     updatedItem.children = updatedItem.children.map((child) =>
-  //       updateCraftingStation(child)
-  //     );
-  //   }
-
-  //   return updatedItem;
-  // }
 
   let [recipes, setRecipes] = useReducer(reducer, []);
 
@@ -457,7 +386,7 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
 
     const calculateRecipe = (
       item: ArrayElement<MaterialGridProps["craftingItems"]>,
-      amount: number,
+      amount: number = 0,
     ): RecipeState => {
       if (!item?.itemRecipes.length || !item.itemRecipes[0]) {
         console.warn(`${item.name} has no recipe`)
@@ -495,22 +424,16 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
       ItemRecipeItem.forEach((itemRecipeItem) => {
         let resourceItem = craftingItems.find((ir) => ir.id === itemRecipeItem.resource_item_id);
         let resourceItemRecipe = resourceItem?.itemRecipes?.[0];
-        let currentYields = resourceItemRecipe?.yields || 1
+
         if (!resourceItem) {
           return console.warn(`Item was not found`);
         }
 
-
-        const modifiedAmount = (itemRecipeItem.amount * amount * item_production_multiplier) / (yields * resource_consumption_multiplier)
-        const modifiedCraftingTime = (crafting_time / crafting_speed_modifier) * (itemRecipeItem.amount / currentYields) * amount;
-        // const count = (itemRecipeItem.amount * amount) / yields;
+        const modifiedAmount = itemRecipeItem.amount * amount * (resource_consumption_multiplier / item_production_multiplier) / yields;
 
         if (resourceItemRecipe && resourceItemRecipe.ItemRecipeItem.length > 0) {
-          // const childNode = calculateRecipe(resourceItem, itemRecipeItem.amount * amount);
-          const childNode = calculateRecipe(resourceItem, modifiedAmount / resource_consumption_multiplier);
+          const childNode = calculateRecipe(resourceItem, modifiedAmount);
           children.push(childNode);
-
-
         } else {
           children.push({
             ...resourceItem,
@@ -518,26 +441,20 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
             crafting_time: 0,
             children: [],
           })
-
         }
       });
 
       return {
         ...item,
         amount,
-        crafting_time: amount * crafting_time,
+        crafting_time: amount * (crafting_time / crafting_speed_modifier),
         children: children.length > 0 ? children : [],
         itemRecipes: item.itemRecipes.map((d) => ({
           ...d,
           crafting_station_id: crafting_station.id
         })),
-        crafting_station,
       }
     }
-
-
-
-
 
     // OLD
     // const findBaseMaterials = (
@@ -611,7 +528,6 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
 
     objects.forEach((item) => {
       const itemMaterials = calculateRecipe(item, item.amount);
-      console.log(itemMaterials)
       materials.push({
         ...itemMaterials,
         base_materials: getBaseMaterial(itemMaterials),
@@ -629,36 +545,27 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
     return materials;
   }, [craftingStations, recipes, viewBaseMaterials])
 
-  const getUniqueEntries = (items: RecipeState[], keyPath: string): (string | number)[] => {
-    const uniqueValues: Set<number | string> = new Set();
+  const getUniqueCraftingStationIds = (items: RecipeState[]): ArrayElement<RecipeState["itemRecipes"]>["crafting_station_id"][] => {
+    const craftingStationIds: Set<ArrayElement<RecipeState["itemRecipes"]>["crafting_station_id"]> = new Set();
 
-    const traverse = (item: RecipeState, currentKeyPath: string) => {
-      const keys = currentKeyPath.split(".");
-      let currentItem: any = item;
+    const processItem = (item: RecipeState) => {
+      item.itemRecipes.forEach((recipe) => {
+        craftingStationIds.add(recipe.crafting_station_id);
+        recipe.ItemRecipeItem.forEach((recipeItem) => {
+          craftingStationIds.add(recipeItem.resource_item_id);
+        });
+      });
 
-      for (const key of keys) {
-        currentItem = currentItem[key];
-        if (!currentItem) {
-          break;
-        }
-      }
+      item.children.forEach(processItem);
+    };
 
-      if (currentItem) {
-        uniqueValues.add(currentItem)
-      }
+    items.forEach(processItem);
 
-      if (item.children && item.children.length > 0) {
-        item.children.forEach((child) => traverse(child, currentKeyPath));
-      }
-    }
-
-    items.forEach((item) => traverse(item, keyPath));
-    return Array.from(uniqueValues);
-  }
+    return Array.from(craftingStationIds);
+  };
 
   const handleCraftingStationChange = (_, value: string) => {
     setCraftingStations((prevCraftingStations) => {
-
       // Toggle Active Crafting Station
       Object.keys(prevCraftingStations).forEach((category) => {
         if (prevCraftingStations[category].some((s) => s.id === Number(value))) {
@@ -670,11 +577,8 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
           });
         }
       })
-      return prevCraftingStations
-    });
-
-    setRecipes({
-      type: "CRAFTING_STATION",
+      return Object.entries(prevCraftingStations)
+        .reduce((r, [k, v]) => ({ ...r, [k]: v }), {}) as typeof prevCraftingStations
     });
   }
 
@@ -839,7 +743,7 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                   enforce
                   value={stations.find(({ active }) => active)?.id.toString()}
                   onChange={handleCraftingStationChange}
-                  disabled={!getUniqueEntries(calculatedRecipes, "crafting_station.id").some((c) => stations.some((cr) => cr.id === c))}
+                  disabled={!getUniqueCraftingStationIds(calculatedRecipes).some((c) => stations.some((cr) => cr.id === c))}
                 >
                   {stations.map((station) => {
                     const stationItem = craftingItems.find(({ id }) => id === station.id);
@@ -926,7 +830,7 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                 className: "text-center min-w-[14rem]",
                 render: ({ rowIndex, value, row }) => (
                   <Input
-                    margin="none"
+                    margin="none" // TODO: optimize. is low key slow
                     color="DEFAULT"
                     value={value || 0}
                     fullWidth
@@ -944,6 +848,8 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                     }}
                     InputProps={{
                       className: "w-fit",
+                      max: 1000000,
+                      min: 0,
                       endAdornment: (
                         <Fragment>
                           <Button
