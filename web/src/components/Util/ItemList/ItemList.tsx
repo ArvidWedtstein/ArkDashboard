@@ -24,7 +24,7 @@ interface ItemListProps {
   onCheck?: (event: React.ChangeEvent<HTMLInputElement>, item: Item) => void;
   className?: string;
 }
-// TODO: optimize or remove
+// TODO: optimize to show actual item when searching
 const ItemList = ({
   options,
   onSearch,

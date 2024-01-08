@@ -225,6 +225,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       pageSizeOptions: [10, 25, 50],
     },
   };
+
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const mergedSettings = { ...defaultSettings, ...settings };
@@ -589,20 +590,32 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     );
   };
 
-  const tableSelect = ({
-    header = false,
-    datarow,
-    rowIndex,
-    select = false,
-  }: {
+  type TableExtraColumn = {
     header?: boolean;
     datarow?: TableDataRow;
     rowIndex?: number;
-    select?: boolean;
-  }) => {
+    type: 'Select' | 'Collapse'
+  }
+  const tableExtraColumn = ({
+    header = false,
+    datarow,
+    rowIndex,
+    type = 'Select'
+  }: TableExtraColumn) => {
     return (
-      <TableCell header={header} size={size} variant={variant} scope="col" columnWidth={50} selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
-        {select ? (
+      <TableCell
+        header={header}
+        size={size}
+        variant={variant}
+        scope="col"
+        columnWidth={50}
+        style={{
+          width: type === 'Collapse' ? '1%' : 'auto'
+        }}
+        selected={isSelected(datarow?.row_id || "")}
+        aria-rowindex={rowIndex}
+      >
+        {type === 'Select' ? (
           <div className="flex items-center">
             <input
               id={header ? "checkbox-all-select" : datarow.row_id}
@@ -626,7 +639,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           </div>
         ) : (
           !header &&
-          datarow.collapseContent && (
+          type === 'Collapse' && (
             <Button color="secondary" onClick={() => handleRowCollapse(datarow.row_id)} variant="icon" size="small">
               {isRowOpen(datarow.row_id) ? (
                 <svg
@@ -1180,9 +1193,11 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             <thead className={classes.tableHead}>
               <TableRow borders={mergedSettings.borders}>
                 {dataRows.some((row) => row.collapseContent) &&
-                  tableSelect({ header: true, rowIndex: -1, select: false, })}
+                  tableExtraColumn({ header: true, rowIndex: -1, type: 'Collapse' })}
+
                 {checkSelect &&
-                  tableSelect({ header: true, rowIndex: -1, select: checkSelect })}
+                  tableExtraColumn({ header: true, rowIndex: -1, type: 'Select' })}
+
                 {columnSettings
                   ?.filter((col) => !col.hidden)
                   .map(({ ...other }, index) => {
@@ -1206,13 +1221,13 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   <Fragment>
                     <TableRow className="fadetransition" borders={mergedSettings.borders}>
                       {dataRows.some((row) => row.collapseContent) &&
-                        tableSelect({
+                        tableExtraColumn({
                           datarow,
                           rowIndex: i,
-                          select: false,
+                          type: 'Collapse'
                         })}
                       {checkSelect &&
-                        tableSelect({ datarow, rowIndex: i, select: true })}
+                        tableExtraColumn({ datarow, rowIndex: i, type: 'Select' })}
                       {columnSettings &&
                         columnSettings.map(
                           (
@@ -1315,44 +1330,6 @@ const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) 
     <Component className={classes} ref={ref} style={{ width: columnWidth, maxWidth: columnWidth }} {...other}>
       {children}
     </Component>
-    // <Component
-    //   className={classes}
-    //   ref={cellRef}
-    //   style={{ width: columnWidth }}
-    //   role={header ? 'columnheader' : 'cell'}
-    // // onMouseMove={(e) => {
-    // //   if (mousedown) {
-    // //     handleResize(e, field)
-    // //   }
-    // // }}
-    // // onMouseUp={(e) => {
-    // //   setmousedown(false)
-    // // }}
-    // // onMouseLeave={(e) => {
-    // //   setmousedown(false)
-    // // }}
-    // // onMouseOut={(e) => {
-    // //   setmousedown(false)
-    // // }}
-    // >
-    //   <div {...other} ref={ref}>
-    //     {children}
-    //   </div>
-    //   {header && (
-    //     <div
-    //       onMouseDown={(e) => {
-    //         e.persist();
-    //         setmousedown(true)
-    //         handleResize(e, field)
-    //       }}
-    //       className="opacity-100 w-1 cursor-col-resize top-0 h-full absolute z-50 flex flex-col justify-center text-red-500 touch-none -right-3 group-hover:w-auto"
-    //     >
-    //       <svg className="pointer-events-none w-4 h-4 fill-current inline-block shrink-0 transition-colors duration-200 select-none text-inherit">
-    //         <path d="M0 19V5h2v14z" />
-    //       </svg>
-    //     </div>
-    //   )}
-    // </Component>
   )
 })
 

@@ -29,6 +29,7 @@ import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButto
 import Badge from "src/components/Util/Badge/Badge";
 import { routes } from "@redwoodjs/router";
 import Toast from "src/components/Util/Toast/Toast";
+import Datagrid, { GridColumnDef, GridValueGetterParams } from "src/components/Util/Datagrid/Datagrid";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -456,76 +457,7 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
       }
     }
 
-    // OLD
-    // const findBaseMaterials = (
-    //   item: ItemRecipe,
-    //   amount: number,
-    //   yields: number = 1
-    // ) => {
-    //   // If has no crafting recipe, return
-    //   if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
-    //     return;
-    //   }
-
-    //   item?.ItemRecipeItem.map((recipeItem) => {
-    //     let newRecipe = items.find(
-    //       (recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeItem.Item.id
-    //     );
-    //     let craftedItemAmount = recipeItem.amount;
-
-    //     if (!usedCraftingStations.some((c) => c === newRecipe?.crafting_station_id)) {
-    //       usedCraftingStations.push(newRecipe.crafting_station_id)
-    //     }
-
-    //     if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !recipeItem.Item) {
-    //       const materialId = newRecipe
-    //         ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
-    //         : recipeItem.Item.id;
-
-    //       let crafting_time = newRecipe?.crafting_time || 0
-
-    //       // TODO: remove this hardcode and add as modifier to craftingstation in db instead.
-    //       if (newRecipe.crafting_station_id === 107 && crafting_stations.some(c => c === 607)) {
-    //         crafting_time /= 2
-    //       }
-
-    //       if (newRecipe.crafting_station_id === 125 && crafting_stations.some(c => c === 600)) {
-    //         crafting_time /= 20;
-    //       }
-
-    //       // Basically a check for if material already exists
-    //       let material = materials.find(
-    //         (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
-    //       );
-
-    //       const count = (craftedItemAmount * amount) / yields;
-
-
-    //       Log(newRecipe, material, amount, count)
-    //       if (material) {
-    //         // TODO: recalculate
-    //         material.amount += count;
-    //         material.crafting_time += count * (newRecipe?.crafting_time || 1);
-    //       } else {
-    //         material = {
-    //           ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: recipeItem.Item }),
-    //           amount: count,
-    //           crafting_time: count * crafting_time,
-    //         };
-    //         materials.push(material);
-    //       }
-
-    //     } else if (newRecipe) {
-    //       // Dig down deeper
-    //       findBaseMaterials(newRecipe, craftedItemAmount * amount, newRecipe.yields);
-    //     }
-    //   })
-    // };
-
-
     // Loop through all items
-
-
     objects.forEach((item) => {
       const itemMaterials = calculateRecipe(item, item.amount);
       materials.push({
@@ -663,6 +595,24 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
   };
 
 
+  const columns: GridColumnDef[] = [
+    {
+      field: 'name',
+      headerName: 'Name'
+    },
+    {
+      field: 'id',
+      headerName: 'ID',
+    },
+    {
+      field: 'IDName',
+      headerName: 'd',
+      valueGetter(params: GridValueGetterParams) {
+        return `${params.row["name"]} ${params.row["id"]}`
+      },
+    }
+  ]
+
   return (
     <div className="mx-1 flex w-full max-w-full flex-col gap-3">
       <UserRecipesCell onSelect={onRecipeSelect} />
@@ -766,8 +716,12 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                 <span>Base Materials</span>
               </ToggleButton>
             </div>
-
           </div>
+
+          <Datagrid
+            columns={columns}
+            rows={calculatedRecipes}
+          />
 
           <Table
             className="animate-fade-in !divide-opacity-50 whitespace-nowrap mt-2"
@@ -828,9 +782,9 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                 datatype: "number",
                 aggregate: "sum",
                 className: "text-center min-w-[14rem]",
-                render: ({ rowIndex, value, row }) => (
+                render: ({ rowIndex, value }) => (
                   <Input
-                    margin="none" // TODO: optimize. is low key slow
+                    margin="none"
                     color="DEFAULT"
                     value={value || 0}
                     fullWidth
@@ -857,26 +811,10 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                             color="secondary"
                             aria-valuetext={value}
                             disabled={value === 1}
-                            onClick={() => {
-                              // TODO: remove yields here.
-                              // setRecipes({
-                              //   type: "CHANGE_AMOUNT",
-                              //   payload: {
-                              //     index: rowIndex,
-                              //     amount:
-                              //       (value || 0) - row.itemRecipes[0]?.yields < 1
-                              //         ? row.itemRecipes[0]?.yields
-                              //         : (value || 0) - row.itemRecipes[0]?.yields,
-                              //   },
-                              // })
-                              setRecipes({
-                                type: "EDIT_AMOUNT",
-                                payload: {
-                                  index: rowIndex,
-                                  amount: value - 1,
-                                },
-                              })
-                            }}
+                            onClick={() => setRecipes({
+                              type: "EDIT_AMOUNT",
+                              payload: { index: rowIndex, amount: value - 1 }
+                            })}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -892,22 +830,13 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                             variant="icon"
                             color="secondary"
                             disabled={value >= 10000}
-                            onClick={() =>
-                              // setRecipes({
-                              //   type: "CHANGE_AMOUNT",
-                              //   payload: {
-                              //     index: rowIndex,
-                              //     amount: (value || 0) + row.itemRecipes[0]?.yields,
-                              //   },
-                              // })
-                              setRecipes({
-                                type: "EDIT_AMOUNT",
-                                payload: {
-                                  index: rowIndex,
-                                  amount: value + 1,
-                                },
-                              })
-                            }
+                            onClick={() => setRecipes({
+                              type: "EDIT_AMOUNT",
+                              payload: {
+                                index: rowIndex,
+                                amount: value + 1,
+                              },
+                            })}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
