@@ -732,7 +732,7 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
               </ToggleButton>
             </div>
           </div>
-
+          {/* TODO: implement datagrid instead? */}
           <Table
             className="animate-fade-in !divide-opacity-50 whitespace-nowrap mt-2"
             rows={calculatedRecipes.map((recipe) => {
