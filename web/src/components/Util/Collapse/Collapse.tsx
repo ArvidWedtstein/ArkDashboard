@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { CSSProperties, ReactNode, forwardRef, useEffect, useMemo, useRef } from "react";
+import { CSSProperties, ElementType, ReactNode, forwardRef, useEffect, useMemo, useRef } from "react";
 import { Transition } from 'react-transition-group'
 
 type CollapseProps = {
@@ -14,7 +14,9 @@ type CollapseProps = {
   collapsedSize?: number
   orientation?: 'horizontal' | 'vertical'
   style?: CSSProperties
-  timeout?: number | "auto"
+  className?: string;
+  timeout?: number | "auto";
+  component?: ElementType;
 }
 
 const Collapse = forwardRef((props: CollapseProps, ref) => {
@@ -30,7 +32,9 @@ const Collapse = forwardRef((props: CollapseProps, ref) => {
     collapsedSize: collapsedSizeProp = 0,
     orientation = 'vertical',
     style,
+    className,
     timeout = "auto",
+    component: Root = "div",
     ...other
   } = props
 
@@ -148,6 +152,7 @@ const Collapse = forwardRef((props: CollapseProps, ref) => {
     }
   };
 
+
   return (
     <Transition
       in={inProp}
@@ -163,9 +168,8 @@ const Collapse = forwardRef((props: CollapseProps, ref) => {
       {...other}
     >
       {(state, childProps) => (
-        <div
-          aria-label="CollapseRoot"
-          className={clsx("h-0 overflow-hidden transition-all", {
+        <Root
+          className={clsx("h-0 overflow-hidden transition-all", className, {
             "w-0 h-auto": orientation === 'horizontal',
             "h-auto overflow-visible": state === 'entered',
             "w-auto": state === 'entered' && orientation === 'horizontal',
@@ -179,7 +183,6 @@ const Collapse = forwardRef((props: CollapseProps, ref) => {
           {...childProps}
         >
           <div
-            aria-label="CollapseWrapper"
             className={clsx("flex w-full", {
               "w-auto h-full": orientation === 'horizontal'
             })}
@@ -194,7 +197,7 @@ const Collapse = forwardRef((props: CollapseProps, ref) => {
               {children}
             </div>
           </div>
-        </div>
+        </Root>
       )}
     </Transition>
   )

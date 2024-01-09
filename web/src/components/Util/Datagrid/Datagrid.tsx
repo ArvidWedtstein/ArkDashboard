@@ -192,7 +192,7 @@ const Datagrid = (props: DataGridProps) => {
 
   const handleMouseDown = (e: React.MouseEvent, field) => {
     setResizingColumn(field);
-    setPageX(e.clientX);
+    setPageX(e.pageX);
   }
 
   const handleMouseUp = () => {

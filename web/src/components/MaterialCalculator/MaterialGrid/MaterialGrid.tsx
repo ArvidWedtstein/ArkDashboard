@@ -22,14 +22,14 @@ import { useAuth } from "src/auth";
 import UserRecipesCell, {
   QUERY as USERRECIPEQUERY,
 } from "src/components/UserRecipe/UserRecipesCell";
-import ItemList from "src/components/Util/ItemList/ItemList";
 import Button from "src/components/Util/Button/Button";
 import { Input } from "src/components/Util/Input/Input";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 import Badge from "src/components/Util/Badge/Badge";
 import { routes } from "@redwoodjs/router";
 import Toast from "src/components/Util/Toast/Toast";
-import Datagrid, { GridColumnDef, GridValueGetterParams } from "src/components/Util/Datagrid/Datagrid";
+import { Card } from "src/components/Util/Card/Card";
+import TreeView from "src/components/Util/TreeView/TreeView";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -594,25 +594,6 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
     });
   };
 
-
-  const columns: GridColumnDef[] = [
-    {
-      field: 'name',
-      headerName: 'Name'
-    },
-    {
-      field: 'id',
-      headerName: 'ID',
-    },
-    {
-      field: 'IDName',
-      headerName: 'd',
-      valueGetter(params: GridValueGetterParams) {
-        return `${params.row["name"]} ${params.row["id"]}`
-      },
-    }
-  ]
-
   return (
     <div className="mx-1 flex w-full max-w-full flex-col gap-3">
       <UserRecipesCell onSelect={onRecipeSelect} />
@@ -644,20 +625,46 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
             Clear
           </Button>
 
-          <ItemList
-            defaultSearch={false}
-            onSearch={(e) => setQuery(e)}
-            onSelect={(_, item) => onAdd(parseInt(item.id.toString()))}
-            options={
-              Object.entries(
+          <Card variant="outlined" className="p-2 max-w-sm">
+            <Input
+              margin="none"
+              size="small"
+              className="mb-2"
+              type="search"
+              placeholder="Search"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
+              InputProps={{
+                startAdornment: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                    className="w-4 fill-current"
+                  >
+                    <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+                  </svg>
+                ),
+                endAdornment: (query != "" && query.length > 0) && (
+                  <Button variant="icon" color="DEFAULT" size="small" onClick={() => setQuery("")}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-4 fill-current">
+                      <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                    </svg>
+                  </Button>
+                )
+              }}
+            />
+            <TreeView
+              options={Object.entries(
                 groupBy(craftingItems.filter((item) => item?.name.toLowerCase().includes(deferredQuery.toLowerCase()) && item.visible && item.itemRecipes.length > 0), "category")
               )
                 .sort()
                 .map(([category, categoryRecipes]) => {
-                  return ({
+                  return {
                     label: category,
                     icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`,
-                    value: categoryRecipes.every(({ type }) => !type)
+                    children: categoryRecipes.every(({ type }) => !type) || categoryRecipes.length < 5
                       ? categoryRecipes
                         .filter((item) => item?.name.toLowerCase().includes(deferredQuery.toLowerCase()))
                         .map(({ id, name, image }) => ({
@@ -667,18 +674,26 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
                         }))
                       : Object.entries(groupBy(categoryRecipes, "type")).sort().map(([type, typeRecipes]) => ({
                         label: type,
-                        value: typeRecipes
-                          // .filter((item) => item?.name.toLowerCase().includes(deferredQuery.toLowerCase()))
+                        children: typeRecipes
+                          .filter((item) => item?.name.toLowerCase().includes(deferredQuery.toLowerCase()))
                           .map(({ id, name, image }) => ({
                             label: name,
                             id,
                             icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
                           }))
                       }))
-                  })
+                  }
                 })
-            }
-          />
+              }
+              getOptionLabel={(opt) => opt.label}
+              getOptionIcon={(opt) => opt.icon}
+              getOptionCaption={(opt, level) => opt?.children && level > 0 ? formatNumber(opt?.children?.length) : ""}
+              onOptionSelect={(opt, _, final) => {
+                if (!final) return;
+                onAdd(opt["id"])
+              }}
+            />
+          </Card>
         </div>
 
         <div className="w-full overflow-hidden">
@@ -717,11 +732,6 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
               </ToggleButton>
             </div>
           </div>
-
-          <Datagrid
-            columns={columns}
-            rows={calculatedRecipes}
-          />
 
           <Table
             className="animate-fade-in !divide-opacity-50 whitespace-nowrap mt-2"

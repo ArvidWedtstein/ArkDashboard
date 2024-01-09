@@ -1,10 +1,10 @@
-import { Link, routes } from "@redwoodjs/router";
+import { routes } from "@redwoodjs/router";
 import { useMemo, useState } from "react";
 import { Card, CardActionArea, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import ItemList from "src/components/Util/ItemList/ItemList";
 import MapComp from "src/components/Util/Map/Map";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
+import TreeView from "src/components/Util/TreeView/TreeView";
 import { capitalizeSentence, groupBy, timeTag } from "src/lib/formatters";
 
 import type { FindMapById } from "types/graphql";
@@ -336,85 +336,144 @@ const Map = ({ map }: Props) => {
               </p>
             </div>
           </div>
-          <div className="grid grid-flow-row gap-3 grid-cols-1 md:grid-cols-2">
-            <MapComp
-              interactive={true}
-              disable_sub_map={!(map?.other_Map && map.other_Map.length > 0)}
-              className="col-span-1 w-fit"
-              map_id={map.parent_map_id ? map.parent_map_id : map.id}
-              submap_id={map?.other_Map ? map.other_Map[realm]?.id : null}
-              disable_map={true}
-              size={{ width: 500, height: 500 }}
-              pos={Object.values(
-                types
-                  .filter((f) =>
-                    selectedTypes.find((v) => v === f.value || v === f.label)
-                      ? true
-                      : false
-                  )
-                  .flatMap((f) =>
-                    f.items.map((entry) => ({
-                      ...entry,
-                      lat: entry.latitude,
-                      lon: entry.longitude,
-                      color: `${f.color}${checkedItems.includes(
-                        `${entry.type}|${entry.latitude}-${entry.longitude}`
-                      )
-                        ? "1A"
-                        : "FF"
-                        }`,
-                      image: entry.item_id !== null ? f.image : null,
-                    }))
-                  )
-              )}
-              onSubMapChange={(id) => {
-                setRealm(
-                  map.other_Map
-                    ? map.other_Map.findIndex((m) => m.id == id)
-                    : null
-                );
-                setSelectedTypes([]);
-              }}
-              onPosClick={(e) => {
-                setNoterun((prevState) => {
-                  if (prevState.includes(e.node_index)) {
-                    return prevState.filter((p) => p !== e.node_index);
-                  }
-                  return prevState;
-                });
-              }}
-              path={{
-                color: "#0000ff",
-                coords: noterun
-                  .map((b) => {
-                    const mapData = map.other_Map ? map.other_Map[realm] : map;
-                    if (mapData?.MapResource.filter(r => r.type === 'note') && mapData?.MapResource.filter(r => r.type === 'note').length > 0) {
-                      let note = (mapData?.MapResource.filter(r => r.type === 'note')).find(
-                        (j) => j.note_index === b
-                      );
+          <div className="relative grid grid-flow-row gap-3 grid-cols-1 md:grid-cols-2">
+            <div className="relative flex space-x-2 overflow-y-hidden max-h-full h-full">
+              <MapComp
+                interactive={true}
+                disable_sub_map={!(map?.other_Map && map.other_Map.length > 0)}
+                className="col-span-1 w-fit"
+                map_id={map.parent_map_id ? map.parent_map_id : map.id}
+                submap_id={map?.other_Map ? map.other_Map[realm]?.id : null}
+                disable_map={true}
+                size={{ width: 500, height: 500 }}
+                pos={Object.values(
+                  types
+                    .filter((f) =>
+                      selectedTypes.find((v) => v === f.value || v === f.label)
+                        ? true
+                        : false
+                    )
+                    .flatMap((f) =>
+                      f.items.map((entry) => ({
+                        ...entry,
+                        lat: entry.latitude,
+                        lon: entry.longitude,
+                        color: `${f.color}${checkedItems.includes(
+                          `${entry.type}|${entry.latitude}-${entry.longitude}`
+                        )
+                          ? "1A"
+                          : "FF"
+                          }`,
+                        image: entry.item_id !== null ? f.image : null,
+                      }))
+                    )
+                )}
+                onSubMapChange={(id) => {
+                  setRealm(
+                    map.other_Map
+                      ? map.other_Map.findIndex((m) => m.id == id)
+                      : null
+                  );
+                  setSelectedTypes([]);
+                }}
+                onPosClick={(e) => {
+                  setNoterun((prevState) => {
+                    if (prevState.includes(e.node_index)) {
+                      return prevState.filter((p) => p !== e.node_index);
+                    }
+                    return prevState;
+                  });
+                }}
+                path={{
+                  color: "#0000ff",
+                  coords: noterun
+                    .map((b) => {
+                      const mapData = map.other_Map ? map.other_Map[realm] : map;
+                      if (mapData?.MapResource.filter(r => r.type === 'note') && mapData?.MapResource.filter(r => r.type === 'note').length > 0) {
+                        let note = (mapData?.MapResource.filter(r => r.type === 'note')).find(
+                          (j) => j.note_index === b
+                        );
 
-                      if (note) {
+                        if (note) {
+                          return {
+                            lat: note?.latitude,
+                            lon: note.longitude,
+                          };
+                        }
+
                         return {
-                          lat: note?.latitude,
-                          lon: note.longitude,
+                          lat: -1,
+                          lon: -1,
                         };
                       }
+                    })
+                    ?.filter((c) => c?.lat !== -1 && c?.lon !== -1),
+                }}
+              />
+              <Card variant="outlined" className="relative p-2 w-full !overflow-y-scroll min-h-full max-h-full h-96">
+                <TreeView
+                  className="relative"
+                  // onCheck={(e, d) => {
+                  //   setCheckedItems((prev) => {
+                  //     return e.target.checked
+                  //       ? [...prev, d.id.toString()]
+                  //       : prev.filter((p) => p !== d.id.toString());
+                  //   });
+                  // }}
+                  onOptionSelect={(opt) => {
+                    let c: SVGCircleElement = document.getElementById(
+                      `map-pos-${opt["lat"]}-${opt["lon"]}`
+                    ) as unknown as SVGCircleElement;
+                    if (c != null && !checkedItems.includes(opt["id"].toString())) {
+                      const classNames = [
+                        "outline",
+                        "outline-offset-4",
+                        "outline-red-500",
+                        "animate-pulse",
+                      ];
 
-                      return {
-                        lat: -1,
-                        lon: -1,
-                      };
+                      classNames.forEach((className) =>
+                        c.classList.toggle(className)
+                      );
+                      setTimeout(() => {
+                        classNames.forEach((className) =>
+                          c.classList.toggle(className)
+                        );
+                      }, 3000);
                     }
-                  })
-                  ?.filter((c) => c?.lat !== -1 && c?.lon !== -1),
-              }}
-            />
+                  }}
+                  options={Object.entries(
+                    groupBy(
+                      types
+                        .filter((f) =>
+                          selectedTypes.find((v) => v === f.value || v === f.label)
+                            ? true
+                            : false
+                        )
+                        .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
+                      "label"
+                    )
+                  ).map(([k, v]) => ({
+                    label: k,
+                    children: v.map((i) => ({
+                      label: `${i.latitude.toFixed(1)}, ${i.longitude.toFixed(1)}`,
+                      id: `${i.type}|${i.latitude}-${i.longitude}`,
+                      checked: checkedItems.includes(
+                        `${i.type}|${i.latitude}-${i.longitude}`
+                      ),
+                      lat: i.latitude,
+                      lon: i.longitude,
+                    })),
+                  }))}
+                  getOptionLabel={(opt) => opt.label}
+                />
+              </Card>
+            </div>
             <div className="flex flex-col">
               <CheckboxGroup
                 size="medium"
                 options={types}
                 onChange={(val, values) => {
-                  console.log("dd", val, values)
                   setSelectedTypes(
                     values.filter((v) => values.some((h) => h === v))
                   );
@@ -500,60 +559,6 @@ const Map = ({ map }: Props) => {
                 </Card>
               </div>
             </div>
-            <ItemList
-              onSelect={(_, item) => {
-                let c: SVGCircleElement = document.getElementById(
-                  `map-pos-${item.lat}-${item.lon}`
-                ) as unknown as SVGCircleElement;
-                if (c != null && !checkedItems.includes(item.id.toString())) {
-                  const classNames = [
-                    "outline",
-                    "outline-offset-4",
-                    "outline-red-500",
-                    "animate-pulse",
-                  ];
-
-                  classNames.forEach((className) =>
-                    c.classList.toggle(className)
-                  );
-                  setTimeout(() => {
-                    classNames.forEach((className) =>
-                      c.classList.toggle(className)
-                    );
-                  }, 3000);
-                }
-              }}
-              onCheck={(e, d) => {
-                setCheckedItems((prev) => {
-                  return e.target.checked
-                    ? [...prev, d.id.toString()]
-                    : prev.filter((p) => p !== d.id.toString());
-                });
-              }}
-              options={Object.entries(
-                groupBy(
-                  types
-                    .filter((f) =>
-                      selectedTypes.find((v) => v === f.value || v === f.label)
-                        ? true
-                        : false
-                    )
-                    .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
-                  "label"
-                )
-              ).map(([k, v]) => ({
-                label: k,
-                value: v.map((i) => ({
-                  label: `${i.latitude.toFixed(1)}, ${i.longitude.toFixed(1)}`,
-                  id: `${i.type}|${i.latitude}-${i.longitude}`,
-                  checked: checkedItems.includes(
-                    `${i.type}|${i.latitude}-${i.longitude}`
-                  ),
-                  lat: i.latitude,
-                  lon: i.longitude,
-                })),
-              }))}
-            />
           </div>
         </div>
       </div>

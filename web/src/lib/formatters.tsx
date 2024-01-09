@@ -1604,7 +1604,7 @@ export const HslToHex = (h: number, s: number, l: number): string => {
  * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
  */
 
-export const groupBy = <T extends {}>(
+export const groupBy = <T extends Record<string, any>>(
   array: T[],
   key: keyof T | string,
 ): { [groupKey: string]: T[] } => {
@@ -1624,43 +1624,6 @@ export const groupBy = <T extends {}>(
     return acc;
   }, {});
 };
-
-type NestedKey<T> = string | (string | number)[];
-
-/**
- *
- * @param obj
- * @param nestedKey
- * @returns
- * @example
- * const obj = {
- * a: {
- *  b: {
- *   c: 1,
- * },
- * },
- * };
- * getValueByNestedKey(obj, "a.b.c"); // 1
- * getValueByNestedKey(obj, ["a", "b", "c"]); // 1
- * getValueByNestedKey(obj, "a.b.d"); // undefined
- */
-// export const getValueByNestedKey = <T extends object>(
-//   obj: T,
-//   nestedKey: NestedKey<T>
-// ): unknown => {
-//   const keys = Array.isArray(nestedKey) ? nestedKey : nestedKey.split(".");
-//   let value: unknown = obj;
-
-//   for (const key of keys) {
-//     if (value && typeof value === "object" && key in value) {
-//       value = (value as Record<string, unknown>)[key];
-//     } else {
-//       return undefined;
-//     }
-//   }
-
-//   return value;
-// };
 
 /**
  * @description debounce function for search fields

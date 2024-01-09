@@ -237,6 +237,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     []
   );
 
+  // TODO: bug bug where row stays open after removed
   const [collapsedRows, setCollapsedRows] = useState<TableDataRow["row_id"][]>(
     []
   );

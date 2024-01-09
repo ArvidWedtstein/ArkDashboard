@@ -4,7 +4,6 @@ import { debounce, generateUniqueId } from "src/lib/formatters";
 import { Input } from "../Input/Input";
 import Badge from "../Badge/Badge";
 import Button from "../Button/Button";
-
 interface Item {
   id?: string | number;
   label: string;
@@ -200,90 +199,3 @@ const ItemList = ({
 };
 
 export default ItemList;
-
-
-{/* <List
-            style={{
-              maxHeight: 300,
-              overflow: 'auto'
-            }}
-            className="p-0 bg-neutral-800 divide-y divide-zinc-500"
-          >
-            {Object.entries(groupBy(itemRecipes, "Item_ItemRecipe_crafted_item_idToItem.category")).sort().map(([category, categoryRecipes]) => {
-              return (
-                <Fragment>
-                  <ListItem
-                    className="uppercase bg-neutral-800 sticky top-0 z-20 shadow font-medium"
-                    icon={
-                      <img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`}
-                        className="h-8 w-8 rounded-full bg-zinc-500 p-1"
-                      />
-                    }
-                    disableRipple
-                    secondaryAction={
-                      <Button
-                        variant="icon"
-                        color="DEFAULT"
-                        onClick={() => setCollapseCategories((prev) => prev.some((c) => c === category) ? prev.filter((c) => c != category) : [...prev, category])}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={clsx("fill-current shrink-0 transition-transform ease-in-out duration-75", {
-                          "rotate-180": !collapseCategories.some(c => c === category)
-                        })}>
-                          <path d="M443.8 330.8C440.6 334.3 436.3 336 432 336c-3.891 0-7.781-1.406-10.86-4.25L224 149.8l-197.1 181.1c-6.5 6-16.64 5.625-22.61-.9062c-6-6.5-5.594-16.59 .8906-22.59l208-192c6.156-5.688 15.56-5.688 21.72 0l208 192C449.3 314.3 449.8 324.3 443.8 330.8z" />
-                        </svg>
-                      </Button>
-                    }
-                  >
-                    {category}
-                  </ListItem>
-                  <Collapse timeout={200} in={collapseCategories.some((cat) => cat === category)}>
-                    <List className="p-0 divide-y divide-zinc-500">
-                      {Object.entries(groupBy(categoryRecipes, "Item_ItemRecipe_crafted_item_idToItem.type")).sort().map(([type, typeRecipes]) => {
-                        return (
-                          <Fragment>
-                            <ListItem
-                              className="uppercase bg-neutral-800 sticky top-12 z-10 pl-10 font-medium"
-                              disableRipple
-                              secondaryAction={
-                                <Button
-                                  variant="icon"
-                                  color="DEFAULT"
-                                  onClick={() => setCollapseCategories((prev) => prev.some((c) => c === `${category}.${type}`) ? prev.filter((c) => c != `${category}.${type}`) : [...prev, `${category}.${type}`])}
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={clsx("fill-current shrink-0 transition-transform ease-in-out duration-75", {
-                                    "rotate-180": !collapseCategories.some(c => c === `${category}.${type}`)
-                                  })}>
-                                    <path d="M443.8 330.8C440.6 334.3 436.3 336 432 336c-3.891 0-7.781-1.406-10.86-4.25L224 149.8l-197.1 181.1c-6.5 6-16.64 5.625-22.61-.9062c-6-6.5-5.594-16.59 .8906-22.59l208-192c6.156-5.688 15.56-5.688 21.72 0l208 192C449.3 314.3 449.8 324.3 443.8 330.8z" />
-                                  </svg>
-                                </Button>
-                              }
-                            >
-                              {type}
-                            </ListItem>
-                            <Collapse timeout={200} in={collapseCategories.some((cat) => cat === `${category}.${type}`)}>
-                              {dynamicSort(typeRecipes, "Item_ItemRecipe_crafted_item_idToItem.name").map((recipe) => {
-                                return (
-                                  <ListItem
-                                    className="bg-zinc-700"
-                                    icon={
-                                      <img
-                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${recipe.Item_ItemRecipe_crafted_item_idToItem.image}`}
-                                        className="h-8 w-8 rounded-full bg-zinc-500 p-1"
-                                      />
-                                    }
-                                  >
-                                    {recipe.Item_ItemRecipe_crafted_item_idToItem.name}
-                                  </ListItem>
-                                )
-                              })}
-                            </Collapse>
-                          </Fragment>
-                        )
-                      })}
-                    </List>
-                  </Collapse>
-                </Fragment>
-              )
-            })}
-          </List> */}
