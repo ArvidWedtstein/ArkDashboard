@@ -132,7 +132,7 @@ interface MaterialGridProps {
   error?: RWGqlError;
 }
 
-export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
+export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
   const { currentUser } = useAuth();
 
   const categoriesIcons = {
@@ -145,7 +145,6 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
     Other: "any-craftable-resource",
     Consumable: "any-berry-seed",
   };
-  // TODO: Fix BaseMaterials.
 
   const [query, setQuery] = useState<string>("");
   const deferredQuery = useDeferredValue(query);
@@ -362,30 +361,21 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
   // 800 - Desmodus Saddle
   // 531 - Equus Saddle
 
-
-  const getBaseMaterials = (
-    baseMaterials: boolean = false,
+  const calculateMaterials = (
     ...objects: RecipeState[]
   ): RecipeState[] => {
     let materials: RecipeState[] = [];
 
-    function getBaseMaterial(item: RecipeState): RecipeState[] {
+    const getBaseMaterial = (item: RecipeState): RecipeState[] => {
       if (!item.children || item.children.length === 0) {
         // This is a base material
         return [item];
       }
 
-      // Recursively get base materials from children
-      const baseMaterials: RecipeState[] = [];
-      for (const child of item.children) {
-        const childBaseMaterials = getBaseMaterial(child);
-        baseMaterials.push(...childBaseMaterials);
-      }
-
-      return baseMaterials;
+      return item.children.flatMap(getBaseMaterial);
     }
 
-    const calculateRecipe = (
+    const calculateItemRecipe = (
       item: ArrayElement<MaterialGridProps["craftingItems"]>,
       amount: number = 0,
     ): RecipeState => {
@@ -394,64 +384,55 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
         return;
       }
 
-      const children: RecipeState[] = [];
-
       const { ItemRecipeItem, crafting_station_id, crafting_time = 0, yields = 1 } = item.itemRecipes[0];
-
 
       let crafting_station = craftingItems.find(({ id }) => id === crafting_station_id)
 
-      for (const stationGroup in craftingStations) {
-        const station = craftingStations[stationGroup].find(
-          (s) => s.id === crafting_station_id
-        );
+      for (const [_, stations] of Object.entries(craftingStations)) {
+        const station = stations.find((s) => s.id === crafting_station_id);
 
         if (station) {
-          // Replace the crafting station only if the opposite one is active
-          const activeStation = craftingStations[stationGroup].find(
-            (s) => s.active
-          );
+          const activeStation = stations.find((s) => s.active);
 
           if (activeStation) {
-            crafting_station = craftingItems.find(({ id }) => id === activeStation.id)
+            crafting_station = craftingItems.find(({ id }) => id === activeStation.id);
           }
         }
       }
 
       const { item_production_multiplier = 1, resource_consumption_multiplier = 1, crafting_speed_modifier = 1 } = crafting_station;
 
-
       // Loop through child Items.
-      ItemRecipeItem.forEach((itemRecipeItem) => {
-        let resourceItem = craftingItems.find((ir) => ir.id === itemRecipeItem.resource_item_id);
-        let resourceItemRecipe = resourceItem?.itemRecipes?.[0];
+      const children = ItemRecipeItem.map((itemRecipeItem) => {
+        const resourceItem = craftingItems.find((ir) => ir.id === itemRecipeItem.resource_item_id);
+        const resourceItemRecipe = resourceItem?.itemRecipes?.[0];
 
         if (!resourceItem) {
-          return console.warn(`Item was not found`);
+          console.warn(`Item was not found`);
+          return null;
         }
 
         const modifiedAmount = itemRecipeItem.amount * amount * (resource_consumption_multiplier / item_production_multiplier) / yields;
 
         if (resourceItemRecipe && resourceItemRecipe.ItemRecipeItem.length > 0) {
-          const childNode = calculateRecipe(resourceItem, modifiedAmount);
-          children.push(childNode);
+          return calculateItemRecipe(resourceItem, modifiedAmount);
         } else {
-          children.push({
+          return {
             ...resourceItem,
             amount: modifiedAmount,
             crafting_time: 0,
             children: [],
-          })
+          };
         }
-      });
+      }).filter(Boolean);
 
       return {
         ...item,
         amount,
+        children,
         crafting_time: amount * (crafting_time / crafting_speed_modifier),
-        children: children.length > 0 ? children : [],
-        itemRecipes: item.itemRecipes.map((d) => ({
-          ...d,
+        itemRecipes: item.itemRecipes.map((itemRecipe) => ({
+          ...itemRecipe,
           crafting_station_id: crafting_station.id
         })),
       }
@@ -459,7 +440,7 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
 
     // Loop through all items
     objects.forEach((item) => {
-      const itemMaterials = calculateRecipe(item, item.amount);
+      const itemMaterials = calculateItemRecipe(item, item.amount);
       materials.push({
         ...itemMaterials,
         base_materials: getBaseMaterial(itemMaterials),
@@ -470,12 +451,12 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
   };
 
   const calculatedRecipes = useMemo(() => {
-    const materials = getBaseMaterials(
-      viewBaseMaterials,
+    const materials = calculateMaterials(
       ...recipes
     );
+
     return materials;
-  }, [craftingStations, recipes, viewBaseMaterials])
+  }, [craftingStations, recipes])
 
   const getUniqueCraftingStationIds = (items: RecipeState[]): ArrayElement<RecipeState["itemRecipes"]>["crafting_station_id"][] => {
     const craftingStationIds: Set<ArrayElement<RecipeState["itemRecipes"]>["crafting_station_id"]> = new Set();
@@ -531,23 +512,25 @@ export const MaterialGrid = ({ error, craftingItems }: MaterialGridProps) => {
         return toast.error("No items to save");
       }
 
+      console.log(recipes)
+
       const input = {
         created_at: new Date().toISOString(),
         user_id: currentUser.id,
         private: true,
         UserRecipeItemRecipe: {
-          create: recipes.map((u) => ({
-            amount: u.amount,
-            item_recipe_id: u.id,
+          create: recipes.map(({ id, amount }) => ({
+            amount,
+            item_recipe_id: id,
           })),
         },
       };
 
-      toast.promise(createRecipe({ variables: { input } }), {
-        loading: "Creating recipe...",
-        success: <b>Recipe saved!</b>,
-        error: <b>Failed to create recipe.</b>,
-      });
+      // toast.promise(createRecipe({ variables: { input } }), {
+      //   loading: "Creating recipe...",
+      //   success: <b>Recipe saved!</b>,
+      //   error: <b>Failed to create recipe.</b>,
+      // });
     } catch (error) {
       return console.error(error);
     }

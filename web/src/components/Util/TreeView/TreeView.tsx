@@ -58,7 +58,7 @@ const TreeView = <T extends { children?: any[] }>(props: TreeViewProps<T>) => {
         <div className="pl-1 box-border min-w-0 w-full relative text-base">
           <div className="flex items-center p-1 pr-0">
             {icon && typeof icon === 'string' ? (
-              <img className="w-5 h-5 fill-current mr-2 flex-shrink-0 inline-block select-none" src={icon} />
+              <img loading="lazy" className="w-5 h-5 fill-current mr-2 flex-shrink-0 inline-block select-none" src={icon} />
             ) : icon}
             <p className="m-0 flex-grow">{label}</p>
             <span className="m-0 text-inherit text-xs font-normal">{caption}</span>
