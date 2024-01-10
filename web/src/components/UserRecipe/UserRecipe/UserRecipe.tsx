@@ -1,4 +1,4 @@
-import { Link, routes, navigate } from '@redwoodjs/router'
+import { routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 import { useAuth } from 'src/auth'
@@ -7,7 +7,7 @@ import Button, { ButtonGroup } from 'src/components/Util/Button/Button'
 import { Card, CardContent, CardHeader } from 'src/components/Util/Card/Card'
 import Toast from 'src/components/Util/Toast/Toast'
 
-import { checkboxInputTag, formatNumber, timeTag } from 'src/lib/formatters'
+import { formatNumber, timeTag } from 'src/lib/formatters'
 
 import type {
   DeleteUserRecipeMutationVariables,
@@ -15,7 +15,7 @@ import type {
 } from 'types/graphql'
 
 const DELETE_USER_RECIPE_MUTATION = gql`
-  mutation DeleteUserRecipeMutation($id: String!) {
+  mutation DeleteUserRecipeMutation($id: BigInt!) {
     deleteUserRecipe(id: $id) {
       id
     }
@@ -50,7 +50,7 @@ const UserRecipe = ({ userRecipe }: Props) => {
   }
 
   // TODO: Add a way to edit the recipe
-  return (currentUser.role_id == 'f0c1b8e9-5f27-4430-ad8f-5349f83339c0' || (userRecipe["private"] && userRecipe.user_id === currentUser.id)) && (
+  return (currentUser.role_id == 'f0c1b8e9-5f27-4430-ad8f-5349f83339c0' || (!userRecipe.public_access && userRecipe.created_by === currentUser.id)) && (
     <article>
       <div className="rw-segment">
         <Card>

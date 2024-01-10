@@ -1,34 +1,31 @@
 export const schema = gql`
   type UserRecipeItemRecipe {
-    id: String!
+    id: BigInt!
     created_at: DateTime!
-    updated_at: DateTime
-    user_recipe_id: String!
+    user_recipe_id: BigInt!
+    item_recipe_id: BigInt!
     amount: BigInt
-    item_recipe_id: BigInt
-    ItemRecipe: ItemRecipe
+    ItemRecipe: ItemRecipe!
     UserRecipe: UserRecipe!
   }
 
   type Query {
     userRecipeItemRecipes: [UserRecipeItemRecipe!]! @skipAuth
-    userRecipeItemRecipe(id: String!): UserRecipeItemRecipe @requireAuth
+    userRecipeItemRecipe(id: BigInt!): UserRecipeItemRecipe @requireAuth
   }
 
   input CreateUserRecipeItemRecipeInput {
     created_at: DateTime!
-    updated_at: DateTime
-    user_recipe_id: String!
+    user_recipe_id: BigInt!
+    item_recipe_id: BigInt!
     amount: BigInt
-    item_recipe_id: BigInt
   }
 
   input UpdateUserRecipeItemRecipeInput {
     created_at: DateTime
-    updated_at: DateTime
-    user_recipe_id: String
-    amount: BigInt
+    user_recipe_id: BigInt
     item_recipe_id: BigInt
+    amount: BigInt
   }
 
   type Mutation {
@@ -36,9 +33,9 @@ export const schema = gql`
       input: CreateUserRecipeItemRecipeInput!
     ): UserRecipeItemRecipe! @requireAuth
     updateUserRecipeItemRecipe(
-      id: String!
+      id: BigInt!
       input: UpdateUserRecipeItemRecipeInput!
     ): UserRecipeItemRecipe! @requireAuth
-    deleteUserRecipeItemRecipe(id: String!): UserRecipeItemRecipe! @requireAuth
+    deleteUserRecipeItemRecipe(id: BigInt!): UserRecipeItemRecipe! @requireAuth
   }
 `;

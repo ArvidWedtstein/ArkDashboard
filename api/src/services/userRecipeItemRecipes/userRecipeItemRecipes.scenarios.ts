@@ -5,32 +5,26 @@ export const standard = defineScenario<Prisma.UserRecipeItemRecipeCreateArgs>({
   userRecipeItemRecipe: {
     one: {
       data: {
-        UserRecipe: {
+        ItemRecipe: {
           create: {
-            Profile: {
-              create: {
-                role_profile_role_idTorole: {
-                  create: { name: 'String', permissions: 'basespot:delete' },
-                },
-              },
+            Item_ItemRecipe_crafted_item_idToItem: {
+              create: { name: 'String' },
             },
           },
         },
+        UserRecipe: { create: {} },
       },
     },
     two: {
       data: {
-        UserRecipe: {
+        ItemRecipe: {
           create: {
-            Profile: {
-              create: {
-                role_profile_role_idTorole: {
-                  create: { name: 'String', permissions: 'basespot:delete' },
-                },
-              },
+            Item_ItemRecipe_crafted_item_idToItem: {
+              create: { name: 'String' },
             },
           },
         },
+        UserRecipe: { create: {} },
       },
     },
   },

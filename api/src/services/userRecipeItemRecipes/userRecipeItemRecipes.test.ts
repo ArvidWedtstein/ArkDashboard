@@ -44,11 +44,15 @@ describe('userRecipeItemRecipes', () => {
       const result = await createUserRecipeItemRecipe({
         input: {
           user_recipe_id: scenario.userRecipeItemRecipe.two.user_recipe_id,
+          item_recipe_id: scenario.userRecipeItemRecipe.two.item_recipe_id,
         },
       })
 
       expect(result.user_recipe_id).toEqual(
         scenario.userRecipeItemRecipe.two.user_recipe_id
+      )
+      expect(result.item_recipe_id).toEqual(
+        scenario.userRecipeItemRecipe.two.item_recipe_id
       )
     }
   )
@@ -62,11 +66,11 @@ describe('userRecipeItemRecipes', () => {
       const result = await updateUserRecipeItemRecipe({
         id: original.id,
         input: {
-          user_recipe_id: scenario.userRecipeItemRecipe.two.user_recipe_id,
+          item_recipe_id: scenario.userRecipeItemRecipe.two.user_recipe_id,
         },
       })
 
-      expect(result.user_recipe_id).toEqual(
+      expect(result.item_recipe_id).toEqual(
         scenario.userRecipeItemRecipe.two.user_recipe_id
       )
     }

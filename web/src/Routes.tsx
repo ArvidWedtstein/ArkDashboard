@@ -121,13 +121,13 @@ const Routes = () => {
               name="newUserRecipe"
             />
             <Route
-              path="/user-recipes/{id}/edit"
+              path="/user-recipes/{id:Int}/edit"
               page={UserRecipeEditUserRecipePage}
               name="editUserRecipe"
             />
 
             <Route
-              path="/user-recipes/{id}"
+              path="/user-recipes/{id:Int}"
               page={UserRecipeUserRecipePage}
               name="userRecipe"
             />

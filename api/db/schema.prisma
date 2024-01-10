@@ -253,31 +253,34 @@ model ItemRecipeItem {
   amount           Float
   ItemRecipe       ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Item             Item       @relation(fields: [resource_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([resource_item_id, item_recipe_id])
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model UserRecipe {
-  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                   BigInt                 @id(map: "UserRecipe_pkey1") @default(autoincrement())
   created_at           DateTime?              @default(now()) @db.Timestamptz(6)
   updated_at           DateTime?              @db.Timestamptz(6)
-  user_id              String                 @db.Uuid
-  private              Boolean                @default(true)
-  name                 String?
-  Profile              Profile                @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  created_by           String?                @db.Uuid
+  public_access        Boolean?               @default(false)
+  name                 String?                @default("")
+  Profile              Profile?               @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   UserRecipeItemRecipe UserRecipeItemRecipe[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model UserRecipeItemRecipe {
-  id             String      @id(map: "UserRecipeItemRecipie_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at     DateTime    @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime?   @db.Timestamptz(6)
-  user_recipe_id String      @db.Uuid
-  amount         BigInt?     @default(1)
-  item_recipe_id BigInt?
-  ItemRecipe     ItemRecipe? @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  UserRecipe     UserRecipe  @relation(fields: [user_recipe_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id             BigInt     @id @default(autoincrement())
+  created_at     DateTime   @default(now()) @db.Timestamptz(6)
+  user_recipe_id BigInt
+  item_recipe_id BigInt
+  amount         BigInt?    @default(1)
+  ItemRecipe     ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  UserRecipe     UserRecipe @relation(fields: [user_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([item_recipe_id, user_recipe_id])
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

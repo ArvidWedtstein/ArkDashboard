@@ -3,13 +3,7 @@ import {
   FormError,
   FieldError,
   Label,
-  DatetimeLocalField,
-  TextField,
   CheckboxField,
-  Submit,
-  SearchField,
-  useFieldArray,
-  useForm,
 } from "@redwoodjs/forms";
 
 import type {
@@ -20,13 +14,10 @@ import type {
   UserRecipeItemRecipe,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { Link, routes } from "@redwoodjs/router";
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { ArrayElement, debounce, formatNumber, groupBy } from "src/lib/formatters";
-import { useMemo, useRef, useState } from "react";
-import { useLazyQuery } from "@apollo/client";
-import ItemList from "src/components/Util/ItemList/ItemList";
+import { formatNumber } from "src/lib/formatters";
+import { useRef, useState } from "react";
 import { Input } from "src/components/Util/Input/Input";
 import Button from "src/components/Util/Button/Button";
 import Badge from "src/components/Util/Badge/Badge";
@@ -46,13 +37,12 @@ const CREATE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
 
 const UPDATE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
   mutation UpdateUserRecipeItemRecipeMutation(
-    $id: String!
+    $id: BigInt!
     $input: UpdateUserRecipeItemRecipeInput!
   ) {
     updateUserRecipeItemRecipe(id: $id, input: $input) {
       id
       created_at
-      updated_at
       item_recipe_id
       user_recipe_id
       amount
@@ -62,7 +52,7 @@ const UPDATE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
 
 
 const DELETE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
-  mutation DeleteUserRecipeItemRecipeMutation($id: String!) {
+  mutation DeleteUserRecipeItemRecipeMutation($id: BigInt!) {
     deleteUserRecipeItemRecipe(id: $id) {
       id
     }
@@ -297,7 +287,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
         />
         <Input
           label={'User ID'}
-          name="user_id"
+          name="created_by"
           validation={{ required: true }}
           defaultValue={props.userRecipe?.user_id || currentUser?.id}
           className="hidden invisible"
@@ -312,27 +302,27 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
 
 
         <Label
-          name="private"
+          name="public_access"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Private
+          Public Access
         </Label>
 
         <CheckboxField
-          name="private"
-          defaultChecked={props.userRecipe?.private}
+          name="public_access"
+          defaultChecked={props.userRecipe?.public_access}
           className="rw-input peer/draft"
           errorClassName="rw-input rw-input-error"
         />
 
         <div className="hidden text-white peer-checked/draft:block">
-          Drafts are only visible to you and administrators.
+          This recipe will only be visible to you and administrators.
         </div>
         <div className="block text-white peer-checked/draft:hidden">
-          Your post will be publicly visible to everyone
+          Your recipe will be publicly visible to everyone
         </div>
-        <FieldError name="private" className="rw-field-error" />
+        <FieldError name="public_access" className="rw-field-error" />
 
         <div className="my-3">
 
@@ -384,7 +374,6 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
 
         <div className="rw-button-group">
           <Button
-            permission="gamedata_create"
             color="success"
             variant="outlined"
             type="submit"

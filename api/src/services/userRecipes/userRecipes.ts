@@ -19,10 +19,10 @@ export const userRecipesByID: QueryResolvers["userRecipesByID"] = ({
     where: {
       OR: [
         {
-          user_id: { equals: user_id },
+          created_by: { equals: user_id },
         },
         {
-          private: { equals: false },
+          public_access: { equals: true },
         },
       ],
     },
@@ -30,7 +30,7 @@ export const userRecipesByID: QueryResolvers["userRecipesByID"] = ({
 };
 
 export const userRecipes: QueryResolvers["userRecipes"] = () => {
-  const userID =  context?.currentUser?.id || context?.currentUser?.sub;
+  const userID = context?.currentUser?.id || context?.currentUser?.sub;
   return db.userRecipe.findMany({
     orderBy: {
       created_at: "desc",
@@ -38,12 +38,12 @@ export const userRecipes: QueryResolvers["userRecipes"] = () => {
     where: {
       OR: [
         userID && {
-          user_id: {
+          created_by: {
             equals: userID,
           },
         },
         {
-          private: { equals: false },
+          public_access: { equals: true },
         },
       ],
     },
@@ -61,7 +61,7 @@ export const createUserRecipe: MutationResolvers["createUserRecipe"] = async ({
 }) => {
   const recipes = await db.userRecipe.findMany({
     where: {
-      user_id: { equals: input.user_id },
+      user_id: { equals: input.created_by },
     },
   });
   validateWithSync(() => {
@@ -70,7 +70,7 @@ export const createUserRecipe: MutationResolvers["createUserRecipe"] = async ({
     }
   });
   validateWithSync(() => {
-    if (context.currentUser.id !== input.user_id) {
+    if (context.currentUser.id !== input.created_by) {
       throw "Your gallimimus outran the authorization process. Slow down!";
     }
   });
@@ -84,8 +84,8 @@ export const updateUserRecipe: MutationResolvers["updateUserRecipe"] = ({
   input,
 }) => {
   validateWithSync(() => {
-    if (context.currentUser.id !== input.user_id) {
-      throw "Your gallimimus outran the authorization process. Slow down!";
+    if (context.currentUser.id !== input.created_by) {
+      throw "Your gallimimus outran the authorization process. You cannot update others recipes";
     }
   });
   return db.userRecipe.update({
@@ -98,7 +98,16 @@ export const deleteUserRecipe: MutationResolvers["deleteUserRecipe"] = ({
   id,
 }) => {
   return db.userRecipe.delete({
-    where: { id },
+    where: {
+      AND: [
+        {
+          id: { equals: id },
+        },
+        {
+          created_by: { equals: context.currentUser.id },
+        },
+      ],
+    },
   });
 };
 
