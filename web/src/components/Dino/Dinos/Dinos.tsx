@@ -24,7 +24,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "src/components/Util/ToggleButton/ToggleButton";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 
 const DinosList = ({
   dinosPage,
@@ -180,7 +180,7 @@ const DinosList = ({
         </h1>
 
         <div className="flex items-center justify-center space-x-2">
-          <div className="rw-button-group m-0">
+          <ButtonGroup>
             <Lookup
               label="Sort by"
               margin="none"
@@ -198,12 +198,6 @@ const DinosList = ({
               options={Object.keys(dinosPage.dinos[0] || {}).filter(
                 (c) => !["__typename", "id", "image", "blueprint"].includes(c)
               )}
-              SuffixProps={{
-                style: {
-                  borderRadius: "0.375rem 0 0 0.375rem",
-                  // marginRight: "-1px",
-                },
-              }}
             />
 
             <Button
@@ -216,7 +210,7 @@ const DinosList = ({
                 }));
               }}
               title={sort.direction == "asc" ? "Ascending " : "Descending"}
-              className="rounded-none"
+              className="!border-white/20 border-x-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -236,7 +230,7 @@ const DinosList = ({
               variant="outlined"
               color="DEFAULT"
               onClick={() => openModal()}
-              className="rounded-none lg:!hidden"
+              className="lg:!hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -257,30 +251,29 @@ const DinosList = ({
               label="Search"
               defaultValue={search}
               disabled={loading}
-              SuffixProps={{
-                style: {
-                  borderRadius: "0 0.375rem 0.375rem 0",
-                },
-              }}
               InputProps={{
                 endAdornment: (
-                  <Submit
-                    className="rw-button rw-button-green"
+                  <Button
+                    variant="contained"
+                    color="success"
                     disabled={loading}
+                    type="submit"
+                    className="!rounded"
+                    startIcon={(
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                      >
+                        <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+                      </svg>
+                    )}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                      className="rw-button-icon-start"
-                    >
-                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-                    </svg>
                     <span className="hidden md:block">Search</span>
-                  </Submit>
+                  </Button>
                 ),
               }}
             />
-          </div>
+          </ButtonGroup>
 
           <ToggleButtonGroup
             orientation="horizontal"

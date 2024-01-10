@@ -5,6 +5,7 @@ import { navigate, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
+import Button from "src/components/Util/Button/Button";
 
 type FormForgotPassword = NonNullable<{
   email: string;
@@ -75,7 +76,9 @@ const ForgotPasswordPage = () => {
               <FieldError name="email" className="rw-field-error" />
             </div>
 
-            <Submit className="rw-button rw-button-blue my-3">Submit</Submit>
+            <Button type="submit" variant="contained" color="success" className="my-3">
+              Submit
+            </Button>
           </Form>
         </div>
       </div>

@@ -1,17 +1,16 @@
 import { routes } from "@redwoodjs/router";
 import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
-import { Fragment, cloneElement, useMemo, useState, useDebugValue } from "react";
+import { Fragment, useMemo, useState } from "react";
 import {
   addToDate,
   adjustCalendarDate,
-  getDaysBetweenDates,
+  getDateDiff,
   getISOWeek,
   groupBy,
   toLocalPeriod,
   toLocaleISODate,
 } from "src/lib/formatters";
-import Ripple from "../Ripple/Ripple";
 import { Lookup } from "../Lookup/Lookup";
 import Button from "../Button/Button";
 import Tooltip from "../Tooltip/Tooltip";
@@ -70,7 +69,7 @@ const Gantt = <T extends Record<string, unknown>>({
       const weeks = Array.from(
         {
           length: Math.ceil(
-            getDaysBetweenDates(firstDayOfMonth, lastDayOfMonth).length / 7
+            getDateDiff(firstDayOfMonth, lastDayOfMonth).dates.length / 7
           ),
         },
         (_, weekIndex) => {
@@ -95,7 +94,7 @@ const Gantt = <T extends Record<string, unknown>>({
       return {
         month: monthIndex,
         year: dateInfo.year,
-        days: getDaysBetweenDates(firstDayOfMonth, lastDayOfMonth).length,
+        days: getDateDiff(firstDayOfMonth, lastDayOfMonth).dates.length,
         weeks,
       };
     });

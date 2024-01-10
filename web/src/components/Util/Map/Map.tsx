@@ -9,6 +9,7 @@ import { useLazyQuery } from "@apollo/client";
 import { Lookup } from "../Lookup/Lookup";
 import Button from "../Button/Button";
 import clsx from "clsx";
+import { FindMapsForMapComp } from "types/graphql";
 
 const MAPQUERY = gql`
   query FindMapsForMapComp {
@@ -88,7 +89,7 @@ const Map = ({
   onMapChange,
   onSubMapChange,
 }: mapProps) => {
-  const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
+  const [loadMaps, { called, loading, data }] = useLazyQuery<FindMapsForMapComp>(MAPQUERY, {
     onError: (error) => {
       console.error(error);
     },
@@ -129,14 +130,6 @@ const Map = ({
     setMap(map_id);
     setSubMap(submap_id);
 
-    // if (data)
-    // console.log(
-    //   data.maps.filter(
-    //     (m) =>
-    //       m.parent_map_id == null &&
-    //       (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
-    //   )
-    // );
   }, [called, loading, submap_id, map_id]);
 
   const handleKeyUp = useCallback((event) => {
@@ -307,9 +300,9 @@ const Map = ({
               marginRight: '-0.5px'
             }
           }}
-          defaultValue={map}
+          // defaultValue={map}
           loading={loading}
-          // value={data?.maps?.find((m) => m.id === map) || undefined}
+          value={data?.maps?.find((m) => m.id === map || 1) || { id: 2, name: 'The Island' }}
           disabled={disable_map}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(option) => option.name}
@@ -369,7 +362,7 @@ const Map = ({
           value={[
             { label: "Drawn", value: "img" },
             { label: "Topographic", value: "topographic_img" },
-          ].find((mt) => mt.value === mapType)}
+          ].find((mt) => mt.value === mapType ?? "img")}
           disabled={disable_map_type}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           getOptionLabel={(option) => option.label}

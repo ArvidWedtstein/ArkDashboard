@@ -3,14 +3,13 @@ import { MouseEvent, useEffect, useState } from "react";
 import {
   addToDate,
   adjustCalendarDate,
-  getDaysBetweenDates,
   getISOWeek,
   getDateUnit,
   toLocalPeriod,
   toLocaleISODate,
+  getDateDiff,
 } from "src/lib/formatters";
 import Button from "../Button/Button";
-import Badge from "../Badge/Badge";
 
 type ViewType = "year" | "month" | "day";
 type DateCalendarProps = {
@@ -103,7 +102,7 @@ const DateCalendar = ({
       length:
         !!fixedWeekNumber && fixedWeekNumber > 0
           ? fixedWeekNumber
-          : getDaysBetweenDates(firstDay, lastDay).length / 7 + 1,
+          : getDateDiff(firstDay, lastDay).dates.length / 7 + 1,
     },
     (_, weekIndex) => {
       return Array.from({ length: 7 }, (_day, index) => {

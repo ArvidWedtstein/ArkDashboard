@@ -647,24 +647,6 @@ export const addToDate = (
   return result;
 };
 
-/**
- *  Returns an array of dates between the two dates
- * @param currentDay
- * @param lastDay
- * @returns
- */
-export const getDaysBetweenDates = (
-  currentDay: Date,
-  lastDay: Date
-): Date[] => {
-  return Array.from(
-    { length: (+lastDay - +currentDay) / (24 * 60 * 60 * 1000) + 1 },
-    (_, index) => {
-      return addToDate(new Date(currentDay), index, "day");
-    }
-  );
-};
-
 export const toLocalPeriod = (date: Date): string => {
   return `${date.getFullYear()}-${(date.getMonth() + 1)
     .toString()
@@ -821,6 +803,36 @@ export const relativeDate = (date: Date | string, style?: Intl.RelativeTimeForma
 };
 
 /**
+ * @description Returns the difference between two dates
+ * @param date1
+ * @param date2
+ * @returns
+ */
+export const getDateDiff = (date1: Date, date2: Date) => {
+  const diff = Math.abs(date1.getTime() - date2.getTime());
+  const years = Math.round(diff / (1000 * 3600 * 24 * 365));
+  const months = Math.round(diff / (1000 * 3600 * 24 * 30));
+  const days = Math.floor(diff / (1000 * 3600 * 24));
+  const hours = Math.floor((diff / (1000 * 3600)) % 24);
+  const minutes = Math.floor((diff / 1000 / 60) % 60);
+  const dates = Array.from(
+    { length: (+date2 - +date1) / (24 * 60 * 60 * 1000) + 1 },
+    (_, index) => {
+      return addToDate(new Date(date1), index, "day");
+    }
+  );
+  return {
+    years,
+    months,
+    days,
+    hours,
+    minutes,
+    dates,
+    dateString: `${days} days, ${hours} hours, ${minutes} minutes`,
+  };
+};
+
+/**
  * Determines the type of a word based on regular expressions.
  * @param {string} word - The word to determine the type of.
  * @returns {string} The type of the word. Can be "noun", "verb", "adjective", or "unknown".
@@ -900,28 +912,6 @@ export const pluralize = (
   includeCount: boolean = true
 ): string => `${includeCount ? count : ""} ${noun}${count !== 1 ? suffix : ""}`;
 
-/**
- * @description Returns the difference between two dates
- * @param date1
- * @param date2
- * @returns
- */
-export const getDateDiff = (date1: Date, date2: Date) => {
-  const diff = Math.abs(date1.getTime() - date2.getTime());
-  const years = Math.round(diff / (1000 * 3600 * 24 * 365));
-  const months = Math.round(diff / (1000 * 3600 * 24 * 30));
-  const days = Math.floor(diff / (1000 * 3600 * 24));
-  const hours = Math.floor((diff / (1000 * 3600)) % 24);
-  const minutes = Math.floor((diff / 1000 / 60) % 60);
-  return {
-    years,
-    months,
-    days,
-    hours,
-    minutes,
-    dateString: `${days} days, ${hours} hours, ${minutes} minutes`,
-  };
-};
 
 export const formatXYtoLatLon = (
   map_id: number,

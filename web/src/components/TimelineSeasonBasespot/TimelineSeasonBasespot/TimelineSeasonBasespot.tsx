@@ -7,11 +7,9 @@ import { useAuth } from "src/auth";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
-import { Dialog } from "src/components/Util/Dialog/Dialog";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
-import Ripple from "src/components/Util/Ripple/Ripple";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
 import Toast from "src/components/Util/Toast/Toast";
 
@@ -19,6 +17,7 @@ import {
   formatBytes,
   getDateDiff,
   pluralize,
+  relativeDate,
   timeTag,
 } from "src/lib/formatters";
 
@@ -43,12 +42,9 @@ interface Props {
 
 const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   const {
-    isAuthenticated,
     client: supabase,
-    hasRole,
-    error: authError,
-    currentUser,
   } = useAuth();
+
   const [deleteTimelineSeasonBasespot] = useMutation(
     DELETE_TIMELINE_SEASON_BASESPOT_MUTATION,
     {
@@ -133,6 +129,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   };
 
   const { openModal } = useModal();
+
   return (
     <article className="rw-segment">
       <Modal
@@ -198,6 +195,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
             <div className="mb-10 w-full overflow-hidden text-base lg:mb-0 lg:w-1/2">
               <p>
                 Started playing on {timeTag(timelineSeasonBasespot.start_date)}.
+                ({relativeDate(new Date(timelineSeasonBasespot.start_date))})
               </p>
               {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent &&
                 timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent
@@ -216,22 +214,25 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           </div>
         </section>
 
+
+        <div className="rw-divide px-4 my-4">
+          <h1
+            id="event-heading"
+            className="title-font px-4 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
+          >
+            {pluralize(
+              timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent
+                .length,
+              "Event",
+              "s",
+              false
+            )}
+          </h1>
+        </div>
+
         {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent?.length >
           0 && (
-            <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-white/20">
-              <h1
-                id="event-heading"
-                className="title-font mt-8 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
-              >
-                {pluralize(
-                  timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent
-                    .length,
-                  "Event",
-                  "s",
-                  false
-                )}
-              </h1>
-
+            <section className="body-font relative mx-4 text-stone-300">
               <Slideshow
                 className="mb-6"
                 aria-labelledby="event-heading"
@@ -271,7 +272,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             <p className="text-gray-500">{timeTag(created_at)}</p>
                             <p className="inline-flex gap-x-1">
                               {tags &&
-                                tags.split(",").map((t) => <Badge color="secondary" variant="outlined" content={`#${t}`} standalone />)}
+                                tags.split(",").map((t) => <Badge key={`badge-${t}`} color="secondary" variant="outlined" content={`#${t}`} standalone />)}
                             </p>
                           </div>
                         </div>

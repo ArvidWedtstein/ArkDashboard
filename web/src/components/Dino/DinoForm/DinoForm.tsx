@@ -1896,12 +1896,12 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </div>
       </Disclosure> */}
+        {/* TODO: fix */}
 
-        <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
-            Save
-          </Submit>
-        </div>
+
+        <Button variant="contained" color="success" disabled={props.loading} type="submit">
+          Submit
+        </Button>
       </Form>
     </div>
   );

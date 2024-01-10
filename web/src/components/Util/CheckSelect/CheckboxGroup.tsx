@@ -46,7 +46,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
   } = props
   // TODO: fix errorStyles for checkbox group
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    () => validation.single || exclusive ? defaultValue as string[] : [defaultValue] as string[]
+    () => validation.single || exclusive ? defaultValue as string[] : Array.isArray(defaultValue) ? defaultValue : [defaultValue] as string[]
   );
   const { field } =
     form && !!name
@@ -96,6 +96,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
           disableRipple,
           rippleRef
         })
+
         return (
 
           <label key={label} aria-details={`Item: ${optValue}`} className="overflow-hidden" {...getRippleHandlers()}>
@@ -105,7 +106,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
               name={name || optValue.toString() || label + "checkbox"}
               value={optValue || label}
               onChange={handleCheckboxChange}
-              checked={selectedOptions.includes(optValue.toString() || label)}
+              checked={selectedOptions.includes(optValue.toString() ?? label)}
               className="rw-check-input absolute hidden overflow-hidden"
             />
             <span

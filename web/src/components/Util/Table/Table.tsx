@@ -574,19 +574,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         headers={`headcell-${field}`}
         selected={isSelected(rowData.row_id)}
         columnWidth={columnSizes?.find((d) => d.columnIndex === columnIndex)?.width}
-        className={clsx(className, {
-          "rounded-bl-lg":
-            rowIndex === PaginatedData.length - 1 &&
-            columnIndex === 0 &&
-            !checkSelect &&
-            !columnSettings.some((col) => col.aggregate) &&
-            !dataRows.some((row) => row.collapseContent),
-          "rounded-br-lg":
-            rowIndex === PaginatedData.length - 1 &&
-            columnIndex === columns.length - 1 &&
-            !columnSettings.some((col) => col.aggregate) &&
-            !dataRows.some((row) => row.collapseContent)
-        })}
+        className={className}
       >
         {content}
       </TableCell>
@@ -957,7 +945,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
   return (
     <div
-      className={clsx("relative !overflow-x-hidden overflow-y-auto sm:rounded-lg", className)}
+      className={clsx("relative !overflow-x-hidden overflow-y-auto", className)}
     >
       {(checkSelect || mergedSettings.export || mergedSettings.filter || mergedSettings.search || toolbar.length > 0) && (
         <ButtonGroup className="my-2">
@@ -993,7 +981,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                 }}
                 >
                   <Form<Filter<Row>>
-                    className="z-10 flex flex-col rounded-lg border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
+                    className="z-10 flex flex-col rounded border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
                     method="dialog"
                     onSubmit={(e) => {
                       addFilter(e);
@@ -1097,9 +1085,9 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                         name="value"
                         className="rw-input rw-input-small"
                       />
-                      <Submit className="rw-button rw-button-small rw-button-green">
+                      <Button color="success" variant="contained" size="small" type="submit">
                         +
-                      </Submit>
+                      </Button>
                     </div>
                     <div className="rw-button-group justify-end">
                       <button
@@ -1183,13 +1171,13 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             />
           )}
           {toolbar.map((item, index) => (
-            <div key={`toolbar-${index}`}>{item}</div>
+            <Fragment key={`toolbar-${index}`}>{item}</Fragment>
           ))}
 
         </ButtonGroup>
       )}
       <div
-        className={"w-full overflow-x-auto rounded-lg border border-zinc-500"}
+        className={"w-full overflow-x-auto rounded border border-zinc-500"}
       >
         <table className={classes.table}>
           {mergedSettings.header && (
