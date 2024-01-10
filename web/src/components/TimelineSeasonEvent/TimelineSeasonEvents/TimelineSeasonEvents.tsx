@@ -54,7 +54,7 @@ const TimelineSeasonEventsList = ({
 
   return (
     <div className="max-h-[36rem] flex-auto overflow-y-auto rounded-lg px-2 text-zinc-700 dark:text-white">
-      <ul className="relative w-full border-l border-zinc-600 py-3 dark:border-zinc-300 space-y-1 ml-1">
+      <ul className="relative w-full border-l border-zinc-600 py-3  pr-2 dark:border-zinc-300 space-y-1 ml-1">
         {timelineSeasonEvents &&
           Object.entries(groupBy(timelineSeasonEvents, "created_at")).map(
             ([date, timeGroup], i) => (
@@ -155,9 +155,9 @@ const TimelineSeasonEventsList = ({
             )
           )}
       </ul>
-      <div className="shadow-lg border border-zinc-500 rounded-lg -mx-2 mt-2">
+      {/* <div className="shadow-lg border border-zinc-500 rounded-lg -mx-2 mt-2">
         <NewTimelineSeasonEventCell timeline_season_id={timelineSeasonEvents[0].id} />
-      </div>
+      </div> */}
     </div >
   );
 };

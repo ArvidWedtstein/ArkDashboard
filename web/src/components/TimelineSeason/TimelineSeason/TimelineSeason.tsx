@@ -1,7 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import NewTimelineSeasonBasespotCell from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespotCell";
 import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
 import NewTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/NewTimelineSeasonEventCell";
@@ -9,7 +9,6 @@ import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/Edit
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPersonCell from "src/components/TimelineSeasonPerson/NewTimelineSeasonPersonCell";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
-import { FormModal, Modal, useModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -22,6 +21,7 @@ import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import SplitPane from "src/components/Util/SplitPane/SplitPane";
 import Badge from "src/components/Util/Badge/Badge";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
+import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -163,14 +163,105 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         </DialogActions>
       </Dialog>
 
-      <header
-        className="flex w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"
+      <Card variant="outlined" className="h-80 z-0">
+        <CardHeader
+          sx={{
+            zIndex: 10,
+            backgroundImage:
+              "linear-gradient(-2deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%)",
+          }}
+          title={(
+            <div className="inline-flex space-x-1 items-center">
+              <span>{timelineSeason.server}</span>
+              {timelineSeason.cluster && (
+                <Badge
+                  standalone
+                  variant="outlined"
+                  color={servers[timelineSeason.server]?.badge || 'DEFAULT'}
+                  content={(
+                    <Fragment>
+                      {timelineSeason.cluster}
+                      <div role="seperator" className="rw-divider bg-current mx-1" />
+                      Season
+                      {timelineSeason.season}
+                    </Fragment>
+                  )}
+                />
+              )}
+            </div>
+          )}
+          subheader={(
+            <div className="flex items-center space-x-3 text-sm mt-1">
+              {timeTag(timelineSeason.season_start_date)}
+              <span>-</span>
+              {timeTag(timelineSeason.season_end_date)}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="w-5 fill-current"
+              >
+                <path d="M272 249.4V128c0-8.844-7.156-16-16-16s-16 7.156-16 16v128c0 4.25 1.688 8.312 4.688 11.31l80 80C327.8 350.4 331.9 352 336 352s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62L272 249.4zM255.1 0c-141.4 0-256 114.6-256 256s114.6 256 256 256s255.1-114.6 255.1-256S397.4 0 255.1 0zM256 480c-123.5 0-224-100.5-224-224s100.5-224 224-224s224 100.5 224 224S379.5 480 256 480z" />
+              </svg>
+            </div>
+          )}
+          action={(
+            <ButtonGroup>
+              <Button
+                permission="timeline_update"
+                color="primary"
+                variant="outlined"
+                to={routes.editTimelineSeason({
+                  id: timelineSeason.id,
+                })}
+                startIcon={
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                  </svg>
+                }
+              >
+                Edit
+              </Button>
+              <Button
+                permission="timeline_delete"
+                color="error"
+                variant="outlined"
+                onClick={() => onDeleteClick(timelineSeason.id)}
+                startIcon={
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                  </svg>
+                }
+              >
+                Delete
+              </Button>
+            </ButtonGroup>
+          )}
+        />
+        <CardContent className="z-10 text-right float-right">
+          <h1 className="text-5xl mt-12 rounded my-auto font-bold text-white">
+            {timelineSeason.tribe_name}
+          </h1>
+        </CardContent>
+        <CardMedia
+          sx={{
+            objectFit: "fill",
+            backgroundPosition: '100% 50%',
+            backgroundSize: 'cover',
+            position: "absolute",
+            backgroundRepeat: 'no-repeat',
+            backgroundImage: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg`,
+            inset: 0,
+            zIndex: -1,
+          }}
+          component="div"
+          image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg`}
+        />
+      </Card>
+      {/* <header
+        className="flex w-full mt-2 flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"
         style={{
           backgroundImage:
             "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
-        }}
-        onClick={() => {
-          open();
         }}
       >
         <div className="flex justify-between pb-5">
@@ -204,103 +295,88 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             {timelineSeason.tribe_name}
           </h1>
         </div>
-      </header>
+      </header> */}
 
       <div className="relative my-3 grid w-full grid-flow-row grid-cols-4 gap-3 md:grid-cols-6">
-        <section className="relative col-span-5 row-span-2 !w-full flex-auto flex-grow rounded-lg border border-zinc-500 bg-white font-semibold text-black dark:bg-zinc-800 dark:text-white">
-          <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
-            <p className="flex-1 underline underline-offset-8">Basespots</p>
-            <Button variant="outlined" onClick={() => setOpenModal("timelineseasonbasespot")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                fill="currentColor"
-                className="h-5 w-5 transition-transform ease-in-out"
-              >
-                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-              </svg>
-            </Button>
-          </div>
-
-          <div className="grid h-fit grid-cols-2 gap-3 p-3 md:grid-cols-3 xl:grid-cols-4">
-            <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
-          </div>
-        </section>
-
-        <section className="relative col-span-1 row-span-4 w-full flex-auto space-y-3 text-black dark:text-white">
-          <div className="mt-3 flex items-center justify-between">
-            <p>Events</p>
-            <Button variant="outlined" onClick={() => setOpenModal("timelineseasonevent")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                fill="currentColor"
-                className="h-5 w-5 transition-transform ease-in-out"
-              >
-                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-              </svg>
-            </Button>
-          </div>
-
-          <TimelineSeasonEventsCell
-            timeline_season_id={timelineSeason.id}
-            setOpenModal={(id, type) => {
-              setOpenModal(type);
-              setEditEvent(id);
+        <Card variant="outlined" className="col-span-5 row-span-3">
+          <CardHeader
+            title={`Bases in this season`}
+            titleProps={{
+              className: 'text-lg'
             }}
+            action={(
+              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonbasespot")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="currentColor"
+                  className="h-5 w-5 transition-transform ease-in-out"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              </Button>
+            )}
           />
-        </section>
+          <CardContent className="grid h-fit grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+            <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
+          </CardContent>
+        </Card>
 
-        <section className="relative col-span-5 row-span-2 w-full flex-auto rounded-lg border border-zinc-500 bg-white font-semibold text-black dark:bg-zinc-800 dark:text-white">
-          <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
-            <p className="flex-1 underline underline-offset-8">
-              Persons in this season
-            </p>
-            <Button variant="outlined" onClick={() => setOpenModal("timelineseasonperson")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                fill="currentColor"
-                className="h-5 w-5 transition-transform ease-in-out"
-              >
-                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-              </svg>
-            </Button>
-          </div>
-          <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
-        </section>
+        <Card className="col-span-1 row-span-4 flex-auto relative w-full" variant="outlined">
+          <CardHeader
+            title={`Events`}
+            titleProps={{
+              className: 'text-lg'
+            }}
+            action={(
+              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonevent")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="currentColor"
+                  className="h-5 w-5 transition-transform ease-in-out"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              </Button>
+            )}
+          />
+          <CardContent className="py-0 pr-0 space-y-3">
+            <TimelineSeasonEventsCell
+              timeline_season_id={timelineSeason.id}
+              setOpenModal={(id, type) => {
+                setOpenModal(type);
+                setEditEvent(id);
+              }}
+            />
+          </CardContent>
+        </Card>
+
+
+        <Card variant="outlined" className="col-span-5 row-span-1">
+          <CardHeader
+            title={`Persons in this season`}
+            titleProps={{
+              className: 'text-lg'
+            }}
+            action={(
+              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonperson")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill="currentColor"
+                  className="h-5 w-5 transition-transform ease-in-out"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              </Button>
+            )}
+          />
+          <CardContent>
+            <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
+          </CardContent>
+        </Card>
       </div>
-
-      <ButtonGroup>
-        <Button
-          permission="timeline_update"
-          color="primary"
-          variant="outlined"
-          to={routes.editTimelineSeason({
-            id: timelineSeason.id,
-          })}
-          startIcon={
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-            </svg>
-          }
-        >
-          Edit
-        </Button>
-        <Button
-          permission="timeline_delete"
-          color="error"
-          variant="outlined"
-          onClick={() => onDeleteClick(timelineSeason.id)}
-          startIcon={
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-              <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-            </svg>
-          }
-        >
-          Delete
-        </Button>
-      </ButtonGroup>
     </article>
   );
 };

@@ -227,7 +227,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   };
 
   const anchorRef = useRef(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const mergedSettings = { ...defaultSettings, ...settings };
 
   const columnSettings = columns || [];
@@ -248,6 +248,8 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
+
   const [filters, setFilters] = useState<Filter<Row>[]>([]);
   const [sort, setSort] = useState<{
     column: TableColumn<Row>["field"];
@@ -396,6 +398,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     return filteredData;
   }, [sort, searchTerm, dataRows, mergedSettings.pagination, filters]);
 
+
   const PaginatedData = useMemo(() => {
     if (!mergedSettings.pagination.enabled) return SortedFilteredData;
 
@@ -405,7 +408,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     return SortedFilteredData.slice(startIndex, endIndex);
   }, [SortedFilteredData, currentPage, selectedPageSizeOption]);
 
-  const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
   const handleRowSelect = (event, id?) => {
     const {

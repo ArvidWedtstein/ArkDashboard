@@ -30,7 +30,6 @@ type IButtonGroupContext = {
 export const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
 export const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
 
-// TODO: fix button events handlers for link and button
 type ButtonProps = {
   startIcon?: ReactNode;
   endIcon?: ReactNode;

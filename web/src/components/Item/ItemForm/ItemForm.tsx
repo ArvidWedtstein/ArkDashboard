@@ -354,7 +354,7 @@ const ItemForm = (props: ItemFormProps) => {
           name="visible"
           helperText="Is this item visible to the public?"
         />
-        {/* TODO: checkj why dis reset category and type */}
+        {/* TODO: check why this resets category and type */}
         <Switch
           onLabel="Craftable"
           defaultChecked={craftable}

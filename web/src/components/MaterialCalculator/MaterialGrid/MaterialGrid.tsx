@@ -222,16 +222,17 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
     const { type, payload } = action;
     switch (type) {
       case "ADD": {
-        const itemIndex = state.findIndex(({ id }) => id === payload.item.id);
+        const { item, amount } = payload;
+        const itemIndex = state.findIndex(({ id }) => id === item.id);
 
-        let amountToAdd = payload.amount || 1;
+        let amountToAdd = amount || 1;
 
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
                 ...item,
-                amount: (item.amount + amountToAdd) % payload.item?.itemRecipes[0]?.yields === 0 ? (item.amount + amountToAdd) : (item.amount + amountToAdd) + (payload.item?.itemRecipes[0]?.yields - (item.amount + amountToAdd) % payload.item?.itemRecipes[0]?.yields)
+                amount: (item.amount + amountToAdd) % item?.itemRecipes[0]?.yields === 0 ? (item.amount + amountToAdd) : (item.amount + amountToAdd) + (payload.item?.itemRecipes[0]?.yields - (item.amount + amountToAdd) % payload.item?.itemRecipes[0]?.yields)
               }
               : item
           );
@@ -240,13 +241,13 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
         return [
           ...state,
           {
-            ...payload.item,
-            amount: amountToAdd % payload.item?.itemRecipes[0]?.yields === 0 ? amountToAdd : amountToAdd + (payload.item?.itemRecipes[0]?.yields - amountToAdd % payload.item?.itemRecipes[0]?.yields),
+            ...item,
+            amount: amountToAdd % item?.itemRecipes[0]?.yields === 0 ? amountToAdd : amountToAdd + (payload.item?.itemRecipes[0]?.yields - amountToAdd % item?.itemRecipes[0]?.yields),
           },
         ];
       }
       case "EDIT_AMOUNT": {
-        const rowIndex = payload.index;
+        const { index: rowIndex, amount } = payload;
 
         if (rowIndex < 0) {
           return state;
@@ -276,16 +277,16 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
 
           const recipeYields = item.itemRecipes[0]?.yields * crafting_station.item_production_multiplier || 1;
 
-          const amount = payload.amount < item.amount ? item.amount - recipeYields : item.amount + recipeYields;
+          const correctedAmount = amount < item.amount ? item.amount - recipeYields : item.amount + recipeYields;
 
           return {
             ...item,
-            amount: amount
+            amount: correctedAmount
           }
         });
       }
       case "CHANGE_AMOUNT": {
-        let { index: itemIndex, amount = 0 } = payload;
+        const { index: itemIndex, amount = 0 } = payload;
         const normalizedAmount = isNaN(amount) ? 0 : amount;
 
 
@@ -293,16 +294,9 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
           return;
         }
 
-        // TODO: calculate yields here.
         return state.map((item, i) => {
           if (i === itemIndex) {
-            const { itemRecipes } = item;
-            const yields = itemRecipes[0]?.yields || 1;
-            const remainder = normalizedAmount % yields;
-
-            const newAmount = remainder === 0 ? normalizedAmount : normalizedAmount + (yields - remainder);
-
-            return { ...item, amount: newAmount };
+            return { ...item, amount: normalizedAmount };
           }
           return item;
         });
@@ -319,7 +313,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
     }
   };
 
-  let [recipes, setRecipes] = useReducer(reducer, []);
+  const [recipes, setRecipes] = useReducer(reducer, []);
 
   // Item recipe is selected from menu
   const onAdd = (item_id: ArrayElement<MaterialGridProps["craftingItems"]>["id"]) => {
@@ -430,7 +424,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
         ...item,
         amount,
         children,
-        crafting_time: amount * (crafting_time / crafting_speed_modifier),
+        crafting_time: (amount / item?.itemRecipes[0].yields) * (crafting_time / crafting_speed_modifier), // OLD: amount * (crafting_time / crafting_speed_modifier),
         itemRecipes: item.itemRecipes.map((itemRecipe) => ({
           ...itemRecipe,
           crafting_station_id: crafting_station.id
@@ -507,30 +501,27 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
   const saveRecipe = async (e) => {
     e.preventDefault();
     try {
-
       if (!recipes.length) {
         return toast.error("No items to save");
       }
 
-      console.log(recipes)
-
       const input = {
         created_at: new Date().toISOString(),
-        user_id: currentUser.id,
-        private: true,
+        created_by: currentUser?.id,
+        public_access: false,
         UserRecipeItemRecipe: {
-          create: recipes.map(({ id, amount }) => ({
+          create: recipes.map(({ amount, itemRecipes }) => ({
             amount,
-            item_recipe_id: id,
+            item_recipe_id: itemRecipes[0]?.id,
           })),
         },
       };
-
-      // toast.promise(createRecipe({ variables: { input } }), {
-      //   loading: "Creating recipe...",
-      //   success: <b>Recipe saved!</b>,
-      //   error: <b>Failed to create recipe.</b>,
-      // });
+      // TODO: add form where items are shown, and add option for setting name?
+      toast.promise(createRecipe({ variables: { input } }), {
+        loading: "Creating recipe...",
+        success: "Recipe saved!",
+        error: "Failed to create recipe.",
+      });
     } catch (error) {
       return console.error(error);
     }
@@ -553,7 +544,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
     UserRecipeItemRecipe.forEach(async ({ item_recipe_id, amount }) => {
       let itemfound = craftingItems
         .filter(({ itemRecipes }) => itemRecipes.length > 0)
-        .find((item) => item.itemRecipes[0].id === item_recipe_id);
+        .find((item) => item.itemRecipes.find((ir) => ir.id === item_recipe_id));
 
       if (!itemfound) {
         return toast.custom((t) => (

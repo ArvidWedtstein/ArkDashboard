@@ -61,7 +61,7 @@ export const createUserRecipe: MutationResolvers["createUserRecipe"] = async ({
 }) => {
   const recipes = await db.userRecipe.findMany({
     where: {
-      user_id: { equals: input.created_by },
+      created_by: { equals: input.created_by },
     },
   });
   validateWithSync(() => {

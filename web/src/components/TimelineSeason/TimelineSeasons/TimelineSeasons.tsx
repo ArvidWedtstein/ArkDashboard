@@ -40,7 +40,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
           className="my-3"
           color="success"
           variant="outlined"
-          endIcon={
+          startIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512"

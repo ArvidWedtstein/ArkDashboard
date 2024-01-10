@@ -25,6 +25,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/component
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Toast from "src/components/Util/Toast/Toast";
 import { useAuth } from "src/auth";
+import Switch from "src/components/Util/Switch/Switch";
 
 
 const CREATE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
@@ -100,7 +101,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
   };
 
 
-  const [openModal, setOpenModal] = useState<{ open: boolean; edit?: boolean, itemRecipe?: UpdateUserRecipeItemRecipeInput & { id?: string } }>({
+  const [openModal, setOpenModal] = useState<{ open: boolean; edit?: boolean, itemRecipe?: UpdateUserRecipeItemRecipeInput & { id?: number } }>({
     open: false,
     edit: false,
     itemRecipe: null
@@ -199,14 +200,14 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               titleClassName="rw-form-error-title"
               listClassName="rw-form-error-list"
             />
-            <Lookup
+            {/* <Lookup
               label="Item Recipe"
               name="item_recipe_id"
               loading={props.loading}
               isOptionEqualToValue={(opt, val) => opt.id === val.id}
               getOptionValue={(opt) => opt.id}
               getOptionLabel={(opt) => opt.Item_ItemRecipe_crafted_item_idToItem.name}
-              defaultValue={openModal.itemRecipe?.item_recipe_id}
+              defaultValue={openModal?.itemRecipe?.item_recipe_id}
               // groupBy={(d) => d.Item_ItemRecipe_crafted_item_idToItem.category || ""}
               options={[...props?.itemRecipes]?.sort((a, b) => {
                 if (a.Item_ItemRecipe_crafted_item_idToItem.category || "" < b.Item_ItemRecipe_crafted_item_idToItem.category) {
@@ -218,7 +219,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
                 return 0;
               }) || []}
               validation={{ required: true }}
-            />
+            /> */}
 
             <Input
               label="Amount"
@@ -286,10 +287,10 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
           listClassName="rw-form-error-list"
         />
         <Input
-          label={'User ID'}
+          label={'User'}
           name="created_by"
           validation={{ required: true }}
-          defaultValue={props.userRecipe?.user_id || currentUser?.id}
+          defaultValue={props.userRecipe?.created_by || currentUser?.id}
           className="hidden invisible"
         />
         <Input
@@ -301,27 +302,13 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
         <br />
 
 
-        <Label
-          name="public_access"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Public Access
-        </Label>
-
-        <CheckboxField
+        <Switch
           name="public_access"
           defaultChecked={props.userRecipe?.public_access}
-          className="rw-input peer/draft"
-          errorClassName="rw-input rw-input-error"
+          offLabel="Private"
+          onLabel="Public"
+          helperText="Should this recipe be visible to everyone?"
         />
-
-        <div className="hidden text-white peer-checked/draft:block">
-          This recipe will only be visible to you and administrators.
-        </div>
-        <div className="block text-white peer-checked/draft:hidden">
-          Your recipe will be publicly visible to everyone
-        </div>
         <FieldError name="public_access" className="rw-field-error" />
 
         <div className="my-3">
