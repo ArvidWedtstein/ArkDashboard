@@ -404,20 +404,6 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               header: "prg",
               field: "progress",
               render: ({ value, row }) => {
-                let color = "bg-red-500";
-
-                if (value <= 20) {
-                  color = "bg-red-500";
-                } else if (value <= 40 && value > 20) {
-                  color = "bg-orange-500";
-                } else if (value > 40 && value <= 60) {
-                  color = "bg-yellow-500";
-                } else if (value > 60 && value <= 80) {
-                  color = "bg-lime-500";
-                } else if (value <= 100 && value > 80) {
-                  color = "bg-green-500";
-                }
-
                 return (
                   <dd
                     className="flex items-center space-x-2"
@@ -425,10 +411,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   >
                     <div className="h-2 w-full rounded bg-gray-200 dark:bg-gray-700">
                       <div
-                        className={`h-2 rounded bg-[${getHexCodeFromPercentage(
-                          value
-                        )}]`}
-                        style={{ width: `${value}%` }}
+                        className={`h-2 rounded`}
+                        style={{
+                          width: `${value}%`, backgroundColor: getHexCodeFromPercentage(value)
+                        }}
                       />
                     </div>
                     <span className="hidden text-sm font-medium text-gray-500 dark:text-gray-400 md:block">

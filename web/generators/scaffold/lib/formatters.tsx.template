@@ -35,10 +35,6 @@ export const truncate = (value: string | number) => {
   return output
 }
 
-export const jsonTruncate = (obj: unknown) => {
-  return truncate(JSON.stringify(obj, null, 2))
-}
-
 export const timeTag = (dateTime?: string) => {
   let output: string | JSX.Element = ''
 

@@ -19,7 +19,6 @@ import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import {
   useControlled,
-  usePreviousProps,
   useEventCallback,
 } from "src/lib/formatters";
 import { FormControl, InputBase, InputBaseProps, InputLabel } from "../Input/Input";
@@ -31,6 +30,14 @@ function stripDiacritics(string) {
     ? string.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     : string;
 }
+
+const usePreviousProps = <T extends {}>(value: T) => {
+  const ref = React.useRef<T | {}>({});
+  React.useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current as Partial<T>;
+};
 
 function createFilterOptions<Value>(
   config: {

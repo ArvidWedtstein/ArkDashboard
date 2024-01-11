@@ -8,7 +8,7 @@ import Popper from "src/components/Util/Popper/Popper";
 import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
 import { Card, CardActionArea } from "src/components/Util/Card/Card";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import List, { ListItem } from "src/components/Util/List/List";
 import TribeForm from "../TribeForm/TribeForm";
 import { useMutation } from "@redwoodjs/web";
@@ -221,35 +221,38 @@ const TribesList = ({ tribes, queryResult }: Props) => {
           />
         </DialogContent>
         <DialogActions className="space-x-1">
-          <Button
-            type="button"
-            color="success"
-            variant="contained"
-            onClick={() => {
-              if (modalRef?.current) {
-                modalRef.current.querySelector("form")?.requestSubmit();
+          <ButtonGroup>
+            <Button
+              type="reset"
+              color="secondary"
+              variant="outlined"
+              onClick={() => setOpenModal({ open: false, edit: false })}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              color="success"
+              variant="contained"
+              onClick={() => {
+                if (modalRef?.current) {
+                  modalRef.current.querySelector("form")?.requestSubmit();
+                }
+              }}
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="pointer-events-none"
+                  fill="currentColor"
+                >
+                  <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+                </svg>
               }
-            }}
-            startIcon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="pointer-events-none"
-                fill="currentColor"
-              >
-                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
-              </svg>
-            }
-          >
-            Save
-          </Button>
-          <Button
-            type="reset"
-            color="error"
-            onClick={() => setOpenModal({ open: false, edit: false })}
-          >
-            Cancel
-          </Button>
+            >
+              Save
+            </Button>
+          </ButtonGroup>
         </DialogActions>
       </Dialog>
 
@@ -328,83 +331,83 @@ const TribesList = ({ tribes, queryResult }: Props) => {
         </Card>
       </div>
 
-      <div className="">
-        <Table
-          checkSelect
-          settings={{
-            filter: true,
-            search: true,
-            export: true,
-            header: true,
-            pagination: {
-              rowsPerPage: 10,
-              enabled: true,
-              pageSizeOptions: [10, 25, 50, 100],
-            },
-          }}
-          columns={[
-            {
-              field: "name",
-              header: "Name",
-              sortable: true,
-              width: 50,
-            },
-            {
-              field: "created_at",
-              header: "Created At",
-              datatype: "date",
-              sortable: true,
-              valueFormatter: ({ value }) => timeTag(value.toString()),
-            },
-            {
-              field: "Profile",
-              header: "Created By",
-              render: ({ value }) => (
-                <div className="flex flex-row">
-                  {value.avatar_url && (
-                    <img
-                      className="h-10 w-10 rounded-full"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value.avatar_url}`}
-                      alt={value.full_name || "Profile Image"}
-                    />
-                  )}
-                  <div className="flex items-center pl-3">
-                    <div className="text-base">{value.full_name}</div>
-                  </div>
+
+      <Table
+        checkSelect
+        settings={{
+          filter: true,
+          search: true,
+          export: true,
+          header: true,
+          pagination: {
+            rowsPerPage: 10,
+            enabled: true,
+            pageSizeOptions: [10, 25, 50, 100],
+          },
+        }}
+        columns={[
+          {
+            field: "name",
+            header: "Name",
+            sortable: true,
+            width: 50,
+          },
+          {
+            field: "created_at",
+            header: "Created At",
+            datatype: "date",
+            sortable: true,
+            valueFormatter: ({ value }) => timeTag(value.toString()),
+          },
+          {
+            field: "Profile",
+            header: "Created By",
+            render: ({ value }) => (
+              <div className="flex flex-row">
+                {value.avatar_url && (
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value.avatar_url}`}
+                    alt={value.full_name || "Profile Image"}
+                  />
+                )}
+                <div className="flex items-center pl-3">
+                  <div className="text-base">{value.full_name}</div>
                 </div>
-              ),
-            },
-            {
-              field: "id",
-              header: "",
-              width: 30,
-              render: ({ row }) => (
-                <Button
-                  variant="icon"
-                  color="DEFAULT"
-                  permission="authenticated"
-                  onClick={(e) => {
-                    setAnchorRef({
-                      open: anchorRef?.element ? !anchorRef?.open : true,
-                      element: e.currentTarget,
-                      row_id: row["id"],
-                    });
-                  }}
+              </div>
+            ),
+          },
+          {
+            field: "id",
+            header: "",
+            width: 30,
+            render: ({ row }) => (
+              <Button
+                variant="icon"
+                color="DEFAULT"
+                permission="authenticated"
+                onClick={(e) => {
+                  setAnchorRef({
+                    open: anchorRef?.element ? !anchorRef?.open : true,
+                    element: e.currentTarget,
+                    row_id: row["id"],
+                  });
+                }}
+              >
+                <svg
+                  className="h-4 w-4 fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
                 >
-                  <svg
-                    className="h-4 w-4 fill-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                  >
-                    <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
-                  </svg>
-                </Button>
-              ),
-            },
-          ]}
-          rows={tribes}
-        />
-      </div>
+                  <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
+                </svg>
+              </Button>
+            ),
+          },
+        ]}
+        rows={tribes}
+      />
+
       <Popper anchorEl={anchorRef?.element} open={anchorRef?.open}>
         <ClickAwayListener onClickAway={handleClose}>
           <div

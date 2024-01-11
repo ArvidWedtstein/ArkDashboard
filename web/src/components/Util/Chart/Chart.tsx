@@ -4,11 +4,8 @@ import {
 import {
   ArrayElement,
   IntRange,
-  drawCatmullRomChart,
   formatNumber,
-  generateChartColors,
   groupBy,
-
 } from "src/lib/formatters";
 
 type AxisData = {
@@ -45,6 +42,97 @@ type ChartContainerProps = {
   width?: number;
   height?: number;
 };
+
+/**
+ * Generates random colors for chart series
+ * @param {number} seriesCount - The number of series to generate colors for.
+ * @returns
+ */
+const generateChartColors = (seriesCount: number): string[] => {
+  const baseColors: string[] = [];
+  const colorThreshold = 100; // Adjust as needed
+
+  for (let i = 0; i < seriesCount; i++) {
+    let r, g, b;
+    do {
+      r = Math.floor(Math.random() * 256);
+      g = Math.floor(Math.random() * 256);
+      b = Math.floor(Math.random() * 256);
+    } while (
+      baseColors.some((color) => {
+        const [cr, cg, cb] = color.match(/\d+/g).map((c) => parseInt(c, 10));
+        return (
+          Math.abs(r - cr) < colorThreshold &&
+          Math.abs(g - cg) < colorThreshold &&
+          Math.abs(b - cb) < colorThreshold
+        );
+      })
+    );
+
+    baseColors.push(`rgb(${r}, ${g}, ${b})`);
+  }
+
+  // Ensure the colors are visible on a dark background
+  return baseColors.map((color) => {
+    let [r, g, b] = color.match(/\d+/g).map((c) => parseInt(c, 10));
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    if (luminance > 0.5) {
+      // If the color is too light for a dark background, make it darker
+      const ratio = 0.8; // Adjust as needed
+      r = Math.floor(r * ratio);
+      g = Math.floor(g * ratio);
+      b = Math.floor(b * ratio);
+      return `rgb(${r}, ${g}, ${b})`;
+    } else {
+      return color;
+    }
+  });
+};
+
+const catmullRomInterpolation = (
+  t: number,
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number
+): number => {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const a = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
+  const b = p0 - 2.5 * p1 + 2 * p2 - 0.5 * p3;
+  const c = -0.5 * p0 + 0.5 * p2;
+  const d = p1;
+  return a * t3 + b * t2 + c * t + d;
+};
+
+const drawCatmullRomChart = (
+  points: [number, number][],
+  numPoints: number = 100
+): { x: number; y: number }[] => {
+  const result: { x: number; y: number }[] = [];
+  const numSegments = points.length - 1;
+
+  for (let i = 0; i < numSegments; i++) {
+    const p0 = i > 0 ? points[i - 1][1] : points[i][1];
+    const p1 = points[i][1];
+    const p2 = points[i + 1][1];
+    const p3 = i < numSegments - 1 ? points[i + 2][1] : p2;
+
+    for (let j = 0; j < numPoints; j++) {
+      const t = j / numPoints;
+      const interpolatedValue = catmullRomInterpolation(t, p0, p1, p2, p3);
+      result.push({
+        x: points[i][0] + t * (points[i + 1][0] - points[i][0]),
+        y: interpolatedValue,
+      });
+    }
+  }
+
+  return result;
+};
+
+
 
 const numberToChart = (
   chartData: ChartContainerProps & {

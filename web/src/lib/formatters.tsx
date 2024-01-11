@@ -1,31 +1,6 @@
 import React from "react";
-
 import humanize from "humanize-string";
 
-export const Log = (...message: any) => {
-  let severity = "info"
-  let title = ""
-  // , title: string = "", severity: 'info' | 'warning' | 'error' = "info"
-
-  let color = "";
-  let bg = ""
-
-  switch (severity) {
-    case 'info':
-      color = "#c6ccff"
-      bg = "#000000";
-      break;
-    case 'warning':
-      color = "#CC8824";
-      bg = "#000000";
-      break;
-    case 'error':
-      color = "#ff0000"
-      bg = "#ffffff";
-      break;
-  }
-  return console.info(`%c${title === "" ? severity : `${title}`}\n%c${message.map((msg) => typeof msg === "object" ? JSON.stringify(msg, null, 2) : msg === null ? 'null' : msg === undefined ? 'undefined' : msg.toString()).join('\n')}`, `background: ${color}; color: ${bg}; padding: 0px 4px; border: 1px solid #000000; border-radius: 4px;`, `color: #ffffff;`)
-}
 export const formatEnum = (values: string | string[] | null | undefined) => {
   let output = "";
 
@@ -47,37 +22,6 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
-type Primitive = string | number | boolean | null | undefined;
-
-type DeepObject = {
-  [key: string]: Primitive | DeepObject | DeepArray;
-};
-
-interface DeepArray extends Array<Primitive | DeepObject | DeepArray> { }
-export const deepEqual = (obj1: DeepObject | DeepArray, obj2: DeepObject | DeepArray): boolean => {
-  // Check if the objects are of the same type
-  if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
-    return obj1 === obj2;
-  }
-
-  // Get the keys of the objects
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  // Check if the number of keys is the same
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  // Deep compare each property
-  for (const key of keys1) {
-    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-      return false;
-    }
-  }
-
-  return true;
-}
 export const isEmpty = (input: unknown): boolean => {
   if (input === null || input === undefined) {
     return true;
@@ -118,10 +62,6 @@ export const truncate = (value: string | number, maxlength: number = 150) => {
   }
 
   return output;
-};
-
-export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
-  return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
 interface options {
@@ -203,14 +143,6 @@ export const isDate = (dateString: string | Date | number): boolean => {
 };
 
 /**
- *
- * @param arr
- * @returns
- */
-export const average = (arr) => arr.reduce((p, c) => p + c, 0) / arr.length;
-
-
-/**
  * Sorts an array of objects based on a specified property and sorting order.
  *
  * @template ItemType
@@ -262,16 +194,6 @@ export const formatBytes = (a, b = 2) => {
 };
 
 /**
- * Capitalizes the first letter of a given string.
- * @param {string} string - The input string to be capitalized.
- * @returns {string} - The capitalized string.
- * @deprecated Use the `capitalize` tailwind method instead.
- */
-export const capitalize = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
-
-/**
  * @description Capitalize the first letter of each word in a string
  * @param sentence
  * @returns Capitalized string
@@ -298,289 +220,10 @@ export const combineBySummingKeys = (...objects: object[]) => {
   return mergedObj;
 };
 
-// Default Turret tower calculations
-// let turretTower = {
-//   size: 14 * 14,
-//   cage_height: 22,
-//   top_turret_height: 7,
-//   total_height: 22 + 7,
-//   heavy_turrets: 60,
-//   tek_turrets: 65,
-//   hatchframe_layers: 3,
-//   turret_ring_levels: [
-//     {
-//       height: 10,
-//       hasGenerator: false,
-//     },
-//     {
-//       height: 14,
-//       hasGenerator: true,
-//     },
-//     {
-//       height: 18,
-//       hasGenerator: false,
-//     },
-//     {
-//       height: 29,
-//       hasGenerator: true,
-//     }
-//   ] // 13, 16, 19, 22?
-// }
-// const amountCenterDoorframes = turretTower.total_height * 8
-// const amountOutsideDoorframes = (Math.sqrt(turretTower.size) * 4) * turretTower.cage_height
-// const amountGiantHatchframes = (turretTower.size / 4) * (turretTower.hatchframe_layers + 1) // +1 for the top of cage
-// const amountCenterHatchframes = 8 * turretTower.turret_ring_levels.length
-// const amountTekGen = turretTower.turret_ring_levels.filter((f) => f.hasGenerator === true).length
-// let towerItems = {
-//   172: turretTower.size, // Metal Foundation
-//   621: amountGiantHatchframes + amountCenterHatchframes + amountTekGen, // Giant Metal Hatchframe
-//   622: amountTekGen, // Giant Metal Hatchframe for Tek Generator
-//   179: amountTekGen * 8, // Metal Walls to protect Tek Generator
-//   168: amountTekGen * 3, // Metal Ceiling to protect Tek Generator
-//   169: amountTekGen, // Metal Hatchframe to protect Tek Generator
-//   178: amountTekGen, // Metal Trapdoor to protect Tek Generator
-//   770: amountOutsideDoorframes + amountCenterDoorframes, // Metal Double Doorframe
-//   686: turretTower.heavy_turrets, // Heavy Turret
-//   681: turretTower.tek_turrets, // Tek Turret
-//   676: amountTekGen, // Tek Generator
-// }
-
-type ItemRecipe = {
-  __typename: string;
-  id: string;
-  crafting_station_id: number;
-  crafting_time: number;
-  yields: number;
-  Item_ItemRecipe_crafted_item_idToItem?: {
-    __typename: string;
-    id: number;
-    name: string;
-    image: string;
-    category: string;
-    type: string;
-  };
-  ItemRecipeItem?: {
-    __typename: string;
-    id: string;
-    amount: number;
-    Item: {
-      __typename: string;
-      id: number;
-      name: string;
-      image: string;
-    };
-  }[];
-};
-interface RecipeState extends ItemRecipe {
-  amount?: number;
-}
-/**
- * Calculates the base materials required to produce the specified objects.
- *
- * @param {boolean} firstRecipeOnly - If set to true, only the first recipe will be considered and
- *                                     the function will return the direct materials.
- * @param {...Object} objects - The objects for which the base materials are to be calculated.
- *
- * @returns {Array<RecipeState>} An array of objects representing the base materials required.
- */
-export const getBaseMaterials = (
-  baseMaterials: boolean = false,
-  path: boolean = false,
-  items: ItemRecipe[],
-  crafting_stations: number[],
-  ...objects: RecipeState[]
-): RecipeState[] => {
-  let materials = [];
-
-  const findBaseMaterials = (
-    item: ItemRecipe,
-    amount: number,
-    yields: number = 1
-  ) => {
-    // If has no crafting recipe, return
-    if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
-      return;
-    }
-
-    console.log(item)
-
-    // Go through each crafting station? For crafting time reduction osv..
-    // 128 - cooking pot
-    // 601 - ind cook
-    //
-    // 107 - mortar and pestle
-    // 607 - chem bench
-    //
-    // 125 - refining forge
-    // 600 - ind forge
-    //
-    // 39 - campfire
-    // 360 - ind grill
-    //
-    // 618 - ind grinder
-    // 126 - smithy
-    // 606 - beer barrel
-    // 652 - tek replicator
-    // 185 - fabricator
-    // 525 - Castoroides Saddle
-    // 572 - Thorny Dragon Saddle
-    // 214 - Argentavis Saddle
-    // 800 - Desmodus Saddle
-    // 531 - Equus Saddle
-    // Loop through each recipe grouped on crafting station
-
-    // TODO: rewrite or fix?
-    // https://www.arkresourcecalculator.com/
-    for (const { Item, amount: recipeAmount } of item.ItemRecipeItem) {
-      let newRecipe = items.find(
-        (i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id
-      );
-
-      if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
-        const materialId = newRecipe
-          ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
-          : Item.id;
-
-        let crafting_time = newRecipe?.crafting_time || 0
-
-        if (item.crafting_station_id === 107 && crafting_stations.some(c => c === 607)) {
-          yields *= 6
-          crafting_time /= 2
-        }
-
-        let material = materials.find(
-          (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
-        );
-
-        const count = (recipeAmount * amount) / yields;
-
-        if (material) {
-          material.amount += count;
-          // material.crafting_time += count * (newRecipe?.crafting_time || 1);
-        } else {
-          material = {
-            ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
-            amount: count,
-            crafting_time: count * crafting_time,
-          };
-          materials.push(material);
-        }
-      } else if (newRecipe) {
-        // Dig down deeper
-        findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
-      }
-    }
-  };
-
-  // TODO: Check for right recipe for selected crafting stations
-  const getRecipeById = (recipeId: number, crafting_stations?: any[]) => {
-    return items.find(
-      (recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeId
-    );
-  };
-
-  const recipeTree = (recipe, amount: number = 1) => {
-    if (!recipe.ItemRecipeItem)
-      return {
-        ...recipe,
-        amount: recipe.amount * amount,
-        crafting_time: recipe.amount * (recipe.crafting_time || 1),
-      };
-
-    const processedItems = recipe.ItemRecipeItem.map((itemRecipeItem) => {
-      const processedItem = {
-        ...itemRecipeItem,
-        amount: (itemRecipeItem.amount * recipe.amount) / recipe.yields,
-        crafting_time:
-          (itemRecipeItem.amount / recipe.yields) * (recipe.crafting_time || 1),
-      };
-
-      const nestedRecipe = getRecipeById(itemRecipeItem.Item.id);
-
-      if (nestedRecipe) {
-        processedItem.Item = {
-          ...processedItem.Item,
-          ...nestedRecipe.Item_ItemRecipe_crafted_item_idToItem,
-        };
-
-        if (nestedRecipe.ItemRecipeItem) {
-          processedItem.ItemRecipeItem = nestedRecipe.ItemRecipeItem.map(
-            (nestedItemRecipeItem) =>
-              recipeTree(nestedItemRecipeItem, processedItem.amount)
-          );
-        }
-      }
-      return processedItem;
-    });
-    return {
-      ...recipe,
-      crafting_time: (recipe.crafting_time || 1) * amount,
-      Item: recipe.Item_ItemRecipe_crafted_item_idToItem,
-      ItemRecipeItem: processedItems,
-    };
-  };
-
-  objects.forEach((item) => {
-    if (path) {
-      materials.push(recipeTree(item, item.amount));
-    } else findBaseMaterials(item, item.amount, item.yields);
-  });
-  return materials;
-};
-
-interface Coordinate {
-  lat: number;
-  lon: number;
-}
-
-export const findShortestPath = (coordinates: Coordinate[]): Coordinate[] => {
-  const path: Coordinate[] = [];
-
-  // Start with the first coordinate and remove it from the array
-  let currentCoord = coordinates.shift();
-  path.push(currentCoord);
-
-  // Continue adding the nearest coordinate to the path until there are no more coordinates
-  while (coordinates.length > 0) {
-    let nearestCoord = coordinates[0];
-    let shortestDistance = distance(currentCoord, nearestCoord);
-
-    // Find the nearest coordinate to the current coordinate
-    for (let i = 1; i < coordinates.length; i++) {
-      const candidateCoord = coordinates[i];
-      const candidateDistance = distance(currentCoord, candidateCoord);
-      if (candidateDistance < shortestDistance) {
-        nearestCoord = candidateCoord;
-        shortestDistance = candidateDistance;
-      }
-    }
-
-    // Add the nearest coordinate to the path and remove it from the array
-    path.push(nearestCoord);
-    coordinates = coordinates.filter((coord) => coord !== nearestCoord);
-
-    // Update the current coordinate to the nearest one
-    currentCoord = nearestCoord;
-  }
-
-  return path;
-};
-
-export const distance = (
-  { lat: lat1, lon: lon1 }: Coordinate,
-  { lat: lat2, lon: lon2 }: Coordinate
-) => {
-  const latDiff = lat1 - lat2;
-  const lonDiff = lon1 - lon2;
-  return (latDiff ** 2 + lonDiff ** 2) ** 0.5;
-};
-
 /**
  * Formats the given number of seconds into a string representation
  * with the format "d days h hours m minutes s seconds".
  * If the `onlyLast` parameter is set to `true`, only the last non-zero unit is displayed.
- * If the `useAbs` parameter is set to `true` and the number of days is greater than 30,
- * the function returns the month and day of the corresponding date.
  *
  * @param {number} seconds - The number of seconds to format.
  * @param {boolean} [onlyLast=false] - Whether to display only the last non-zero unit.
@@ -764,19 +407,12 @@ export const getISOWeek = (date: Date = new Date()): number => {
   return weekNumber;
 };
 
-export function toISODate(date: Date | null): string | null {
-  if (date) {
-    return date.toISOString().split("T")[0];
-  }
-
-  return null;
-}
 
 /**
  *
  * @param date
  * @param unit
- * @returns
+ * @returns "time" ago
  */
 export const relativeDate = (date: Date | string, style?: Intl.RelativeTimeFormatStyle): string => {
   const now = new Date().getTime();
@@ -810,17 +446,23 @@ export const relativeDate = (date: Date | string, style?: Intl.RelativeTimeForma
  */
 export const getDateDiff = (date1: Date, date2: Date) => {
   const diff = Math.abs(date1.getTime() - date2.getTime());
-  const years = Math.round(diff / (1000 * 3600 * 24 * 365));
-  const months = Math.round(diff / (1000 * 3600 * 24 * 30));
+
+  const years = Math.floor(diff / (1000 * 3600 * 24 * 365));
+  const months = Math.floor(diff / (1000 * 3600 * 24 * 30));
   const days = Math.floor(diff / (1000 * 3600 * 24));
   const hours = Math.floor((diff / (1000 * 3600)) % 24);
-  const minutes = Math.floor((diff / 1000 / 60) % 60);
-  const dates = Array.from(
-    { length: (+date2 - +date1) / (24 * 60 * 60 * 1000) + 1 },
-    (_, index) => {
-      return addToDate(new Date(date1), index, "day");
-    }
-  );
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+  const dates = [];
+  let currentDate = new Date(date1);
+
+  while (currentDate <= date2) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  const dateString = `${days} days, ${hours} hours, ${minutes} minutes`;
+
   return {
     years,
     months,
@@ -828,7 +470,7 @@ export const getDateDiff = (date1: Date, date2: Date) => {
     hours,
     minutes,
     dates,
-    dateString: `${days} days, ${hours} hours, ${minutes} minutes`,
+    dateString,
   };
 };
 
@@ -851,52 +493,6 @@ export const getWordType = (word: string) => {
 };
 
 /**
- *
- * @param {number} min - minimum number
- * @param {number} max - maximum number
- * @returns a random number between min and max
- */
-export const random = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1) + min);
-
-export const generateUniqueId = (): string => {
-  const timestamp = Date.now().toString(36); // Convert current timestamp to base36 string
-  const randomString = Math.random().toString(36).substr(2, 5); // Generate random string
-  return `${timestamp}-${randomString}`;
-};
-
-export const arrRandNoRep = (arr: any[]) => {
-  let lastElement = null;
-  let randomIndex = null;
-
-  do {
-    randomIndex = Math.floor(Math.random() * arr.length);
-  } while (arr[randomIndex] === lastElement);
-
-  lastElement = arr[randomIndex];
-  return lastElement;
-};
-/**
- * singularizes a word.
- * @param word
- * @returns
- * @example singularize("apples") // "apple"
- */
-export const singularize = (word: string) => {
-  const endings = {
-    ves: "fe",
-    ies: "y",
-    i: "us",
-    zes: "ze",
-    ses: "s",
-    es: "e",
-    s: "",
-  };
-  const pattern = new RegExp(`(${Object.keys(endings).join("|")})$`);
-  return word.replace(pattern, (_, match) => endings[match]);
-};
-
-/**
  * Returns a pluralized string based on the count and noun provided.
  *
  * @param {number} count - The number of items.
@@ -913,287 +509,9 @@ export const pluralize = (
 ): string => `${includeCount ? count : ""} ${noun}${count !== 1 ? suffix : ""}`;
 
 
-export const formatXYtoLatLon = (
-  map_id: number,
-  options: { x?: number; y?: number },
-  reverse: boolean = false
-) => {
-  let subtractX = 0;
-  let multiplierX = 0;
-  let subtractY = 0;
-  let multiplierY = 0;
-
-  /**
-   * Latitude corresponds to the Y coordinate,
-   * and Longitude corresponds to X. To convert the Lat/Long map coordinates to UE coordinates,
-   * simply subtract the shift value, and multiply by the right multiplier from the following table.
-   */
-
-  switch (map_id) {
-    case 1: //  Valguero
-      subtractX = 50;
-      multiplierX = 8160;
-      subtractY = 50;
-      multiplierY = 8160;
-    case 2: // the island
-      subtractX = 50;
-      multiplierX = 8000;
-      subtractY = 50;
-      multiplierY = 8000;
-    case 3: // the center
-      // lon
-      subtractX = 55.1;
-      multiplierX = 9600;
-
-      // lat
-      subtractY = 30.34;
-      multiplierY = 9584;
-    case 4: // ragnarok
-      subtractX = 50;
-      multiplierX = 13100;
-      subtractY = 50;
-      multiplierY = 13100;
-    case 5: // abberation
-      subtractX = 50;
-      multiplierX = 8000;
-      subtractY = 50;
-      multiplierY = 8000;
-    case 6: // extinction
-      subtractX = 50;
-      multiplierX = 8000;
-      subtractY = 50;
-      multiplierY = 8000;
-    case 7: // scorched earth
-      subtractX = 50;
-      multiplierX = 8000;
-      subtractY = 50;
-      multiplierY = 8000;
-    case 8: // genesis part 1
-      subtractX = 50;
-      multiplierX = 10500;
-      subtractY = 50;
-      multiplierY = 10500;
-    case 9: // genesis part 2
-      subtractX = 50;
-      multiplierX = 14500;
-      subtractY = 50;
-      multiplierY = 14500;
-    case 10: // crystal isles
-      // lon
-      subtractX = 50;
-      multiplierX = 17000;
-
-      // lat
-      subtractY = 48.75;
-      multiplierY = 16000;
-    case 11: // fjordur
-      subtractX = 0;
-      multiplierX = 0;
-      subtractY = 0;
-      multiplierY = 0;
-    case 12: // Lost island
-      // lon
-      subtractX = 49.02;
-      multiplierX = 15300;
-
-      // lat
-      subtractY = 51.634;
-      multiplierY = 15300;
-  }
-
-  // From Lat/Long to UE
-  // return (options.x - subtract) * multiplier
-
-  // From UE to Lat/Long
-  return {
-    lat: reverse
-      ? (options.y - subtractY) * multiplierY
-      : Math.floor(options.y / multiplierY + subtractY),
-    lon: reverse
-      ? (options.x - subtractX) * multiplierX
-      : Math.floor(options.x / multiplierX + subtractX),
-  };
-};
-
-export const svgArc = (
-  centerX: number,
-  centerY: number,
-  radiusX: number,
-  radiusY: number,
-  startAngle: number,
-  endAngle: number,
-  largeArcFlag: boolean = false,
-  sweepFlag: boolean = true
-): string => {
-  // Convert angles from degrees to radians
-  startAngle = (startAngle * Math.PI) / 180;
-  endAngle = (endAngle * Math.PI) / 180;
-
-  // Calculate the start and end points of the arc
-  const startX = centerX + radiusX * Math.cos(startAngle);
-  const startY = centerY + radiusY * Math.sin(startAngle);
-  const endX = centerX + radiusX * Math.cos(endAngle);
-  const endY = centerY + radiusY * Math.sin(endAngle);
-
-  // Use the A command to create the arc path
-  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${sweepFlag ? 1 : 0
-    } ${endX} ${endY}`;
-
-  // Construct the full path command
-  const pathData = `M ${startX} ${startY} ${arcCommand}`;
-
-  return pathData;
-};
-
-// export const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
-//   const t2 = t * t;
-//   const t3 = t * t2;
-//   return 0.5 * (
-//     (2 * p1) +
-//     (-p0 + p2) * t +
-//     (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
-//     (-p0 + 3 * p1 - 3 * p2 + p3) * t3
-//   );
-// }
-export const catmullRomInterpolation = (
-  t: number,
-  p0: number,
-  p1: number,
-  p2: number,
-  p3: number
-): number => {
-  const t2 = t * t;
-  const t3 = t2 * t;
-  const a = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
-  const b = p0 - 2.5 * p1 + 2 * p2 - 0.5 * p3;
-  const c = -0.5 * p0 + 0.5 * p2;
-  const d = p1;
-  return a * t3 + b * t2 + c * t + d;
-};
-
-export const drawCatmullRomChart = (
-  points: [number, number][],
-  numPoints: number = 100
-): { x: number; y: number }[] => {
-  const result: { x: number; y: number }[] = [];
-  const numSegments = points.length - 1;
-
-  for (let i = 0; i < numSegments; i++) {
-    const p0 = i > 0 ? points[i - 1][1] : points[i][1];
-    const p1 = points[i][1];
-    const p2 = points[i + 1][1];
-    const p3 = i < numSegments - 1 ? points[i + 2][1] : p2;
-
-    for (let j = 0; j < numPoints; j++) {
-      const t = j / numPoints;
-      const interpolatedValue = catmullRomInterpolation(t, p0, p1, p2, p3);
-      result.push({
-        x: points[i][0] + t * (points[i + 1][0] - points[i][0]),
-        y: interpolatedValue,
-      });
-    }
-  }
-
-  return result;
-};
-
-interface SvgPath {
-  pathData: string;
-}
-
-export const mergeOverlappingSvgPaths = (paths: SvgPath[]): SvgPath => {
-  // Combine all path data into one string
-  const allPathData = paths.map((path) => path.pathData).join("");
-
-  // Split the path data into individual commands
-  const commands = allPathData.split(/(?=[A-Za-z])/).filter(Boolean);
-
-  // Initialize variables to store the merged path data
-  let mergedPathData = "";
-  let currentCommand = "";
-  let currentArgs: string[] = [];
-
-  // Helper function to append a command and its arguments to the merged path
-  const appendCommand = () => {
-    if (currentCommand) {
-      mergedPathData += currentCommand + currentArgs.join(" ");
-      currentArgs = [];
-      currentCommand = "";
-    }
-  };
-
-  // Iterate through the commands
-  for (const command of commands) {
-    if (/^[A-Za-z]$/.test(command)) {
-      // If a new command is encountered, append the previous one
-      appendCommand();
-      currentCommand = command;
-    } else {
-      // Otherwise, accumulate arguments
-      currentArgs.push(command);
-    }
-  }
-
-  // Append the last command
-  appendCommand();
-  console.log(mergedPathData);
-  return { pathData: mergedPathData };
-};
-
-interface Point {
-  x: number;
-  y: number;
-}
-
-interface Rectangle {
-  topLeft: Point;
-  topRight: Point;
-  bottomLeft: Point;
-  bottomRight: Point;
-}
-/**
- *
- * @param start
- * @param end
- * @example <caption>Example usage of calculateCorners.</caption>
- * // returns { topLeft: { x: 0, y: 0 }, topRight: { x: 10, y: 0 }, bottomLeft: { x: 0, y: 10 }, bottomRight: { x: 10, y: 10 } }
- * calculateCorners({ x: 0, y: 0 }, { x: 10, y: 10 });
- *
- * @returns  {Rectangle} coordinates
- */
-export const calculateCorners = (start: Point, end: Point): Rectangle => {
-  const topLeft: Point = {
-    x: Math.min(start.x, end.x),
-    y: Math.min(start.y, end.y),
-  };
-
-  const topRight: Point = {
-    x: Math.max(start.x, end.x),
-    y: Math.min(start.y, end.y),
-  };
-
-  const bottomLeft: Point = {
-    x: Math.min(start.x, end.x),
-    y: Math.max(start.y, end.y),
-  };
-
-  const bottomRight: Point = {
-    x: Math.max(start.x, end.x),
-    y: Math.max(start.y, end.y),
-  };
-
-  return {
-    topLeft,
-    topRight,
-    bottomLeft,
-    bottomRight,
-  };
-};
-
 /**
  * Generates a pdf from an array of your choice
  */
-
 export const generatePDF = (crafts) => {
   const pages = [];
   const tableSize = {
@@ -1409,53 +727,6 @@ export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
 };
 
 /**
- *
- * @param {number} seriesCount - The number of series to generate colors for.
- * @returns
- */
-export const generateChartColors = (seriesCount: number): string[] => {
-  const baseColors: string[] = [];
-  const colorThreshold = 100; // Adjust as needed
-
-  for (let i = 0; i < seriesCount; i++) {
-    let r, g, b;
-    do {
-      r = Math.floor(Math.random() * 256);
-      g = Math.floor(Math.random() * 256);
-      b = Math.floor(Math.random() * 256);
-    } while (
-      baseColors.some((color) => {
-        const [cr, cg, cb] = color.match(/\d+/g).map((c) => parseInt(c, 10));
-        return (
-          Math.abs(r - cr) < colorThreshold &&
-          Math.abs(g - cg) < colorThreshold &&
-          Math.abs(b - cb) < colorThreshold
-        );
-      })
-    );
-
-    baseColors.push(`rgb(${r}, ${g}, ${b})`);
-  }
-
-  // Ensure the colors are visible on a dark background
-  return baseColors.map((color) => {
-    let [r, g, b] = color.match(/\d+/g).map((c) => parseInt(c, 10));
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-    if (luminance > 0.5) {
-      // If the color is too light for a dark background, make it darker
-      const ratio = 0.8; // Adjust as needed
-      r = Math.floor(r * ratio);
-      g = Math.floor(g * ratio);
-      b = Math.floor(b * ratio);
-      return `rgb(${r}, ${g}, ${b})`;
-    } else {
-      return color;
-    }
-  });
-};
-
-/**
  * Returns color from red to green based on percentage
  * @param percentage
  * @returns
@@ -1478,6 +749,12 @@ export const getHexCodeFromPercentage = (percentage: number): string => {
 
 
 // Color Converting Functions
+
+/**
+ * Converts Rgb to Hex
+ * @param rgb
+ * @returns
+ */
 export const RgbToHex = (rgb: string) => {
 
   if (!/^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i.test(rgb)) {
@@ -1494,11 +771,18 @@ export const RgbToHex = (rgb: string) => {
     return `#${hex}`;
   }
 }
+
+/**
+ * Converts Rgb To Hsl
+ * @param r
+ * @param g
+ * @param b
+ * @returns
+ */
 export const RgbToHsl = (r: number, g: number, b: number): [hue: number, saturation: number, lightness: number] => {
   r /= 255;
   g /= 255;
   b /= 255;
-
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
@@ -1528,6 +812,12 @@ export const RgbToHsl = (r: number, g: number, b: number): [hue: number, saturat
 
   return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
 }
+
+/**
+ * Converts Hex to Hsl
+ * @param hex
+ * @returns
+ */
 export const HexToHsl = (hex: string): [hue: number, saturation: number, lightness: number] => {
   const bigint = parseInt(hex.replace(/^#/, ""), 16);
   const r = ((bigint >> 16) & 255) / 255;
@@ -1561,14 +851,27 @@ export const HexToHsl = (hex: string): [hue: number, saturation: number, lightne
 
   return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
 }
-export const HexToRgb = (hex: string) => {
 
+/**
+ * Converts Hex value to RGB
+ * @param hex
+ * @returns
+ */
+export const HexToRgb = (hex: string) => {
   const bigint = parseInt(hex.replace(/^#/, ""), 16)
   const r = (bigint >> 16) & 255;
   const g = (bigint >> 8) & 255;
   const b = bigint & 255;
   return `rgb(${r}, ${g}, ${b})`;
 }
+
+/**
+ * Converts Hsl Value to Hex
+ * @param h
+ * @param s
+ * @param l
+ * @returns
+ */
 export const HslToHex = (h: number, s: number, l: number): string => {
   if (!/^hsl\(\s*(\d+)\s*,\s*(\d+%)\s*,\s*(\d+%)\s*\)$/i.test(`hsl(${h}, ${s}%, ${l}%)`)) {
     if (process.env.NODE_ENV !== "production") {
@@ -1713,198 +1016,11 @@ export type IntRange<F extends number, T extends number> = Exclude<
 >;
 
 /**
- * @description ensures that a key exists on an object
- * @example
- * type EnsureKeyExists<T, K extends keyof T> = Array<Required<Pick<T, K>> & Partial<T>>;
- *
- * interface ExampleObject {
- *  id: number;
- *  name: string;
- *  age: number;
- * }
- *
- * const array: EnsureKeyExists<ExampleObject, 'name'> = [
- *  { name: 'John', age: 25 },
- *  { name: 'Jane', age: 30 },
- *  { name: 'Bob', age: 40 },
- * ];
- *
- * @see https://stackoverflow.com/a/49936686/2391795
- */
-export type EnsureKeyExists<T, K extends keyof T> = Array<
-  Required<Pick<T, K>> & Partial<T>
->;
-
-/**
  * Converts array type to single type
  */
 export type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-export class SimplexNoise3D {
-  private static grad3: number[][] = [
-    [1, 1, 0],
-    [-1, 1, 0],
-    [1, -1, 0],
-    [-1, -1, 0],
-    [1, 0, 1],
-    [-1, 0, 1],
-    [1, 0, -1],
-    [-1, 0, -1],
-    [0, 1, 1],
-    [0, -1, 1],
-    [0, 1, -1],
-    [0, -1, -1],
-  ];
-
-  private static perm: number[] = [...Array(512)].map((_, i) => i % 256);
-
-  constructor(seed: number) {
-    const source = [...SimplexNoise3D.perm];
-    for (let i = 0; i < 256; i++) {
-      const r = i + Math.floor(Math.random() * (256 - i));
-      const temp = source[i];
-      source[i] = source[r];
-      source[r] = temp;
-    }
-    SimplexNoise3D.perm = [...source, ...source];
-  }
-
-  private static dot(g: number[], x: number, y: number, z: number): number {
-    return g[0] * x + g[1] * y + g[2] * z;
-  }
-
-  noise(xin: number, yin: number, zin: number): number {
-    const F3 = 1.0 / 3.0;
-    const G3 = 1.0 / 6.0;
-
-    const s = (xin + yin + zin) * F3;
-    const i = Math.floor(xin + s);
-    const j = Math.floor(yin + s);
-    const k = Math.floor(zin + s);
-
-    const t = (i + j + k) * G3;
-    const X0 = i - t;
-    const Y0 = j - t;
-    const Z0 = k - t;
-    const x0 = xin - X0;
-    const y0 = yin - Y0;
-    const z0 = zin - Z0;
-
-    let i1, j1, k1;
-    let i2, j2, k2;
-
-    if (x0 >= y0) {
-      if (y0 >= z0) {
-        i1 = 1;
-        j1 = 0;
-        k1 = 0;
-        i2 = 1;
-        j2 = 1;
-        k2 = 0;
-      } else if (x0 >= z0) {
-        i1 = 1;
-        j1 = 0;
-        k1 = 0;
-        i2 = 1;
-        j2 = 0;
-        k2 = 1;
-      } else {
-        i1 = 0;
-        j1 = 0;
-        k1 = 1;
-        i2 = 1;
-        j2 = 0;
-        k2 = 1;
-      }
-    } else {
-      if (y0 < z0) {
-        i1 = 0;
-        j1 = 0;
-        k1 = 1;
-        i2 = 0;
-        j2 = 1;
-        k2 = 1;
-      } else if (x0 < z0) {
-        i1 = 0;
-        j1 = 1;
-        k1 = 0;
-        i2 = 0;
-        j2 = 1;
-        k2 = 1;
-      } else {
-        i1 = 0;
-        j1 = 1;
-        k1 = 0;
-        i2 = 1;
-        j2 = 1;
-        k2 = 0;
-      }
-    }
-
-    const x1 = x0 - i1 + G3;
-    const y1 = y0 - j1 + G3;
-    const z1 = z0 - k1 + G3;
-    const x2 = x0 - i2 + 2.0 * G3;
-    const y2 = y0 - j2 + 2.0 * G3;
-    const z2 = z0 - k2 + 2.0 * G3;
-    const x3 = x0 - 1.0 + 3.0 * G3;
-    const y3 = y0 - 1.0 + 3.0 * G3;
-    const z3 = z0 - 1.0 + 3.0 * G3;
-
-    const ii = i & 255;
-    const jj = j & 255;
-    const kk = k & 255;
-
-    const gi0 =
-      SimplexNoise3D.perm[
-      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
-      ] % 12;
-    const gi1 =
-      SimplexNoise3D.perm[
-      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
-      ] % 12;
-    const gi2 =
-      SimplexNoise3D.perm[
-      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
-      ] % 12;
-    const gi3 =
-      SimplexNoise3D.perm[
-      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
-      ] % 1;
-
-    let n0, n1, n2, n3;
-    let t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0;
-    if (t0 < 0) n0 = 0.0;
-    else {
-      t0 *= t0;
-      n0 = t0 * t0 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi0], x0, y0, z0);
-    }
-
-    let t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1;
-    if (t1 < 0) n1 = 0.0;
-    else {
-      t1 *= t1;
-      n1 = t1 * t1 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi1], x1, y1, z1);
-    }
-
-    let t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2;
-    if (t2 < 0) n2 = 0.0;
-    else {
-      t2 *= t2;
-      n2 = t2 * t2 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi2], x2, y2, z2);
-    }
-
-    let t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3;
-    if (t3 < 0) n3 = 0.0;
-    else {
-      t3 *= t3;
-      n3 = t3 * t3 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi3], x3, y3, z3);
-    }
-
-    return 32.0 * (n0 + n1 + n2 + n3);
-  }
-}
 
 type UseControlledOptions<T> = {
   controlled?: T | undefined;
@@ -1981,11 +1097,3 @@ export function useEventCallback<Args extends unknown[], Return>(
     (0, ref.current!)(...args)
   ).current;
 }
-
-export const usePreviousProps = <T extends {}>(value: T) => {
-  const ref = React.useRef<T | {}>({});
-  React.useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current as Partial<T>;
-};

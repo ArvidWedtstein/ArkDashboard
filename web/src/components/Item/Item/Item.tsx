@@ -4,20 +4,18 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { Fragment, ReactNode, useState } from "react";
 import { useAuth } from "src/auth";
-import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import List, { ListItem } from "src/components/Util/List/List";
 import Map from "src/components/Util/Map/Map";
 import Toast from "src/components/Util/Toast/Toast";
 
-import { getHexCodeFromPercentage, getWordType } from "src/lib/formatters";
+import { getWordType } from "src/lib/formatters";
 
 import type {
   DeleteItemMutationVariables,
   FindItemById,
   dinostattype,
-  permission,
 } from "types/graphql";
 
 const DELETE_ITEM_MUTATION = gql`

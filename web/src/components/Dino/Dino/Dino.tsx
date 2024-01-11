@@ -8,6 +8,7 @@ import {
   debounce,
   clamp,
   formatNumber,
+  getHexCodeFromPercentage,
 } from "src/lib/formatters";
 import { Fragment, useCallback, useEffect, useMemo, useReducer } from "react";
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
@@ -2022,15 +2023,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 <p className="font-light">
                                   Torpor Drain Rate:{" "}
                                   <span
-                                    className={clsx(`font-bold`, {
-                                      "text-pea-500":
-                                        tameData.torporDepletionPS < 1,
-                                      "text-yellow-500":
-                                        tameData.torporDepletionPS >= 1 &&
-                                        tameData.torporDepletionPS < 2,
-                                      "text-red-500":
-                                        tameData.torporDepletionPS >= 2,
-                                    })}
+                                    className={`font-bold`}
+                                    aria-label={`Depletion: ${tameData.torporDepletionPS * 50}`}
+                                    style={{
+                                      color: getHexCodeFromPercentage(
+                                        100 - (tameData.torporDepletionPS * 50)
+                                      )
+                                    }}
                                   >
                                     {tameData.torporDepletionPS.toFixed(1)}/s
                                   </span>

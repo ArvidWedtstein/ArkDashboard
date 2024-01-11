@@ -2,7 +2,6 @@ import { render, waitFor, screen } from '@redwoodjs/testing/web'
 
 import {
   formatEnum,
-  jsonTruncate,
   truncate,
   timeTag,
   jsonDisplay,
@@ -10,9 +9,7 @@ import {
   dynamicSort,
   combineBySummingKeys,
   isObject,
-  capitalize,
   isDate,
-  random,
   getDateDiff,
   groupBy,
   RgbToHex,
@@ -78,25 +75,6 @@ describe('truncate', () => {
   })
 })
 
-describe('jsonTruncate', () => {
-  it('truncates large json structures', () => {
-    expect(
-      jsonTruncate({
-        foo: 'foo',
-        bar: 'bar',
-        baz: 'baz',
-        kittens: 'kittens meow',
-        bazinga: 'Sheldon',
-        nested: {
-          foobar: 'I have no imagination',
-          two: 'Second nested item',
-        },
-        five: 5,
-        bool: false,
-      })
-    ).toMatch(/.+\n.+\w\.\.\.$/s)
-  })
-})
 
 describe('timeTag', () => {
   it('should return an empty string if dateTime is not provided', () => {
@@ -282,17 +260,6 @@ describe('isObject', () => {
   })
 })
 
-
-describe('capitalize', () => {
-  it('capitalizes the first letter of a string', () => {
-    expect(capitalize('hello')).toBe('Hello')
-  })
-
-  it('does not capitalize the first letter of a string if it is already capitalized', () => {
-    expect(capitalize('Hello')).toBe('Hello')
-  })
-})
-
 describe('isDate', () => {
   it('returns true for dates', () => {
     expect(isDate(new Date())).toBe(true)
@@ -308,15 +275,6 @@ describe('isDate', () => {
 
   it('returns false for booleans', () => {
     expect(isDate('true')).toBe(false)
-  })
-})
-
-
-
-describe('random', () => {
-  it('returns a random number', () => {
-    expect(random(0, 10)).toBeGreaterThanOrEqual(0)
-    expect(random(0, 10)).toBeLessThanOrEqual(10)
   })
 })
 
