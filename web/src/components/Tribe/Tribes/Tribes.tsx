@@ -334,6 +334,7 @@ const TribesList = ({ tribes, queryResult }: Props) => {
           settings={{
             filter: true,
             search: true,
+            export: true,
             header: true,
             pagination: {
               rowsPerPage: 10,
@@ -346,6 +347,7 @@ const TribesList = ({ tribes, queryResult }: Props) => {
               field: "name",
               header: "Name",
               sortable: true,
+              width: 50,
             },
             {
               field: "created_at",
@@ -377,9 +379,10 @@ const TribesList = ({ tribes, queryResult }: Props) => {
               header: "",
               width: 30,
               render: ({ row }) => (
-                <button
-                  className="rw-button rounded-full p-2 hover:bg-black/10 dark:hover:bg-white/10"
-                  type="button"
+                <Button
+                  variant="icon"
+                  color="DEFAULT"
+                  permission="authenticated"
                   onClick={(e) => {
                     setAnchorRef({
                       open: anchorRef?.element ? !anchorRef?.open : true,
@@ -395,7 +398,7 @@ const TribesList = ({ tribes, queryResult }: Props) => {
                   >
                     <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
                   </svg>
-                </button>
+                </Button>
               ),
             },
           ]}

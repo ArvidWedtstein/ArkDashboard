@@ -1,5 +1,5 @@
 import { ElementType, Fragment, HTMLAttributes, forwardRef, useCallback, useMemo, useRef, useState } from "react";
-import { IntRange, debounce, formatNumber } from "src/lib/formatters";
+import { IntRange, debounce, formatNumber, pluralize, usePreviousProps } from "src/lib/formatters";
 import clsx from "clsx";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
@@ -10,6 +10,7 @@ import { Input } from "../Input/Input";
 import { Lookup } from "../Lookup/Lookup";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Collapse from "../Collapse/Collapse";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "../Dialog/Dialog";
 
 type Filter<Row extends Record<string, any>> = {
   /**
@@ -24,6 +25,10 @@ type Filter<Row extends Record<string, any>> = {
    * The filter value.
    */
   value: string;
+  /**
+   * Is the value saved?
+   */
+  saved?: boolean;
 };
 /**
  * Represents a row of data in the table.
@@ -337,12 +342,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   }, []);
 
   const filterData = (data) => {
-    if (filters.length === 0) {
+    if (filters.filter(({ saved }) => saved).length === 0) {
       return data;
     }
 
     const filterLookup = {};
-    filters.forEach((filter) => {
+    filters.filter(({ saved }) => saved).forEach((filter) => {
       const { column } = filter;
       if (!filterLookup[column as any]) {
         filterLookup[column as any] = [];
@@ -601,7 +606,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         scope="col"
         columnWidth={50}
         style={{
-          width: type === 'Collapse' ? '1%' : 'auto'
+          width: type === 'Collapse' || type === 'Select' ? '1%' : 'auto'
         }}
         selected={isSelected(datarow?.row_id || "")}
         aria-rowindex={rowIndex}
@@ -932,16 +937,29 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     toast.success("Copied to clipboard");
   };
 
-  const addFilter = (e: Filter<Row>) => {
+  const filterDialogRef = useRef<HTMLDivElement>();
+
+  const addFilter = (data: Filter<Row>) => {
     setFilters((prev) => [
       ...prev,
-      {
-        column: e.column,
-        operator: e.operator,
-        value: e.value,
-      },
+      data,
     ]);
   };
+
+  const handleFilterClose = (confirmSave: boolean = false) => {
+    // Filter empty filters
+    setFilters((prevFilters) => prevFilters.map(({ saved, column, operator, value }) => {
+      return {
+        column,
+        operator,
+        value,
+        saved: !saved ? confirmSave : saved
+      };
+    }).filter(({ saved }) => saved));
+
+    setOpen(false);
+  }
+
 
   return (
     <div
@@ -953,7 +971,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             <>
               {/* Filter Button */}
 
-              <Button className="rounded-r-none" ref={anchorRef} variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
+              <Button size="small" variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
                 <span className="sr-only">Filter</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -969,153 +987,134 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   )}
                 </svg>
               </Button>
-              <Popper anchorEl={anchorRef.current} open={open}>
-                <ClickAwayListener onClickAway={(event) => {
-                  if (
-                    anchorRef?.current &&
-                    (anchorRef?.current?.contains(event.target as HTMLElement) || anchorRef?.current?.element.contains(event.target as HTMLElement))
-                  ) {
-                    return;
-                  }
-                  setOpen(false);
-                }}
-                >
-                  <Form<Filter<Row>>
-                    className="z-10 flex flex-col rounded border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
-                    method="dialog"
-                    onSubmit={(e) => {
-                      addFilter(e);
-                    }}
-                  >
+
+              <Dialog ref={filterDialogRef} open={open} onClose={() => handleFilterClose()}>
+                <DialogTitle>{pluralize(
+                  filters.length,
+                  "Filter",
+                  "s",
+                  false
+                )}</DialogTitle>
+                <DialogContent>
+                  {!filters.length && (
+                    <Fragment>
+                      <span className="rw-sublabel">No filters applied</span>
+                      <br />
+                      <span className="text-xs rw-sublabel">
+                        Add a column below to filter the table
+                      </span>
+                    </Fragment>
+                  )}
+                  <TransitionGroup className="flex flex-col space-y-1 max-w-lg min-w-[20rem]">
                     {filters.map(({ column, operator, value }, index) => (
-                      <div
-                        className="rw-button-group my-1 justify-start"
-                        key={`filter-${index}`}
+                      <CSSTransition
+                        key={`columnfilter-${index}`}
+                        timeout={500}
+                        classNames="item"
                       >
-                        <select
-                          name="column"
-                          className="rw-input rw-input-small"
-                          defaultValue={column}
-                          disabled
-                        >
-                          {columns &&
-                            columnSettings
-                              .filter((col) => !col.hidden)
-                              .map((column, idx) => (
-                                <option
-                                  key={`filter-${index}-column-${idx}`}
-                                  value={column.field}
-                                >
-                                  {column.field}
-                                </option>
-                              ))}
-                        </select>
-                        <select
-                          name="operator"
-                          className="rw-input rw-input-small"
-                          defaultValue={operator}
-                          disabled
-                        >
-                          <option value="=">=</option>
-                          <option value="!=">!=</option>
-                          <option value=">">&gt;</option>
-                          <option value=">=">&gt;=</option>
-                          <option value="<">&lt;</option>
-                          <option value="<=">&lt;=</option>
-                          <option value="like">like</option>
-                          <option value="ilike">ilike</option>
-                          <option value="in">in</option>
-                          <option value="not_in">not in</option>
-                          <option value="regex">regex</option>
-                        </select>
-                        <input
-                          name="value"
-                          className="rw-input rw-input-small"
-                          defaultValue={value}
-                          readOnly
-                        />
-                        <button
-                          className="rw-button rw-button-small rw-button-red"
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setFilters((prev) =>
+                        <ButtonGroup size="small" className="fadetransition" key={`columnfilter-${index}`}>
+                          <Lookup
+                            size="small"
+                            margin="none"
+                            options={columnSettings.filter((col) => !col.hidden).map(c => c.field)}
+                            value={column}
+                            onSelect={(v) => setFilters((prev) => prev.map((s, i) => ({
+                              ...s,
+                              column: i === index ? v : s.column
+                            })))}
+                          />
+                          <Lookup
+                            size="small"
+                            margin="none"
+                            defaultValue={operator}
+                            options={["=", "!=", ">", ">=", "<", "<=", "like", "ilike", "in", "not", "regex"]}
+                            onSelect={(v) => setFilters((prev) => prev.map((s, i) => ({
+                              ...s,
+                              operator: i === index ? v : s.operator
+                            })))}
+                          />
+                          <Input
+                            size="small"
+                            margin="none"
+                            defaultValue={value}
+                            onChange={(e) => setFilters((prev) => prev.map((s, i) => ({
+                              ...s,
+                              value: i === index ? e.target.value : s.value
+                            })))}
+                          />
+                          <Button
+                            color="error"
+                            variant="contained"
+                            size="small"
+                            onClick={() => setFilters((prev) =>
                               prev.filter((_, idx) => idx !== index)
-                            );
-                          }}
-                        >
-                          -
-                        </button>
-                      </div>
+                            )}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 448 512"
+                              fill="currentColor"
+                              className="w-4"
+                            >
+                              <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                            </svg>
+                          </Button>
+                        </ButtonGroup>
+                      </CSSTransition>
                     ))}
-                    <div className="rw-button-group justify-start">
-                      <SelectField
-                        name="column"
-                        className="rw-input rw-input-small"
+                  </TransitionGroup>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    ignoreButtonGroupPosition
+                    className="float-left mr-auto"
+                    startIcon={(
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
                       >
-                        {columns &&
-                          columnSettings
-                            .filter((col) => !col.hidden)
-                            .map((column, index) => (
-                              <option
-                                key={`column-option-${index}`}
-                                value={column.field}
-                              >
-                                {column.field}
-                              </option>
-                            ))}
-                      </SelectField>
-                      <SelectField
-                        name="operator"
-                        className="rw-input rw-input-small"
-                      >
-                        <option value="=">=</option>
-                        <option value="!=">!=</option>
-                        <option value=">">&gt;</option>
-                        <option value=">=">&gt;=</option>
-                        <option value="<">&lt;</option>
-                        <option value="<=">&lt;=</option>
-                        <option value="like">like</option>
-                        <option value="ilike">ilike</option>
-                        <option value="in">in</option>
-                        <option value="not_in">not in</option>
-                        <option value="regex">regex</option>
-                      </SelectField>
-                      <TextField
-                        name="value"
-                        className="rw-input rw-input-small"
-                      />
-                      <Button color="success" variant="contained" size="small" type="submit">
-                        +
-                      </Button>
-                    </div>
-                    <div className="rw-button-group justify-end">
-                      <button
-                        className="rw-button rw-button-small rw-button-gray"
-                        type="button"
-                        onClick={() => setOpen(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="rw-button rw-button-small rw-button-green"
-                        id="confirmBtn"
-                        formMethod="dialog"
-                        type="button"
-                        onClick={() => setOpen(false)}
-                      >
-                        Confirm
-                      </button>
-                    </div>
-                  </Form>
-                </ClickAwayListener>
-              </Popper>
+                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                      </svg>
+                    )}
+                    onClick={() => addFilter({ column: columnSettings.length > 0 ? columnSettings[0].field : '', operator: "=", value: "", saved: false })}
+                  >
+                    Add Filter
+                  </Button>
+                  <ButtonGroup>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      size="small"
+                      onClick={() => handleFilterClose()}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      id="confirmBtn"
+                      formMethod="dialog"
+                      onClick={() => handleFilterClose(true)}
+                      disabled={!filters.length}
+                    >
+                      Confirm
+                    </Button>
+                  </ButtonGroup>
+                </DialogActions>
+              </Dialog>
+
             </>
           )}
           {checkSelect && mergedSettings.export && (
-            <button
-              className="rw-button rw-button-gray"
+            <Button
+              variant="outlined"
+              color="DEFAULT"
               title="Export"
+              size="small"
               disabled={selectedRows.length === 0}
               onClick={copyToClipboard}
             >
@@ -1129,7 +1128,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               >
                 <path d="M208 112c-4.094 0-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l80 80c6.25 6.25 16.38 6.25 22.62 0l80-80c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 169.4V16C304 7.156 296.8 0 288 0S272 7.156 272 16v153.4L219.3 116.7C216.2 113.6 212.1 112 208 112zM512 0h-144C359.2 0 352 7.162 352 16C352 24.84 359.2 32 368 32H512c17.67 0 32 14.33 32 32v192H32V64c0-17.67 14.33-32 32-32h144C216.8 32 224 24.84 224 16C224 7.162 216.8 0 208 0H64C28.65 0 0 28.65 0 64v288c0 35.35 28.65 64 64 64h149.7l-19.2 64H144C135.2 480 128 487.2 128 496S135.2 512 144 512h288c8.836 0 16-7.164 16-16S440.8 480 432 480h-50.49l-19.2-64H512c35.35 0 64-28.65 64-64V64C576 28.65 547.3 0 512 0zM227.9 480l19.2-64h81.79l19.2 64H227.9zM544 352c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288h512V352z" />
               </svg>
-            </button>
+            </Button>
           )}
           {mergedSettings.search && (
             <Input
@@ -1138,7 +1137,13 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               margin="none"
               label="Search"
               type="search"
+              size="small"
               onChange={handleSearch}
+              SuffixProps={{
+                style: {
+                  borderRadius: '0'
+                }
+              }}
               InputProps={{
                 startAdornment: (
                   <svg
@@ -1155,18 +1160,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                     />
                   </svg>
                 ),
-                endAdornment: (
-                  <Button type="submit" className="!rounded-l" variant="contained" color="success" startIcon={(
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-                    </svg>
-                  )}>
-                    <span className="hidden md:block">Search</span>
-                  </Button>
-                ),
               }}
             />
           )}
@@ -1176,6 +1169,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
         </ButtonGroup>
       )}
+
       <div
         className={"w-full overflow-x-auto rounded border border-zinc-500"}
       >

@@ -42,6 +42,10 @@ type ButtonProps = {
   disableRipple?: boolean;
   centerRipple?: boolean;
   /**
+   * Ignores the buttongroupcontext and therefore doesnt overwrite border radius
+   */
+  ignoreButtonGroupPosition?: boolean;
+  /**
    * Will not render if user does not have permission or user is not logged in and permission is defined
    */
   permission?: permission | 'authenticated';
@@ -70,6 +74,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       fullWidth = contextFullWidth || false,
       type = "button",
       permission,
+      ignoreButtonGroupPosition = false,
       ...other
     } = props;
 
@@ -174,11 +179,11 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       contextClassName,
       base,
       sizes[variant][size],
-      buttonGroupButtonContextPositionClassName,
       colors[variant][color],
       props.className,
       {
         [disabledClasses[variant]]: disabled,
+        [buttonGroupButtonContextPositionClassName]: !ignoreButtonGroupPosition,
         "w-full": fullWidth
       },
     );
@@ -360,84 +365,3 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>((props, 
     </div>
   );
 });
-// {
-//   (
-//     <div className="flex flex-col space-y-2">
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="secondary">button</Button>
-//       <Button variant="contained" color="secondary">button</Button>
-//       <Button variant="outlined" color="secondary">button</Button>
-//       <Button variant="icon" color="secondary" size="medium"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="success">button</Button>
-//       <Button variant="contained" color="success">button</Button>
-//       <Button variant="outlined" color="success">button</Button>
-//       <Button variant="icon" color="success" size="large"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="warning">button</Button>
-//       <Button variant="contained" color="warning">button</Button>
-//       <Button variant="outlined" color="warning">button</Button>
-//       <Button variant="icon" color="warning"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="error">button</Button>
-//       <Button variant="contained" color="error">button</Button>
-//       <Button variant="outlined" color="error">button</Button>
-//       <Button variant="icon" color="error"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//   </div>
-//   <div className="flex flex-col space-y-2 mt-3">
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-green">BUTTON</button>
-//       <button className="rw-button rw-button-green-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-green-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-blue">BUTTON</button>
-//       <button className="rw-button rw-button-blue-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-blue-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-gray">BUTTON</button>
-//       <button className="rw-button rw-button-gray-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-gray-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-yellow">BUTTON</button>
-//       <button className="rw-button rw-button-yellow-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-yellow-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-red">BUTTON</button>
-//       <button className="rw-button rw-button-red-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-red-outline">BUTTON</button>
-//     </div>
-//   </div>
-//   )
-// }

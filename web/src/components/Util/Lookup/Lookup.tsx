@@ -168,6 +168,7 @@ type SelectProps<
    */
   autoComplete?: boolean;
   clearOnEscape?: boolean;
+  disablePortal?: boolean;
   openOnFocus?: boolean;
   autoSelect?: boolean;
   inputValue?: string;
@@ -175,7 +176,7 @@ type SelectProps<
   margin?: "none" | "dense" | "normal";
   size?: "small" | "medium" | "large";
   color?: "primary" | "secondary" | "success" | "warning" | "error";
-  variant?: 'filled' | 'outlined' | 'standard'
+  variant?: 'contained' | 'outlined' | 'standard'
   SuffixProps?: HTMLAttributes<HTMLFieldSetElement>;
   InputProps?: {
     style?: CSSProperties;
@@ -279,6 +280,7 @@ export const Lookup = (<
     disableClearable = false,
     closeOnSelect = true,
     filterSelectedOptions = false,
+    disablePortal = false,
     limitTags = -1,
     InputProps,
     SuffixProps,
@@ -1648,7 +1650,7 @@ export const Lookup = (<
         required={required || Boolean(validation?.required)}
       >
         <InputLabel
-          children={label ?? name}
+          children={label}
           shrink={popupOpen ||
             inputValue.length > 0 ||
             (Array.isArray(value) && value.length > 0)}
@@ -1706,7 +1708,7 @@ export const Lookup = (<
           endAdornment={(
             <Fragment>
               {(!disableClearable && !readOnly) && (
-                <Button variant="icon" color="DEFAULT" className={clsx("-mr-0.5 !p-1", {
+                <Button variant="icon" color="DEFAULT" ignoreButtonGroupPosition className={clsx("-mr-0.5 !p-1", {
                   [`${focused ? 'opacity-100 visible' : 'opacity-0 invisible'} group-hover:opacity-100 group-hover:visible`]: !disabled && dirty,
                   "opacity-0 invisible": disabled || !dirty || readOnly,
                 })} onClick={handleClear} size={size}>
@@ -1720,7 +1722,7 @@ export const Lookup = (<
                   </svg>
                 </Button>
               )}
-              <Button variant="icon" color="DEFAULT" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
+              <Button variant="icon" ignoreButtonGroupPosition color="DEFAULT" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
                 <svg
                   className={clsx(
                     "h-4 w-4 stroke-white !fill-none transition-transform duration-75 will-change-transform",
@@ -1757,7 +1759,7 @@ export const Lookup = (<
       </FormControl>
 
       {/* Dropdown Menu */}
-      <Popper anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>
+      <Popper disablePortal={disablePortal} anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>
         <ClickAwayListener
           onClickAway={(e) => {
             if (
