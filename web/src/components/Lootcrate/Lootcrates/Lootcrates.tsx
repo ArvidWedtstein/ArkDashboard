@@ -44,13 +44,6 @@ const LootcratesList = ({
   let { map, search, color, type } = useParams();
 
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [sort, setSort] = useState<{
-    column: string;
-    direction: "asc" | "desc";
-  }>({
-    column: "",
-    direction: "asc",
-  });
 
   const onSubmit = useCallback((data: FormFindLootcrates) => {
     navigate(
@@ -171,55 +164,6 @@ const LootcratesList = ({
         </h1>
 
         <nav className="flex grow items-center justify-center space-x-2">
-          <div className="flex w-fit justify-center">
-            <Lookup
-              label="Sort by"
-              margin="none"
-              className="hidden capitalize sm:inline-flex !rounded-r-none -mr-[0.5px]"
-              name="sort"
-              defaultValue={sort.column}
-              loading={loading}
-              onSelect={(e) => {
-                if (!e) return;
-                setSort((prev) => ({
-                  ...prev,
-                  column: e ? e.toString() : "",
-                }));
-              }}
-              closeOnSelect
-              options={Object.keys(lootcratesByMap[0] || {})
-                .filter(
-                  (c) => !["__typename", "id", "image", "blueprint"].includes(c)
-                )}
-              SuffixProps={{
-                style: {
-                  borderRadius: "0.25rem 0 0 0.25rem"
-                }
-              }}
-            />
-
-            <Button onClick={() => {
-              setSort((prev) => ({
-                ...prev,
-                direction: prev.direction === "asc" ? "desc" : "asc",
-              }));
-            }}
-              title={sort.direction == "asc" ? "Ascending " : "Descending"} variant="outlined" className="-mr-px rounded-l-none" color="secondary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 320 512"
-                fill="currentColor"
-                className={clsx(
-                  "w-4 transition-transform duration-150 ease-out",
-                  {
-                    "rotate-180 transform": sort.direction === "desc",
-                  }
-                )}
-              >
-                <path d="M32.05 224h255.9c28.36 0 42.73-34.5 22.62-54.62l-127.1-128c-12.5-12.5-32.86-12.5-45.36 0L9.304 169.4C-10.69 189.5 3.682 224 32.05 224zM160 63.98L287.1 192h-255.9L160 63.98z" />
-              </svg>
-            </Button>
-          </div>
           <div className="rw-button-group grow m-0 w-full !space-x-0">
             <Button onClick={() => openModal()} variant="outlined" className="rounded-r-none -mr-px lg:hidden" color="secondary">
               <svg
@@ -317,11 +261,7 @@ const LootcratesList = ({
           )}
         >
           {lootcratesByMap.length == 0 && <p>No lootcrates found</p>}
-          {dynamicSort(
-            lootcratesByMap,
-            sort.column,
-            sort.direction === "asc"
-          ).map(({ id, name, required_level, image, color }) => (
+          {lootcratesByMap.map(({ id, name, required_level, image, color }) => (
             <Card
               key={`lootcrate-${id}`}
               className="hover:border-pea-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
@@ -357,16 +297,16 @@ const LootcratesList = ({
                     />
                   )}
                 </CardContent>
+                <CardActions>
+                  <Button variant="outlined" color="success" size="small" to={routes.lootcrate({ id })} endIcon={
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                      <path d="M400 288C391.2 288 384 295.2 384 304V448c0 17.67-14.33 32-32 32H64c-17.67 0-32-14.33-32-32V160c0-17.67 14.33-32 32-32h112C184.8 128 192 120.8 192 112S184.8 96 176 96L64 96c-35.35 0-64 28.65-64 64V448c0 35.35 28.65 64 64 64h288c35.35 0 64-28.65 64-64V304C416 295.2 408.8 288 400 288zM496 0h-160C327.2 0 320 7.156 320 16S327.2 32 336 32h121.4L180.7 308.7c-6.25 6.25-6.25 16.38 0 22.62C183.8 334.4 187.9 336 192 336s8.188-1.562 11.31-4.688L480 54.63V176C480 184.8 487.2 192 496 192S512 184.8 512 176v-160C512 7.156 504.8 0 496 0z" />
+                    </svg>
+                  }>
+                    View Lootcrate
+                  </Button>
+                </CardActions>
               </CardActionArea>
-              <CardActions>
-                <Button variant="outlined" color="success" size="small" to={routes.lootcrate({ id })} endIcon={
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path d="M400 288C391.2 288 384 295.2 384 304V448c0 17.67-14.33 32-32 32H64c-17.67 0-32-14.33-32-32V160c0-17.67 14.33-32 32-32h112C184.8 128 192 120.8 192 112S184.8 96 176 96L64 96c-35.35 0-64 28.65-64 64V448c0 35.35 28.65 64 64 64h288c35.35 0 64-28.65 64-64V304C416 295.2 408.8 288 400 288zM496 0h-160C327.2 0 320 7.156 320 16S327.2 32 336 32h121.4L180.7 308.7c-6.25 6.25-6.25 16.38 0 22.62C183.8 334.4 187.9 336 192 336s8.188-1.562 11.31-4.688L480 54.63V176C480 184.8 487.2 192 496 192S512 184.8 512 176v-160C512 7.156 504.8 0 496 0z" />
-                  </svg>
-                }>
-                  View Lootcrate
-                </Button>
-              </CardActions>
             </Card>
           ))}
         </div>
