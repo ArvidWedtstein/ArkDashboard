@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import ThemeContext from './ThemeContext'
+import Dialog from './Dialog'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
 
-describe('ThemeContext', () => {
+describe('Dialog', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<ThemeContext />)
+      render(<Dialog />)
     }).not.toThrow()
   })
 })

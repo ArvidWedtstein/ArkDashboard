@@ -3,7 +3,9 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useMemo } from "react";
 import { useAuth } from "src/auth";
-import { Card, CardHeader } from "src/components/Util/Card/Card";
+import Badge from "src/components/Util/Badge/Badge";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import Map from "src/components/Util/Map/Map";
 import Table from "src/components/Util/Table/Table";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
@@ -130,12 +132,10 @@ const Lootcrate = ({ lootcrate }: Props) => {
                         </Link>
                       ))}
                     </div>
-                    <p className="rw-badge rw-badge-yellow-outline">
-                      {(items[0].entry_quality as qty).min === 0
-                        ? `only as blueprint`
-                        : `as item or as blueprint with quality ${(items[0].entry_quality as qty).min * 100
-                        }%`}
-                    </p>
+                    <Badge variant="outlined" color="warning" standalone content={(items[0].entry_quality as qty).min === 0
+                      ? `only as blueprint`
+                      : `as item or as blueprint with quality ${(items[0].entry_quality as qty).min * 100
+                      }%`} />
                   </div>
                 </Tab>
               ))}
@@ -151,78 +151,109 @@ const Lootcrate = ({ lootcrate }: Props) => {
   return (
     <article className="rw-segment">
       <div className="grid w-full grid-cols-2 gap-3 text-gray-700 dark:text-white">
-        <section className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
-          <div className="w-full">
-            <Link
-              className="rw-button rw-button-small rw-button-gray mb-2"
-              to={routes.lootcrates()}
-            >
-              <span className="sr-only">Back</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="rw-button-icon"
-              >
-                <path d="M447.1 256C447.1 264.8 440.8 272 432 272H68.17l135.7 149.3c5.938 6.531 5.453 16.66-1.078 22.59C199.7 446.6 195.8 448 192 448c-4.344 0-8.688-1.75-11.84-5.25l-160-176c-5.547-6.094-5.547-15.41 0-21.5l160-176c5.969-6.562 16.09-7 22.61-1.094c6.531 5.938 7.016 16.06 1.078 22.59L68.17 240H432C440.8 240 447.1 247.2 447.1 256z" />
-              </svg>
-            </Link>
-            <img
-              className="max-h-36 w-auto max-w-6xl"
-              src={
-                lootcrate.image && lootcrate.image.length > 0
-                  ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${lootcrate.image}`
-                  : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
-              }
+        <Card variant="outlined" className="col-span-2">
+          <CardHeader
+            avatar={(
+              <Button size="small" variant="outlined" color="secondary" to={routes.lootcrates()}>
+                <span className="sr-only">Back</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="fill-current w-4"
+                >
+                  <path d="M447.1 256C447.1 264.8 440.8 272 432 272H68.17l135.7 149.3c5.938 6.531 5.453 16.66-1.078 22.59C199.7 446.6 195.8 448 192 448c-4.344 0-8.688-1.75-11.84-5.25l-160-176c-5.547-6.094-5.547-15.41 0-21.5l160-176c5.969-6.562 16.09-7 22.61-1.094c6.531 5.938 7.016 16.06 1.078 22.59L68.17 240H432C440.8 240 447.1 247.2 447.1 256z" />
+                </svg>
+              </Button>
+            )}
+            title={lootcrate.name}
+            titleProps={{
+              className: "text-xl"
+            }}
+            subheader={lootcrate.type}
+            action={(
+              <ButtonGroup>
+                <Button
+                  permission="gamedata_update"
+                  color="secondary"
+                  variant="outlined"
+                  to={routes.editLootcrate({ id: lootcrate.id })}
+                  startIcon={
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                      <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                    </svg>
+                  }
+                >
+                  Edit
+                </Button>
+                <Button
+                  permission="gamedata_delete"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => onDeleteClick(lootcrate.id)}
+                  startIcon={
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                      <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                    </svg>
+                  }
+                >
+                  Delete
+                </Button>
+              </ButtonGroup>
+            )}
+          />
+          <CardContent className="grid w-full grid-flow-col">
+            <CardMedia
+              className="max-h-80"
+              image={lootcrate.image && lootcrate.image.length > 0
+                ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${lootcrate.image}`
+                : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"}
             />
-            <h4 className="my-1 text-2xl font-semibold">{lootcrate.name}</h4>
-            <p className="mt-2">{lootcrate.type}</p>
-          </div>
-
-          <div className="grid w-fit grid-cols-3 gap-2 justify-self-end">
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
-              <CardHeader
-                title={`Required Level`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
-                subheader={lootcrate?.required_level.toString()}
-                subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
-              />
-            </Card>
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
-              <CardHeader
-                title={`Maps`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
-                subheader={lootcrate.LootcrateMap.length.toString()}
-                subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
-              />
-            </Card>
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
-              <CardHeader
-                title={`Items`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
-                subheader={lootcrate.LootcrateItem.length.toString()}
-                subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
-              />
-            </Card>
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
-              <CardHeader
-                title={`Sets`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
-                subheader={`${(lootcrate.set_qty as qty).min}-${(lootcrate.set_qty as qty).max
-                  }`}
-                subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
-              />
-            </Card>
-            <Card className="dark:bg-zinc-700 bg-zinc-200 shadow-md">
-              <CardHeader
-                title={`Quality`}
-                titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
-                subheader={`${(lootcrate.quality_mult as qty).min * 100}% - ${(lootcrate.quality_mult as qty).max * 100
-                  }%`}
-                subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
-              />
-            </Card>
-          </div>
-        </section>
+            <div className="grid w-fit grid-cols-3 gap-2 justify-self-end">
+              <Card variant="gradient" className="shadow-md">
+                <CardHeader
+                  title={`Required Level`}
+                  titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                  subheader={lootcrate?.required_level.toString()}
+                  subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
+                />
+              </Card>
+              <Card variant="gradient" className="shadow-md">
+                <CardHeader
+                  title={`Maps`}
+                  titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                  subheader={lootcrate.LootcrateMap.length.toString()}
+                  subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
+                />
+              </Card>
+              <Card variant="gradient" className="shadow-md">
+                <CardHeader
+                  title={`Items`}
+                  titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                  subheader={lootcrate.LootcrateItem.length.toString()}
+                  subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
+                />
+              </Card>
+              <Card variant="gradient" className="shadow-md">
+                <CardHeader
+                  title={`Sets`}
+                  titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                  subheader={`${(lootcrate.set_qty as qty).min}-${(lootcrate.set_qty as qty).max
+                    }`}
+                  subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
+                />
+              </Card>
+              <Card variant="gradient" className="shadow-md">
+                <CardHeader
+                  title={`Quality`}
+                  titleProps={{ className: '!text-xs !font-semibold uppercase font-poppins' }}
+                  subheader={`${(lootcrate.quality_mult as qty).min * 100}% - ${(lootcrate.quality_mult as qty).max * 100
+                    }%`}
+                  subheaderProps={{ className: '!text-xl !font-bold !text-white' }}
+                />
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
 
         <Table
           rows={calculatedLootcrateDrops}
@@ -235,9 +266,12 @@ const Lootcrate = ({ lootcrate }: Props) => {
               field: "entries",
               header: "Entries",
               render: ({ value }) => (
-                <span className="rw-badge rw-badge-small rw-badge-gray">
-                  {value}
-                </span>
+                <Badge
+                  content={<span>{value.toString()}</span>}
+                  variant="standard"
+                  color="secondary"
+                  standalone
+                />
               ),
             },
           ]}
@@ -266,43 +300,6 @@ const Lootcrate = ({ lootcrate }: Props) => {
           </div>
         )}
       </div>
-      <nav className="rw-button-group">
-        {currentUser?.permissions.some(
-          (p: permission) => p === "gamedata_update"
-        ) && (
-            <Link
-              to={routes.editLootcrate({ id: lootcrate.id })}
-              className="rw-button rw-button-blue"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                className="rw-button-icon-start"
-              >
-                <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-              </svg>
-              Edit
-            </Link>
-          )}
-        {currentUser?.permissions.some(
-          (p: permission) => p === "gamedata_delete"
-        ) && (
-            <button
-              type="button"
-              className="rw-button rw-button-red"
-              onClick={() => onDeleteClick(lootcrate.id)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="rw-button-icon-start"
-              >
-                <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-              </svg>
-              Delete
-            </button>
-          )}
-      </nav>
     </article>
   );
 };

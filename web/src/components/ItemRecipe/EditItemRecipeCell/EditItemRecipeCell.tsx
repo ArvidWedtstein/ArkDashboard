@@ -8,33 +8,45 @@ import { toast } from '@redwoodjs/web/toast'
 import ItemRecipeForm from 'src/components/ItemRecipe/ItemRecipeForm'
 
 export const QUERY = gql`
-  query EditItemRecipeById($id: String!) {
+  query EditItemRecipeById($id: BigInt!) {
     itemRecipe: itemRecipe(id: $id) {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
       crafting_time
       yields
       required_level
+      xp
+      skill_quality_multiplier_min
+      skill_quality_multiplier_max
+      ItemRecipeItem {
+        id
+        amount
+        resource_item_id
+      }
+    }
+    items {
+      id
+      name
+      image
     }
   }
 `
 const UPDATE_ITEM_RECIPE_MUTATION = gql`
   mutation UpdateItemRecipeMutation(
-    $id: String!
+    $id: BigInt!
     $input: UpdateItemRecipeInput!
   ) {
     updateItemRecipe(id: $id, input: $input) {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
       crafting_time
       yields
       required_level
+      xp
+      skill_quality_multiplier_min
+      skill_quality_multiplier_max
     }
   }
 `
@@ -47,12 +59,12 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   itemRecipe,
+  items
 }: CellSuccessProps<EditItemRecipeById>) => {
   const [updateItemRecipe, { loading, error }] = useMutation(
     UPDATE_ITEM_RECIPE_MUTATION,
     {
       onCompleted: () => {
-        toast.success('ItemRecipe updated')
         navigate(routes.itemRecipes())
       },
       onError: (error) => {
@@ -81,6 +93,7 @@ export const Success = ({
       </header>
       <div className="rw-segment-main">
         <ItemRecipeForm
+          items={items}
           itemRecipe={itemRecipe}
           onSave={onSave}
           error={error}

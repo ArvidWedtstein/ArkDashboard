@@ -8,6 +8,7 @@ import {
 } from "@redwoodjs/router";
 import clsx from "clsx";
 import { Fragment, useState } from "react";
+import Button from "src/components/Util/Button/Button";
 import {
   Card,
   CardActionArea,
@@ -15,7 +16,7 @@ import {
   CardMedia,
 } from "src/components/Util/Card/Card";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
@@ -174,7 +175,7 @@ const ItemsList = ({
                       : [{ label, value, types }]
                   );
                 }}
-                checked={selectedCategories.some((c) => c.value === value)}
+                checked={selectedCategories.some((c) => c?.value === value)}
               />
               <Label
                 name="category"
@@ -272,12 +273,13 @@ const ItemsList = ({
               isOptionEqualToValue={(option, value) =>
                 option.value === value.value
               }
+              getOptionValue={(opt) => opt.value}
               getOptionLabel={(option) => option.label}
               value={categories[0]}
               disabled={loading}
               InputProps={{
                 style: {
-                  borderRadius: "0.375rem 0 0 0.375rem",
+                  borderRadius: "0.25rem 0 0 0.25rem",
                   marginRight: "-0.5px",
                 },
               }}
@@ -333,31 +335,35 @@ const ItemsList = ({
               <span className="sr-only">Filters</span>
             </button>
 
-            <InputOutlined
+            <Input
               name="search"
-              type="search"
               label="Search"
+              type="search"
+              margin="none"
               defaultValue={search}
               disabled={loading}
+              SuffixProps={{
+                className: '-mx-px !rounded-l-none',
+              }}
               InputProps={{
-                style: {
-                  borderRadius: "0 0.375rem 0.375rem 0",
-                },
                 endAdornment: (
-                  <Submit
-                    className="rw-button rw-button-green"
-                    disabled={loading}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                    startIcon={(
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                        className="w-4"
+                      >
+                        <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+                      </svg>
+                    )}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                      className="rw-button-icon-start"
-                    >
-                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-                    </svg>
                     <span className="hidden md:block">Search</span>
-                  </Submit>
-                ),
+                  </Button>
+                )
               }}
             />
           </div>

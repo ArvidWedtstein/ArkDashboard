@@ -14,6 +14,9 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { Input } from "src/components/Util/Input/Input";
+import DatePicker from "src/components/Util/DatePicker/DatePicker";
+import Button from "src/components/Util/Button/Button";
 
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
@@ -48,33 +51,13 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <div className="relative max-w-sm">
-          <DatetimeLocalField
-            name="start_date"
-            defaultValue={
-              props.timelineSeasonBasespot?.start_date ??
-              new Date(new Date().toString().split("GMT")[0] + " UTC")
-                .toISOString()
-                .split(".")[0]
-                .toString()
-                .slice(0, -3)
-            }
-            className="rw-float-input peer"
-            errorClassName="rw-float-input rw-input-error"
-            validation={{
-              valueAsDate: true,
-            }}
-          />
-          <Label
-            name="start_date"
-            className="rw-float-label"
-            errorClassName="rw-float-label rw-label-error"
-          >
-            Start date
-          </Label>
+        <DatePicker
+          label="Start Date"
+          name="start_date"
+          defaultValue={new Date(props.timelineSeasonBasespot?.start_date) ??
+            new Date()}
+        />
 
-          <FieldError name="start_date" className="rw-field-error" />
-        </div>
 
         {/* TODO: set enddate automatically when raid is registered in TimelineSeasonEvent form */}
         {/* <Label
@@ -94,22 +77,15 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
 
         <FieldError name="end_date" className="rw-field-error" /> */}
 
-        <Label
-          name="basespot_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Basespot
-        </Label>
-
         <Lookup
           options={props?.basespots || []}
           name="basespot_id"
+          label="Basespot"
+          getOptionValue={(opt) => opt.id}
           getOptionLabel={(option) => option.name}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           defaultValue={props.timelineSeasonBasespot?.basespot_id}
           placeholder="Select a basespot"
-          className="mt-3"
         />
 
         <FieldError name="basespot_id" className="rw-field-error" />
@@ -117,70 +93,67 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         <Lookup
           options={props?.maps || []}
           name="map_id"
+          label="Map"
           getOptionLabel={(option) => option.name}
+          getOptionValue={(opt) => opt.id}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
           defaultValue={props.timelineSeasonBasespot?.map_id}
           placeholder="Select a map"
-          className="mt-3"
         />
 
-        <FieldError name="map_id" className="rw-field-error" />
+        <Input
+          color="DEFAULT"
+          label="Latitude"
+          name="latitude"
+          type="number"
+          defaultValue={props.timelineSeasonBasespot?.latitude ?? 0}
+          validation={{
+            valueAsNumber: true
+          }}
+          SuffixProps={{
+            style: {
+              borderRadius: '0.375rem 0 0 0.375rem',
+              marginRight: '-0.5px'
+            }
+          }}
+        />
+        <Input
+          color="DEFAULT"
+          label="Longitude"
+          name="longitude"
+          type="number"
+          defaultValue={props.timelineSeasonBasespot?.longitude ?? 0}
+          validation={{
+            valueAsNumber: true
+          }}
+          SuffixProps={{
+            style: {
+              borderRadius: '0 0.375rem 0.375rem 0',
+              marginLeft: '-0.5px'
+            }
+          }}
+        />
 
-        <div className="rw-button-group">
-          <div className="relative max-w-sm" role="textbox">
-            <TextField
-              name="latitude"
-              defaultValue={props.timelineSeasonBasespot?.latitude ?? 0}
-              className="rw-float-input peer"
-              errorClassName="rw-float-input rw-input-error"
-              validation={{ valueAsNumber: true }}
-            />
-            <Label
-              name="latitude"
-              className="rw-float-label"
-              errorClassName="rw-float-label rw-label-error"
-            >
-              Latitude
-            </Label>
-
-            <FieldError name="latitude" className="rw-field-error" />
-            <input type="hidden" />
-          </div>
-          <div className="relative max-w-sm" role="textbox">
-            <input type="hidden" />
-            <TextField
-              name="longitude"
-              defaultValue={props.timelineSeasonBasespot?.longitude ?? 0}
-              className="rw-float-input peer"
-              errorClassName="rw-float-input rw-input-error"
-              validation={{ valueAsNumber: true }}
-            />
-            <Label
-              name="longitude"
-              className="rw-float-label"
-              errorClassName="rw-float-label rw-label-error"
-            >
-              Longitude
-            </Label>
-
-            <FieldError name="longitude" className="rw-field-error" />
-          </div>
-        </div>
-
-        {/* <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
-            Save
+        {/* <br /> */}
+        {/* <Button
+          type="submit"
+          color="success"
+          variant="outlined"
+          disabled={props.loading}
+          startIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512"
-              className="rw-button-icon-end pointer-events-none"
+              className="pointer-events-none"
               fill="currentColor"
             >
               <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
             </svg>
-          </Submit>
-        </div> */}
+          }
+        >
+          Save
+        </Button> */}
       </Form>
     </div>
   );

@@ -17,6 +17,7 @@ export const QUERY = gql`
         item_id
         latitude
         longitude
+        note_index
         type
         Item {
           name
@@ -24,23 +25,14 @@ export const QUERY = gql`
           color
         }
       }
-      MapNote {
-        latitude
-        longitude
-        note_index
-      }
       other_Map {
         id
         name
-        MapNote {
-          latitude
-          longitude
-          note_index
-        }
         MapResource {
           item_id
           latitude
           longitude
+          note_index
           type
           Item {
             name

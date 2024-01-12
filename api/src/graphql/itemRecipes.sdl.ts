@@ -1,13 +1,14 @@
 export const schema = gql`
   type ItemRecipe {
-    id: String!
-    created_at: DateTime!
-    updated_at: DateTime
+    id: BigInt!
     crafted_item_id: BigInt!
     crafting_station_id: BigInt
     crafting_time: Float
     yields: Float!
     required_level: BigInt
+    xp: Float
+    skill_quality_multiplier_min: Float
+    skill_quality_multiplier_max: Float
     Item_ItemRecipe_crafted_item_idToItem: Item!
     Item_ItemRecipe_crafting_station_idToItem: Item
     ItemRecipeItem: [ItemRecipeItem]!
@@ -15,40 +16,43 @@ export const schema = gql`
   }
 
   type Query {
-    itemRecipes: [ItemRecipe!]! @skipAuth
-    itemRecipe(id: String!): ItemRecipe @skipAuth
+    itemRecipes: [ItemRecipe] @skipAuth
+    itemRecipe(id: BigInt!): ItemRecipe @skipAuth
+    itemRecipesByItem(crafted_item_id: BigInt!): [ItemRecipe!]! @skipAuth
     itemRecipesByCraftingStations(crafting_stations: [Int]): [ItemRecipe!]!
       @skipAuth
   }
 
   input CreateItemRecipeInput {
-    created_at: DateTime!
-    updated_at: DateTime
     crafted_item_id: BigInt!
     crafting_station_id: BigInt
     crafting_time: Float
     yields: Float!
     required_level: BigInt
+    xp: Float
+    skill_quality_multiplier_min: Float
+    skill_quality_multiplier_max: Float
   }
 
   input UpdateItemRecipeInput {
-    created_at: DateTime
-    updated_at: DateTime
     crafted_item_id: BigInt
     crafting_station_id: BigInt
     crafting_time: Float
     yields: Float
     required_level: BigInt
+    xp: Float
+    skill_quality_multiplier_min: Float
+    skill_quality_multiplier_max: Float
   }
 
   type Mutation {
     createItemRecipe(input: CreateItemRecipeInput!): ItemRecipe!
       @requireAuth
       @hasPermission(permission: "gamedata_create")
-    updateItemRecipe(id: String!, input: UpdateItemRecipeInput!): ItemRecipe!
+    updateItemRecipe(id: BigInt!, input: UpdateItemRecipeInput!): ItemRecipe!
       @requireAuth
       @hasPermission(permission: "gamedata_update")
-    deleteItemRecipe(id: String!): ItemRecipe!
+    deleteItemRecipe(id: BigInt!): ItemRecipe!
       @requireAuth
       @hasPermission(permission: "gamedata_delete")
   }

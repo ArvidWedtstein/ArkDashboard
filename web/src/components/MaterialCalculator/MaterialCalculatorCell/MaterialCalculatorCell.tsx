@@ -1,47 +1,34 @@
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
-import { FindItemsMats } from "types/graphql";
+import { FindItemsMaterials } from "types/graphql";
+
 export const QUERY = gql`
-  query FindItemsMats {
-    itemRecipes {
+  query FindItemsMaterials {
+    craftingItems {
       id
-      crafting_station_id
-      crafting_time
-      yields
-      Item_ItemRecipe_crafted_item_idToItem {
+      name
+      type
+      category
+      image
+      visible
+      crafting_speed_modifier
+      resource_consumption_multiplier
+      item_production_multiplier
+      itemRecipes: ItemRecipe_ItemRecipe_crafted_item_idToItem {
         id
-        name
-        image
-        category
-        type
+        crafting_station_id
+        crafting_time
+        yields
+        ItemRecipeItem {
+          id
+          item_recipe_id
+          resource_item_id
+          amount
+        }
       }
     }
   }
 `;
-// # ItemRecipeItem {
-//   #   id
-//   #   item_recipe_id
-//   #   amount
-//   #   Item {
-//   #     id
-//   #     name
-//   #     image
-//   #   }
-//   # }
-export const ITEMRECIPEITEMQUERY = gql`
-query FindRecipeItemsByIds($ids: [String!]) {
-    itemRecipeItemsByIds(ids: $ids) {
-      id
-      item_recipe_id
-      amount
-      Item {
-        id
-        name
-        image
-      }
-    }
-}
-`
 
 export const Loading = () => {
   return (
@@ -75,6 +62,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ itemRecipes }: CellSuccessProps<FindItemsMats>) => {
-  return <MaterialGrid itemRecipes={itemRecipes} />;
+export const Success = ({ craftingItems }: CellSuccessProps<FindItemsMaterials>) => {
+  return <MaterialGrid craftingItems={craftingItems} />;
 };

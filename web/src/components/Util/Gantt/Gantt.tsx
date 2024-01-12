@@ -5,15 +5,16 @@ import { Fragment, useMemo, useState } from "react";
 import {
   addToDate,
   adjustCalendarDate,
-  getDaysBetweenDates,
+  getDateDiff,
   getISOWeek,
   groupBy,
   toLocalPeriod,
   toLocaleISODate,
 } from "src/lib/formatters";
-import Ripple from "../Ripple/Ripple";
 import { Lookup } from "../Lookup/Lookup";
 import Button from "../Button/Button";
+import Tooltip from "../Tooltip/Tooltip";
+import { ToggleButton } from "../ToggleButton/ToggleButton";
 
 type ViewType = "day" | "week" | "month" | "year";
 type GanttData<T> = Record<string, { elements: T[]; color?: string[] }>;
@@ -31,17 +32,9 @@ const Gantt = <T extends Record<string, unknown>>({
   dateEndKey,
   labelKey,
 }: GanttProps<T>) => {
-  const formatDate = (options?: Intl.DateTimeFormatOptions) => {
-    const dateFormatter = new Intl.DateTimeFormat(
-      navigator && navigator.language,
-      options
-    );
-
-    return {
-      formatRange: dateFormatter.formatRange,
-      format: dateFormatter.format,
-    };
-  };
+  const dateFormatter = new Intl.DateTimeFormat(
+    navigator && navigator.language,
+  );
 
   const [viewType, setViewType] = useState<ViewType>("week");
 
@@ -76,7 +69,7 @@ const Gantt = <T extends Record<string, unknown>>({
       const weeks = Array.from(
         {
           length: Math.ceil(
-            getDaysBetweenDates(firstDayOfMonth, lastDayOfMonth).length / 7
+            getDateDiff(firstDayOfMonth, lastDayOfMonth).dates.length / 7
           ),
         },
         (_, weekIndex) => {
@@ -101,7 +94,7 @@ const Gantt = <T extends Record<string, unknown>>({
       return {
         month: monthIndex,
         year: dateInfo.year,
-        days: getDaysBetweenDates(firstDayOfMonth, lastDayOfMonth).length,
+        days: getDateDiff(firstDayOfMonth, lastDayOfMonth).dates.length,
         weeks,
       };
     });
@@ -266,6 +259,8 @@ const Gantt = <T extends Record<string, unknown>>({
     return { overlappingElements, overlappingCount: maxOverlapCount };
   }, [ganttData, viewType, dateInfo, dateStartKey, dateEndKey]);
 
+  const [tooltip, setTooltip] = useState(true)
+
   return (
     <div className="gantt-chart relative p-4 text-black dark:text-white">
       <div role="menubar" className="mb-2 inline-flex space-x-2">
@@ -275,6 +270,7 @@ const Gantt = <T extends Record<string, unknown>>({
           defaultValue={"week"}
           disableClearable
           isOptionEqualToValue={(option, value) => option.value === value.value}
+          getOptionValue={(opt) => opt.value}
           multiple={false}
           options={[
             { label: "Day View", value: "day" },
@@ -349,6 +345,16 @@ const Gantt = <T extends Record<string, unknown>>({
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
           </svg>
         </Button>
+        <ToggleButton
+          size="small"
+          value={"tooltip"}
+          selected={tooltip}
+          onChange={() => {
+            setTooltip(!tooltip)
+          }}
+        >
+          Tooltip
+        </ToggleButton>
       </div>
       <div className="flex flex-none flex-col">
         <div
@@ -431,7 +437,7 @@ const Gantt = <T extends Record<string, unknown>>({
                                       className={clsx(
                                         "flex items-center justify-center",
                                         {
-                                          "bg-pea-500 h-8 w-8 rounded-full text-white":
+                                          "bg-pea-500 h-8 w-12 rounded-full text-white":
                                             (toLocaleISODate(date) ===
                                               toLocaleISODate(new Date()) &&
                                               (viewType === "week" ||
@@ -676,27 +682,38 @@ const Gantt = <T extends Record<string, unknown>>({
                                     : 7) + 1,
                         }}
                       >
-                        <Link
-                          to={routes.timelineSeason({ id: item.id as string })}
-                          className={clsx(
-                            "absolute inset-1 flex flex-col overflow-y-auto border p-1 text-xs transition hover:ring-1 hover:ring-black/50 dark:hover:ring-white/50 " // dark:bg-sky-600/50 bg-blue-400/20 border border-blue-700/10 dark:border-sky-500
-                          )}
-                          style={{
-                            borderRadius: "0.5rem",
-                            background: `linear-gradient(to right, ${data.colors.join(
-                              " 30%, "
-                            )})`,
-                            borderColor: `${data.colors[0].substring(0, 7)}`,
-                          }}
-                        >
-                          <span>{item[labelKey].toString()}</span>
-                          <time>
-                            {(item[dateStartKey] && item[dateEndKey]) && formatDate({ dateStyle: "short" }).formatRange(
-                              new Date(item[dateStartKey].toString()),
-                              new Date(item[dateEndKey].toString())
+                        <Tooltip disabled={!tooltip} content={
+                          <div className="flex flex-col">
+                            <span>{item[labelKey].toString()}</span>
+                            <span><strong>From:</strong> {new Date(item[dateStartKey].toString()).toLocaleDateString()}</span>
+                            <span><strong>To:</strong> {new Date(item[dateEndKey].toString()).toLocaleDateString()}</span>
+                          </div>
+                        }>
+                          <Link
+                            to={routes.timelineSeason({ id: item.id as string })}
+                            className={clsx(
+                              "absolute inset-1 flex flex-col overflow-y-auto border p-1 text-xs transition hover:ring-1 hover:ring-black/50 dark:hover:ring-white/50 " // dark:bg-sky-600/50 bg-blue-400/20 border border-blue-700/10 dark:border-sky-500
                             )}
-                          </time>
-                        </Link>
+                            style={{
+                              borderRadius: "0.5rem",
+                              background: `linear-gradient(to right, ${data.colors.join(
+                                " 30%, "
+                              )})`,
+                              borderColor: `${data.colors[0].substring(0, 7)}`,
+                            }}
+                          >
+                            <span>{item[labelKey].toString()}</span>
+                            <time>
+                              {(item[dateStartKey] && item[dateEndKey]) && new Intl.DateTimeFormat(
+                                navigator && navigator.language,
+                                { dateStyle: 'short' }
+                              ).formatRange(
+                                new Date(item[dateStartKey].toString()),
+                                new Date(item[dateEndKey].toString())
+                              )}
+                            </time>
+                          </Link>
+                        </Tooltip>
                       </li>
                     );
                   });

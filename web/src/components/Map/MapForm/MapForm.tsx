@@ -17,7 +17,7 @@ import type {
   UseFormRegister,
 } from "@redwoodjs/forms";
 import Map from "src/components/Util/Map/Map";
-import { Input, InputLabel, InputOutlined } from "src/components/Util/Input/Input";
+import { Input, InputLabel } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Alert from "src/components/Util/Alert/Alert";
 import Button from "src/components/Util/Button/Button";
@@ -184,6 +184,7 @@ const MapForm = (props: MapFormProps) => {
           defaultValue={props.map?.parent_map_id}
           getOptionLabel={(val) => val.label}
           isOptionEqualToValue={(val, opt) => val.id === opt.id}
+          getOptionValue={(opt) => opt.id}
           options={[
             { label: 'Valguero', id: 1 },
             { label: 'The Island', id: 2 },

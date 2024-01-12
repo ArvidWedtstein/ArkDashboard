@@ -11,8 +11,8 @@ export const QUERY = gql`
     userRecipes {
       id
       created_at
-      user_id
-      private
+      created_by
+      public_access
       name
       UserRecipeItemRecipe {
         item_recipe_id

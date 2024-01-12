@@ -16,10 +16,10 @@ import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
 import { IntRange } from "src/lib/formatters";
 
-type CardProps = {
+export type CardProps = {
   sx?: CSSProperties;
   children?: ReactNode | ReactNode[];
-  variant?: "standard" | "outlined" | "elevation";
+  variant?: "standard" | "outlined" | "elevation" | "gradient";
   elevation?: IntRange<0, 7>;
 } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -36,10 +36,12 @@ export const Card = ({
   return (
     <div
       className={clsx(
-        "relative overflow-hidden rounded bg-zinc-300 text-black dark:bg-zinc-800 dark:text-white",
+        "relative overflow-hidden rounded text-black dark:text-white",
         className,
         {
           "border border-black/30 dark:border-white/30": variant === "outlined",
+          "bg-zinc-300 dark:bg-zinc-800": variant !== "gradient",
+          "dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 bg-gradient-to-tr from-zinc-200 to-zinc-300 border border-zinc-500 dark:border-zinc-700": variant === 'gradient',
           "shadow-sm": variant === "elevation" && elevation === 1,
           shadow: variant === "elevation" && elevation === 2,
           "shadow-md": variant === "elevation" && elevation === 3,
@@ -50,9 +52,11 @@ export const Card = ({
       )}
       style={{
         ...sx,
-        backgroundImage: !!sx?.backgroundImage
-          ? sx?.backgroundImage
-          : `linear-gradient(#ffffff0d, #ffffff0d)`,
+        ...(variant !== 'gradient' ? {
+          backgroundImage: !!sx?.backgroundImage
+            ? sx?.backgroundImage
+            : `linear-gradient(#ffffff0d, #ffffff0d)`
+        } : {}),
       }}
       {...props}
     >
@@ -147,13 +151,13 @@ type CardMediaDiv = CardMediaBaseProps & {
 type CardMediaProps = CardMediaDiv | CardMediaImg;
 export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
   if (component === "img") {
-    const { alt, height, className, image, ...imgprops } =
+    const { alt, height, className, image, sx, ...imgprops } =
       props as CardMediaImg;
     return (
       <img
         className={className}
         src={image}
-        style={props.sx}
+        style={sx}
         title={props.title}
         alt={alt}
         height={height}
@@ -161,16 +165,17 @@ export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
       />
     );
   } else {
-    const { sx, image, title, className, children } = props;
+    const { sx, image, title, className, children, ...divProps } = props;
     return (
       <div
         className={clsx("block !bg-cover bg-center bg-no-repeat", className)}
         role="img"
         style={{
           ...sx,
-          backgroundImage: `url(${image})`,
+          background: `url(${image})`,
         }}
         title={title}
+        {...divProps}
       >
         {children}
       </div>

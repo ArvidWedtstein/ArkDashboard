@@ -2,7 +2,6 @@ import { render, waitFor, screen } from '@redwoodjs/testing/web'
 
 import {
   formatEnum,
-  jsonTruncate,
   truncate,
   timeTag,
   jsonDisplay,
@@ -10,11 +9,14 @@ import {
   dynamicSort,
   combineBySummingKeys,
   isObject,
-  capitalize,
   isDate,
-  random,
   getDateDiff,
   groupBy,
+  RgbToHex,
+  RgbToHsl,
+  HexToHsl,
+  HexToRgb,
+  HslToHex,
 } from './formatters'
 
 // https://dev.to/jbranchaud/test-timing-based-js-functions-with-jest-5be
@@ -73,25 +75,6 @@ describe('truncate', () => {
   })
 })
 
-describe('jsonTruncate', () => {
-  it('truncates large json structures', () => {
-    expect(
-      jsonTruncate({
-        foo: 'foo',
-        bar: 'bar',
-        baz: 'baz',
-        kittens: 'kittens meow',
-        bazinga: 'Sheldon',
-        nested: {
-          foobar: 'I have no imagination',
-          two: 'Second nested item',
-        },
-        five: 5,
-        bool: false,
-      })
-    ).toMatch(/.+\n.+\w\.\.\.$/s)
-  })
-})
 
 describe('timeTag', () => {
   it('should return an empty string if dateTime is not provided', () => {
@@ -277,17 +260,6 @@ describe('isObject', () => {
   })
 })
 
-
-describe('capitalize', () => {
-  it('capitalizes the first letter of a string', () => {
-    expect(capitalize('hello')).toBe('Hello')
-  })
-
-  it('does not capitalize the first letter of a string if it is already capitalized', () => {
-    expect(capitalize('Hello')).toBe('Hello')
-  })
-})
-
 describe('isDate', () => {
   it('returns true for dates', () => {
     expect(isDate(new Date())).toBe(true)
@@ -303,15 +275,6 @@ describe('isDate', () => {
 
   it('returns false for booleans', () => {
     expect(isDate('true')).toBe(false)
-  })
-})
-
-
-
-describe('random', () => {
-  it('returns a random number', () => {
-    expect(random(0, 10)).toBeGreaterThanOrEqual(0)
-    expect(random(0, 10)).toBeLessThanOrEqual(10)
   })
 })
 
@@ -338,3 +301,45 @@ describe('groupBy', () => {
     })
   })
 })
+
+describe('Color Conversion Functions', () => {
+  describe('rgbToHex', () => {
+    test('converts RGB to Hex', () => {
+      expect(RgbToHex('rgb(255, 0, 0)')).toBe('#ff0000');
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('rgbToHsl', () => {
+    test('converts RGB to HSL', () => {
+      expect(RgbToHsl(255, 0, 0)).toEqual([0, 100, 50]);
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('hexToHsl', () => {
+    test('converts Hex to HSL', () => {
+      expect(HexToHsl('#ff0000')).toEqual([0, 100, 50]);
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('hexToRgb', () => {
+    test('converts Hex to RGB', () => {
+      expect(HexToRgb('#ff0000')).toBe('rgb(255, 0, 0)');
+    });
+
+    // Add more test cases as needed
+  });
+
+  describe('hslToHex', () => {
+    test('converts HSL to Hex', () => {
+      expect(HslToHex(0, 100, 50)).toBe('#ff0000');
+    });
+
+    // Add more test cases as needed
+  });
+});

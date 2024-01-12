@@ -29,6 +29,7 @@ describe('dinos', () => {
         can_destroy: 'String',
         type: 'String',
         carryable_by: 'String',
+        variants: 'String',
       },
     })
 
@@ -36,6 +37,7 @@ describe('dinos', () => {
     expect(result.can_destroy).toEqual('String')
     expect(result.type).toEqual('String')
     expect(result.carryable_by).toEqual('String')
+    expect(result.variants).toEqual('String')
   })
 
   scenario('updates a dino', async (scenario: StandardScenario) => {

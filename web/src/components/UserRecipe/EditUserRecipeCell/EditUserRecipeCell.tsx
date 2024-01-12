@@ -8,32 +8,24 @@ import { toast } from "@redwoodjs/web/toast";
 import UserRecipeForm from "src/components/UserRecipe/UserRecipeForm";
 
 export const QUERY = gql`
-  query EditUserRecipeById($id: String!) {
+  query EditUserRecipeById($id: BigInt!) {
     userRecipe: userRecipe(id: $id) {
       id
       created_at
       updated_at
-      user_id
-      private
+      created_by
+      public_access
       name
       UserRecipeItemRecipe {
         id
         amount
+        item_recipe_id
         ItemRecipe {
           id
           Item_ItemRecipe_crafted_item_idToItem {
             id
             name
             image
-          }
-          ItemRecipeItem {
-            id
-            amount
-            Item {
-              id
-              name
-              image
-            }
           }
         }
       }
@@ -50,29 +42,20 @@ export const QUERY = gql`
         category
         type
       }
-      ItemRecipeItem {
-        id
-        amount
-        Item {
-          id
-          name
-          image
-        }
-      }
     }
   }
 `;
 const UPDATE_USER_RECIPE_MUTATION = gql`
   mutation UpdateUserRecipeMutation(
-    $id: String!
+    $id: BigInt!
     $input: UpdateUserRecipeInput!
   ) {
     updateUserRecipe(id: $id, input: $input) {
       id
       created_at
       updated_at
-      user_id
-      private
+      created_by
+      public_access
       name
     }
   }

@@ -29,7 +29,7 @@ import Toast from "src/components/Util/Toast/Toast";
 import { useAuth } from "src/auth";
 import Switch from "src/components/Util/Switch/Switch";
 import Button from "src/components/Util/Button/Button";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { Input } from "src/components/Util/Input/Input";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -51,7 +51,6 @@ const DELETE_BASESPOT_MUTATION = gql`
 `;
 
 const BasespotForm = (props: BasespotFormProps) => {
-  const { currentUser } = useAuth();
   const formMethods = useForm<FormBasespot>();
 
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
@@ -126,15 +125,15 @@ const BasespotForm = (props: BasespotFormProps) => {
               color="error"
               variant="outlined"
               permission="basespot_delete"
-              disabled={!props?.basespot?.id }
+              disabled={!props?.basespot?.id}
               onClick={() => onDeleteClick(props?.basespot?.id)}
               startIcon={
                 <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                  >
-                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
-                  </svg>
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
+                </svg>
               }
             >
               Delete
@@ -190,8 +189,8 @@ const BasespotForm = (props: BasespotFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        <div className="flex md:flex-col flex-wrap">
-          <InputOutlined
+        <div className="flex md:flex-col flex-wrap justify-start">
+          <Input
             name="name"
             label="Name"
             margin="normal"
@@ -199,15 +198,17 @@ const BasespotForm = (props: BasespotFormProps) => {
             validation={{ required: true }}
           />
 
-          <InputOutlined
+          <Input
             name="description"
             label="Description"
-            type="textarea"
-            defaultValue={props.basespot?.description}
-            rows={5}
+            multiline
+            margin="normal"
+            defaultValue={props.basespot?.name}
             validation={{ required: true }}
+            rows={5}
           />
         </div>
+
 
         <Lookup
           name="map_id"
@@ -219,6 +220,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           getOptionLabel={(option) => option.name}
           getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
           options={props?.maps}
+          required
           onSelect={(e) => {
             if (!e) return setMap(null);
             setMap(e.id);
@@ -238,20 +240,18 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <div className="flex flex-row items-start space-x-3">
-          <InputOutlined
+          <Input
             name="latitude"
             label="Latitude"
             margin="normal"
-            emptyAs={null}
             defaultValue={props?.basespot?.latitude}
             validation={{ required: true, valueAsNumber: true }}
           />
 
-          <InputOutlined
+          <Input
             name="longitude"
             label="Longitude"
             margin="normal"
-            emptyAs={null}
             defaultValue={props?.basespot?.longitude}
             validation={{ required: true, valueAsNumber: true }}
           />
@@ -291,13 +291,8 @@ const BasespotForm = (props: BasespotFormProps) => {
                   value: "cave",
                   label: "Cave",
                   image: (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-12"
-                      viewBox="0 0 576 512"
-                      fill="currentColor"
-                    >
-                      <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
+                    <svg fillRule="evenodd" xmlns="http://www.w3.org/2000/svg" viewBox="0, 0, 400,400" className="h-12 fill-current">
+                      <path id="path0" d="M178.628 14.217 C 173.142 22.290,163.841 43.690,157.959 61.772 L 147.264 94.649 135.940 83.324 C 114.307 61.692,96.611 72.813,73.827 122.359 C 50.372 173.365,7.851 323.977,1.371 379.000 L -1.101 400.000 71.131 400.000 L 143.364 400.000 146.179 387.000 C 167.231 289.748,226.097 292.919,257.549 393.000 C 259.534 399.317,266.593 400.000,329.874 400.000 L 400.000 400.000 400.000 388.440 C 400.000 346.420,353.648 175.499,334.578 147.202 C 319.647 125.046,301.278 128.040,288.178 154.765 C 275.010 181.631,274.738 181.510,266.290 145.000 C 237.242 19.455,206.368 -26.606,178.628 14.217 M227.664 83.120 C 233.907 102.304,244.860 142.846,252.006 173.213 C 267.465 238.916,274.234 244.065,289.843 202.000 C 302.001 169.233,308.623 156.000,312.862 156.000 C 322.718 156.000,351.544 244.560,367.667 324.372 C 372.292 347.267,376.994 370.050,378.114 375.000 C 380.146 383.972,379.995 384.000,328.708 384.000 L 277.264 384.000 266.640 356.921 C 229.895 263.263,161.270 273.102,126.588 377.000 C 122.441 389.422,19.105 387.450,21.786 375.000 C 51.283 238.021,92.033 114.231,113.488 96.425 C 118.743 92.063,121.239 94.268,130.814 111.725 C 147.996 143.053,153.990 139.219,171.672 85.584 C 179.725 61.155,189.643 36.089,193.710 29.881 L 201.105 18.595 208.710 33.417 C 212.892 41.570,221.422 63.936,227.664 83.120" />
                     </svg>
                   ),
                 },
@@ -424,7 +419,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
         <FieldError name="level" className="rw-field-error" />
 
-        <InputOutlined
+        <Input
           label="Estimated for (n) players"
           name="estimated_for_players"
           margin="normal"
@@ -475,7 +470,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="has_air" className="rw-field-error" />
 
-        {/* TODO: Fix select list for turretsetup images */}
+        {/* TODO: Phase out Turretsetup_image? */}
         {/*
         <Label
           name="turretsetup_image"

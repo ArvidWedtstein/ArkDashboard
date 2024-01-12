@@ -2,7 +2,6 @@ import { render, waitFor, screen } from '@redwoodjs/testing/web'
 
 import {
   formatEnum,
-  jsonTruncate,
   truncate,
   timeTag,
   jsonDisplay,
@@ -58,26 +57,6 @@ describe('truncate', () => {
 
     expect(truncate(undefined)).toEqual('')
     expect(truncate(null)).toEqual('')
-  })
-})
-
-describe('jsonTruncate', () => {
-  it('truncates large json structures', () => {
-    expect(
-      jsonTruncate({
-        foo: 'foo',
-        bar: 'bar',
-        baz: 'baz',
-        kittens: 'kittens meow',
-        bazinga: 'Sheldon',
-        nested: {
-          foobar: 'I have no imagination',
-          two: 'Second nested item',
-        },
-        five: 5,
-        bool: false,
-      })
-    ).toMatch(/.+\n.+\w\.\.\.$/s)
   })
 })
 

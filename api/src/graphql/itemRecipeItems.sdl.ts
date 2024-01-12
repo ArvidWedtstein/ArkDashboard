@@ -1,34 +1,28 @@
 export const schema = gql`
   type ItemRecipeItem {
-    id: String!
-    created_at: DateTime!
-    updated_at: DateTime
-    item_recipe_id: String!
-    item_id: BigInt!
+    id: BigInt!
+    item_recipe_id: BigInt!
+    resource_item_id: BigInt!
     amount: Float!
-    Item: Item!
     ItemRecipe: ItemRecipe!
+    Item: Item!
   }
 
   type Query {
     itemRecipeItems: [ItemRecipeItem!]! @skipAuth
-    itemRecipeItem(id: String!): ItemRecipeItem @skipAuth
-    itemRecipeItemsByIds(ids: [String!]): [ItemRecipeItem] @skipAuth
+    itemRecipeItem(id: BigInt!): ItemRecipeItem @skipAuth
+    itemRecipeItemsByIds(ids: [BigInt!]): [ItemRecipeItem] @skipAuth
   }
 
   input CreateItemRecipeItemInput {
-    created_at: DateTime!
-    updated_at: DateTime
-    item_recipe_id: String!
-    item_id: BigInt!
+    item_recipe_id: BigInt!
+    resource_item_id: BigInt!
     amount: Float!
   }
 
   input UpdateItemRecipeItemInput {
-    created_at: DateTime
-    updated_at: DateTime
-    item_recipe_id: String
-    item_id: BigInt
+    item_recipe_id: BigInt
+    resource_item_id: BigInt
     amount: Float
   }
 
@@ -37,12 +31,12 @@ export const schema = gql`
       @requireAuth
       @hasPermission(permission: "gamedata_create")
     updateItemRecipeItem(
-      id: String!
+      id: BigInt!
       input: UpdateItemRecipeItemInput!
     ): ItemRecipeItem!
       @requireAuth
       @hasPermission(permission: "gamedata_update")
-    deleteItemRecipeItem(id: String!): ItemRecipeItem!
+    deleteItemRecipeItem(id: BigInt!): ItemRecipeItem!
       @requireAuth
       @hasPermission(permission: "gamedata_delete")
   }

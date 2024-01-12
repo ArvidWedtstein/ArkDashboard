@@ -5,14 +5,18 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import UserRecipe from 'src/components/UserRecipe/UserRecipe'
 
 export const QUERY = gql`
-  query FindUserRecipeById($id: String!) {
+  query FindUserRecipeById($id: BigInt!) {
     userRecipe: userRecipe(id: $id) {
       id
       created_at
       updated_at
-      user_id
-      private
+      created_by
+      public_access
       name
+      Profile {
+        avatar_url
+        full_name
+      }
       UserRecipeItemRecipe {
         id
         ItemRecipe {
@@ -20,14 +24,6 @@ export const QUERY = gql`
           Item_ItemRecipe_crafted_item_idToItem  {
             name
             image
-          }
-          ItemRecipeItem {
-            Item {
-              id
-              name
-              image
-            }
-            amount
           }
         }
         amount

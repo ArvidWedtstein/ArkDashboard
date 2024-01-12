@@ -37,16 +37,16 @@ const UPDATE_MAP_MUTATION = gql`
         longitude
         type
       }
-      MapNote {
-        latitude
-        longitude
-        note_index
-      }
+
       img
     }
   }
 `;
-
+// MapNote {
+//   latitude
+//   longitude
+//   note_index
+// }
 export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (

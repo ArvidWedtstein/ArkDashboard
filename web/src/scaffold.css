@@ -81,8 +81,7 @@
     @apply text-red-600;
   }
   .rw-helper-text {
-    /* @apply mt-2 text-xs text-gray-600 dark:text-stone-300; */
-    @apply mt-1 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70;
+    @apply mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70;
   }
   /* Form Collapsible Section */
   .rw-form-group {
@@ -581,84 +580,75 @@
   }
 
   /* || Divider */
+  /* Example: <div role="seperator" className="rw-divider bg-zinc-500">child</div> */
   .rw-divider {
     @apply relative m-[initial] shrink-0 list-none self-stretch [border:medium] [inline-size:1px] [margin-inline:initial] [block-size:initial];
   }
-  .range-input input {
+
+  /* Divider with word in center */
+  .rw-divide {
+    @apply m-0 flex shrink-0 whitespace-nowrap border-[0px] text-center before:w-full before:self-center before:border-t before:border-white/20 before:content-[""] after:w-full after:self-center after:border-t after:border-white/20 after:content-[''] [&>span]:inline-block [&>span]:px-2.5 [&>:not(style)~:not(style)]:mt-4 [&.left]:before:w-[10%] [&.left]:after:w-[90%] [&.right]:before:w-[90%] [&.right]:after:w-[10%];
+  }
+
+  /* Slideshow Transitions */
+  .slide.left-enter-active,
+  .slide.left-exit-active,
+  .slide.right-enter-active,
+  .slide.right-exit-active {
+    transition: transform 1000ms ease-in-out;
+  }
+
+  .slide.left-enter,
+  .slide.right-enter {
     position: absolute;
-    width: 100%;
-    height: 5px;
-    top: -7px;
-    background: none;
-    pointer-events: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+    inset: 0;
   }
-  .range-price {
-    margin: 30px 0;
-    width: 100%;
+
+  .slide.left-enter,
+  .slide.right-exit-active {
+    transform: translate(100%, 0);
+  }
+
+  .slide.left-enter-active,
+  .slide.right-enter-active,
+  .slide.left-exit,
+  .slide.right-exit {
+    transform: translate(0, 0);
+  }
+
+  .slide.left-exit-active,
+  .slide.right-enter {
+    transform: translate(-100%, 0);
+  }
+
+  /* List */
+  .fadetransition.item-enter {
+    opacity: 0.01;
+  }
+
+  .fadetransition.item-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+  }
+
+  .fadetransition.item-exit {
+    opacity: 1;
+  }
+
+  .fadetransition.item-exit-active {
+    opacity: 0.01;
+    transition: opacity 500ms ease-in;
+  }
+
+  .parchment {
+    position: absolute;
     display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .range-input input::-moz-range-thumb {
-    height: 15px;
-    width: 15px;
-    border-radius: 50%;
-    border: 3px solid #1b53c0;
-    background-color: #fff;
-    pointer-events: auto;
-    -moz-appearance: none;
-  }
-  /* || Badge Colors */
-
-  /* Red Badge */
-  .rw-badge.rw-badge-red {
-    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300;
-  }
-  .rw-badge.rw-badge-red-outline {
-    @apply bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20;
-  }
-
-  /* Green Badge */
-  .rw-badge.rw-badge-green {
-    @apply bg-pea-100 text-pea-800 dark:bg-pea-900 dark:text-pea-300;
-  }
-  .rw-badge.rw-badge-green-outline {
-    @apply bg-pea-50 text-pea-700 ring-pea-600/20 dark:bg-pea-500/10 dark:text-pea-400 dark:ring-pea-500/20 ring-1 ring-inset;
-  }
-
-  /* Yellow Badge */
-  .rw-badge.rw-badge-yellow {
-    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300;
-  }
-  .rw-badge.rw-badge-yellow-outline {
-    @apply bg-yellow-50 text-yellow-800 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-500 dark:ring-yellow-400/20;
-  }
-
-  /* Blue Badge */
-  .rw-badge.rw-badge-blue {
-    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300;
-  }
-  .rw-badge.rw-badge-blue-outline {
-    @apply bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30;
-  }
-
-  /* Purple Badge */
-  .rw-badge.rw-badge-purple {
-    @apply bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300;
-  }
-  .rw-badge.rw-badge-purple-outline {
-    @apply bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-blue-400/10 dark:text-purple-400 dark:ring-purple-400/30;
-  }
-
-  /* Gray Badge */
-  .rw-badge.rw-badge-gray {
-    @apply bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300;
-  }
-  .rw-badge.rw-badge-gray-outline {
-    @apply bg-zinc-50 text-zinc-600 ring-1 ring-inset ring-zinc-500/10 dark:bg-zinc-400/10 dark:text-zinc-400 dark:ring-zinc-400/20;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    box-shadow: 0px 0px 100px #9c8261 inset;
+    background: #e0d4be;
+    z-index: -1;
   }
 
   /* || Toasts */
@@ -683,7 +673,7 @@
 
   /* Error */
   .rw-toast.rw-toast-error {
-    @apply border-red-300 text-red-800 dark:border-red-800 dark:text-red-400;
+    @apply border-red-300 text-black dark:border-red-600 dark:text-white;
   }
 
   /* Table */

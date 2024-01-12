@@ -17,8 +17,10 @@ export const QUERY = gql`
       can_destroy
       egg_min
       egg_max
-      tdps
+      icon
+      torpor_depetion_per_second
       maturation_time
+      torpor_immune
       incubation_time
       affinity_needed
       aff_inc
@@ -26,14 +28,15 @@ export const QUERY = gql`
       hitboxes
       food_consumption_base
       food_consumption_mult
-      violent_tame
+      taming_method
       taming_ineffectiveness
       disable_mult
       non_violent_food_rate_mult
       taming_interval
+      temperament
       tamable
       base_taming_time
-      x_variant
+      variants
       mounted_weaponry
       ridable
       movement

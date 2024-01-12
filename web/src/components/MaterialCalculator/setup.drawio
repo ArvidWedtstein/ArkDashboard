@@ -1,0 +1,238 @@
+<mxfile host="65bd71144e">
+    <diagram id="hh8LL-kszsgYTxiQQ1dp" name="Page-1">
+        <mxGraphModel dx="1076" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="150" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=none;endSize=8;strokeColor=#ff0000;" parent="1" source="2" target="12" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="165" y="280" as="targetPoint"/>
+                        <mxPoint x="165" y="180" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="126" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" parent="1" source="12" target="23" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="Client loads page" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" parent="1" vertex="1">
+                    <mxGeometry x="105" y="190" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="ItemRecipes" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1" collapsed="1">
+                    <mxGeometry x="330" y="414" width="110" height="30" as="geometry">
+                        <mxRectangle x="330" y="400" width="185" height="156" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="16" value="+ Id: BigInt" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="15" vertex="1">
+                    <mxGeometry y="26" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="+ crafting_station_id: BigInt" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="15" vertex="1">
+                    <mxGeometry y="52" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="+ crafting_time: float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="15" vertex="1">
+                    <mxGeometry y="78" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="+ yields: float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="15" vertex="1">
+                    <mxGeometry y="104" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="+ Crafted_Item: Item" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="15" vertex="1">
+                    <mxGeometry y="130" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="127" style="edgeStyle=none;html=1;fillColor=#e51400;strokeColor=#B20000;" edge="1" parent="1" source="23" target="29">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="Item" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
+                    <mxGeometry x="72.5" y="260" width="185" height="182" as="geometry">
+                        <mxRectangle x="320" y="398" width="60" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="125" value="+ id: bigint" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="23" vertex="1">
+                    <mxGeometry y="26" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="+ name: string    " style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="23" vertex="1">
+                    <mxGeometry y="52" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="+ image: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="23" vertex="1">
+                    <mxGeometry y="78" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="+ category: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="23" vertex="1">
+                    <mxGeometry y="104" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="123" value="+ type: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="23" vertex="1">
+                    <mxGeometry y="130" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="+ itemRecipes: ItemRecipe[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="23" vertex="1">
+                    <mxGeometry y="156" width="185" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="User clicks recipe" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" parent="1" vertex="1">
+                    <mxGeometry x="105" y="470" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;" parent="1" source="29" target="33" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="460" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="33" value="Calculate_Materials Func" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="25" y="550" width="800" height="1170" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="New Object Materials" style="html=1;" parent="33" vertex="1">
+                    <mxGeometry x="15" y="45" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" parent="33" source="4" target="55" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Loop through all inserted items.&lt;br&gt;(These are all the currently selected items)&lt;br&gt;&lt;br&gt;Get Base Materials and RecipeTree" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" parent="33" vertex="1">
+                    <mxGeometry x="30" y="115" width="120" height="155" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;startArrow=none;" parent="33" source="6" target="4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-260" y="-265" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="55" value="Calculate_Item_Recipe_Func" style="swimlane;whiteSpace=wrap;html=1;" parent="33" vertex="1">
+                    <mxGeometry x="205" y="60" width="575.63" height="1090" as="geometry"/>
+                </mxCell>
+                <mxCell id="138" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#000000;" edge="1" parent="55" source="114" target="133">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="140" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;" vertex="1" connectable="0" parent="138">
+                    <mxGeometry x="-0.4436" y="1" relative="1" as="geometry">
+                        <mxPoint x="16" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="114" value="&lt;font color=&quot;#000000&quot;&gt;If Item has recipes&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#ff0000;fontColor=#FFFFFF;" parent="55" vertex="1">
+                    <mxGeometry x="149.38" y="115" width="130" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="115" value="no" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;fontColor=#FFFFFF;" parent="55" source="114" target="120" edge="1">
+                    <mxGeometry x="-1" relative="1" as="geometry">
+                        <mxPoint x="355.63" y="140" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="120" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;fontColor=#FFFFFF;" parent="55" vertex="1">
+                    <mxGeometry x="335.63" y="125" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="128" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="55">
+                    <mxGeometry x="199.38" y="35" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="129" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;" edge="1" source="128" parent="55" target="114">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="214.38" y="125" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="177" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" edge="1" parent="55" source="133" target="135">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="208" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" edge="1" parent="55" source="133" target="206">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="133" value="Loop through all craftingStation groups" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="55">
+                    <mxGeometry x="154.38" y="190" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="135" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;If Item crafting_station is in craftingstation&lt;br&gt;&amp;nbsp;group&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="55">
+                    <mxGeometry x="295.5" y="165" width="119.37" height="95" as="geometry"/>
+                </mxCell>
+                <mxCell id="178" value="Update item crafting station to current active station" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="55">
+                    <mxGeometry x="442.5" y="187.5" width="130" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="137" value="yes" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;" edge="1" source="135" parent="55" target="178">
+                    <mxGeometry x="-1" relative="1" as="geometry">
+                        <mxPoint x="380" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="215" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" edge="1" parent="55" source="206" target="212">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="206" value="Loop through Recipe Items for current item" style="swimlane;whiteSpace=wrap;html=1;fontColor=#FFFFFF;" vertex="1" parent="55">
+                    <mxGeometry x="40" y="290" width="490.63" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" value="&lt;font color=&quot;#000000&quot;&gt;Does Item Exist?&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#ff0000;fontColor=#FFFFFF;" parent="206" vertex="1">
+                    <mxGeometry x="100" y="140" width="115" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="Item not found / invalid:&lt;br&gt;Throw error&lt;br&gt;&amp;nbsp;missing item" style="html=1;fontColor=#ffffff;fillColor=#e51400;strokeColor=#B20000;" parent="206" vertex="1">
+                    <mxGeometry x="302.5" y="145" width="145" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="no" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;fontColor=#FFFFFF;" parent="206" source="61" target="65" edge="1">
+                    <mxGeometry x="-1" relative="1" as="geometry">
+                        <mxPoint x="350" y="200" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="252.5" y="170"/>
+                            <mxPoint x="252.5" y="170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="66" value="&lt;font color=&quot;#000000&quot;&gt;ResourceItem has recipe&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#ff0000;fontColor=#FFFFFF;" parent="206" vertex="1">
+                    <mxGeometry x="76.88" y="370" width="156.25" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="192" value="ResourceItem has no recipe, and has reached end of recipe tree.&lt;br&gt;Push resouceItem into children array with 0 crafting_time" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="206">
+                    <mxGeometry x="54.37999999999999" y="480" width="201.25" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="no" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;fontColor=#FFFFFF;" parent="206" source="66" target="192" edge="1">
+                    <mxGeometry x="0.3333" y="7" relative="1" as="geometry">
+                        <mxPoint x="161.29999999999995" y="500.0276923076922" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="190" value="Run Calculate_Item_Recipe Func for ResourceItemRecipe.&lt;br&gt;Output result into children array" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="206">
+                    <mxGeometry x="292.5" y="355" width="190" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="63" value="yes" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;fontColor=#FFFFFF;startArrow=none;" parent="206" source="66" target="190" edge="1">
+                    <mxGeometry x="-1" relative="1" as="geometry">
+                        <mxPoint x="330" y="372.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="183" value="Calculate Amount by multiplying ItemResource amount with Amount and then multiplying with Resouce Consumption Multiplier divided by Item_Production_Multiplier and then dividing by yields" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="206">
+                    <mxGeometry x="49.99999999999999" y="230" width="210" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="186" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" edge="1" parent="206" source="61" target="183">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="187" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;" vertex="1" connectable="0" parent="186">
+                    <mxGeometry x="-0.493" relative="1" as="geometry">
+                        <mxPoint x="15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="184" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;fontColor=#FFFFFF;" edge="1" source="183" parent="206" target="66">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="22.499999999999993" y="400" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="59" value="Find ItemResource&lt;br&gt;in craftingItems array&lt;br&gt;with resource_item_id" style="html=1;fontColor=#FFFFFF;" parent="206" vertex="1">
+                    <mxGeometry x="90" y="50" width="135" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="185" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" edge="1" parent="206" source="59" target="61">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="191" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;fontColor=#FFFFFF;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="190" parent="55" target="55">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="580" y="690" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="431" y="635"/>
+                            <mxPoint x="430" y="615"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="216" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" edge="1" parent="55" source="210" target="214">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="210" value="Return Item with children and calculated Crafting time." style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="55">
+                    <mxGeometry x="198.07" y="990" width="174.5" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="214" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;fontColor=#FFFFFF;" vertex="1" parent="55">
+                    <mxGeometry x="490" y="1015" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="212" value="Calculate crafting_time for current item by dividing crafting_time of item with crafting_speed_modifier from active crafting station then multiplying it with amount" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="55">
+                    <mxGeometry x="160.31" y="870" width="250" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="213" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;fontColor=#FFFFFF;" edge="1" source="212" parent="55" target="210">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="330" y="1000" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="124" style="edgeStyle=none;html=1;strokeColor=#FF0000;fontColor=#FFFFFF;" parent="1" source="27" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

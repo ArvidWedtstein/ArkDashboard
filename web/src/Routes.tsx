@@ -7,9 +7,9 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route, Private } from "@redwoodjs/router";
+import { Set, Router, Route, Private } from '@redwoodjs/router'
 
-import ScaffoldLayout from "src/layouts/ScaffoldLayout";
+import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
 
 import MainLayout from "src/layouts/MainLayout/MainLayout";
 
@@ -121,17 +121,38 @@ const Routes = () => {
               name="newUserRecipe"
             />
             <Route
-              path="/user-recipes/{id}/edit"
+              path="/user-recipes/{id:Int}/edit"
               page={UserRecipeEditUserRecipePage}
               name="editUserRecipe"
             />
 
             <Route
-              path="/user-recipes/{id}"
+              path="/user-recipes/{id:Int}"
               page={UserRecipeUserRecipePage}
               name="userRecipe"
             />
           </Private>
+        </Set>
+        <Set
+          wrap={ScaffoldLayout}
+          title="Items"
+          titleTo="items"
+          buttonLabel="New Item"
+          buttonTo="newItem"
+        >
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
+            <Route
+              path="/items/{id:Int}/edit"
+              page={ItemEditItemPage}
+              name="editItem"
+            />
+          </Private>
+          <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
+          <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
         <Set
           wrap={ScaffoldLayout}
@@ -150,13 +171,13 @@ const Routes = () => {
               name="newItemRecipe"
             />
             <Route
-              path="/item-recipes/{id}/edit"
+              path="/item-recipes/{id:Int}/edit"
               page={ItemRecipeEditItemRecipePage}
               name="editItemRecipe"
             />
           </Private>
           <Route
-            path="/item-recipes/{id}"
+            path="/item-recipes/{id:Int}"
             page={ItemRecipeItemRecipePage}
             name="itemRecipe"
           />
@@ -288,27 +309,6 @@ const Routes = () => {
         </Set>
         <Set
           wrap={ScaffoldLayout}
-          title="Items"
-          titleTo="items"
-          buttonLabel="New Item"
-          buttonTo="newItem"
-        >
-          <Private
-            unauthenticated="home"
-            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
-          >
-            <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
-            <Route
-              path="/items/{id:Int}/edit"
-              page={ItemEditItemPage}
-              name="editItem"
-            />
-          </Private>
-          <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
-          <Route path="/items" page={ItemItemsPage} name="items" />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
           title="Dinos"
           titleTo="dinos"
           buttonLabel="New Dino"
@@ -392,19 +392,6 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-          <Private unauthenticated="tribes">
-            <Route
-              path="/tribes/new"
-              page={TribeNewTribePage}
-              name="newTribe"
-            />
-            <Route
-              path="/tribes/{id}/edit"
-              page={TribeEditTribePage}
-              name="editTribe"
-            />
-          </Private>
-          <Route path="/tribes/{id}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
 

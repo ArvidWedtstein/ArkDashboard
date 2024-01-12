@@ -29,9 +29,8 @@ export const schema = gql`
     count: Int
   }
   type BasespotPagination {
-    basespots: [Basespot]
-    hasNextPage: Boolean
-    cursor: String
+    basespots: [Basespot!]!
+    has_more_basespots: Boolean
   }
 
   type Query {
@@ -39,8 +38,13 @@ export const schema = gql`
     basespot(id: String!): Basespot @requireAuth
     basespotTypes: [Basespot] @skipAuth
     basespotPage(page: Int, map: Int, type: String): BasespotPage @skipAuth
-    basespotPagination(take: Int, lastCursor: String): BasespotPagination
-      @skipAuth
+    basespotPagination(
+      cursorId: String
+      take: Int
+      skip: Int
+      type: String
+      map: Int
+    ): BasespotPagination @skipAuth
   }
 
   input CreateBasespotInput {

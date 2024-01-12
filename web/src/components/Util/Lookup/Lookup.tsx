@@ -19,18 +19,25 @@ import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import {
   useControlled,
-  usePreviousProps,
   useEventCallback,
 } from "src/lib/formatters";
-import Ripple from "../Ripple/Ripple";
-import { FormControl, InputBase, InputLabel } from "../Input/Input";
+import { FormControl, InputBase, InputBaseProps, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
+import ImageContainer from "../ImageContainer/ImageContainer";
 
 function stripDiacritics(string) {
   return typeof string.normalize !== "undefined"
     ? string.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     : string;
 }
+
+const usePreviousProps = <T extends {}>(value: T) => {
+  const ref = React.useRef<T | {}>({});
+  React.useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current as Partial<T>;
+};
 
 function createFilterOptions<Value>(
   config: {
@@ -81,44 +88,7 @@ function createFilterOptions<Value>(
       : filteredOptions;
   };
 }
-type SelectOption = {
-  label?: string;
-  value?: string | number;
-  image?: string;
-  disabled?: boolean;
-  /**
-   * @private
-   * @ignore
-   */
-  isSelected?: boolean;
-  /**
-   * @private
-   * @ignore
-   */
-  inSearch?: boolean;
-};
 
-type MultiSelectLookupProps = {
-  multiple: true;
-  defaultValue?: string[] | number[];
-  /**
-   * The value must have reference equality with the option in order to be selected.
-   * You can customize the equality behavior with the `isOptionEqualToValue` prop.
-   */
-  value?: SelectOption[];
-  onSelect?: (value: SelectOption[]) => void;
-};
-
-type SingleSelectLookupProps = {
-  multiple?: false;
-  defaultValue?: string | number;
-  /**
-   * The value must have reference equality with the option in order to be selected.
-   * You can customize the equality behavior with the `isOptionEqualToValue` prop.
-   */
-  value?: SelectOption;
-  onSelect?: (value: SelectOption) => void;
-};
 
 export type LookupChangeReason =
   | "createOption"
@@ -142,6 +112,7 @@ interface FilterOptionsState<Value> {
 }
 
 type LookupInputChangeReason = "input" | "reset" | "clear";
+
 type LookupValue<Value, Multiple, DisableClearable> =
   Multiple extends true
   ? Array<Value | never>
@@ -149,12 +120,6 @@ type LookupValue<Value, Multiple, DisableClearable> =
   ? NonNullable<Value | never>
   : Value | null | never;
 
-// interface LookupGroupedOption<Value = string> {
-//   key: number;
-//   index: number;
-//   group: string;
-//   options: Value[];
-// }
 
 type SelectProps<
   Value,
@@ -165,7 +130,6 @@ type SelectProps<
   label?: string;
   name?: string;
   className?: string;
-  btnClassName?: string;
   // defaultValue?: number | string; //LookupValue<Value, Multiple, DisableClearable>;
   defaultValue?: number | string | string[]; //LookupValue<Value, Multiple, DisableClearable>;
   value?: LookupValue<Value, Multiple, DisableClearable>;
@@ -211,25 +175,30 @@ type SelectProps<
    */
   autoComplete?: boolean;
   clearOnEscape?: boolean;
+  disablePortal?: boolean;
   openOnFocus?: boolean;
   autoSelect?: boolean;
   inputValue?: string;
-  // TODO: remove
-  componentName?: string;
   validation?: RegisterOptions;
   margin?: "none" | "dense" | "normal";
   size?: "small" | "medium" | "large";
   color?: "primary" | "secondary" | "success" | "warning" | "error";
-  variant?: 'filled' | 'outlined' | 'standard'
-  valueKey?: keyof Value;
+  variant?: 'contained' | 'outlined' | 'standard'
+  SuffixProps?: HTMLAttributes<HTMLFieldSetElement>;
   InputProps?: {
     style?: CSSProperties;
-  };
+  } & Partial<InputBaseProps>
   placeholder?: string;
   /**
    * @default -1
    */
   limitTags?: number;
+  onBlur?: (
+    event?: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onFocus?: (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   /**
    * Callback fired when the value changes.
    *
@@ -266,15 +235,17 @@ type SelectProps<
     state: FilterOptionsState<Value>
   ) => Value[];
   getOptionLabel?: (option: Value) => string;
+  getOptionValue?: (option: Value) => string | number | boolean;
   getOptionImage?: (option: Value) => string;
   isOptionEqualToValue?: (option: Value, value: Value) => boolean;
   getOptionDisabled?: (option: Value) => boolean;
   onOpen?: (event: React.SyntheticEvent) => void;
   onClose?: (event: React.SyntheticEvent, reason: LookupCloseReason) => void;
+  ref?: React.ForwardedRef<HTMLInputElement>
 };
 
-// TODO: fix error styles
-export const Lookup = <
+// TODO: improve lookup when loading hundreds of items
+export const Lookup = (<
   Value,
   Multiple extends boolean | undefined = false,
   DisableClearable extends boolean | undefined = false
@@ -282,6 +253,7 @@ export const Lookup = <
   props: SelectProps<Value, Multiple, DisableClearable>
 ) => {
   const {
+    ref,
     multiple,
     options,
     label,
@@ -289,20 +261,11 @@ export const Lookup = <
     defaultValue = multiple ? [] : null,
     value: valueProp,
     className,
-    btnClassName,
     placeholder,
     inputValue: inputValueProp,
     helperText,
     HelperTextProps,
     validation,
-    // TODO: remove this crap
-    valueKey = options && options.length > 0
-      ? Object.keys(options[0]).includes("value")
-        ? ("value" as keyof Value)
-        : options.every((d) => typeof d === "object")
-          ? (Object.keys(options[0])[0] as keyof Value)
-          : null
-      : null,
     loadingText = "Loading…",
     noOptionsText = "No options",
     margin = "normal",
@@ -317,7 +280,6 @@ export const Lookup = <
     open: openProp,
     loading = false,
     disabled = false,
-    componentName = "Lookup",
     readOnly = false,
     autoComplete = false,
     clearOnEscape = false,
@@ -325,11 +287,15 @@ export const Lookup = <
     disableClearable = false,
     closeOnSelect = true,
     filterSelectedOptions = false,
+    disablePortal = false,
     limitTags = -1,
     InputProps,
+    SuffixProps,
     getOptionDisabled,
     filterOptions = createFilterOptions<Value>(),
     groupBy,
+    onBlur,
+    onFocus,
     renderTags,
     onSelect,
     onChange,
@@ -342,17 +308,27 @@ export const Lookup = <
       }
       return option;
     },
+    getOptionValue: getOptionValueProp = (option: Value | string) => {
+      if (!option) return option;
+      if (typeof option === "object" && option !== null && "value" in option) {
+        return option.value;
+      } else if (typeof option === "object" && option !== null && "id" in option) {
+        return option.id;
+      }
+      return option;
+    },
     getOptionImage = (option: Value) => option && option["image"],
     isOptionEqualToValue = (option: Value, value: Value) => option === value,
   } = props;
   let getOptionLabel = getOptionLabelProp;
+  let getOptionValue = getOptionValueProp;
 
   getOptionLabel = (option: Value) => {
     const optionLabel = getOptionLabelProp(option);
 
     if (typeof optionLabel !== "string") {
       console.error(
-        `${componentName}: The valueProp provided to the getOptionLabel prop must be a string. Received ${typeof optionLabel} instead`
+        `Lookup: The valueProp provided to the getOptionLabel prop must be a string. Received ${typeof optionLabel} instead`
       );
     }
 
@@ -387,21 +363,21 @@ export const Lookup = <
           defaultValue.some(
             (value) =>
               value ===
-              (typeof option === "object" ? option[valueKey] : option)
+              getOptionValue(option)
           )
         )
         : options.find(
           (option) =>
-            (typeof option === "object" ? option[valueKey] : option) ===
+            getOptionValue(option) ===
             defaultValue
         ) || null,
-    name: componentName,
+    name: 'Lookup',
   });
 
   const [inputValue, setInputValueState] = useControlled({
     controlled: inputValueProp,
     default: "",
-    name: componentName,
+    name: 'Lookup',
     state: "inputValue",
   });
 
@@ -516,7 +492,7 @@ export const Lookup = <
       if (missingValue.length > 0) {
         console.warn(
           [
-            `ArkDashboard: The value provided to ${componentName} is invalid.`,
+            `ArkDashboard: The value provided to Lookup is invalid.`,
             `None of the options match with \`${missingValue.length > 1
               ? JSON.stringify(missingValue)
               : JSON.stringify(missingValue[0])
@@ -599,81 +575,86 @@ export const Lookup = <
       highlightedIndexRef.current = index;
 
       // does the index exist?
-      if (index === -1) {
-        inputRef.current.removeAttribute("aria-activedescendant");
-      } else {
-        inputRef.current.setAttribute(
-          "aria-activedescendant",
-          `data-option-${index}`
-        );
-      }
-
-      if (!listboxRef.current) {
-        return;
-      }
-      let unstable_classNamePrefix = "ArkDashboard";
-      const prev = listboxRef.current.querySelector(
-        `[role="option"].${unstable_classNamePrefix}-focused`
-      );
-      if (prev) {
-        prev.classList.remove(`${unstable_classNamePrefix}-focused`);
-        prev.classList.remove(`dark:bg-white/10`);
-        prev.classList.remove(`bg-black/10`);
-
-        prev.classList.remove(`dark:bg-white/[.12]`);
-        prev.classList.remove(`bg-black/[.12]`);
-      }
-
-      let listboxNode = listboxRef.current;
-      if (listboxRef.current.getAttribute("role") !== "listbox") {
-        listboxNode =
-          listboxRef.current.parentElement.querySelector('[role="listbox"]');
-      }
-
-      if (!listboxNode) {
-        return;
-      }
-
-      if (index === -1) {
-        listboxNode.scrollTop = 0;
-        return;
-      }
-
-      const option = listboxRef.current.querySelector(
-        `[data-option-index="${index}"]`
-      );
-
-      if (!option) {
-        return;
-      }
-
-      option.classList.add(`${unstable_classNamePrefix}-focused`);
-      option.classList.add(`dark:bg-white/10`);
-      option.classList.add(`bg-black/10`);
-      if (reason === "keyboard") {
-        option.classList.add(`dark:bg-white/[.12]`);
-        option.classList.add(`bg-black/[.12]`);
-      }
-
-      if (
-        listboxNode.scrollHeight > listboxNode.clientHeight &&
-        reason !== "mouse" &&
-        reason !== "touch"
-      ) {
-        const element = option;
-
-        const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
-        const elementBottom = element.offsetTop + element.offsetHeight;
-        if (elementBottom > scrollBottom) {
-          listboxNode.scrollTop = elementBottom - listboxNode.clientHeight;
-        } else if (
-          element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0) <
-          listboxNode.scrollTop
-        ) {
-          listboxNode.scrollTop =
-            element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0);
+      try {
+        if (index === -1) {
+          inputRef.current?.removeAttribute("aria-activedescendant");
+        } else {
+          inputRef.current.setAttribute(
+            "aria-activedescendant",
+            `data-option-${index}`
+          );
         }
+
+        if (!listboxRef.current) {
+          return;
+        }
+        let unstable_classNamePrefix = "ArkDashboard";
+        const prev = listboxRef.current.querySelector(
+          `[role="option"].${unstable_classNamePrefix}-focused`
+        );
+        if (prev) {
+          prev.classList.remove(`${unstable_classNamePrefix}-focused`);
+          prev.classList.remove(`dark:bg-white/10`);
+          prev.classList.remove(`bg-black/10`);
+
+          prev.classList.remove(`dark:bg-white/[.12]`);
+          prev.classList.remove(`bg-black/[.12]`);
+        }
+
+        let listboxNode = listboxRef.current;
+        if (listboxRef.current.getAttribute("role") !== "listbox") {
+          listboxNode =
+            listboxRef.current.parentElement.querySelector('[role="listbox"]');
+        }
+
+        if (!listboxNode) {
+          return;
+        }
+
+        if (index === -1) {
+          listboxNode.scrollTop = 0;
+          return;
+        }
+
+        const option = listboxRef.current.querySelector(
+          `[data-option-index="${index}"]`
+        );
+
+        if (!option) {
+          return;
+        }
+
+        option.classList.add(`${unstable_classNamePrefix}-focused`);
+        option.classList.add(`dark:bg-white/10`);
+        option.classList.add(`bg-black/10`);
+        if (reason === "keyboard") {
+          option.classList.add(`dark:bg-white/[.12]`);
+          option.classList.add(`bg-black/[.12]`);
+        }
+
+        if (
+          listboxNode.scrollHeight > listboxNode.clientHeight &&
+          reason !== "mouse" &&
+          reason !== "touch"
+        ) {
+          const element = option;
+
+          const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
+          const elementBottom = element.offsetTop + element.offsetHeight;
+          if (elementBottom > scrollBottom) {
+            listboxNode.scrollTop = elementBottom - listboxNode.clientHeight;
+          } else if (
+            element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0) <
+            listboxNode.scrollTop
+          ) {
+            listboxNode.scrollTop =
+              element.offsetTop - element.offsetHeight * (groupBy ? 1.3 : 0);
+          }
+        }
+      } catch (error) {
+        console.error(error)
       }
+
     }
   );
 
@@ -886,7 +867,7 @@ export const Lookup = <
         if (inputRef.current && inputRef.current.nodeName === "TEXTAREA") {
           console.warn(
             [
-              `A textarea element was provided to ${componentName} where input was expected.`,
+              `A textarea element was provided to Lookup where input was expected.`,
               `This is not a supported scenario but it may work under certain conditions.`,
               `A textarea keyboard navigation may conflict with Autocomplete controls (e.g. enter and arrow keys).`,
               `Make sure to test keyboard navigation and add custom event handlers if necessary.`,
@@ -896,12 +877,12 @@ export const Lookup = <
           console.error(
             [
               `ArkDashboard: Unable to find the input element. It was resolved to ${inputRef.current} while an HTMLInputElement was expected.`,
-              `Instead, ${componentName} expects an input element.`,
+              `Instead, Lookup expects an input element.`,
             ].join("\n")
           );
         }
       }
-    }, [componentName]);
+    }, []);
   }
 
   useEffect(() => {
@@ -957,9 +938,9 @@ export const Lookup = <
       field.onChange(
         multiple
           ? Array.isArray(newValue)
-            ? newValue.map((f) => f[valueKey])
-            : newValue
-          : newValue
+            ? newValue.map((nv) => getOptionValue(nv))
+            : getOptionValue(newValue)
+          : getOptionValue(newValue)
       );
     }
 
@@ -999,7 +980,7 @@ export const Lookup = <
         if (matches.length > 1) {
           console.error(
             [
-              `ArkDashboard: The \`isOptionEqualToValue\` method of ${componentName} does not handle the arguments correctly.`,
+              `ArkDashboard: The \`isOptionEqualToValue\` method of Lookup does not handle the arguments correctly.`,
               `The component expects a single value to match a given option but found ${matches.length} matches.`,
             ].join("\n")
           );
@@ -1277,6 +1258,7 @@ export const Lookup = <
 
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     setFocused(true);
+    onFocus?.(event);
 
     if (openOnFocus && !ignoreFocus.current) {
       handleOpen(event);
@@ -1284,6 +1266,7 @@ export const Lookup = <
   };
 
   const handleBlur = (event = null) => {
+    onBlur?.(event);
     if (
       listboxRef.current !== null &&
       listboxRef.current.parentElement?.contains(document.activeElement)
@@ -1436,7 +1419,7 @@ export const Lookup = <
         if (process.env.NODE_ENV !== "production") {
           if (indexBy.get(group) && !warn) {
             console.warn(
-              `ArkDashboard: The options provided combined with the \`groupBy\` method of ${componentName} returns duplicated headers.`,
+              `ArkDashboard: The options provided combined with the \`groupBy\` method of Lookup returns duplicated headers.`,
               "You can solve the issue by sorting the options with the output of `groupBy`."
             );
             warn = true;
@@ -1560,7 +1543,6 @@ export const Lookup = <
 
     const image = getOptionImage ? getOptionImage(option) : null;
 
-    // TODO: add check if group is over or under
     const optionClassNames = clsx("flex items-center last:rounded-b-lg", {
       "px-2 py-1": size === "small",
       "py-2 px-4": size === "medium",
@@ -1583,10 +1565,11 @@ export const Lookup = <
         role="option"
       >
         {image && (
-          <img
-            className="mr-2 h-6 w-6"
-            src={image}
+          <ImageContainer
+            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+            defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-craftable-resource.webp"
             alt={getOptionLabel(option) as string}
+            className="mr-2 h-6 w-6"
           />
         )}
 
@@ -1646,7 +1629,6 @@ export const Lookup = <
       return renderOption(option, index);
     });
   };
-
   return (
     <div
       className={clsx(
@@ -1672,29 +1654,29 @@ export const Lookup = <
         size={size}
         variant={variant}
         color={color}
-        required={required}
-        className={btnClassName}
+        required={required || Boolean(validation?.required)}
       >
         <InputLabel
-          children={label ?? name}
-          required={required || Boolean(validation?.required)}
+          children={label}
           shrink={popupOpen ||
             inputValue.length > 0 ||
             (Array.isArray(value) && value.length > 0)}
         />
-        {renderChips()}
-
         <InputBase
           {...InputProps}
+          renderTags={renderChips()}
           renderSuffix={(state) => (
             variant === 'outlined' ? (
-              <fieldset aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`)}>
+              <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
+                "border-2": state.focused,
+                "ring-8 ring-red-500": !state.required
+              }, SuffixProps?.className)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-                  "max-w-full": state.focused || state.filled,
-                  "max-w-[0.01px]": !state.focused && !state.filled
+                  "max-w-full": state.focused || state.filled || (multiple && (Array.isArray(value) && value.length > 0)),
+                  "max-w-[0.001px]": !state.focused && !state.filled && !(multiple && (Array.isArray(value) && value.length > 0)),
                 })}>
                   {label && label !== "" && (
-                    <span className={"px-[5px] inline-block opacity-0 visible"}>
+                    <span className={"px-1 inline-block opacity-0 visible"}>
                       {state.required ? (
                         <React.Fragment>
                           {label}
@@ -1710,13 +1692,15 @@ export const Lookup = <
             ) : null
           )}
           inputRef={inputRef}
+          ref={ref}
           value={inputValue}
           placeholder={placeholder}
           className={className}
+          required
           inputProps={{
             role: "combobox",
             spellCheck: false,
-            "aria-activedescendant": popupOpen ? "" : null,
+            "aria-activedescendant": popupOpen ? `${id}-listbox` : null,
             "aria-autocomplete": autoComplete ? 'both' : 'list',
             "aria-controls": listboxAvailable ? `${id}-listbox` : undefined,
             "aria-expanded": listboxAvailable,
@@ -1726,12 +1710,12 @@ export const Lookup = <
             onBlur: handleBlur,
           }}
           endAdornmentProps={{
-            className: multiple ? "absolute top-[calc(50%-12px)] right-2" : null
+            className: multiple ? "absolute top-[calc(50%-0px)] right-2" : null
           }}
           endAdornment={(
             <Fragment>
               {(!disableClearable && !readOnly) && (
-                <Button variant="icon" className={clsx("-mr-0.5 !p-1", {
+                <Button variant="icon" color="DEFAULT" ignoreButtonGroupPosition className={clsx("-mr-0.5 !p-1", {
                   [`${focused ? 'opacity-100 visible' : 'opacity-0 invisible'} group-hover:opacity-100 group-hover:visible`]: !disabled && dirty,
                   "opacity-0 invisible": disabled || !dirty || readOnly,
                 })} onClick={handleClear} size={size}>
@@ -1745,7 +1729,7 @@ export const Lookup = <
                   </svg>
                 </Button>
               )}
-              <Button variant="icon" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
+              <Button variant="icon" ignoreButtonGroupPosition color="DEFAULT" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
                 <svg
                   className={clsx(
                     "h-4 w-4 stroke-white !fill-none transition-transform duration-75 will-change-transform",
@@ -1777,10 +1761,12 @@ export const Lookup = <
             {helperText}
           </p>
         )}
+
+        {field && (<FieldError name={name} className="rw-field-error" />)}
       </FormControl>
 
       {/* Dropdown Menu */}
-      <Popper anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>
+      <Popper disablePortal={disablePortal} anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>
         <ClickAwayListener
           onClickAway={(e) => {
             if (
@@ -1818,685 +1804,4 @@ export const Lookup = <
       </Popper>
     </div>
   );
-};
-
-type OldSelectProps = {
-  options: SelectOption[];
-  label?: string;
-  name?: string;
-  className?: string;
-  btnClassName?: string;
-  /**
-   * If `true`, the component is disabled.
-   * @default false
-   */
-  disabled?: boolean;
-  /**
-   * If `true`, the component is in a loading state.
-   * This shows the `loadingText` in place of suggestions (only if there are no suggestions to show, e.g. `options` are empty).
-   * @default false
-   */
-  loading?: boolean;
-  /**
-   * Text to display when in a loading state.
-   *
-   * @default 'Loading…'
-   */
-  loadingText?: React.ReactNode;
-  /**
-   * Text to display when empty.
-   *
-   * @default 'No options'
-   */
-  noOptionsText?: React.ReactNode;
-  helperText?: string;
-  disableClearable?: boolean;
-  readOnly?: boolean;
-  open?: boolean;
-  filterlookupOptions?: boolean;
-  filterSelectedOptions?: boolean;
-  clearOnBlur?: boolean;
-  required?: boolean;
-  selectOnFocus?: boolean;
-  closeOnSelect?: boolean;
-  clearOnEscape?: boolean;
-  openOnFocus?: boolean;
-  autoSelect?: boolean;
-  inputValue?: string;
-  componentName?: string;
-  validation?: RegisterOptions;
-  margin?: "none" | "dense" | "normal";
-  size?: "small" | "medium";
-  InputProps?: {
-    style?: CSSProperties;
-  };
-  placeholder?: string;
-  groupBy?: (option: SelectOption) => string;
-  renderTags?: (lookupOptions: Readonly<SelectOption[]>) => React.ReactNode;
-  onInputChange?: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    newInputValue: string
-  ) => void;
-  filterOptions?: (options: SelectOption[], state: any) => SelectOption[];
-  filterFn?: (option: SelectOption, searchTerm: string) => boolean;
-  getOptionLabel?: (option: SelectOption) => string;
-  isOptionEqualToValue?: (option: SelectOption, value: SelectOption) => boolean;
-} & (SingleSelectLookupProps | MultiSelectLookupProps);
-export const Lookup2 = ({
-  multiple = false,
-  options,
-  label,
-  name,
-  defaultValue,
-  value: valueProp,
-  className,
-  btnClassName,
-  placeholder,
-  inputValue: inputValueProp,
-  helperText,
-  validation,
-  loadingText = "Loading…",
-  noOptionsText = "No options",
-  margin = "normal",
-  size = "medium",
-  selectOnFocus = false,
-  openOnFocus = false,
-  open: openProp = false,
-  loading = false,
-  disabled = false,
-  readOnly = false,
-  required = false,
-  disableClearable = false,
-  closeOnSelect = true,
-  filterlookupOptions = false,
-  InputProps,
-  groupBy,
-  renderTags,
-  onSelect,
-  onInputChange,
-  filterFn,
-  getOptionLabel: getOptionLabelProp = (option: SelectOption) =>
-    option.label ?? "",
-  isOptionEqualToValue = (option: SelectOption, value: SelectOption) =>
-    option.value === value.value,
-}: OldSelectProps) => {
-  // https://github.com/mui/material-ui/blob/a13c0c026692aafc303756998a78f1d6c2dd707d/packages/mui-base/src/useAutocomplete/useAutocomplete.js#L107
-  const anchorEl = useRef(null);
-  const [isOpen, setOpen] = useState(openProp);
-  const [searchTerm, setSearchTerm] = useState<string>(inputValueProp || "");
-  const [internalValue, setInternalValue] = useState<string>("");
-  const [lookupOptions, setLookupOptions] = useState<SelectOption[]>(options);
-
-  let getOptionLabel = getOptionLabelProp;
-
-  getOptionLabel = (option: SelectOption) => {
-    const optionLabel = getOptionLabelProp(option);
-
-    if (typeof optionLabel !== "string") {
-      console.error(
-        `Lookup: The valueProp provided to the getOptionLabel prop must be a string. Received ${typeof optionLabel} instead`
-      );
-    }
-
-    return optionLabel;
-  };
-
-  const { field } =
-    !!name &&
-    useController({
-      name: name,
-      defaultValue: defaultValue,
-      rules: validation,
-    });
-
-  useEffect(() => {
-    setLookupOptions((prev) =>
-      prev.map((option) => {
-        const inSearch =
-          !searchTerm ||
-          (filterFn
-            ? filterFn(option, searchTerm)
-            : getOptionLabel(option)
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()));
-
-        return {
-          ...option,
-          inSearch: inSearch,
-        };
-      })
-    );
-  }, [options, searchTerm, filterFn]);
-
-  // Update selectedOption when defaultValue changes
-  useEffect(() => {
-    setSearchTerm("");
-    setInternalValue("");
-
-    const valuesToSelect = valueProp
-      ? Array.isArray(valueProp) && multiple
-        ? valueProp.map((s) => s.value)
-        : !Array.isArray(valueProp)
-          ? [valueProp.value]
-          : []
-      : Array.isArray(defaultValue) && multiple
-        ? defaultValue.map(
-          (dv) => options.find((o) => o.value === dv) ?? { valueProp: "" }
-        )
-        : [defaultValue];
-
-    const selected: SelectOption[] = options.map((option) => {
-      // const isSelected = valuesToSelect.includes(option.valueProp);
-
-      // const values = Array.isArray(valueProp) && multiple ? valueProp : [valueProp] as SelectOption[];
-      // const missingValue = (multiple ? valueProp as SelectOption[] : [valueProp] as SelectOption[]).filter((value2) => value2 !== null && !options.some((option) => isOptionEqualToValue(option, value2)));
-
-      // values.findIndex((v) => isOptionEqualToValue(option, v));
-      const isSelected = valuesToSelect.some((valueProp) =>
-        isOptionEqualToValue(
-          option,
-          options.find((o) => o.value === valueProp) ?? { value: "" }
-        )
-      );
-      const inSearch =
-        !searchTerm ||
-        getOptionLabel(option).toLowerCase().includes(searchTerm.toLowerCase());
-
-      return {
-        ...option,
-        isSelected,
-        inSearch,
-      };
-    });
-
-    setLookupOptions(selected);
-
-    if (!!name) {
-      field.onChange(multiple ? valuesToSelect : valuesToSelect[0]);
-    }
-
-    setInternalValue(
-      multiple
-        ? ""
-        : options?.find((e) =>
-          isOptionEqualToValue(
-            e,
-            options.find((o) => o.value === valuesToSelect[0]) ?? {
-              value: "",
-            }
-          )
-        )?.label ?? ""
-    );
-  }, [defaultValue, valueProp, multiple, options]);
-
-  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    if (openOnFocus) {
-      setOpen(true);
-    }
-
-    if (selectOnFocus) {
-      event.target.select();
-    }
-  };
-
-  // TODO: do not trigger select if same option is selected again
-  const handleOptionSelect = useCallback(
-    (
-      event:
-        | React.MouseEvent<HTMLLIElement>
-        | React.MouseEvent<SVGSVGElement> = null,
-      option: SelectOption
-    ) => {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-
-      if (!option || option.disabled) return;
-
-      const isSelected = lookupOptions.some(
-        (o) => o?.value === option.value && o?.isSelected
-        // (o) => isOptionEqualToValue(o, option) && o?.isSelected
-      );
-
-      const updateOptions = lookupOptions.map((o) => {
-        if (isOptionEqualToValue(o, option)) {
-          return {
-            ...o,
-            isSelected: !isSelected,
-          };
-        }
-        return { ...o, isSelected: false };
-      }) as SelectOption[];
-
-      if (!!name) {
-        field.onChange(
-          multiple
-            ? updateOptions
-              .filter((f) => f != null && f.isSelected)
-              .map((o) => o?.value)
-            : option.value
-        );
-      }
-
-      multiple
-        ? onSelect?.(updateOptions)
-        : onSelect?.(
-          Array.isArray(updateOptions.find((o) => o.isSelected))
-            ? updateOptions.find((o) => o.isSelected)[0]
-            : updateOptions.find((o) => o.isSelected) ?? undefined
-        );
-
-      setLookupOptions(updateOptions);
-      setSearchTerm("");
-      setInternalValue(multiple ? "" : option.label);
-
-      if (closeOnSelect && (!event || (!event.ctrlKey && !event.metaKey))) {
-        setOpen(false);
-      }
-    },
-    [lookupOptions, multiple, onSelect]
-  );
-
-  // Handle input change
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value || "";
-    setSearchTerm(inputValue);
-    setInternalValue(inputValue);
-    onInputChange?.(event, inputValue);
-  };
-
-  const handleClearSelection = (event) => {
-    setLookupOptions((prev) => prev.map((o) => ({ ...o, isSelected: false })));
-    setSearchTerm("");
-    setInternalValue("");
-    multiple ? onSelect?.([]) : onSelect?.(undefined);
-    if (!!name) {
-      field.onChange(multiple ? [] : undefined);
-    }
-
-    if (onInputChange) {
-      onInputChange(event, "");
-    }
-  };
-
-  const handleClose = (event: MouseEvent<any> | SyntheticEvent) => {
-    if (
-      anchorEl.current &&
-      anchorEl.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  const toggleLookup = (
-    e: React.MouseEvent<HTMLButtonElement> | MouseEvent<HTMLInputElement>
-  ) => {
-    e.stopPropagation();
-
-    if (disabled) {
-      return setOpen(false);
-    }
-
-    setOpen(!isOpen);
-
-    const input = anchorEl.current.querySelector("input");
-    if (e.currentTarget.type == "button") input?.focus();
-
-    // TODO: fix this / check if it really is needed
-    if (!isOpen) {
-      setSearchTerm("");
-    }
-  };
-
-  const renderChips = () => {
-    const filteredOptions = lookupOptions.filter(
-      (o) => o != null && o.isSelected
-    );
-    if (multiple && renderTags) {
-      return renderTags(filteredOptions);
-    }
-
-    return (
-      multiple &&
-      !renderTags &&
-      filteredOptions.map((option) => (
-        <div
-          role="button"
-          className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-        >
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-            {option.label}
-          </span>
-          {!readOnly && (
-            <svg
-              onClick={(e) => handleOptionSelect(e, option)}
-              className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-              viewBox="0 0 24 24"
-              focusable="false"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-            </svg>
-          )}
-        </div>
-      ))
-    );
-  };
-
-  const renderOption = (
-    option: SelectOption,
-    index: number
-  ): React.JSX.Element => {
-    const { value: valueProps, image, disabled, isSelected } = option;
-
-    // TODO: add check if group is over or under
-    const optionClassNames = clsx("flex items-center last:rounded-b-lg", {
-      "px-2 py-1": size === "small",
-      "py-2 px-4": size === "medium",
-      "first:rounded-t-lg": index == 0 && !groupBy,
-      "cursor-not-allowed text-zinc-500/50": disabled,
-      "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
-        !disabled,
-    });
-    return (
-      <li
-        data-option-index={index}
-        key={`option-${valueProp}-${index}`}
-        onClick={(e) => handleOptionSelect(e, option)}
-        aria-checked={isSelected}
-        aria-selected={isSelected}
-        aria-disabled={disabled}
-        className={optionClassNames}
-        tabIndex={-1}
-        role="option"
-      >
-        {"image" in option && (
-          <img
-            className="mr-2 h-6 w-6"
-            src={image}
-            alt={getOptionLabel(option)}
-          />
-        )}
-
-        <span className="grow">{getOptionLabel(option)}</span>
-
-        {isSelected && (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-            className="h-5 w-5 shrink-0"
-            focusable="false"
-          >
-            <path
-              fillRule="evenodd"
-              d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-              clipRule="evenodd"
-            />
-          </svg>
-        )}
-      </li>
-    );
-  };
-
-  const renderOptions = () => {
-    const filteredOptions = lookupOptions.filter((option) => {
-      if (filterlookupOptions) {
-        return !option?.isSelected && option?.inSearch;
-      }
-
-      return option.inSearch;
-    });
-
-    if (loading) {
-      return (
-        <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
-          {loadingText}
-        </li>
-      );
-    }
-
-    if (filteredOptions.length == 0) {
-      return (
-        <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
-          {noOptionsText}
-        </li>
-      );
-    }
-
-    if (groupBy) {
-      const groupedOptions = filteredOptions.reduce((acc, obj) => {
-        let groupKey = groupBy(obj);
-        acc[groupKey] = [...(acc[groupKey] || []), obj];
-        return acc;
-      }, {}) as {
-        [key: string]: SelectOption[];
-      };
-
-      return Object.entries(groupedOptions).map(([groupTitle, groupItems]) => {
-        return (
-          <li className="overflow-hidden" key={`group-${groupTitle}`}>
-            <div className="px-2 py-1">{groupTitle}</div>
-            <ul>{groupItems.map(renderOption)}</ul>
-          </li>
-        );
-      });
-    }
-
-    return filteredOptions.map(renderOption);
-  };
-
-  return (
-    <div
-      className={clsx(
-        "group relative flex w-fit min-w-[10rem] items-center text-black dark:text-white",
-        className
-      )}
-    >
-      <div
-        className={clsx(
-          "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top",
-          {
-            "pointer-events-none text-black/50 dark:text-white/50": disabled,
-            "mt-2 mb-1": margin === "dense",
-            "mt-4 mb-2": margin === "normal",
-            "mt-0 mb-0": margin == "none",
-          }
-        )}
-        ref={anchorEl}
-      >
-        <label
-          className={clsx(
-            "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200",
-            {
-              "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-                isOpen ||
-                lookupOptions.filter((o) => o != null && o.isSelected).length >
-                0 ||
-                searchTerm.length > 0 ||
-                internalValue.length > 0,
-              "text-sm": size == "small",
-              "text-base": size == "medium",
-            }
-          )}
-          htmlFor={`input-${name}`}
-        >
-          {label ?? name} {required && " *"}
-        </label>
-
-        <div
-          className={clsx(
-            "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded font-normal leading-6",
-            btnClassName,
-            {
-              "pr-10":
-                !disableClearable &&
-                lookupOptions.filter((d) => d != null && d.isSelected).length ==
-                0,
-              "pr-12":
-                !disableClearable &&
-                lookupOptions.filter((d) => d != null && d.isSelected).length >
-                0,
-              "text-sm": size == "small",
-              "text-base": size == "medium",
-            }
-          )}
-        >
-          {/* Chips */}
-          {renderChips()}
-
-          <input
-            aria-invalid="false"
-            id={`input-${name}`}
-            type="text"
-            className={clsx(
-              "peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded-[inherit] border-0 bg-transparent font-[inherit] focus:outline-none disabled:pointer-events-none",
-              {
-                "py-1 pl-2 pr-1 text-sm": size == "small",
-                "py-4 px-3 text-base": size === "medium",
-              }
-            )}
-            disabled={disabled}
-            value={internalValue}
-            readOnly={readOnly}
-            required={required}
-            placeholder={placeholder}
-            onFocus={handleFocus}
-            onChange={handleInputChange}
-            onClick={toggleLookup}
-            role="combobox"
-          />
-
-          <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
-            {!disableClearable &&
-              lookupOptions.filter((d) => d != null && d.isSelected).length >
-              0 && (
-                <button
-                  type="button"
-                  onClick={handleClearSelection}
-                  className="relative -mr-0.5 box-border inline-flex appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10 peer-hover:visible peer-focus:visible"
-                >
-                  <svg
-                    className="h-4 w-4 shrink-0 select-none fill-current"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    focusable="false"
-                  >
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                  </svg>
-                </button>
-              )}
-            <button
-              type="button"
-              onClick={toggleLookup}
-              className="relative -mr-0.5 inline-flex select-none appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10"
-            >
-              <svg
-                className={clsx(
-                  "h-4 w-4 transition-transform duration-75 will-change-transform",
-                  {
-                    "shrink-0": !isOpen,
-                    "shrink-0 rotate-180": isOpen,
-                  }
-                )}
-                fill="none"
-                stroke="currentColor"
-                focusable="false"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d={"M19 9l-7 7-7-7"}
-                />
-              </svg>
-            </button>
-          </div>
-          <fieldset
-            aria-hidden="true"
-            style={{
-              ...InputProps?.style,
-              inset: "-5px 0px 0px",
-            }}
-            className={clsx(
-              "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded-[inherit] border border-zinc-500 px-2 text-left transition duration-75 group-hover:border-2 group-hover:border-zinc-300 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
-              {
-                "top-0":
-                  isOpen ||
-                  lookupOptions.filter((o) => o != null && o.isSelected)
-                    .length > 0 ||
-                  searchTerm.length > 0 ||
-                  internalValue.length > 0,
-              }
-            )}
-          >
-            <legend
-              style={{ float: "unset", height: "11px" }}
-              className={clsx(
-                "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap !p-0 !text-xs transition-all duration-75",
-                {
-                  "!max-w-full":
-                    isOpen ||
-                    lookupOptions.filter((o) => o != null && o.isSelected)
-                      .length > 0 ||
-                    searchTerm.length > 0 ||
-                    internalValue.length > 0,
-                }
-              )}
-            >
-              {(label ?? name) && (
-                <span className="visible inline-block px-1 opacity-0">
-                  {label ?? name} {required && " *"}
-                </span>
-              )}
-            </legend>
-          </fieldset>
-        </div>
-
-        {!!name && <FieldError name={name} className="rw-field-error" />}
-        {helperText && (
-          <p
-            id={`${name}-helper-text`}
-            className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-5 tracking-wide text-black/70 dark:text-white/70"
-          >
-            {helperText}
-          </p>
-        )}
-      </div>
-
-      {/* Dropdown Menu */}
-      <Popper anchorEl={anchorEl.current} open={isOpen} paddingToAnchor={4}>
-        <ClickAwayListener onClickAway={(e) => handleClose(e)}>
-          <div
-            role="menu"
-            className={clsx(
-              "z-30 w-fit max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800",
-              {
-                "min-w-[10rem]": size === "small",
-                "min-w-[15rem]": size === "medium",
-              }
-            )}
-          >
-            <ul
-              className="relative max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
-              aria-labelledby="dropdownButton"
-              onMouseDown={(event) => {
-                event.preventDefault();
-              }}
-              role="listbox"
-            >
-              {renderOptions()}
-            </ul>
-          </div>
-        </ClickAwayListener>
-      </Popper>
-    </div>
-  );
-};
+});

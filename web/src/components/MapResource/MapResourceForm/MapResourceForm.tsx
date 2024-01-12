@@ -45,6 +45,7 @@ const MapResourceForm = (props: MapResourceFormProps) => {
           getOptionLabel={(val) => val.label}
           isOptionEqualToValue={(val, opt) => val.id === opt.id}
           validation={{ required: true }}
+          getOptionValue={(opt) => opt.id}
           options={[
             { label: 'Valguero', id: 1 },
             { label: 'The Island', id: 2 },
@@ -72,6 +73,7 @@ const MapResourceForm = (props: MapResourceFormProps) => {
           defaultValue={props.mapResource?.item_id}
           getOptionLabel={(val) => val.label}
           isOptionEqualToValue={(val, opt) => val.id === opt.id}
+          // getOptionValue={(opt) => opt.id}
           validation={{ required: true }}
           options={[
 
@@ -114,6 +116,7 @@ const MapResourceForm = (props: MapResourceFormProps) => {
           defaultValue={props.mapResource?.item_id}
           getOptionLabel={(val) => val.label}
           isOptionEqualToValue={(val, opt) => val.id === opt.id}
+          getOptionValue={(opt) => opt.id}
           options={[
             { label: 'Deinonychus Nest', id: "deinonychus_nest" },
             { label: 'Wyvern Nest', id: "wyvern_nest" },

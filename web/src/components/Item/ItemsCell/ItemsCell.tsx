@@ -43,6 +43,7 @@ export const beforeQuery = ({ page, search, category, type }) => {
   };
 };
 
+// TODO: fix
 export const Loading = () => (
   <>
     <Items loading={true} itemsPage={{ count: 0, items: [] }} />

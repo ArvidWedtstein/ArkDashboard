@@ -1,14 +1,14 @@
-import { ElementType, Fragment, HTMLAttributes, ReactElement, forwardRef, useCallback, useMemo, useRef, useState } from "react";
-import { IntRange, debounce, formatNumber } from "src/lib/formatters";
+import { ElementType, Fragment, HTMLAttributes, forwardRef, useCallback, useMemo, useRef, useState } from "react";
+import { IntRange, debounce, formatNumber, pluralize } from "src/lib/formatters";
 import clsx from "clsx";
-import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
-import Popper from "../Popper/Popper";
-import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import Button, { ButtonGroup } from "../Button/Button";
-import { Input, InputOutlined } from "../Input/Input";
+import { Input } from "../Input/Input";
 import { Lookup } from "../Lookup/Lookup";
-import { useSubscription } from "@redwoodjs/web";
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import Collapse from "../Collapse/Collapse";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "../Dialog/Dialog";
+
 type Filter<Row extends Record<string, any>> = {
   /**
    * The column name.
@@ -22,6 +22,10 @@ type Filter<Row extends Record<string, any>> = {
    * The filter value.
    */
   value: string;
+  /**
+   * Is the value saved?
+   */
+  saved?: boolean;
 };
 /**
  * Represents a row of data in the table.
@@ -223,8 +227,9 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       pageSizeOptions: [10, 25, 50],
     },
   };
+
   const anchorRef = useRef(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const mergedSettings = { ...defaultSettings, ...settings };
 
   const columnSettings = columns || [];
@@ -234,6 +239,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     []
   );
 
+  // TODO: bug bug where row stays open after removed
   const [collapsedRows, setCollapsedRows] = useState<TableDataRow["row_id"][]>(
     []
   );
@@ -244,6 +250,8 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
+
   const [filters, setFilters] = useState<Filter<Row>[]>([]);
   const [sort, setSort] = useState<{
     column: TableColumn<Row>["field"];
@@ -262,12 +270,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     direction: "asc" | "desc"
   ) => {
     if (column) {
-      const sortDirection = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
-      data.sort((a, b) => {
-        let c = a[sortKey];
-        let d = b[sortKey];
+      const { valueFormatter } = columns.find((c) => c.field === column);
 
+      data.sort((a, b) => {
+        let c = valueFormatter ? valueFormatter({ value: a[sortKey], row: data[data.indexOf(a)] }) : a[sortKey]
+        let d = valueFormatter ? valueFormatter({ value: b[sortKey], row: data[data.indexOf(b)] }) : b[sortKey]
 
         // Compare based on data type
         if (!columnDataType) {
@@ -275,16 +283,15 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         }
         if (columnDataType === "number") {
           return (
-            (parseInt(c.toString()) - parseInt(d.toString())) * sortDirection
+            (parseInt(c.toString()) - parseInt(d.toString()))
           );
         } else if (columnDataType === "boolean") {
-          return (c === d ? 0 : c ? 1 : -1) * sortDirection;
+          return (c === d ? 0 : c ? 1 : -1);
         } else if (columnDataType === "string") {
-          return c.toString().localeCompare(d.toString()) * sortDirection;
+          return c.toString().localeCompare(d.toString());
         } else if (columnDataType === "date") {
           if (typeof c === "string") c = new Date(c).getTime();
           if (typeof d === "string") d = new Date(d).getTime();
-
           return (d as number) - (c as number);
         }
 
@@ -332,12 +339,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   }, []);
 
   const filterData = (data) => {
-    if (filters.length === 0) {
+    if (filters.filter(({ saved }) => saved).length === 0) {
       return data;
     }
 
     const filterLookup = {};
-    filters.forEach((filter) => {
+    filters.filter(({ saved }) => saved).forEach((filter) => {
       const { column } = filter;
       if (!filterLookup[column as any]) {
         filterLookup[column as any] = [];
@@ -393,6 +400,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     return filteredData;
   }, [sort, searchTerm, dataRows, mergedSettings.pagination, filters]);
 
+
   const PaginatedData = useMemo(() => {
     if (!mergedSettings.pagination.enabled) return SortedFilteredData;
 
@@ -402,7 +410,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     return SortedFilteredData.slice(startIndex, endIndex);
   }, [SortedFilteredData, currentPage, selectedPageSizeOption]);
 
-  const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
   const handleRowSelect = (event, id?) => {
     const {
@@ -457,7 +464,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     .filter((col) => !col.hidden).map((e, i) => {
       return {
         ...e,
-        width: e.width || 500,
+        width: e.width || 300,
         columnIndex: i
       }
     }));
@@ -483,12 +490,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         size={size}
         handleResize={handleResize}
         onClick={() => {
-          other.sortable &&
-            setSort((prev) => ({
-              column: other.field,
-              columnDataType: other.datatype,
-              direction: prev.direction === "asc" ? "desc" : "asc",
-            }));
+          if (!other.sortable) return
+          setSort((prev) => ({
+            column: other.field,
+            columnDataType: other.datatype,
+            direction: prev.direction === "asc" ? "desc" : "asc",
+          }));
         }}
       >
         {label}
@@ -562,38 +569,46 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       : valueFormatted;
 
     return (
-      <TableCell key={key} size={size} variant={variant} headers={`headcell-${field}`} selected={isSelected(rowData.row_id)} columnWidth={columnSizes.find((d) => d.columnIndex === columnIndex).width} className={clsx(className, {
-        "rounded-bl-lg":
-          rowIndex === PaginatedData.length - 1 &&
-          columnIndex === 0 &&
-          !checkSelect &&
-          !columnSettings.some((col) => col.aggregate) &&
-          !dataRows.some((row) => row.collapseContent),
-        "rounded-br-lg":
-          rowIndex === PaginatedData.length - 1 &&
-          columnIndex === columns.length - 1 &&
-          !columnSettings.some((col) => col.aggregate) &&
-          !dataRows.some((row) => row.collapseContent)
-      })}>
+      <TableCell
+        key={key}
+        size={size}
+        variant={variant}
+        headers={`headcell-${field}`}
+        selected={isSelected(rowData.row_id)}
+        columnWidth={columnSizes?.find((d) => d.columnIndex === columnIndex)?.width}
+        className={className}
+      >
         {content}
       </TableCell>
     );
   };
 
-  const tableSelect = ({
-    header = false,
-    datarow,
-    rowIndex,
-    select = false,
-  }: {
+  type TableExtraColumn = {
     header?: boolean;
     datarow?: TableDataRow;
     rowIndex?: number;
-    select?: boolean;
-  }) => {
+    type: 'Select' | 'Collapse'
+  }
+  const tableExtraColumn = ({
+    header = false,
+    datarow,
+    rowIndex,
+    type = 'Select'
+  }: TableExtraColumn) => {
     return (
-      <TableCell header={header} size={size} variant={variant} scope="col" columnWidth={30} selected={isSelected(datarow?.row_id || "")} aria-rowindex={rowIndex}>
-        {select ? (
+      <TableCell
+        header={header}
+        size={size}
+        variant={variant}
+        scope="col"
+        columnWidth={50}
+        style={{
+          width: type === 'Collapse' || type === 'Select' ? '1%' : 'auto'
+        }}
+        selected={isSelected(datarow?.row_id || "")}
+        aria-rowindex={rowIndex}
+      >
+        {type === 'Select' ? (
           <div className="flex items-center">
             <input
               id={header ? "checkbox-all-select" : datarow.row_id}
@@ -617,7 +632,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           </div>
         ) : (
           !header &&
-          datarow.collapseContent && (
+          type === 'Collapse' && (
             <Button color="secondary" onClick={() => handleRowCollapse(datarow.row_id)} variant="icon" size="small">
               {isRowOpen(datarow.row_id) ? (
                 <svg
@@ -717,7 +732,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
   const tableFooter = () => (
     <tfoot>
-      <TableRow className="rounded-b-lg font-semibold text-gray-900 dark:text-white">
+      <TableRow className="font-semibold text-gray-900 dark:text-white border-t">
         {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
           <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
@@ -732,9 +747,11 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               { header, field, datatype, aggregate, className, valueFormatter },
               index
             ) => {
+              const key = `${field}-${header}`; // Use a unique identifier for the key
+
               if (!aggregate) {
                 return (
-                  <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
+                  <TableCell key={key} size={size} variant={variant} className="first:rounded-bl-lg" />
                 );
               }
 
@@ -744,7 +761,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                 valueFormatter,
               });
 
-              const key = `${field}-${header}`; // Use a unique identifier for the key
               return (
                 <TableCell size={size} variant={variant} key={key} className={clsx("first:rounded-bl-lg last:rounded-br-lg", className)}>
                   {datatype === "number"
@@ -918,28 +934,41 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     toast.success("Copied to clipboard");
   };
 
-  const addFilter = (e: Filter<Row>) => {
+  const filterDialogRef = useRef<HTMLDivElement>();
+
+  const addFilter = (data: Filter<Row>) => {
     setFilters((prev) => [
       ...prev,
-      {
-        column: e.column,
-        operator: e.operator,
-        value: e.value,
-      },
+      data,
     ]);
   };
 
+  const handleFilterClose = (confirmSave: boolean = false) => {
+    // Filter empty filters
+    setFilters((prevFilters) => prevFilters.map(({ saved, column, operator, value }) => {
+      return {
+        column,
+        operator,
+        value,
+        saved: !saved ? confirmSave : saved
+      };
+    }).filter(({ saved }) => saved));
+
+    setOpen(false);
+  }
+
+
   return (
     <div
-      className={clsx("relative !overflow-x-hidden overflow-y-auto sm:rounded-lg", className)}
+      className={clsx("relative !overflow-x-hidden overflow-y-auto", className)}
     >
       {(checkSelect || mergedSettings.export || mergedSettings.filter || mergedSettings.search || toolbar.length > 0) && (
-        <div className="rw-button-group">
+        <ButtonGroup className="my-2">
           {mergedSettings.filter && (
             <>
               {/* Filter Button */}
 
-              <Button className="rounded-r-none" ref={anchorRef} variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
+              <Button size="small" variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
                 <span className="sr-only">Filter</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -955,153 +984,134 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   )}
                 </svg>
               </Button>
-              <Popper anchorEl={anchorRef.current} open={open}>
-                <ClickAwayListener onClickAway={(event) => {
-                  if (
-                    anchorRef?.current &&
-                    (anchorRef?.current?.contains(event.target as HTMLElement) || anchorRef?.current?.element.contains(event.target as HTMLElement))
-                  ) {
-                    return;
-                  }
-                  setOpen(false);
-                }}
-                >
-                  <Form<Filter<Row>>
-                    className="z-10 flex flex-col rounded-lg border border-zinc-500 bg-white p-3 shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800 "
-                    method="dialog"
-                    onSubmit={(e) => {
-                      addFilter(e);
-                    }}
-                  >
+
+              <Dialog ref={filterDialogRef} open={open} onClose={() => handleFilterClose()}>
+                <DialogTitle>{pluralize(
+                  filters.length,
+                  "Filter",
+                  "s",
+                  false
+                )}</DialogTitle>
+                <DialogContent>
+                  {!filters.length && (
+                    <Fragment>
+                      <span className="rw-sublabel">No filters applied</span>
+                      <br />
+                      <span className="text-xs rw-sublabel">
+                        Add a column below to filter the table
+                      </span>
+                    </Fragment>
+                  )}
+                  <TransitionGroup className="flex flex-col space-y-1 max-w-lg min-w-[20rem]">
                     {filters.map(({ column, operator, value }, index) => (
-                      <div
-                        className="rw-button-group my-1 justify-start"
-                        key={`filter-${index}`}
+                      <CSSTransition
+                        key={`columnfilter-${index}`}
+                        timeout={500}
+                        classNames="item"
                       >
-                        <select
-                          name="column"
-                          className="rw-input rw-input-small"
-                          defaultValue={column}
-                          disabled
-                        >
-                          {columns &&
-                            columnSettings
-                              .filter((col) => !col.hidden)
-                              .map((column, idx) => (
-                                <option
-                                  key={`filter-${index}-column-${idx}`}
-                                  value={column.field}
-                                >
-                                  {column.field}
-                                </option>
-                              ))}
-                        </select>
-                        <select
-                          name="operator"
-                          className="rw-input rw-input-small"
-                          defaultValue={operator}
-                          disabled
-                        >
-                          <option value="=">=</option>
-                          <option value="!=">!=</option>
-                          <option value=">">&gt;</option>
-                          <option value=">=">&gt;=</option>
-                          <option value="<">&lt;</option>
-                          <option value="<=">&lt;=</option>
-                          <option value="like">like</option>
-                          <option value="ilike">ilike</option>
-                          <option value="in">in</option>
-                          <option value="not_in">not in</option>
-                          <option value="regex">regex</option>
-                        </select>
-                        <input
-                          name="value"
-                          className="rw-input rw-input-small"
-                          defaultValue={value}
-                          readOnly
-                        />
-                        <button
-                          className="rw-button rw-button-small rw-button-red"
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setFilters((prev) =>
+                        <ButtonGroup size="small" className="fadetransition" key={`columnfilter-${index}`}>
+                          <Lookup
+                            size="small"
+                            margin="none"
+                            options={columnSettings.filter((col) => !col.hidden).map(c => c.field)}
+                            value={column}
+                            onSelect={(v) => setFilters((prev) => prev.map((s, i) => ({
+                              ...s,
+                              column: i === index ? v : s.column
+                            })))}
+                          />
+                          <Lookup
+                            size="small"
+                            margin="none"
+                            defaultValue={operator}
+                            options={["=", "!=", ">", ">=", "<", "<=", "like", "ilike", "in", "not", "regex"]}
+                            onSelect={(v) => setFilters((prev) => prev.map((s, i) => ({
+                              ...s,
+                              operator: i === index ? v : s.operator
+                            })))}
+                          />
+                          <Input
+                            size="small"
+                            margin="none"
+                            defaultValue={value}
+                            onChange={(e) => setFilters((prev) => prev.map((s, i) => ({
+                              ...s,
+                              value: i === index ? e.target.value : s.value
+                            })))}
+                          />
+                          <Button
+                            color="error"
+                            variant="contained"
+                            size="small"
+                            onClick={() => setFilters((prev) =>
                               prev.filter((_, idx) => idx !== index)
-                            );
-                          }}
-                        >
-                          -
-                        </button>
-                      </div>
+                            )}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 448 512"
+                              fill="currentColor"
+                              className="w-4"
+                            >
+                              <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                            </svg>
+                          </Button>
+                        </ButtonGroup>
+                      </CSSTransition>
                     ))}
-                    <div className="rw-button-group justify-start">
-                      <SelectField
-                        name="column"
-                        className="rw-input rw-input-small"
+                  </TransitionGroup>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    ignoreButtonGroupPosition
+                    className="float-left mr-auto"
+                    startIcon={(
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
                       >
-                        {columns &&
-                          columnSettings
-                            .filter((col) => !col.hidden)
-                            .map((column, index) => (
-                              <option
-                                key={`column-option-${index}`}
-                                value={column.field}
-                              >
-                                {column.field}
-                              </option>
-                            ))}
-                      </SelectField>
-                      <SelectField
-                        name="operator"
-                        className="rw-input rw-input-small"
-                      >
-                        <option value="=">=</option>
-                        <option value="!=">!=</option>
-                        <option value=">">&gt;</option>
-                        <option value=">=">&gt;=</option>
-                        <option value="<">&lt;</option>
-                        <option value="<=">&lt;=</option>
-                        <option value="like">like</option>
-                        <option value="ilike">ilike</option>
-                        <option value="in">in</option>
-                        <option value="not_in">not in</option>
-                        <option value="regex">regex</option>
-                      </SelectField>
-                      <TextField
-                        name="value"
-                        className="rw-input rw-input-small"
-                      />
-                      <Submit className="rw-button rw-button-small rw-button-green">
-                        +
-                      </Submit>
-                    </div>
-                    <div className="rw-button-group justify-end">
-                      <button
-                        className="rw-button rw-button-small rw-button-gray"
-                        type="button"
-                        onClick={() => setOpen(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="rw-button rw-button-small rw-button-green"
-                        id="confirmBtn"
-                        formMethod="dialog"
-                        type="button"
-                        onClick={() => setOpen(false)}
-                      >
-                        Confirm
-                      </button>
-                    </div>
-                  </Form>
-                </ClickAwayListener>
-              </Popper>
+                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                      </svg>
+                    )}
+                    onClick={() => addFilter({ column: columnSettings.length > 0 ? columnSettings[0].field : '', operator: "=", value: "", saved: false })}
+                  >
+                    Add Filter
+                  </Button>
+                  <ButtonGroup>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      size="small"
+                      onClick={() => handleFilterClose()}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      id="confirmBtn"
+                      formMethod="dialog"
+                      onClick={() => handleFilterClose(true)}
+                      disabled={!filters.length}
+                    >
+                      Confirm
+                    </Button>
+                  </ButtonGroup>
+                </DialogActions>
+              </Dialog>
+
             </>
           )}
           {checkSelect && mergedSettings.export && (
-            <button
-              className="rw-button rw-button-gray"
+            <Button
+              variant="outlined"
+              color="DEFAULT"
               title="Export"
+              size="small"
               disabled={selectedRows.length === 0}
               onClick={copyToClipboard}
             >
@@ -1115,21 +1125,21 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               >
                 <path d="M208 112c-4.094 0-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l80 80c6.25 6.25 16.38 6.25 22.62 0l80-80c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 169.4V16C304 7.156 296.8 0 288 0S272 7.156 272 16v153.4L219.3 116.7C216.2 113.6 212.1 112 208 112zM512 0h-144C359.2 0 352 7.162 352 16C352 24.84 359.2 32 368 32H512c17.67 0 32 14.33 32 32v192H32V64c0-17.67 14.33-32 32-32h144C216.8 32 224 24.84 224 16C224 7.162 216.8 0 208 0H64C28.65 0 0 28.65 0 64v288c0 35.35 28.65 64 64 64h149.7l-19.2 64H144C135.2 480 128 487.2 128 496S135.2 512 144 512h288c8.836 0 16-7.164 16-16S440.8 480 432 480h-50.49l-19.2-64H512c35.35 0 64-28.65 64-64V64C576 28.65 547.3 0 512 0zM227.9 480l19.2-64h81.79l19.2 64H227.9zM544 352c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288h512V352z" />
               </svg>
-            </button>
+            </Button>
           )}
           {mergedSettings.search && (
             <Input
-              className="-ml-px"
               fullWidth
               color="DEFAULT"
               margin="none"
               label="Search"
               type="search"
+              size="small"
               onChange={handleSearch}
               SuffixProps={{
                 style: {
-                  borderRadius: "0 0.375rem 0.375rem 0",
-                },
+                  borderRadius: '0'
+                }
               }}
               InputProps={{
                 startAdornment: (
@@ -1147,110 +1157,119 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                     />
                   </svg>
                 ),
-                endAdornment: (
-                  <Button type="submit" variant="contained" color="success" startIcon={(
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-                    </svg>
-                  )}>
-                    <span className="hidden md:block">Search</span>
-                  </Button>
-                ),
               }}
             />
           )}
           {toolbar.map((item, index) => (
-            <div key={`toolbar-${index}`}>{item}</div>
+            <Fragment key={`toolbar-${index}`}>{item}</Fragment>
           ))}
-        </div>
+
+        </ButtonGroup>
       )}
+
       <div
-        className={"w-full overflow-x-auto rounded-lg border border-zinc-500"}
+        className={"w-full overflow-x-auto rounded border border-zinc-500"}
       >
         <table className={classes.table}>
           {mergedSettings.header && (
             <thead className={classes.tableHead}>
               <TableRow borders={mergedSettings.borders}>
                 {dataRows.some((row) => row.collapseContent) &&
-                  tableSelect({ header: true, rowIndex: -1, select: false })}
+                  tableExtraColumn({ header: true, rowIndex: -1, type: 'Collapse' })}
+
                 {checkSelect &&
-                  tableSelect({ header: true, rowIndex: -1, select: checkSelect })}
-                {columns &&
-                  columnSettings
-                    .filter((col) => !col.hidden)
-                    .map(({ ...other }, index) =>
-                      headerRenderer({
-                        label: other.header,
-                        columnIndex: index,
-                        ...other,
-                      })
-                    )}
+                  tableExtraColumn({ header: true, rowIndex: -1, type: 'Select' })}
+
+                {columnSettings
+                  ?.filter((col) => !col.hidden)
+                  .map(({ ...other }, index) => {
+                    return headerRenderer({
+                      label: other.header,
+                      columnIndex: index,
+                      ...other,
+                    });
+                  })}
               </TableRow>
             </thead>
           )}
-          <tbody
-            className={classes.tableBody}
-          >
+          <TransitionGroup component="tbody" className={classes.tableBody}>
             {dataRows &&
               PaginatedData.map((datarow, i) => (
-                <Fragment key={datarow.row_id.toString()}>
-                  <TableRow borders={mergedSettings.borders}>
-                    {dataRows.some((row) => row.collapseContent) &&
-                      tableSelect({
-                        datarow,
-                        rowIndex: i,
-                        select: false,
-                      })}
-                    {checkSelect &&
-                      tableSelect({ datarow, rowIndex: i, select: true })}
-                    {columnSettings &&
-                      columnSettings.map(
-                        (
-                          {
-                            field,
-                            render,
-                            valueFormatter,
-                            className,
-                            datatype,
-                            header,
-                            ...other
-                          },
-                          index
-                        ) =>
-                          cellRenderer({
-                            rowData: datarow,
-                            cellData: datarow[field],
-                            // cellData: field && field.toString()?.includes(".")
-                            //   ? getValueByNestedKey(datarow, field)
-                            //   : datarow[field],
-                            columnIndex: index,
-                            header,
-                            rowIndex: i,
-                            render,
-                            valueFormatter,
-                            field,
-                            className,
-                            datatype,
-                            ...other,
-                          })
-                      )}
-                  </TableRow>
-                  {datarow?.collapseContent && (
-                    <TableRow className={isRowOpen(datarow.row_id.toString()) ? 'table-row' : 'hidden'} borders={mergedSettings.borders}>
-                      <TableCell size={size} variant={variant} colSpan={100}>{datarow.collapseContent}</TableCell>
+                <CSSTransition
+                  timeout={500}
+                  classNames={"item"}
+                  key={datarow.row_id.toString()}
+                >
+                  <Fragment>
+                    <TableRow className="fadetransition" borders={mergedSettings.borders}>
+                      {dataRows.some((row) => row.collapseContent) &&
+                        tableExtraColumn({
+                          datarow,
+                          rowIndex: i,
+                          type: 'Collapse'
+                        })}
+                      {checkSelect &&
+                        tableExtraColumn({ datarow, rowIndex: i, type: 'Select' })}
+                      {columnSettings &&
+                        columnSettings.map(
+                          (
+                            {
+                              field,
+                              render,
+                              valueFormatter,
+                              className,
+                              datatype,
+                              header,
+                              ...other
+                            },
+                            index
+                          ) =>
+                            cellRenderer({
+                              rowData: datarow,
+                              cellData: datarow[field],
+                              columnIndex: index,
+                              header,
+                              rowIndex: i,
+                              render,
+                              valueFormatter,
+                              field,
+                              className,
+                              datatype,
+                              ...other,
+                            })
+                        )}
                     </TableRow>
-                  )}
-                </Fragment>
+
+                    {datarow?.collapseContent && (
+                      <TableRow
+                        className={clsx({
+                          "table-row": isRowOpen(datarow.row_id.toString()),
+                          "h-0 [&>td]:p-0": !isRowOpen(datarow.row_id.toString())
+                        })}
+                        borders={mergedSettings.borders}
+                      >
+
+                        <TableCell size={size} variant={variant} colSpan={100}>
+                          <Collapse in={isRowOpen(datarow.row_id.toString())}>
+                            {datarow.collapseContent}
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                </CSSTransition>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <TableRow borders={mergedSettings.borders}>
-                <TableCell size={size} variant={variant} colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
-              </TableRow>
+              <CSSTransition
+                timeout={500}
+                classNames={"item"}
+              >
+                <TableRow className="fadetransition" borders={mergedSettings.borders}>
+                  <TableCell size={size} variant={variant} colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
+                </TableRow>
+              </CSSTransition>
             )}
-          </tbody>
+          </TransitionGroup>
           {columnSettings.some((col) => col.aggregate) && tableFooter()}
         </table>
       </div>
@@ -1284,53 +1303,15 @@ const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) 
     "py-0.5 px-3": size === 'small' && header,
     "p-3 px-4": size === 'medium' && header,
     "py-4 px-6": size === 'large' && header,
-    "bg-zinc-300 dark:bg-zinc-700": selected && !header,
-  }, header ? `sticky z-10 align-middle leading-6 min-w-[50px] line-clamp-1` : `align-middle`, className, variantClasses[variant])
+    "bg-zinc-300 dark:bg-zinc-600": selected && !header,
+  }, header ? `sticky z-10 align-middle leading-6 min-w-[20px] line-clamp-1` : `align-middle`, className, variantClasses[variant])
 
   const Component: ElementType = header ? 'th' : 'td';
 
   return (
-    <Component className={classes} ref={ref} style={{ width: columnWidth }} {...other}>
+    <Component className={classes} ref={ref} style={{ width: columnWidth, maxWidth: columnWidth }} {...other}>
       {children}
     </Component>
-    // <Component
-    //   className={classes}
-    //   ref={cellRef}
-    //   style={{ width: columnWidth }}
-    //   role={header ? 'columnheader' : 'cell'}
-    // // onMouseMove={(e) => {
-    // //   if (mousedown) {
-    // //     handleResize(e, field)
-    // //   }
-    // // }}
-    // // onMouseUp={(e) => {
-    // //   setmousedown(false)
-    // // }}
-    // // onMouseLeave={(e) => {
-    // //   setmousedown(false)
-    // // }}
-    // // onMouseOut={(e) => {
-    // //   setmousedown(false)
-    // // }}
-    // >
-    //   <div {...other} ref={ref}>
-    //     {children}
-    //   </div>
-    //   {header && (
-    //     <div
-    //       onMouseDown={(e) => {
-    //         e.persist();
-    //         setmousedown(true)
-    //         handleResize(e, field)
-    //       }}
-    //       className="opacity-100 w-1 cursor-col-resize top-0 h-full absolute z-50 flex flex-col justify-center text-red-500 touch-none -right-3 group-hover:w-auto"
-    //     >
-    //       <svg className="pointer-events-none w-4 h-4 fill-current inline-block shrink-0 transition-colors duration-200 select-none text-inherit">
-    //         <path d="M0 19V5h2v14z" />
-    //       </svg>
-    //     </div>
-    //   )}
-    // </Component>
   )
 })
 

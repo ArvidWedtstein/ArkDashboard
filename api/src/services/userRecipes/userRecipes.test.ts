@@ -31,26 +31,6 @@ describe('userRecipes', () => {
     }
   )
 
-  scenario('creates a userRecipe', async (scenario: StandardScenario) => {
-    const result = await createUserRecipe({
-      input: { user_id: scenario.userRecipe.two.user_id },
-    })
-
-    expect(result.user_id).toEqual(scenario.userRecipe.two.user_id)
-  })
-
-  scenario('updates a userRecipe', async (scenario: StandardScenario) => {
-    const original = (await userRecipe({
-      id: scenario.userRecipe.one.id,
-    })) as UserRecipe
-    const result = await updateUserRecipe({
-      id: original.id,
-      input: { user_id: scenario.userRecipe.two.user_id },
-    })
-
-    expect(result.user_id).toEqual(scenario.userRecipe.two.user_id)
-  })
-
   scenario('deletes a userRecipe', async (scenario: StandardScenario) => {
     const original = (await deleteUserRecipe({
       id: scenario.userRecipe.one.id,

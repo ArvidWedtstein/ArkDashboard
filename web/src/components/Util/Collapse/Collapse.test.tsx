@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import ItemList from './ItemList'
+import Collapse from './Collapse'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
 
-describe('ItemList', () => {
+describe('Collapse', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<ItemList />)
+      render(<Collapse />)
     }).not.toThrow()
   })
 })

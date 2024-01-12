@@ -1,8 +1,7 @@
 import { routes } from "@redwoodjs/router";
-import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import Badge from "src/components/Util/Badge/Badge";
+import Button from "src/components/Util/Button/Button";
 import Gantt from "src/components/Util/Gantt/Gantt";
-import { FormControl, Input, InputLabel, TextInput } from "src/components/Util/Input/Input";
-import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 import type { FindTimelineSeasons } from "types/graphql";
 
@@ -15,20 +14,19 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
   const servers = {
     "Elite Ark": {
       icon: "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
-      badge: "rw-badge-blue-outline",
+      badge: "info",
     },
     "Bloody Ark": {
       icon: "https://preview.redd.it/cdje2wcsmr521.png?width=313&format=png&auto=webp&s=bf1e8347b8dcd066bcf3aace6a461b61e804570b",
-      badge: "rw-badge-red-outline",
+      badge: "error",
     },
-
     Arkosic: {
       icon: "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
-      badge: "rw-badge-green-outline",
+      badge: "success",
     },
     "Mesa Ark": {
       icon: "https://mesa-ark.com/images/MESA_Icon.png",
-      badge: "rw-badge-green-outline",
+      badge: "warning",
     },
   };
 
@@ -42,7 +40,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
           className="my-3"
           color="success"
           variant="outlined"
-          endIcon={
+          startIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512"
@@ -97,9 +95,12 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
                     <span className="font-medium text-zinc-900 dark:text-white">
                       {server}{" "}
                       {cluster && (
-                        <span className={`rw-badge ${servers[server]?.badge}`}>
-                          {cluster}
-                        </span>
+                        <Badge
+                          variant="outlined"
+                          color={servers[server]?.badge || 'DEFAULT'}
+                          content={cluster}
+                          standalone
+                        />
                       )}
                     </span>
                   </div>

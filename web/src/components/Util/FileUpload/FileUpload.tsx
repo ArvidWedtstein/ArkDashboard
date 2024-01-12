@@ -108,11 +108,13 @@ const FileUpload = ({
       if (!defaultValue && (secondaryName && !defaultSecondaryValue)) return;
 
       try {
-        let paths = defaultValue.split(",").map((img) => img.trim()) || [];
+        let paths = defaultValue?.split(",").map((img) => img.trim()) || [];
 
         if (defaultSecondaryValue) {
           paths.push(...defaultSecondaryValue?.split(",").map((img) => img.trim()))
         }
+
+        if (paths.length == 0) return;
         const { data, error } = await supabase.storage
           .from(storagePath)
           .createSignedUrls(
@@ -163,6 +165,7 @@ const FileUpload = ({
           ...newFiles,
         ]);
       } catch (err) {
+        console.error(err)
         toast.error("Error fetching images: ", err);
       }
     };
@@ -550,7 +553,7 @@ const FileUpload = ({
           </button>
           <img
             src={files.find((f) => f.preview)?.url}
-            className="ascpect-square w-max max-w-full object-cover"
+            className="aspect-square w-max max-w-full object-cover"
           />
         </div>
       )}

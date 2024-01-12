@@ -150,18 +150,6 @@ module.exports = {
       addVariant("not-only", "&:not(:only-child)");
       addVariant("between", "&:not(:first-child):not(:last-child)");
       addComponents({
-        ".rw-badge": {
-          display: "inline-flex",
-          alignItems: "center",
-          borderRadius: theme("borderRadius.DEFAULT"),
-          padding: `${theme("spacing.1")} ${theme("spacing[2.5]")}`,
-          fontSize: theme("fontSize.xs"),
-          lineHeight: theme("lineHeight.4"),
-          fontWeight: theme("fontWeight.medium"),
-        },
-        ".rw-badge-small": {
-          padding: "2px 6px",
-        },
         ".rw-segment": {
           width: "100%",
           overflow: "hidden",

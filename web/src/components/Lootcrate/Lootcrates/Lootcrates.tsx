@@ -1,14 +1,13 @@
-import { CheckboxField, Form, Label, Submit } from "@redwoodjs/forms";
+import { CheckboxField, Form, Label } from "@redwoodjs/forms";
 import {
-  Link,
   routes,
   navigate,
   useParams,
   parseSearch,
 } from "@redwoodjs/router";
 import clsx from "clsx";
-import { useCallback, useMemo, useState } from "react";
-import { useAuth } from "src/auth";
+import { Fragment, useMemo, useState } from "react";
+import Badge from "src/components/Util/Badge/Badge";
 import Button from "src/components/Util/Button/Button";
 import {
   Card,
@@ -18,13 +17,12 @@ import {
   CardHeader,
 } from "src/components/Util/Card/Card";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
-import { InputOutlined } from "src/components/Util/Input/Input";
-import { Lookup } from "src/components/Util/Lookup/Lookup";
+import { Input } from "src/components/Util/Input/Input";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
-import { dynamicSort, removeDuplicates } from "src/lib/formatters";
+import { objectToSearchParams, removeDuplicates } from "src/lib/formatters";
 
-import type { FindLootcrates, permission } from "types/graphql";
+import type { FindLootcrates } from "types/graphql";
 
 type FormFindLootcrates = NonNullable<{
   map: string;
@@ -40,35 +38,30 @@ const LootcratesList = ({
 }: FindLootcrates & {
   loading?: boolean;
 }) => {
-  const { currentUser } = useAuth();
-  let { map, search, color, type } = useParams();
+  const { map, search, color, type } = useParams();
 
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [sort, setSort] = useState<{
-    column: string;
-    direction: "asc" | "desc";
-  }>({
-    column: "",
-    direction: "asc",
-  });
 
-  const onSubmit = useCallback((data: FormFindLootcrates) => {
-    navigate(
-      routes.lootcrates({
-        ...parseSearch(
-          Object.fromEntries(
-            Object.entries(data).filter(([_, v]) => v != "" && v != undefined)
-          ) as Record<string, string>
-        ),
-      })
-    );
-  }, []);
+  const onSubmit = (data: FormFindLootcrates) => {
+    console.log(data, parseSearch(objectToSearchParams(data)))
+
+    navigate(routes.lootcrates({ ...parseSearch(objectToSearchParams(data)) }));
+    // navigate(
+    //   routes.lootcrates({
+    //     ...parseSearch(
+    //       Object.fromEntries(
+    //         Object.entries(data).filter(([_, v]) => v != "" && v != undefined)
+    //       ) as Record<string, string>
+    //     ),
+    //   })
+    // );
+  };
 
   const { openModal } = useModal();
 
   const Filters = useMemo(
     () => (
-      <>
+      <Fragment>
         <h3 className="sr-only">Categories</h3>
         <Disclosure title="Type">
           <div className="flex flex-col space-y-5">
@@ -102,7 +95,7 @@ const LootcratesList = ({
         <Disclosure title="Map">
           <div className="flex flex-col space-y-5">
             {maps?.map(({ id, name }) => (
-              <div className="flex items-center space-x-2" key={id}>
+              <div className="flex items-center space-x-2" key={`map-check-${id}`}>
                 <CheckboxField
                   id={`map-${id}`}
                   name="map"
@@ -157,12 +150,12 @@ const LootcratesList = ({
             ))}
           </div>
         </Disclosure>
-      </>
+      </Fragment>
     ),
     [type, map, color, lootcratesByMap]
   );
   return (
-    <Form<FormFindLootcrates> className="rw-segment" onSubmit={onSubmit}>
+    <Form<FormFindLootcrates> className="rw-segment" config={{ shouldUnregister: true }} onSubmit={onSubmit}>
       <Modal content={Filters} />
 
       <div className="mt-1 flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
@@ -171,56 +164,6 @@ const LootcratesList = ({
         </h1>
 
         <nav className="flex grow items-center justify-center space-x-2">
-          <div className="rw-button-group m-0 !space-x-0">
-            <Lookup
-              label="Sort by"
-              margin="none"
-              className="hidden capitalize sm:block !rounded-r-none -mr-px"
-              btnClassName="!rounded-r-none ring-8 ring-red-500"
-              name="sort"
-              defaultValue={sort.column}
-              loading={loading}
-              onSelect={(e) => {
-                if (!e) return;
-                setSort((prev) => ({
-                  ...prev,
-                  column: e ? e.toString() : "",
-                }));
-              }}
-              closeOnSelect
-              options={Object.keys(lootcratesByMap[0] || {})
-                .filter(
-                  (c) => !["__typename", "id", "image", "blueprint"].includes(c)
-                )}
-              InputProps={{
-                style: {
-                  borderRadius: "0 0.375rem 0.375rem 0",
-                },
-              }}
-            />
-
-            <Button onClick={() => {
-              setSort((prev) => ({
-                ...prev,
-                direction: prev.direction === "asc" ? "desc" : "asc",
-              }));
-            }}
-              title={sort.direction == "asc" ? "Ascending " : "Descending"} variant="outlined" className="-ml-px rounded-l-none" color="secondary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 320 512"
-                fill="currentColor"
-                className={clsx(
-                  "w-4 transition-transform duration-150 ease-out",
-                  {
-                    "rotate-180 transform": sort.direction === "desc",
-                  }
-                )}
-              >
-                <path d="M32.05 224h255.9c28.36 0 42.73-34.5 22.62-54.62l-127.1-128c-12.5-12.5-32.86-12.5-45.36 0L9.304 169.4C-10.69 189.5 3.682 224 32.05 224zM160 63.98L287.1 192h-255.9L160 63.98z" />
-              </svg>
-            </Button>
-          </div>
           <div className="rw-button-group grow m-0 w-full !space-x-0">
             <Button onClick={() => openModal()} variant="outlined" className="rounded-r-none -mr-px lg:hidden" color="secondary">
               <svg
@@ -234,14 +177,17 @@ const LootcratesList = ({
               <span className="sr-only">Filters</span>
             </Button>
 
-            <InputOutlined
+            <Input
               name="search"
               type="search"
               label="Search"
-              className="grow not-only:rounded-l-none"
+              margin="none"
               fullWidth
               defaultValue={search}
               disabled={loading}
+              SuffixProps={{
+                className: "rounded-l-none lg:rounded-l"
+              }}
               InputProps={{
                 endAdornment: (
                   <>
@@ -307,7 +253,7 @@ const LootcratesList = ({
         {/* Lootcrate grid */}
         <div
           className={clsx(
-            "grid w-full gap-6 text-zinc-900 transition-all ease-in-out dark:text-white lg:col-span-3",
+            "grid w-full gap-6 text-zinc-900 transition-all h-fit ease-in-out dark:text-white lg:col-span-3",
             {
               "grid-cols-1": view === "list",
               "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3": view === "grid",
@@ -315,11 +261,7 @@ const LootcratesList = ({
           )}
         >
           {lootcratesByMap.length == 0 && <p>No lootcrates found</p>}
-          {dynamicSort(
-            lootcratesByMap,
-            sort.column,
-            sort.direction === "asc"
-          ).map(({ id, name, required_level, image, color }) => (
+          {lootcratesByMap.map(({ id, name, required_level, image }) => (
             <Card
               key={`lootcrate-${id}`}
               className="hover:border-pea-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
@@ -347,9 +289,12 @@ const LootcratesList = ({
                 />
                 <CardContent>
                   {required_level > 0 && required_level != null && (
-                    <span className="rw-badge rw-badge-gray-outline">
-                      Lvl {required_level}
-                    </span>
+                    <Badge
+                      content={`Lvl ${required_level}`}
+                      variant="outlined"
+                      color="secondary"
+                      standalone
+                    />
                   )}
                 </CardContent>
               </CardActionArea>

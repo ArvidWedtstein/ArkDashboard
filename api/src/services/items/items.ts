@@ -7,6 +7,36 @@ import type {
 import { db } from "src/lib/db";
 import { validate, validateWithSync } from "@redwoodjs/api";
 
+// TODO: Outsource old, unused queries
+export const craftingItems: QueryResolvers["craftingItems"] = () => {
+  // Returns the items that are either used in a recipe or have a recipe or are a crafting station.
+  return db.item.findMany({
+    // include: {
+    //   ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+    //   ItemRecipe_ItemRecipe_crafting_station_idToItem: true,
+    // },
+    where: {
+      OR: [
+        {
+          ItemRecipe_ItemRecipe_crafted_item_idToItem: {
+            some: {},
+          },
+        },
+        {
+          ItemRecipeItem: {
+            some: {},
+          },
+        },
+        {
+          ItemRecipe_ItemRecipe_crafting_station_idToItem: {
+            some: {},
+          },
+        },
+      ],
+    },
+  });
+};
+
 export const itemsPage: QueryResolvers["itemsPage"] = ({
   page = 1,
   search = "",

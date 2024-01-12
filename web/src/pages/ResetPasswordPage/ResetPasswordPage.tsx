@@ -14,6 +14,7 @@ import { navigate, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
+import Button from "src/components/Util/Button/Button";
 
 type FormResetPassword = NonNullable<{
   old_password?: string;
@@ -38,7 +39,7 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
 
     toast.success("Password changed!");
     await client.auth.refreshSession();
-    navigate(routes.login());
+    navigate(routes.signin());
   };
 
   return (
@@ -81,6 +82,7 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
                   />
                 </svg>
               </div>
+              {/* TODO: change inputs */}
               <PasswordField
                 name="new_password"
                 className="rw-float-input peer w-60"
@@ -152,7 +154,9 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
               <FieldError name="repeat_password" className="rw-field-error" />
             </div>
 
-            <Submit className="rw-button rw-button-blue my-3">Submit</Submit>
+            <Button type="submit" variant="contained" color="success" className="my-3">
+              Submit
+            </Button>
           </Form>
         </div>
       </div>

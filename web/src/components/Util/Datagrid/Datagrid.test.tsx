@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import PingAlert from './PingAlert'
+import Datagrid from './DataGrid'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
 
-describe('PingAlert', () => {
+describe('Datagrid', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<PingAlert />)
+      render(<Datagrid />)
     }).not.toThrow()
   })
 })

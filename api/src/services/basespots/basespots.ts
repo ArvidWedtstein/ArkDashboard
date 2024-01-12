@@ -37,47 +37,42 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
 };
 
 export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
+  cursorId,
   take,
-  lastCursor,
+  skip = 0,
+  map,
+  type,
 }) => {
-  let result = await db.basespot.findMany({
-    take: take ? take : 9,
-    ...(lastCursor && {
-      skip: 1,
-      cursor: {
-        id: lastCursor as string,
+  const query: Record<string, any | never | unknown | null> = {
+    cursor: null,
+    take,
+    skip,
+    orderBy: { id: "desc" },
+  };
+  const types = type?.split(",").map((t) => t.trim());
+  const where = {
+    ...(map && { map_id: map }),
+    ...(type && {
+      type: {
+        in: types,
       },
     }),
-    orderBy: {
-      id: "desc",
-    },
-  });
-
-  if (result.length === 0) {
-    return {
-      basespots: [],
-      cursor: null,
-      hasNextPage: false,
-    };
+  };
+  if (cursorId) {
+    query.cursor = { id: cursorId };
   }
-  // https://community.redwoodjs.com/t/infinite-scrolling-using-field-policy-inmemorycache/3570/3
-  const lastPostInResults = result[result.length - 1];
-  const cursor = lastPostInResults.id;
-  // console.log(cursor, lastCursor, result.length);
-  const nextPage = await db.basespot.findMany({
-    take: take ? take : 7,
-    skip: 1, // Do not include the cursor itself in the query result.
-    cursor: {
-      id: cursor,
-    },
-  });
 
-  const hasNextPage = nextPage.length > 0;
+  const results = await db.basespot.findMany({
+    ...(cursorId && { cursor: query.cursor }),
+    take: query.take,
+    skip: query.skip,
+    orderBy: query.orderBy,
+    where: where,
+  });
 
   return {
-    basespots: result,
-    cursor: cursor,
-    hasNextPage: hasNextPage,
+    basespots: results,
+    has_more_basespots: results.length >= query.take,
   };
 };
 

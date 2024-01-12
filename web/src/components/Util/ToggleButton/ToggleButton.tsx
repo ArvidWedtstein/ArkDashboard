@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import Ripple from "../Ripple/Ripple";
 import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";
-import Button from "../Button/Button";
 import { useRipple } from "src/components/useRipple";
 
 type ToggleButtonProps = {
@@ -11,13 +10,12 @@ type ToggleButtonProps = {
   disabled?: boolean;
   size?: "small" | "medium" | "large";
   selected?: boolean;
-  onChange?: (event: React.MouseEvent<HTMLElement>, value: any) => void;
+  onChange?: (event: React.ChangeEvent<HTMLElement>, value: any) => void;
   onClick?: (event: React.MouseEvent<HTMLElement>, value: any) => void;
   fullWidth?: boolean;
   disableRipple?: boolean;
   checkedIcon?: React.ReactNode;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
-
+} & Omit<React.ButtonHTMLAttributes<HTMLElement>, 'onChange'>;
 export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
   (
     props,
@@ -37,16 +35,16 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
       fullWidth,
       ...other
     } = props
-    const handleChange = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    const handleChange = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement> | React.ChangeEvent<HTMLElement>) => {
       if (onClick) {
-        onClick(event, value);
+        onClick(event as React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>, value);
         if (event.defaultPrevented) {
           return;
         }
       }
 
       if (onChange) {
-        onChange(event, value);
+        onChange(event as React.ChangeEvent<HTMLElement>, value);
       }
     };
 
@@ -68,16 +66,17 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
         {...getRippleHandlers(props)}
         {...other}
         className={clsx(
-          `relative box-border inline-flex cursor-pointer select-none appearance-none items-center justify-center rounded border !border-black/[.12] font-medium uppercase text-black dark:!border-white/[.12] dark:text-white`,
+          `relative box-border cursor-pointer disabled:cursor-default inline-flex select-none appearance-none items-center justify-center rounded border !border-black/[.12] font-medium uppercase text-black dark:!border-white/[.12] dark:text-white`,
           className,
           {
             "w-full": fullWidth,
             "bg-black/[.16] hover:bg-black/[.24] dark:bg-white/[.16] dark:hover:bg-white/[.24]":
-              selected,
-            "hover:bg-black/[.08] dark:hover:bg-white/[.08]": !selected,
+              selected && !disabled,
+            "hover:bg-black/[.08] dark:hover:bg-white/[.08]": !selected && !disabled,
             "p-2 text-xs": size === "small",
             "p-4 text-sm ": size === "medium",
             "p-6 text-sm": size === "large",
+            "[&>img]:opacity-30 [&>img]:brightness-[1.4] [&>img]:contrast-0 [&>img]:hue-rotate-[116deg] [&>img]:saturate-[.28] [&>img]:sepia": disabled,
           }
         )}
       >
@@ -155,7 +154,9 @@ export const ToggleButtonGroup = forwardRef<
         if (enforce && value.length <= 1) {
           return;
         }
-
+        if (!Array.isArray(value)) {
+          return console.error('Value must be array if not exclusive')
+        }
         newValue = value.slice();
         newValue.splice(index, 1);
       } else {

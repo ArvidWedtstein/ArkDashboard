@@ -5,17 +5,34 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import ItemRecipes from 'src/components/ItemRecipe/ItemRecipes'
 
+
+// export const QUERY = gql`
+//   query FindItemRecipes {
+//     itemRecipes {
+//       id
+//       updated_at
+//       crafted_item_id
+//       crafting_station_id
+//       crafting_time
+//       yields
+//       required_level
+//     }
+//   }
+// `
 export const QUERY = gql`
-  query FindItemRecipes {
-    itemRecipes {
+  query FindItemRecipes($item_id: BigInt!) {
+    itemRecipesByItem(crafted_item_id: $item_id) {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
-      crafting_time
-      yields
-      required_level
+      Item_ItemRecipe_crafting_station_idToItem {
+         name
+         image
+      }
+      Item_ItemRecipe_crafted_item_idToItem {
+        name
+        image
+      }
     }
   }
 `
@@ -37,6 +54,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
 )
 
-export const Success = ({ itemRecipes }: CellSuccessProps<FindItemRecipes>) => {
-  return <ItemRecipes itemRecipes={itemRecipes} />
+export const Success = ({ itemRecipesByItem }: CellSuccessProps<FindItemRecipes>) => {
+  return <ItemRecipes itemRecipesByItem={itemRecipesByItem} />
 }

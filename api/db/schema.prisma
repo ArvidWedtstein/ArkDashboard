@@ -74,12 +74,12 @@ model Role {
 }
 
 model Tribe {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id         BigInt    @id(map: "Tribe_pkey1") @default(autoincrement())
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
-  name       String
   created_by String?   @db.Uuid
-  Profile    Profile?  @relation(fields: [created_by], references: [id], onUpdate: NoAction)
+  name       String    @unique
+  Profile    Profile?  @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Message {
@@ -102,7 +102,6 @@ model Dino {
   exp_per_kill                   Float?     @default(0)
   egg_min                        Float?     @default(0)
   egg_max                        Float?     @default(0)
-  tdps                           Float?     @default(0)
   maturation_time                Float?     @default(0)
   incubation_time                Float?     @default(0)
   affinity_needed                Float?     @default(0)
@@ -111,8 +110,6 @@ model Dino {
   hitboxes                       Json?
   food_consumption_base          Float?     @default(0)
   food_consumption_mult          Float?     @default(0)
-  disable_ko                     Boolean?   @default(false)
-  violent_tame                   Boolean?   @default(false)
   taming_ineffectiveness         Float?     @default(0)
   disable_food                   Boolean?   @default(false)
   disable_mult                   Boolean?   @default(false)
@@ -122,8 +119,6 @@ model Dino {
   non_violent_food_rate_mult     Float?     @default(0)
   taming_interval                Float?     @default(0)
   base_taming_time               Float?
-  disable_tame                   Boolean?   @default(false)
-  x_variant                      Boolean?   @default(false)
   attack                         Json?
   mounted_weaponry               Boolean?   @default(false)
   ridable                        Boolean?   @default(false)
@@ -147,6 +142,11 @@ model Dino {
   default_swing_radius           Float?     @default(0)
   targeting_team_name            String?
   flags                          Json?      @default("[]")
+  drag_weight                    Float?     @default(0)
+  taming_method                  String?    @default("")
+  variants                       String[]
+  torpor_immune                  Boolean?   @default(false)
+  torpor_depetion_per_second     Float?     @default(0)
   DinoStat                       DinoStat[]
 }
 
@@ -171,6 +171,9 @@ model Item {
   torpor_duration                                 Float?           @default(0)
   damage                                          Float?           @default(0)
   blueprint                                       String?
+  crafting_speed_modifier                         Float?           @default(1)
+  resource_consumption_multiplier                 Float?           @default(1)
+  item_production_multiplier                      Float?           @default(1)
   DinoStat                                        DinoStat[]
   ItemRecipe_ItemRecipe_crafted_item_idToItem     ItemRecipe[]     @relation("ItemRecipe_crafted_item_idToItem")
   ItemRecipe_ItemRecipe_crafting_station_idToItem ItemRecipe[]     @relation("ItemRecipe_crafting_station_idToItem")
@@ -201,7 +204,6 @@ model Map {
   LootcrateMap           LootcrateMap[]
   Map                    Map?                     @relation("MapToMap", fields: [parent_map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   other_Map              Map[]                    @relation("MapToMap")
-  MapNote                MapNote[]
   MapRegion              MapRegion[]
   MapResource            MapResource[]
   TimelineSeasonBasespot TimelineSeasonBasespot[]
@@ -242,79 +244,61 @@ model DinoStat {
   @@unique([dino_id, item_id, type])
 }
 
-model MapNote {
-  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
-  map_id     BigInt
-  latitude   Float     @default(0)
-  longitude  Float     @default(0)
-  x          Float?
-  y          Float?
-  z          Float?
-  note_index BigInt?
-  Map        Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model ItemRecipeItem {
-  id             String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at     DateTime   @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime?  @default(now()) @db.Timestamptz(6)
-  item_recipe_id String     @db.Uuid
-  item_id        BigInt
-  amount         Float      @default(1)
-  Item           Item       @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  ItemRecipe     ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id               BigInt     @id(map: "ItemRecipeItem_pkey1") @default(autoincrement())
+  item_recipe_id   BigInt
+  resource_item_id BigInt
+  amount           Float
+  ItemRecipe       ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Item             Item       @relation(fields: [resource_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@unique([item_id, item_recipe_id])
-  @@index([id], map: "idx_item_recipe_item_id")
+  @@unique([resource_item_id, item_recipe_id])
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model UserRecipe {
-  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                   BigInt                 @id(map: "UserRecipe_pkey1") @default(autoincrement())
   created_at           DateTime?              @default(now()) @db.Timestamptz(6)
   updated_at           DateTime?              @db.Timestamptz(6)
-  user_id              String                 @db.Uuid
-  private              Boolean                @default(true)
-  name                 String?
-  Profile              Profile                @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  created_by           String?                @db.Uuid
+  public_access        Boolean?               @default(false)
+  name                 String?                @default("")
+  Profile              Profile?               @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   UserRecipeItemRecipe UserRecipeItemRecipe[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model UserRecipeItemRecipe {
-  id             String     @id(map: "UserRecipeItemRecipie_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id             BigInt     @id @default(autoincrement())
   created_at     DateTime   @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime?  @db.Timestamptz(6)
-  user_recipe_id String     @db.Uuid
-  item_recipe_id String     @db.Uuid
+  user_recipe_id BigInt
+  item_recipe_id BigInt
   amount         BigInt?    @default(1)
   ItemRecipe     ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  UserRecipe     UserRecipe @relation(fields: [user_recipe_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  UserRecipe     UserRecipe @relation(fields: [user_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([item_recipe_id, user_recipe_id])
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model ItemRecipe {
-  id                                        String                 @id(map: "ItemRec_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at                                DateTime               @default(now()) @db.Timestamptz(6)
-  updated_at                                DateTime?              @default(now()) @db.Timestamptz(6)
+  id                                        BigInt                 @id @default(autoincrement())
   crafted_item_id                           BigInt
   crafting_station_id                       BigInt?
-  crafting_time                             Float?                 @default(1)
+  crafting_time                             Float?                 @default(0)
   yields                                    Float                  @default(1)
-  required_level                            BigInt?
+  required_level                            BigInt?                @default(0)
+  xp                                        Float?                 @default(0)
+  skill_quality_multiplier_min              Float?                 @default(0)
+  skill_quality_multiplier_max              Float?                 @default(0)
   Item_ItemRecipe_crafted_item_idToItem     Item                   @relation("ItemRecipe_crafted_item_idToItem", fields: [crafted_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Item_ItemRecipe_crafting_station_idToItem Item?                  @relation("ItemRecipe_crafting_station_idToItem", fields: [crafting_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   ItemRecipeItem                            ItemRecipeItem[]
   UserRecipeItemRecipe                      UserRecipeItemRecipe[]
-
-  @@unique([crafted_item_id, crafting_station_id], map: "ItemRec_crafted_item_id_crafting_station_id_key")
-  @@index([id], map: "idx_item_recipe_id")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -473,26 +457,6 @@ model MapRegion {
   Map         Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([map_id, start_x, start_y, start_z, end_x, end_y, end_z])
-}
-
-/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-view item_recipes_view {
-  id                    String? @db.Uuid
-  crafting_station_id   BigInt?
-  crafting_time         Float?
-  yields                Float?
-  crafted_item_id       BigInt?
-  crafted_item_name     String?
-  crafted_item_image    String?
-  crafted_item_category String?
-  crafted_item_type     String?
-  item_recipe_item_id   String? @db.Uuid
-  amount                Float?
-  item_id               BigInt?
-  item_name             String?
-  item_image            String?
-
-  @@ignore
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.

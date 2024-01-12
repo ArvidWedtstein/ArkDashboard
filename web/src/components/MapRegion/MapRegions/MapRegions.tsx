@@ -1,15 +1,10 @@
 import { useAuth } from "src/auth";
 import {
-  calculateCorners,
   checkboxInputTag,
   dynamicSort,
-  formatXYtoLatLon,
   groupBy,
-  mergeOverlappingSvgPaths,
-  timeTag,
   truncate,
 } from "src/lib/formatters";
-import Toast from "src/components/Util/Toast/Toast";
 
 import type { FindMapRegionsByMap, permission } from "types/graphql";
 import { useEffect, useMemo } from "react";
@@ -59,6 +54,55 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
     });
   }, [])
 
+  interface Point {
+    x: number;
+    y: number;
+  }
+  interface Rectangle {
+    topLeft: Point;
+    topRight: Point;
+    bottomLeft: Point;
+    bottomRight: Point;
+  }
+  /**
+   *
+   * @param start
+   * @param end
+   * @example <caption>Example usage of calculateCorners.</caption>
+   * // returns { topLeft: { x: 0, y: 0 }, topRight: { x: 10, y: 0 }, bottomLeft: { x: 0, y: 10 }, bottomRight: { x: 10, y: 10 } }
+   * calculateCorners({ x: 0, y: 0 }, { x: 10, y: 10 });
+   *
+   * @returns  {Rectangle} coordinates
+   */
+  const calculateCorners = (start: Point, end: Point): Rectangle => {
+    const topLeft: Point = {
+      x: Math.min(start.x, end.x),
+      y: Math.min(start.y, end.y),
+    };
+
+    const topRight: Point = {
+      x: Math.max(start.x, end.x),
+      y: Math.min(start.y, end.y),
+    };
+
+    const bottomLeft: Point = {
+      x: Math.min(start.x, end.x),
+      y: Math.max(start.y, end.y),
+    };
+
+    const bottomRight: Point = {
+      x: Math.max(start.x, end.x),
+      y: Math.max(start.y, end.y),
+    };
+
+    return {
+      topLeft,
+      topRight,
+      bottomLeft,
+      bottomRight,
+    };
+  };
+
   const isInside = (lat: number, lon: number) => {
     return groupedRegions.map((group) => {
       if (group.regions.some((mapRegion) => {
@@ -98,20 +142,6 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
       ctx.filter = "blur(4px)";
       ctx.fillStyle = "rgba(255,0,0,0.5)";
 
-      // const newpaths = mergeOverlappingSvgPaths(regionsInside[0].regions.flatMap((mapRegion) => {
-      //   const corners = calculateCorners({ x: mapRegion.start_x, y: mapRegion.start_y }, { x: mapRegion.end_x, y: mapRegion.end_y })
-
-      //   const pos1 = LatLon(corners.topLeft.x, corners.topLeft.y)
-      //   const pos2 = LatLon(corners.topRight.x, corners.topRight.y)
-      //   const pos3 = LatLon(corners.bottomLeft.x, corners.bottomLeft.y)
-      //   const pos4 = LatLon(corners.bottomRight.x, corners.bottomRight.y)
-
-      //   return { pathData: `M${posToMap(pos1.lon)} ${posToMap(pos1.lat)} L${posToMap(pos2.lon)} ${posToMap(pos2.lat)} L${posToMap(pos4.lon)} ${posToMap(pos4.lat)} L${posToMap(pos3.lon)} ${posToMap(pos3.lat)} L${posToMap(pos1.lon)} ${posToMap(pos1.lat)} Z` }
-      // }));
-
-      // ctx.strokeStyle = "rgba(255,255,255,1)";
-      // ctx.fill(new Path2D(newpaths.pathData.split("Z")[0]));
-      // ctx.stroke(new Path2D(newpaths.pathData.split("Z")[0]));
 
       ctx.lineJoin = "miter";
       ctx.lineWidth = 1

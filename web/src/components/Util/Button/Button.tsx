@@ -27,21 +27,24 @@ type IButtonGroupContext = {
   variant?: "text" | "contained" | "outlined" | "icon";
 };
 
-const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
-const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
+export const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
+export const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
 
-// TODO: fix button events handlers for link and button
-type ButtonProps = {
+export type ButtonProps = {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   color?: "primary" | "secondary" | "success" | "warning" | "error" | 'DEFAULT';
-  variant?: "text" | "contained" | "outlined" | "icon";
+  variant?: "text" | "contained" | "outlined" | "elevated" | "icon";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   fullWidth?: boolean;
   children?: ReactNode;
   disableRipple?: boolean;
   centerRipple?: boolean;
+  /**
+   * Ignores the buttongroupcontext and therefore doesnt overwrite border radius
+   */
+  ignoreButtonGroupPosition?: boolean;
   /**
    * Will not render if user does not have permission or user is not logged in and permission is defined
    */
@@ -71,6 +74,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       fullWidth = contextFullWidth || false,
       type = "button",
       permission,
+      ignoreButtonGroupPosition = false,
       ...other
     } = props;
 
@@ -92,6 +96,11 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         large: `text-base leading-7 py-2 px-[22px]`,
       },
       outlined: {
+        small: `text-xs leading-7 py-[3px] px-[9px]`,
+        medium: `text-sm leading-7 py-[5px] px-[15px]`,
+        large: `text-base leading-7 py-[7px] px-[21px]`,
+      },
+      elevated: {
         small: `text-xs leading-7 py-[3px] px-[9px]`,
         medium: `text-sm leading-7 py-[5px] px-[15px]`,
         large: `text-base leading-7 py-[7px] px-[21px]`,
@@ -137,6 +146,14 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
           "text-red-500 border border-red-500 border-opacity-50 hover:border-opacity-100 hover:bg-red-500 hover:bg-opacity-10",
         DEFAULT: "dark:text-white border text-black dark:border-white border-black dark:border-opacity-50 border-opacity-50 hover:border-opacity-100 hover:bg-black dark:hover:bg-white hover:bg-opacity-10 dark:hover:bg-opacity-10"
       },
+      elevated: {
+        primary: "bg-gradient-to-tr from-blue-500 to-blue-400 border-b-4 border-l-2 active:border-blue-500 active:shadow-none shadow-lg border-blue-600 text-white",
+        secondary: "bg-gradient-to-tr from-zinc-500 to-zinc-400 border-b-4 border-l-2 active:border-zinc-500 active:shadow-none shadow-lg border-zinc-600 text-white",
+        success: "bg-gradient-to-tr from-green-600 to-green-500 border-b-4 border-l-2 active:border-green-600 active:shadow-none shadow-lg border-green-700 text-white",
+        warning: "bg-gradient-to-tr from-orange-500 to-orange-400 border-b-4 border-l-2 active:border-orange-500 active:shadow-none shadow-lg border-orange-600 text-white",
+        error: "bg-gradient-to-tr from-red-600 to-red-500 border-b-4 border-l-2 active:border-red-600 active:shadow-none shadow-lg border-red-700 text-white",
+        DEFAULT: "text-white dark:text-black bg-gradient-to-tr dark:from-zinc-200 dark:to-zinc-100 from-zinc-900 to-zinc-800 border-b-4 border-l-2 dark:active:border-zinc-200 active:border-zinc-700 active:shadow-none shadow-lg border-zinc-900 dark:border-zinc-300"
+      },
       icon: {
         primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",
         secondary: "text-zinc-400 hover:bg-zinc-400 hover:bg-opacity-10",
@@ -162,12 +179,13 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       contextClassName,
       base,
       sizes[variant][size],
-      buttonGroupButtonContextPositionClassName,
       colors[variant][color],
+      props.className,
       {
         [disabledClasses[variant]]: disabled,
+        [buttonGroupButtonContextPositionClassName]: !ignoreButtonGroupPosition,
+        "w-full": fullWidth
       },
-      props.className
     );
 
     const renderIcon = (iconProp: ReactNode, side: 'start' | 'end' = 'start') => {
@@ -322,7 +340,7 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>((props, 
 
   return (
     <div
-      className={clsx("inline-flex rounded", { "flex-col": orientation === "vertical", "w-full": fullWidth })}
+      className={clsx("inline-flex rounded", { "flex-col": orientation === "vertical", "w-full": fullWidth }, className)}
       role="group"
       ref={ref}
     >
@@ -347,84 +365,3 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>((props, 
     </div>
   );
 });
-// {
-//   (
-//     <div className="flex flex-col space-y-2">
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="secondary">button</Button>
-//       <Button variant="contained" color="secondary">button</Button>
-//       <Button variant="outlined" color="secondary">button</Button>
-//       <Button variant="icon" color="secondary" size="medium"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="success">button</Button>
-//       <Button variant="contained" color="success">button</Button>
-//       <Button variant="outlined" color="success">button</Button>
-//       <Button variant="icon" color="success" size="large"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="warning">button</Button>
-//       <Button variant="contained" color="warning">button</Button>
-//       <Button variant="outlined" color="warning">button</Button>
-//       <Button variant="icon" color="warning"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <Button variant="text" color="error">button</Button>
-//       <Button variant="contained" color="error">button</Button>
-//       <Button variant="outlined" color="error">button</Button>
-//       <Button variant="icon" color="error"><svg
-//         xmlns="http://www.w3.org/2000/svg"
-//         viewBox="0 0 448 512"
-//         focusable="false"
-//       >
-//         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-//       </svg></Button>
-//     </div>
-//   </div>
-//   <div className="flex flex-col space-y-2 mt-3">
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-green">BUTTON</button>
-//       <button className="rw-button rw-button-green-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-green-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-blue">BUTTON</button>
-//       <button className="rw-button rw-button-blue-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-blue-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-gray">BUTTON</button>
-//       <button className="rw-button rw-button-gray-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-gray-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-yellow">BUTTON</button>
-//       <button className="rw-button rw-button-yellow-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-yellow-outline">BUTTON</button>
-//     </div>
-//     <div className="flex flex-row space-x-2">
-//       <button className="rw-button rw-button-red">BUTTON</button>
-//       <button className="rw-button rw-button-red-gradient">BUTTON</button>
-//       <button className="rw-button rw-button-red-outline">BUTTON</button>
-//     </div>
-//   </div>
-//   )
-// }

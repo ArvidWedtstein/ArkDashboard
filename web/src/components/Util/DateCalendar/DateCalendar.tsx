@@ -3,11 +3,11 @@ import { MouseEvent, useEffect, useState } from "react";
 import {
   addToDate,
   adjustCalendarDate,
-  getDaysBetweenDates,
   getISOWeek,
   getDateUnit,
   toLocalPeriod,
   toLocaleISODate,
+  getDateDiff,
 } from "src/lib/formatters";
 import Button from "../Button/Button";
 
@@ -30,7 +30,7 @@ const DateCalendar = ({
   views = ["day", "year"],
   disabled = false,
   readOnly = false,
-  defaultValue = new Date(),
+  defaultValue,
   firstDayOfWeek = 1,
   onChange,
 }: DateCalendarProps) => {
@@ -93,7 +93,6 @@ const DateCalendar = ({
         navigateMonth(1);
       }
     }
-
   };
 
   const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek);
@@ -103,7 +102,7 @@ const DateCalendar = ({
       length:
         !!fixedWeekNumber && fixedWeekNumber > 0
           ? fixedWeekNumber
-          : getDaysBetweenDates(firstDay, lastDay).length / 7 + 1,
+          : getDateDiff(firstDay, lastDay).dates.length / 7 + 1,
     },
     (_, weekIndex) => {
       return Array.from({ length: 7 }, (_day, index) => {
@@ -446,7 +445,7 @@ const DateCalendar = ({
                             >
                               {day.getDate()}
                             </button>
-                            <span className="rw-badge rw-badge-small absolute top-[14%] right-[14%] translate-x-1/2 -translate-y-1/2 transform"></span>
+                            {/* <Badge content="s" /> */}
                           </div>
                         );
                       })}

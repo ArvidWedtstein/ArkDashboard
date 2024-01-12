@@ -13,12 +13,6 @@ export const tribes: QueryResolvers["tribes"] = () => {
   });
 };
 
-export const tribe: QueryResolvers["tribe"] = ({ id }) => {
-  return db.tribe.findUnique({
-    where: { id },
-  });
-};
-
 export const createTribe: MutationResolvers["createTribe"] = ({ input }) => {
   validate(input.name, "name", {
     presence: true,

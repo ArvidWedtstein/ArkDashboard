@@ -40,14 +40,18 @@ describe('itemRecipeItems', () => {
     const result = await createItemRecipeItem({
       input: {
         item_recipe_id: scenario.itemRecipeItem.two.item_recipe_id,
-        item_id: scenario.itemRecipeItem.two.item_id,
+        resource_item_id: scenario.itemRecipeItem.two.resource_item_id,
+        amount: 3072002.6313558836,
       },
     })
 
     expect(result.item_recipe_id).toEqual(
       scenario.itemRecipeItem.two.item_recipe_id
     )
-    expect(result.item_id).toEqual(scenario.itemRecipeItem.two.item_id)
+    expect(result.resource_item_id).toEqual(
+      scenario.itemRecipeItem.two.resource_item_id
+    )
+    expect(result.amount).toEqual(3072002.6313558836)
   })
 
   scenario('updates a itemRecipeItem', async (scenario: StandardScenario) => {
@@ -56,10 +60,10 @@ describe('itemRecipeItems', () => {
     })) as ItemRecipeItem
     const result = await updateItemRecipeItem({
       id: original.id,
-      input: { item_id: scenario.itemRecipeItem.two.item_recipe_id },
+      input: { amount: 590286.1599876164 },
     })
 
-    expect(result.item_id).toEqual(scenario.itemRecipeItem.two.item_recipe_id)
+    expect(result.amount).toEqual(590286.1599876164)
   })
 
   scenario('deletes a itemRecipeItem', async (scenario: StandardScenario) => {

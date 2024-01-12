@@ -18,9 +18,8 @@ const NewUserRecipe = () => {
   const [createUserRecipe, { loading, error }] = useMutation(
     CREATE_USER_RECIPE_MUTATION,
     {
-      onCompleted: () => {
-        toast.success('UserRecipe created')
-        navigate(routes.userRecipes())
+      onCompleted: (data) => {
+        navigate(routes.editUserRecipe({ id: data.createUserRecipe.id }))
       },
       onError: (error) => {
         toast.error(error.message)
