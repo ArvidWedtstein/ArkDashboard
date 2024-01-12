@@ -30,7 +30,7 @@ type IButtonGroupContext = {
 export const ButtonGroupContext: Context<IButtonGroupContext> = createContext<IButtonGroupContext>({});
 export const ButtonGroupButtonContext: Context<string | undefined> = createContext<string | undefined>(undefined);
 
-type ButtonProps = {
+export type ButtonProps = {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   color?: "primary" | "secondary" | "success" | "warning" | "error" | 'DEFAULT';

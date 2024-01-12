@@ -91,8 +91,8 @@ const DinosList = ({
                   id={`type-${dinotype}`}
                   className="rw-input"
                   value={dinotype}
-                  errorClassName="rw-input rw-input-error"
                   defaultChecked={type && type.includes(dinotype)}
+                  errorClassName="rw-input rw-input-error"
                 />
                 <Label
                   name="type"

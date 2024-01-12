@@ -6,8 +6,7 @@ import {
   parseSearch,
 } from "@redwoodjs/router";
 import clsx from "clsx";
-import { useCallback, useMemo, useState } from "react";
-import { useAuth } from "src/auth";
+import { Fragment, useMemo, useState } from "react";
 import Badge from "src/components/Util/Badge/Badge";
 import Button from "src/components/Util/Button/Button";
 import {
@@ -19,12 +18,11 @@ import {
 } from "src/components/Util/Card/Card";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Input } from "src/components/Util/Input/Input";
-import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
-import { dynamicSort, removeDuplicates } from "src/lib/formatters";
+import { objectToSearchParams, removeDuplicates } from "src/lib/formatters";
 
-import type { FindLootcrates, permission } from "types/graphql";
+import type { FindLootcrates } from "types/graphql";
 
 type FormFindLootcrates = NonNullable<{
   map: string;
@@ -40,28 +38,30 @@ const LootcratesList = ({
 }: FindLootcrates & {
   loading?: boolean;
 }) => {
-  const { currentUser } = useAuth();
-  let { map, search, color, type } = useParams();
+  const { map, search, color, type } = useParams();
 
   const [view, setView] = useState<"grid" | "list">("grid");
 
-  const onSubmit = useCallback((data: FormFindLootcrates) => {
-    navigate(
-      routes.lootcrates({
-        ...parseSearch(
-          Object.fromEntries(
-            Object.entries(data).filter(([_, v]) => v != "" && v != undefined)
-          ) as Record<string, string>
-        ),
-      })
-    );
-  }, []);
+  const onSubmit = (data: FormFindLootcrates) => {
+    console.log(data, parseSearch(objectToSearchParams(data)))
+
+    navigate(routes.lootcrates({ ...parseSearch(objectToSearchParams(data)) }));
+    // navigate(
+    //   routes.lootcrates({
+    //     ...parseSearch(
+    //       Object.fromEntries(
+    //         Object.entries(data).filter(([_, v]) => v != "" && v != undefined)
+    //       ) as Record<string, string>
+    //     ),
+    //   })
+    // );
+  };
 
   const { openModal } = useModal();
 
   const Filters = useMemo(
     () => (
-      <>
+      <Fragment>
         <h3 className="sr-only">Categories</h3>
         <Disclosure title="Type">
           <div className="flex flex-col space-y-5">
@@ -95,7 +95,7 @@ const LootcratesList = ({
         <Disclosure title="Map">
           <div className="flex flex-col space-y-5">
             {maps?.map(({ id, name }) => (
-              <div className="flex items-center space-x-2" key={id}>
+              <div className="flex items-center space-x-2" key={`map-check-${id}`}>
                 <CheckboxField
                   id={`map-${id}`}
                   name="map"
@@ -150,12 +150,12 @@ const LootcratesList = ({
             ))}
           </div>
         </Disclosure>
-      </>
+      </Fragment>
     ),
     [type, map, color, lootcratesByMap]
   );
   return (
-    <Form<FormFindLootcrates> className="rw-segment" onSubmit={onSubmit}>
+    <Form<FormFindLootcrates> className="rw-segment" config={{ shouldUnregister: true }} onSubmit={onSubmit}>
       <Modal content={Filters} />
 
       <div className="mt-1 flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
@@ -253,7 +253,7 @@ const LootcratesList = ({
         {/* Lootcrate grid */}
         <div
           className={clsx(
-            "grid w-full gap-6 text-zinc-900 transition-all ease-in-out dark:text-white lg:col-span-3",
+            "grid w-full gap-6 text-zinc-900 transition-all h-fit ease-in-out dark:text-white lg:col-span-3",
             {
               "grid-cols-1": view === "list",
               "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3": view === "grid",
@@ -261,7 +261,7 @@ const LootcratesList = ({
           )}
         >
           {lootcratesByMap.length == 0 && <p>No lootcrates found</p>}
-          {lootcratesByMap.map(({ id, name, required_level, image, color }) => (
+          {lootcratesByMap.map(({ id, name, required_level, image }) => (
             <Card
               key={`lootcrate-${id}`}
               className="hover:border-pea-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
@@ -297,16 +297,16 @@ const LootcratesList = ({
                     />
                   )}
                 </CardContent>
-                <CardActions>
-                  <Button variant="outlined" color="success" size="small" to={routes.lootcrate({ id })} endIcon={
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                      <path d="M400 288C391.2 288 384 295.2 384 304V448c0 17.67-14.33 32-32 32H64c-17.67 0-32-14.33-32-32V160c0-17.67 14.33-32 32-32h112C184.8 128 192 120.8 192 112S184.8 96 176 96L64 96c-35.35 0-64 28.65-64 64V448c0 35.35 28.65 64 64 64h288c35.35 0 64-28.65 64-64V304C416 295.2 408.8 288 400 288zM496 0h-160C327.2 0 320 7.156 320 16S327.2 32 336 32h121.4L180.7 308.7c-6.25 6.25-6.25 16.38 0 22.62C183.8 334.4 187.9 336 192 336s8.188-1.562 11.31-4.688L480 54.63V176C480 184.8 487.2 192 496 192S512 184.8 512 176v-160C512 7.156 504.8 0 496 0z" />
-                    </svg>
-                  }>
-                    View Lootcrate
-                  </Button>
-                </CardActions>
               </CardActionArea>
+              <CardActions>
+                <Button variant="outlined" color="success" size="small" to={routes.lootcrate({ id })} endIcon={
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M400 288C391.2 288 384 295.2 384 304V448c0 17.67-14.33 32-32 32H64c-17.67 0-32-14.33-32-32V160c0-17.67 14.33-32 32-32h112C184.8 128 192 120.8 192 112S184.8 96 176 96L64 96c-35.35 0-64 28.65-64 64V448c0 35.35 28.65 64 64 64h288c35.35 0 64-28.65 64-64V304C416 295.2 408.8 288 400 288zM496 0h-160C327.2 0 320 7.156 320 16S327.2 32 336 32h121.4L180.7 308.7c-6.25 6.25-6.25 16.38 0 22.62C183.8 334.4 187.9 336 192 336s8.188-1.562 11.31-4.688L480 54.63V176C480 184.8 487.2 192 496 192S512 184.8 512 176v-160C512 7.156 504.8 0 496 0z" />
+                  </svg>
+                }>
+                  View Lootcrate
+                </Button>
+              </CardActions>
             </Card>
           ))}
         </div>

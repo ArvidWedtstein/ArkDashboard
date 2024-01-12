@@ -201,8 +201,9 @@ const Lootcrate = ({ lootcrate }: Props) => {
               </ButtonGroup>
             )}
           />
-          <CardContent className=" grid w-full grid-flow-col">
+          <CardContent className="grid w-full grid-flow-col">
             <CardMedia
+              className="max-h-80"
               image={lootcrate.image && lootcrate.image.length > 0
                 ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${lootcrate.image}`
                 : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"}

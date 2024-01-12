@@ -67,7 +67,7 @@ type Props = {
   updating?: boolean
 }
 const TribesList = ({ tribes, queryResult }: Props) => {
-  const { currentUser } = useAuth();
+  const { currentUser, client } = useAuth();
 
   const [anchorRef, setAnchorRef] = useState<{
     element: HTMLButtonElement | null;

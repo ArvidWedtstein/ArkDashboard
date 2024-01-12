@@ -510,6 +510,40 @@ export const pluralize = (
 
 
 /**
+ * Converts object to search params, and removed duplicates
+ * @param obj
+ * @returns
+ */
+export const objectToSearchParams = (obj): URLSearchParams => {
+  const params = new URLSearchParams();
+
+  // Iterate through the object properties
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+
+      if (Array.isArray(value)) {
+        const uniqueValues = Array.from(new Set(value));
+
+        if (uniqueValues.length > 1) {
+          // If more than one unique value, concatenate with commas
+          params.append(key, uniqueValues.filter(d => d !== undefined && d !== "").join(','));
+        } else {
+          // Only one unique value, add it directly
+          if (uniqueValues[0] !== undefined && uniqueValues[0] !== "") params.append(key, uniqueValues[0].toString());
+        }
+      } else {
+        // Non-array values
+
+        if (value !== undefined && value !== "" && value) params.append(key, value?.toString());
+      }
+    }
+  }
+
+  return params;
+};
+
+/**
  * Generates a pdf from an array of your choice
  */
 export const generatePDF = (crafts) => {

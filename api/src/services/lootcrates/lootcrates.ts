@@ -17,7 +17,6 @@ export const lootcratesByMap: QueryResolvers["lootcratesByMap"] = async ({
   type?: string;
   color?: string;
 }) => {
-  // !!type ? { type: { hasSome: type.split(",") } } : {},
   return db.lootcrate.findMany({
     orderBy: { name: "asc" },
     where:
@@ -78,6 +77,7 @@ export const lootcratesByMap: QueryResolvers["lootcratesByMap"] = async ({
                     },
                   }
                 : {},
+              !!type ? { type: { in: type.split(",") } } : {},
             ],
           }
         : {},
