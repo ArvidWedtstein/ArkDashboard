@@ -1,12 +1,11 @@
 import { toast } from "@redwoodjs/web/toast";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import Table from "src/components/Util/Table/Table";
 import { ArrayElement, getISOWeek, pluralize, timeTag } from "src/lib/formatters";
 import { CreateTribeMutationVariables, type CreateTribeInput, type Exact, type FindTribes, type Tribe, type permission, CreateTribeMutation, UpdateTribeMutation, DeleteTribeMutation, UpdateTribeMutationVariables } from "types/graphql";
 import Popper from "src/components/Util/Popper/Popper";
 import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
-import { Card, CardActionArea } from "src/components/Util/Card/Card";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import List, { ListItem } from "src/components/Util/List/List";
@@ -33,7 +32,7 @@ const CREATE_TRIBE_MUTATION = gql`
 `;
 
 const UPDATE_TRIBE_MUTATION = gql`
-  mutation UpdateTribeMutation($id: String!, $input: UpdateTribeInput!) {
+  mutation UpdateTribeMutation($id: BigInt!, $input: UpdateTribeInput!) {
     updateTribe(id: $id, input: $input) {
       id
       name
@@ -51,7 +50,7 @@ const UPDATE_TRIBE_MUTATION = gql`
 
 
 const DELETE_TRIBE_MUTATION = gql`
-  mutation DeleteTribeMutation($id: String!) {
+  mutation DeleteTribeMutation($id: BigInt!) {
     deleteTribe(id: $id) {
       id
     }
@@ -67,7 +66,7 @@ type Props = {
   updating?: boolean
 }
 const TribesList = ({ tribes, queryResult }: Props) => {
-  const { currentUser, client } = useAuth();
+  const { currentUser } = useAuth();
 
   const [anchorRef, setAnchorRef] = useState<{
     element: HTMLButtonElement | null;

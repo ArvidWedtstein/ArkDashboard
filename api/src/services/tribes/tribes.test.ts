@@ -24,20 +24,20 @@ describe('tribes', () => {
 
   scenario('creates a tribe', async () => {
     const result = await createTribe({
-      input: { name: 'String' },
+      input: { name: 'String2449814' },
     })
 
-    expect(result.name).toEqual('String')
+    expect(result.name).toEqual('String2449814')
   })
 
   scenario('updates a tribe', async (scenario: StandardScenario) => {
     const original = (await tribe({ id: scenario.tribe.one.id })) as Tribe
     const result = await updateTribe({
       id: original.id,
-      input: { name: 'String2' },
+      input: { name: 'String42385902' },
     })
 
-    expect(result.name).toEqual('String2')
+    expect(result.name).toEqual('String42385902')
   })
 
   scenario('deletes a tribe', async (scenario: StandardScenario) => {
