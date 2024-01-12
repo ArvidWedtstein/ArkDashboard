@@ -13,6 +13,7 @@ import TribeForm from "../TribeForm/TribeForm";
 import { useMutation } from "@redwoodjs/web";
 import Toast from "src/components/Util/Toast/Toast";
 import { QUERY } from "../TribesCell";
+import DataGrid, { GridColumnDef } from "src/components/Util/DataGrid/DataGrid";
 
 const CREATE_TRIBE_MUTATION = gql`
   mutation CreateTribeMutation($input: CreateTribeInput!) {
@@ -234,7 +235,6 @@ const TribesList = ({ tribes, queryResult }: Props) => {
     })
   };
 
-
   return (
     <div className="relative">
       <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, edit: false, tribe: null })}>
@@ -324,6 +324,23 @@ const TribesList = ({ tribes, queryResult }: Props) => {
           {pluralize(filterDatesByCurrentWeek(tribes).length, "Tribe")} created this week
         </Button>
       </div>
+
+      {/* <DataGrid
+        columns={[
+          {
+            field: 'name',
+            width: 300,
+            align: 'right'
+          },
+          {
+            field: 'created_at'
+          },
+          {
+            field: 'created_by'
+          }
+        ] as GridColumnDef[]}
+        rows={tribes}
+      /> */}
 
       <Table
         checkSelect

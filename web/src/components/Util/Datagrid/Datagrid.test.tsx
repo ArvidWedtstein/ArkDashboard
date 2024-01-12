@@ -1,6 +1,6 @@
 import { render } from '@redwoodjs/testing/web'
 
-import Datagrid from './Datagrid'
+import Datagrid from './DataGrid'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components

@@ -12,7 +12,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Datagrid from './Datagrid'
+import Datagrid from './DataGrid'
 
 const meta: Meta<typeof Datagrid> = {
   component: Datagrid,

@@ -1,6 +1,8 @@
 import clsx from "clsx"
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Button from "../Button/Button";
+import { combineBySummingKeys } from "src/lib/formatters";
+import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 
 interface GridValidRowModel {
   [key: string]: any
@@ -179,20 +181,104 @@ interface DataGridProps<R extends GridValidRowModel = any> {
   rows: GridRowsProp<R>;
   select?: boolean;
 }
-const Datagrid = (props: DataGridProps) => {
+const DataGrid = (props: DataGridProps) => {
   const {
     columns,
     rows,
     select = false
   } = props;
 
+  // https://github.com/mui/mui-x/blob/next/packages/grid/x-data-grid/src/DataGrid/DataGrid.tsx
+
+
+  const GridHeaderCell = ({ columnProps, key, onMouseDown }: {
+    columnProps: GridEnrichedColDef,
+    key?: string,
+    onMouseDown: (event) => void;
+  }) => {
+    const { field, headerName, description, width = 100, sortable, align = 'left', hide, sortingOrder, renderCell, resizable = true, type, valueFormatter, valueGetter } = columnProps
+
+
+    const classes = {
+      DataGridColumnHeaders: clsx("flex relative items-center box-border border-b border-zinc-500 rounded-t"),
+      DataGridColumnHeadersInner: clsx("flex items-start flex-col"),
+      DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-pea-500"),
+      DataGridColumnCheckbox: clsx("!p-0 justify-center"),
+      DataGridColumnHeaderTitle: clsx("overflow-hidden whitespace-nowrap text-ellipsis"),
+      DataGridColumnHeaderTitleContainer: clsx("flex items-center min-w-0 relative overflow-hidden whitespace-nowrap flex-1", {
+        "flex-row-reverse": align === "right"
+      }),
+      DataGridColumnHeaderTitleContainerContent: clsx("flex items-center overflow-hidden"),
+      DataGridCell: clsx("overflow-hidden justify-start flex items-center border-b border-zinc-500 px-2.5 box-border"),
+      DataGridCellContent: clsx("overflow-hidden text-ellipsis whitespace-nowrap"),
+    }
+    return (
+      <div
+        key={key}
+        className={clsx(classes.DataGridColumnHeader, "group/column", {
+          "justify-start": align === 'left',
+          "justify-center": align === 'center',
+          "justify-end": align === 'right',
+        })}
+        style={{ width: width, height: 52 }}
+      >
+        <div
+          className={clsx("flex w-full h-full", {
+            "flex-row-reverse": align === 'right',
+            "cursor-pointer": sortable
+          })}
+          role="presentation"
+          draggable={resizable}
+        >
+          <div className={classes.DataGridColumnHeaderTitleContainer} role="presentation">
+            <div className={classes.DataGridColumnHeaderTitleContainerContent} role="presentation">
+              <div className={classes.DataGridColumnHeaderTitle}>
+                {headerName || field}
+              </div>
+              {/* TODO: aggregation <div className=" text-xs leading-3 absolute bottom-1 font-medium uppercase text-blue-400">
+                {"Sum"}
+              </div> */}
+            </div>
+            <div className={"flex w-0 invisible group-hover/column:visible group-hover/column:w-auto"} aria-label="Sort Icon">
+              <Button variant="icon" color="DEFAULT" size="small">
+                <svg className="" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowUpwardIcon">
+                  <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" />
+                  {/* <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" /> */}
+                </svg>
+              </Button>
+            </div>
+          </div>
+          <div aria-label="Icon Menu" className={clsx("w-0 invisible flex items-center group-hover/column:visible group-hover/column:w-auto", {
+            " -mr-2.5": align === "left",
+            "mr-auto -ml-2.5": align === "right",
+          })}>
+            <Button variant="icon" color="DEFAULT" size="small">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
+                <path d="M64 128c17.67 0 32-14.33 32-32s-14.33-32-32-32C46.33 64 32 78.33 32 96S46.33 128 64 128zM64 224C46.33 224 32 238.3 32 256s14.33 32 32 32c17.67 0 32-14.33 32-32S81.67 224 64 224zM64 384c-17.67 0-32 14.33-32 32s14.33 32 32 32c17.67 0 32-14.33 32-32S81.67 384 64 384z" />
+              </svg>
+            </Button>
+          </div>
+        </div>
+        <div aria-label="Seperator" onMouseDown={onMouseDown} className="-right-3 min-h-[56px] group-hover/headers:w-auto group-hover/headers:visible cursor-col-resize touch-none absolute invisible z-50 flex flex-col justify-center text-zinc-500">
+          <svg className="text-current w-5 h-5 inline-block fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SeparatorIcon">
+            <path d="M11 19V5h2v14z" />
+          </svg>
+        </div>
+      </div>
+    )
+  }
+
+  const rowGroupRef = useRef<HTMLDivElement>();
   const [resizingColumn, setResizingColumn] = useState(null);
   const [pageX, setPageX] = useState(null);
   const [columnState, setColumnState] = useState(columns);
 
+  const [focusedCells, setFocusedCells] = useState<{ col: GridEnrichedColDef<any, any, any>, row: any }[]>([]);
+
   const handleMouseDown = (e: React.MouseEvent, field) => {
+    e.preventDefault();
     setResizingColumn(field);
-    setPageX(e.pageX);
+    setPageX(e.clientX);
   }
 
   const handleMouseUp = () => {
@@ -201,15 +287,14 @@ const Datagrid = (props: DataGridProps) => {
   }
 
   const handleMouseMove = (event: React.MouseEvent, field: string) => {
-
     if (resizingColumn) {
 
-      const newWidth = event.pageX - pageX;
+      const newWidth = Math.max(0, (event.clientX - pageX));
       setColumnState((prevColumns) => {
         return prevColumns.map((col) => {
           return {
             ...col,
-            width: col.field === field ? newWidth : col.width
+            width: col.field === field ? newWidth : col.width,
           }
         })
       })
@@ -299,81 +384,110 @@ const Datagrid = (props: DataGridProps) => {
   }
   return (
     <div className={classes.DataGridRoot}>
-      <div className={classes.DataGridMain}>
-        <div className={clsx(classes.DataGridColumnHeaders, "group/headers")} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} onMouseMove={(e) => handleMouseMove(e, resizingColumn)} role="presentation">
-          <div className={classes.DataGridColumnHeadersInner} style={{ transform: `translate3d(0px, 0px, 0px)` }}>
-            <div role="row" className={"flex"} aria-rowindex={1}>
+      <ClickAwayListener onClickAway={() => {
+        setFocusedCells([])
+      }}>
 
-              {select && (
-                <div className={clsx(classes.DataGridColumnHeader, classes.DataGridColumnCheckbox)} role="columnheader" style={{ minWidth: 48, maxWidth: 50, width: 48, height: 56 }}>
-                  <div className="flex w-full h-full" role="presentation" draggable={true}>
-                    <div className={clsx(classes.DataGridColumnHeaderTitleContainer, classes.DataGridCellCenter)} role="presentation">
-                      <div className={clsx(classes.DataGridColumnHeaderTitleContainerContent, classes.DataGridCellCenter)} role="presentation">
-                        <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
-                          <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox"></input>
-                          <svg className="w-5 h-5 fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
-                            <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                          </svg>
-                        </span>
+        <div className={classes.DataGridMain}>
+          <div className={clsx(classes.DataGridColumnHeaders, "group/headers")} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} onMouseMove={(e) => handleMouseMove(e, resizingColumn)} role="presentation">
+            <div className={classes.DataGridColumnHeadersInner} style={{ transform: `translate3d(0px, 0px, 0px)` }}>
+              <div role="row" className={"flex"} aria-rowindex={1}>
+
+                {select && (
+                  <div className={clsx(classes.DataGridColumnHeader, classes.DataGridColumnCheckbox)} role="columnheader" style={{ minWidth: 48, maxWidth: 50, width: 48, height: 56 }}>
+                    <div className="flex w-full h-full" role="presentation" draggable={true}>
+                      <div className={clsx(classes.DataGridColumnHeaderTitleContainer, classes.DataGridCellCenter)} role="presentation">
+                        <div className={clsx(classes.DataGridColumnHeaderTitleContainerContent, classes.DataGridCellCenter)} role="presentation">
+                          <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
+                            <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox" />
+                            <svg className="w-5 h-5 fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
+                              <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                            </svg>
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <div onMouseDown={(e) => handleMouseDown(e, 'select')} className="-right-3 min-h-[56px] group-hover/headers:visible cursor-col-resize touch-none absolute invisible z-50 flex flex-col justify-center text-zinc-500" aria-label="Seperator">
+                      <svg className="text-current w-5 h-5 inline-block fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SeparatorIcon">
+                        <path d="M11 19V5h2v14z" />
+                      </svg>
+                    </div>
                   </div>
-                  <div onMouseDown={(e) => handleMouseDown(e, 'select')} className="-right-3 min-h-[56px] group-hover/headers:visible cursor-col-resize touch-none absolute invisible z-50 flex flex-col justify-center text-zinc-500" aria-label="Seperator">
-                    <svg className="text-current w-5 h-5 inline-block fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SeparatorIcon">
-                      <path d="M11 19V5h2v14z" />
-                    </svg>
-                  </div>
-                </div>
-              )}
+                )}
 
-              {columnState.map((col, index) => {
-                return (
-                  <GridColumn columnProps={col} key={index.toString()} onMouseDown={(e) => handleMouseDown(e, col.field)} />
-                )
-              })}
-
+                {columnState.filter(c => !c.hide).map((column, index) => {
+                  return (
+                    <GridHeaderCell
+                      key={index.toString()}
+                      columnProps={column}
+                      onMouseDown={(e) => handleMouseDown(e, column.field)}
+                    />
+                  )
+                })}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="overflow-x-hidden overflow-auto relative z-0" role="presentation">
-          <div className="w-auto h-60 min-h-full" role="presentation">
-            <div className="absolute flex flex-col" role="rowgroup" style={{ transform: 'translate3d(0px, 0px, 0px)' }}>
-              {rows.map((row, index) => {
-                return (
-                  <div key={`row-${index}`} className="flex w-fit break-inside-avoid max-h-12" aria-selected={false} role="row" style={{ minHeight: 52, maxHeight: 52 }}>
-                    {select && (
-                      <div className={clsx(classes.DataGridCell, classes.DataGridColumnCheckbox)} style={{ minWidth: 48, maxWidth: 52, minHeight: 52, maxHeight: 52 }}>
-                        <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
-                          <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox"></input>
-                          <svg className="w-5 h-5 fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CheckBoxIcon"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                          </svg>
-                        </span>
-                      </div>
-                    )}
-                    {columnState.map((col, colIndex) => {
-                      return (
-                        <div
-                          key={`row-${index}-col-${colIndex}`}
-                          className={clsx(classes.DataGridCell, {
-                            "justify-start": col.align === 'left',
-                            "justify-center": col.align === 'center',
-                            "justify-end": col.align === 'right',
-                          })}
-                          style={{ width: col.width || 100 }}
-                        >
-                          <div className={classes.DataGridCellContent}>
-                            {calculateField(row, col)}
-                          </div>
+          <div className="overflow-x-hidden overflow-auto relative z-0" role="presentation">
+            <div className="w-auto h-60 min-h-[auto]" role="presentation" ref={rowGroupRef}>
+              <div className="absolute flex flex-col" role="rowgroup" style={{ transform: 'translate3d(0px, 0px, 0px)' }}>
+                {rows.map((row, index) => {
+                  return (
+                    <div key={`row-${index}`} className="flex w-fit break-inside-avoid max-h-12" aria-selected={false} role="row" style={{ minHeight: 52, maxHeight: 52 }}>
+                      {select && (
+                        <div className={clsx(classes.DataGridCell, classes.DataGridColumnCheckbox)} style={{ minWidth: 48, maxWidth: 52, minHeight: 52, maxHeight: 52 }}>
+                          <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
+                            <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox"></input>
+                            <svg className="w-5 h-5 fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CheckBoxIcon"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                            </svg>
+                          </span>
                         </div>
-                      )
-                    })}
-                    {/* <div className={clsx(classes.DataGridCell, "flex-grow flex-1")} style={{}} /> */}
-                  </div>
-                )
-              })}
+                      )}
+                      {columnState.map((col, colIndex) => {
+                        return (
+                          <div
+                            key={`row-${index}-col-${colIndex}`}
+                            className={clsx(classes.DataGridCell, {
+                              "justify-start": col.align === 'left',
+                              "justify-center": col.align === 'center',
+                              "justify-end": col.align === 'right',
+                              "outline outline-1 outline-pea-300 -outline-offset-1": focusedCells.some((c) => c.col === col && c.row === row)
+                            })}
+                            role="gridcell"
+                            style={{ width: col.width || 100 }}
+                            onClick={() => {
+                              // TODO: cellfocus management
 
-              {/* <div className="flex w-fit break-inside-avoid max-h-12" aria-selected={false} role="row" style={{ minHeight: 52, maxHeight: 52 }}>
+                              console.log('FOCUSCELL')
+                              setFocusedCells((prev) => {
+                                // if (focusedCells.some((c) => c.col === col && c.row === row)) {
+                                //   return prev.filter((c) => c.col !== col && c.row !== row);
+                                // }
+                                return [{
+                                  row: row,
+                                  col: col
+                                }]
+                              });
+                            }}
+                          >
+                            <div className={classes.DataGridCellContent}>
+                              {calculateField(row, col)}
+                            </div>
+                          </div>
+                        )
+                      })}
+                      {columnState.reduce((a, b) => {
+                        return a + (b.width || 100)
+                      }, 0) < (rowGroupRef?.current?.clientWidth || 1000) && (<div className={clsx(classes.DataGridCell, "flex-grow flex-1")} style={{
+                        width: (rowGroupRef?.current?.clientWidth || 1000) - columnState.reduce((a, b) => {
+                          return a + (b.width || 100)
+                        }, 0)
+                      }} />)}
+                    </div>
+                  )
+                })}
+
+                {/* <div className="flex w-fit break-inside-avoid max-h-12" aria-selected={false} role="row" style={{ minHeight: 52, maxHeight: 52 }}>
                 <div className={clsx(classes.DataGridCell, classes.DataGridColumnCheckbox)} style={{ minWidth: 48, maxWidth: 52, minHeight: 48, maxHeight: 52 }}>
                   <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
                     <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox"></input>
@@ -384,69 +498,17 @@ const Datagrid = (props: DataGridProps) => {
 
                 <div className={classes.DataGridCell} style={{ width: 103 }} />
               </div> */}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+
+      </ClickAwayListener>
     </div>
   )
 }
 
 
-const GridColumn = ({ columnProps, key, onMouseDown }: {
-  columnProps: GridEnrichedColDef,
-  key: string,
-  onMouseDown: (event) => void;
-}) => {
-  const { field, headerName, description, width = 100, sortable, align = 'left' } = columnProps
 
-  const classes = {
-    DataGridColumnHeaders: clsx("flex relative items-center box-border border-b border-zinc-500 rounded-t"),
-    DataGridColumnHeadersInner: clsx("flex items-start flex-col"),
-    DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-pea-500"),
-    DataGridColumnCheckbox: clsx("!p-0 justify-center"),
-    DataGridColumnHeaderTitle: clsx("overflow-hidden whitespace-nowrap text-ellipsis"),
-    DataGridColumnHeaderTitleContainer: clsx("flex items-center min-w-0 relative overflow-hidden whitespace-nowrap flex-1"),
-    DataGridColumnHeaderTitleContainerContent: clsx("flex items-center overflow-hidden"),
-    DataGridCell: clsx("overflow-hidden justify-start flex items-center border-b border-zinc-500 px-2.5 box-border"),
-    DataGridCellContent: clsx("overflow-hidden text-ellipsis whitespace-nowrap"),
-  }
-  return (
-    <div
-      key={key}
-      className={clsx(classes.DataGridColumnHeader, "group/column", {
-        "justify-start": align === 'left',
-        "justify-center": align === 'center',
-        "justify-end": align === 'right',
-      })}
-      style={{ width: width, height: 52 }}
-    >
-      <div className="flex w-full h-full" role="presentation" draggable="false">
-        <div className={classes.DataGridColumnHeaderTitleContainer} role="presentation">
-          <div className={classes.DataGridColumnHeaderTitleContainerContent} role="presentation">
-            <div className={classes.DataGridColumnHeaderTitle}>
-              {headerName || field}
-            </div>
-          </div>
-          <div className={clsx("flex w-0 invisible group-hover/column:visible")} aria-label="Sort Icon">
-            <Button variant="icon" color="DEFAULT" size="small">
-              <svg className="" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowUpwardIcon">
-                <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" />
-              </svg>
-            </Button>
-          </div>
-        </div>
-        <div aria-label="Icon Menu">
 
-        </div>
-      </div>
-      <div onMouseDown={onMouseDown} className="-right-3 min-h-[56px] group-hover/headers:visible cursor-col-resize touch-none absolute invisible z-50 flex flex-col justify-center text-zinc-500" aria-label="Seperator">
-        <svg className="text-current w-5 h-5 inline-block fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SeparatorIcon">
-          <path d="M11 19V5h2v14z" />
-        </svg>
-      </div>
-    </div>
-  )
-}
-
-export default Datagrid
+export default DataGrid
