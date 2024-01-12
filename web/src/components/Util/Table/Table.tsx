@@ -270,12 +270,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     direction: "asc" | "desc"
   ) => {
     if (column) {
-      const sortDirection = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
+      const { valueFormatter } = columns.find((c) => c.field === column);
 
       data.sort((a, b) => {
-        let c = a[sortKey];
-        let d = b[sortKey];
+        let c = valueFormatter ? valueFormatter({ value: a[sortKey], row: data[data.indexOf(a)] }) : a[sortKey]
+        let d = valueFormatter ? valueFormatter({ value: b[sortKey], row: data[data.indexOf(b)] }) : b[sortKey]
 
         // Compare based on data type
         if (!columnDataType) {
@@ -283,12 +283,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         }
         if (columnDataType === "number") {
           return (
-            (parseInt(c.toString()) - parseInt(d.toString())) * sortDirection
+            (parseInt(c.toString()) - parseInt(d.toString()))
           );
         } else if (columnDataType === "boolean") {
-          return (c === d ? 0 : c ? 1 : -1) * sortDirection;
+          return (c === d ? 0 : c ? 1 : -1);
         } else if (columnDataType === "string") {
-          return c.toString().localeCompare(d.toString()) * sortDirection;
+          return c.toString().localeCompare(d.toString());
         } else if (columnDataType === "date") {
           if (typeof c === "string") c = new Date(c).getTime();
           if (typeof d === "string") d = new Date(d).getTime();

@@ -343,6 +343,7 @@ const TribesList = ({ tribes, queryResult }: Props) => {
             field: "name",
             header: "Name",
             sortable: true,
+            datatype: "string",
             width: 50,
           },
           {
@@ -355,17 +356,20 @@ const TribesList = ({ tribes, queryResult }: Props) => {
           {
             field: "Profile",
             header: "Created By",
-            render: ({ value }) => (
+            datatype: "string",
+            sortable: true,
+            valueFormatter: ({ value }) => value.full_name,
+            render: ({ value, row }) => (
               <div className="flex flex-row">
-                {value.avatar_url && (
+                {row.Profile.avatar_url && (
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value.avatar_url}`}
-                    alt={value.full_name || "Profile Image"}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${row.Profile.avatar_url}`}
+                    alt={value || "Profile Image"}
                   />
                 )}
                 <div className="flex items-center pl-3">
-                  <div className="text-base">{value.full_name}</div>
+                  <div className="text-base">{value}</div>
                 </div>
               </div>
             ),

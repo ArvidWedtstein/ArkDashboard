@@ -10,7 +10,6 @@ export const schema = gql`
 
   type Query {
     tribes: [Tribe!]! @skipAuth
-    tribe(id: BigInt!): Tribe @skipAuth
   }
 
   input CreateTribeInput {
