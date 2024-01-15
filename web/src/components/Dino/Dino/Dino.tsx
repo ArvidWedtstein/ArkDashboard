@@ -894,15 +894,17 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
     const calcNarcotics = narcotics.map(({ name, torpor, torpor_duration }) => {
       return {
-        [`${name.replace(" ", "-")}Min`]: Math.max(
+        name: name,
+        amount: Math.max(
           Math.ceil(
             (totalSecs * torporDepletionPerSecond - totalTorpor) /
             (torpor + torporDepletionPerSecond * torpor_duration)
           ),
           0
-        ),
+        )
       };
     });
+
     return {
       affinityNeeded: affinity_needed + aff_inc * level,
       effectiveness,
@@ -916,7 +918,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       totalTorpor,
       torporDepletionPS: torporDepletionPerSecond,
       percentTamed,
-      ...calcNarcotics.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
+      narcotics: calcNarcotics,
     };
   }, [state.foods]);
 
@@ -1858,6 +1860,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     required: true,
                     single: true,
                   }}
+                  exclusive
                   options={state.foods.map(({ id, name, max, image }) => ({
                     value: id,
                     label: `${name} (${max})`,
@@ -1985,7 +1988,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 <p className="font-light">
                                   Torpor Drain Rate:{" "}
                                   <span
-                                    className={`font-bold`}
+                                    className="font-bold"
                                     aria-label={`Depletion: ${tameData.torporDepletionPS * 50}`}
                                     style={{
                                       color: getHexCodeFromPercentage(
@@ -2006,36 +2009,26 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 </p>
                               </div>
                             )}
-                          {Object.entries(tameData)
-                            .filter(([k, _]) =>
-                              [
-                                "NarcoberryMin",
-                                "Bio-ToxinMin",
-                                "NarcoticMin",
-                                "Ascerbic-MushroomMin",
-                              ].includes(k)
-                            )
-                            .map(([name, amount], i) => {
-                              const newName = name
-                                .replace("Min", "")
-                                .toLowerCase();
-                              return (
-                                <div
-                                  className="flex flex-col items-center"
-                                  key={`narcotic-${name}-${i}`}
-                                >
-                                  <img
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${newName}.webp`}
-                                    alt="food"
-                                    className="w-8 sm:w-12"
-                                  />
-                                  <p>{amount.toString()}</p>
-                                  <p className="text-xs capitalize">
-                                    {newName.replace("-", " ")}
-                                  </p>
-                                </div>
-                              );
-                            })}
+
+                          {/* Narcotics Needed */}
+                          {tameData.narcotics.map(({ name, amount }, i) => (
+                            <div
+                              className="flex flex-col items-center"
+                              key={`narcotic-${name}-${i}`}
+                            >
+                              <img
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${name
+                                  .replace(" ", "-")
+                                  .toLowerCase()}.webp`}
+                                alt={name}
+                                className="w-8 sm:w-12"
+                              />
+                              <p>{amount.toString()}</p>
+                              <p className="text-xs capitalize">
+                                {name}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       </CardContent>
                     </Card>
