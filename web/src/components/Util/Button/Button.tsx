@@ -111,13 +111,15 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         large: `p-3 text-3xl [&>svg]:w-6 [&>svg]:h-6`,
       },
     };
+
+    // TODO: replace colors with tailwind colors
     const colors = {
       text: {
         primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",
         secondary: "text-zinc-400 hover:bg-zinc-400 hover:bg-opacity-10",
-        success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
+        success: "text-success-500 hover:bg-success-500 hover:bg-opacity-10",
         warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",
-        error: "text-red-500 hover:bg-red-500 hover:bg-opacity-10",
+        error: "text-error-500 hover:bg-red-500 hover:bg-opacity-10",
         DEFAULT: "dark:text-white text-black hover:bg-black dark:hover:bg-white dark:hover:bg-opacity-10 hover:bg-opacity-10"
       },
       contained: {
@@ -126,7 +128,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         secondary:
           "bg-zinc-500 border-zinc-600 hover:bg-zinc-600 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         success:
-          "bg-green-600 border-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md",
+          "bg-success-600 border-success-600 hover:bg-success-700 text-white shadow-sm hover:shadow-md",
         warning:
           "bg-orange-400 border-orange-500 hover:bg-orange-500 dark:text-black/90 text-white shadow-sm hover:shadow-md",
         error:
@@ -135,19 +137,19 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       },
       outlined: {
         primary:
-          "text-blue-400 border border-blue-400 border-opacity-50 hover:border-opacity-100 hover:bg-blue-400 hover:bg-opacity-10",
+          "text-primary-400 border border-primary-400 border-opacity-50 hover:border-opacity-100 hover:bg-primary-400 hover:bg-opacity-10",
         secondary:
-          "text-zinc-400 border border-zinc-400 border-opacity-50 hover:border-opacity-100 hover:bg-zinc-400 hover:bg-opacity-10",
+          "text-secondary-400 border border-secondary-400 border-opacity-50 hover:border-opacity-100 hover:bg-secondary-400 hover:bg-opacity-10",
         success:
-          "text-green-500 border border-green-500 border-opacity-50 hover:border-opacity-100 hover:bg-green-500 hover:bg-opacity-10",
+          "text-success-500 border border-success-500 border-opacity-50 hover:border-opacity-100 hover:bg-success-500 hover:bg-opacity-10",
         warning:
-          "text-orange-400 border border-orange-400 border-opacity-50 hover:border-opacity-100 hover:bg-orange-400 hover:bg-opacity-10",
+          "text-warning-400 border border-warning-400 border-opacity-50 hover:border-opacity-100 hover:bg-orange-400 hover:bg-opacity-10",
         error:
-          "text-red-500 border border-red-500 border-opacity-50 hover:border-opacity-100 hover:bg-red-500 hover:bg-opacity-10",
+          "text-error-500 border border-error-500 border-opacity-50 hover:border-opacity-100 hover:bg-error-500 hover:bg-opacity-10",
         DEFAULT: "dark:text-white border text-black dark:border-white border-black dark:border-opacity-50 border-opacity-50 hover:border-opacity-100 hover:bg-black dark:hover:bg-white hover:bg-opacity-10 dark:hover:bg-opacity-10"
       },
       elevated: {
-        primary: "bg-gradient-to-tr from-blue-500 to-blue-400 border-b-4 border-l-2 active:border-blue-500 active:shadow-none shadow-lg border-blue-600 text-white",
+        primary: "bg-gradient-to-tr from-primary-500 to-primary-400 border-b-4 border-l-2 active:border-primary-500 active:shadow-none shadow-lg border-primary-600 text-white",
         secondary: "bg-gradient-to-tr from-zinc-500 to-zinc-400 border-b-4 border-l-2 active:border-zinc-500 active:shadow-none shadow-lg border-zinc-600 text-white",
         success: "bg-gradient-to-tr from-green-600 to-green-500 border-b-4 border-l-2 active:border-green-600 active:shadow-none shadow-lg border-green-700 text-white",
         warning: "bg-gradient-to-tr from-orange-500 to-orange-400 border-b-4 border-l-2 active:border-orange-500 active:shadow-none shadow-lg border-orange-600 text-white",
@@ -155,7 +157,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
         DEFAULT: "text-white dark:text-black bg-gradient-to-tr dark:from-zinc-200 dark:to-zinc-100 from-zinc-900 to-zinc-800 border-b-4 border-l-2 dark:active:border-zinc-200 active:border-zinc-700 active:shadow-none shadow-lg border-zinc-900 dark:border-zinc-300"
       },
       icon: {
-        primary: "text-blue-400 hover:bg-blue-400 hover:bg-opacity-10",
+        primary: "text-primary-400 hover:bg-primary-400 hover:bg-opacity-10",
         secondary: "text-zinc-400 hover:bg-zinc-400 hover:bg-opacity-10",
         success: "text-green-500 hover:bg-green-500 hover:bg-opacity-10",
         warning: "text-orange-400 hover:bg-orange-400 hover:bg-opacity-10",

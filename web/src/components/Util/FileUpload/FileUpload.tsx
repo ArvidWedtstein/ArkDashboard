@@ -8,8 +8,11 @@ import { useController } from "@redwoodjs/forms";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import Button from "../Button/Button";
+import { standard } from "src/components/Admin/AdminCell/AdminCell.mock";
 
-interface FileUploadProps {
+type FileUploadProps = {
+  variant?: 'standard' | 'outlined' | 'contained';
+  color?: "default" | "primary" | "secondary" | "success" | "warning" | "error";
   onUpload?: (url: string) => void;
   onFileAdded?: (file: File) => void;
   valueFormatter?: (filename: string | null) => string;
@@ -76,6 +79,8 @@ const FileUpload = ({
   label,
   defaultValue,
   defaultSecondaryValue,
+  variant = "outlined",
+  color = "default",
   ...props
 }: FileUploadProps) => {
   const { client: supabase } = useAuth();
@@ -336,9 +341,37 @@ const FileUpload = ({
     setAnchorRef({ element: null, open: false, file: null });
   };
 
+  // TODO: finish classes
+  const classes = {
+    standard: {
+      primary: "border-b border-primary-400 border-opacity-50",
+      secondary: "border-b border-zinc-400 border-opacity-50",
+      success: "border-b border-success-500 border-opacity-50",
+      warning: "border-b border-warning-400 border-opacity-50",
+      error: "border-b border-error-500 border-opacity-50",
+      default: "border-b dark:border-white border-black dark:border-opacity-50 border-opacity-50"
+    },
+    outlined: {
+      primary: "border border-primary-400 border-opacity-50",
+      secondary: "border border-zinc-400 border-opacity-50",
+      success: "border border-success-500 border-opacity-50",
+      warning: "border border-warning-400 border-opacity-50",
+      error: "border border-error-500 border-opacity-50",
+      default: "border dark:border-white border-black dark:border-opacity-50 border-opacity-50"
+    },
+    contained: {
+      primary: "",
+      secondary: "",
+      success: "",
+      warning: "",
+      error: "",
+      default: ""
+    },
+  }
+
   return (
     <div
-      className={`group relative flex w-[calc(100%-3rem)] max-w-2xl flex-col gap-2 overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 p-3 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 ${className}`}
+      className={clsx(`group relative flex w-[calc(100%-3rem)] max-w-2xl flex-col gap-2 overflow-hidden rounded p-3 text-gray-900 transition-colors dark:text-stone-200`, classes[variant][color], className)}
     >
       {!!name && (
         <input
@@ -353,7 +386,7 @@ const FileUpload = ({
           htmlFor="dropzone-files"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
-          className="flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-zinc-200 transition-colors dark:border-zinc-500 dark:bg-zinc-700/60 dark:hover:bg-zinc-700"
+          className={clsx("flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed bg-zinc-200/60 transition-colors dark:bg-zinc-700/60 dark:hover:bg-zinc-700 hover:border-opacity-100", classes[variant][color])}
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6 will-change-contents">
             <svg
@@ -388,7 +421,7 @@ const FileUpload = ({
               {maxSize && `(MAX. ${formatBytes(maxSize)})`}
             </p>
             {files.some((f) => f.error) && (
-              <p className="rw-helper-text -mb-2 text-red-500">
+              <p className="rw-helper-text -mb-2 text-error-500">
                 Invalid files will not be uploaded
               </p>
             )}
@@ -421,7 +454,7 @@ const FileUpload = ({
               className={clsx(
                 `table-row-group w-full text-xs text-black dark:text-white`,
                 {
-                  "!text-red-500": file.error,
+                  "!text-error-500": file.error,
                 }
               )}
               key={`file-${index}`}
@@ -429,7 +462,7 @@ const FileUpload = ({
             >
               <div className="table-cell">
                 <span
-                  className={`truncate rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${file.error ? "bg-red-500" : "bg-zinc-500"
+                  className={`truncate rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${file.error ? "bg-error-500" : "bg-zinc-500"
                     }`}
                 >
                   {file.error ? (
@@ -558,7 +591,7 @@ const FileUpload = ({
         </div>
       )}
 
-      <Button color="success" variant="outlined" onClick={handleUpload} disabled={files.filter((f) => f.state == "newfile").length < 1}>
+      <Button color="success" variant={variant === 'standard' ? 'text' : variant} onClick={handleUpload} disabled={files.filter((f) => f.state == "newfile").length < 1}>
         Upload
       </Button>
 

@@ -333,6 +333,7 @@ const DinoForm = (props: DinoFormProps) => {
 
             <DatePicker
               label="Release Date"
+              name="relased"
               defaultValue={props.dino?.released ? new Date(props.dino?.released) : new Date()}
             />
             <br />

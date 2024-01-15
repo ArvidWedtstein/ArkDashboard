@@ -293,7 +293,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     type: string;
     affinity: number;
     image?: string;
-    [key: string]: string | number;
   };
   type Weapon = {
     __typename?: "Item";
@@ -319,7 +318,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     hasMultipler?: boolean;
   };
 
-  interface DinoState {
+  type DinoState = {
     level: number;
     maturation: number;
     seconds_between_hits: number;
@@ -343,174 +342,143 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
   const calculateWeaponStats = (
     state: DinoState,
-    dmg?: {
+    weaponDamage?: {
       id: number;
       value: number;
     }
-  ) => {
+  ): Weapon[] => {
     const {
       base_stats,
       base_taming_time,
       taming_interval,
       flee_threshold,
       variants,
+      multipliers: dinoMultipliers,
+      hitboxes,
     } = dino;
     const { h: { b: baseHealth = 0, w: incPerLevel = 0 } = {} } =
       (base_stats as BaseStats) || { b: 0, w: 0 };
+
     return state.weapons.map((weapon) => {
       let {
         id,
         userDamage,
         torpor,
         torpor_duration,
+        torpor_depetion_per_second,
         multipliers,
         damage,
-        ...rest
       } = weapon;
 
-      if (dmg && id === dmg.id) {
-        userDamage = dmg.value;
+      const { settings: { meleeMultiplier, playerDamageMultiplier }, seconds_between_hits, level, variants: stateVariants } = state;
+
+      if (weaponDamage && id === weaponDamage.id) {
+        userDamage = damage.value;
       }
 
-      const creatureT = base_taming_time + taming_interval * (state.level - 1);
-      const creatureFleeThreshold =
-        typeof flee_threshold === "number" ? flee_threshold : 0.75;
-      const isPossible = torpor_duration
-        ? torpor -
-        (state.seconds_between_hits - torpor_duration) *
-        (dino.torpor_depetion_per_second +
-          Math.pow(state.level - 1, 0.8493) /
-          (22.39671632 / dino.torpor_depetion_per_second))
-        : torpor;
+      const creatureTamingTime = base_taming_time + taming_interval * (level - 1);
 
-      let torporPerHit = isPossible
-        ? torpor -
-        (state.seconds_between_hits - torpor_duration) *
-        (dino.torpor_depetion_per_second +
-          Math.pow(state.level - 1, 0.8493) /
-          (22.39671632 / dino.torpor_depetion_per_second))
-        : torpor;
+      const creatureFleeThreshold = flee_threshold || 0.75;
+
+      const torporPerHit = torpor - (seconds_between_hits - torpor_duration) * (torpor_depetion_per_second + Math.pow(level - 1, 0.8493) / (22.39671632 / torpor_depetion_per_second));
 
       const knockOutMultiplier =
-        (multipliers && dino.multipliers?.[0]?.[multipliers]?.[0]) || 1;
+        (multipliers && dinoMultipliers?.[0]?.[multipliers]?.[0]) || 1;
       let totalMultipliers = 1 / knockOutMultiplier;
-      let knockOut = creatureT / (torporPerHit * knockOutMultiplier);
+
+      let knockOut = creatureTamingTime / (torporPerHit * knockOutMultiplier);
 
       if (multipliers && multipliers.includes("DmgType_Melee_Human")) {
-        knockOut /= state.settings.meleeMultiplier / 100;
-        totalMultipliers *= state.settings.meleeMultiplier / 100;
+        knockOut /= meleeMultiplier / 100;
+        totalMultipliers *= meleeMultiplier / 100;
       }
 
-      if (variants.includes("Genesis") && state.variants.includes("Genesis")) {
+      if (variants.includes("Genesis") && stateVariants.includes("Genesis")) {
         knockOut /= 0.4;
         totalMultipliers *= 0.4;
       }
 
-      knockOut /= state.settings.playerDamageMultiplier;
-      totalMultipliers *= state.settings.playerDamageMultiplier;
+      knockOut /= playerDamageMultiplier;
+      totalMultipliers *= playerDamageMultiplier;
 
       const numHitsRaw = knockOut / (userDamage / 100);
 
-      const hitboxes = dino.hitboxes
-        ? Object.entries(
-          dino.hitboxes as {
-            [key: string]: number;
-          }
-        ).map(([name, multiplier]) => {
-          const hitboxHits = numHitsRaw / multiplier;
-          const hitsUntilFlee =
-            creatureFleeThreshold === 1
-              ? "-"
-              : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
+      const calculateHitboxStats = (multiplier: number) => {
+        const hitboxHits = numHitsRaw / multiplier;
+        const hitsUntilFlee = creatureFleeThreshold === 1 ? '-' : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
 
-          const totalDamage =
-            damage *
-            Math.ceil(hitboxHits) *
-            totalMultipliers *
-            (userDamage / 100) *
-            multiplier;
-          const propsurvival =
-            totalDamage < baseHealth
-              ? 100
-              : calculatePropability(
-                state.level - 1,
-                7,
-                Math.max(
-                  Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                  0
-                )
-              );
+        const totalDamage = damage * Math.ceil(hitboxHits) * totalMultipliers * (userDamage / 100) * multiplier;
 
-          const chanceOfDeath = Math.round(100 - propsurvival);
+        const chanceOfSurvival =
+          totalDamage < baseHealth
+            ? 100
+            : calculatePropability(
+              state.level - 1,
+              7,
+              Math.max(
+                Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                0
+              )
+            );
 
-          return {
-            name,
-            multiplier,
-            hitsRaw: hitboxHits,
-            hitsUntilFlee,
-            hits: Math.ceil(hitboxHits),
-            chanceOfDeath,
-            chanceOfDeathHigh: chanceOfDeath > 40,
-            isPossible,
-          };
-        })
-        : [];
+        const chanceOfDeath = Math.round(100 - chanceOfSurvival);
+
+        return {
+          multiplier,
+          hitsRaw: hitboxHits,
+          hitsUntilFlee,
+          hits: Math.ceil(hitboxHits),
+          chanceOfDeath,
+          chanceOfDeathHigh: chanceOfDeath > 40,
+          isPossible: torpor_duration ? torpor : true,
+        };
+      };
+
+      const hitboxStats = hitboxes ? Object.entries(hitboxes).map(([name, multiplier]) => calculateHitboxStats(multiplier)) : [];
 
       let bodyChanceOfDeath = 0;
       let minChanceOfDeath = 0;
 
-      if (isPossible) {
-        if (damage != null && baseHealth != null && incPerLevel != null) {
-          let numStats = 7;
-          let totalDamage =
-            damage *
-            Math.ceil(numHitsRaw) *
-            totalMultipliers *
-            (userDamage / 100);
+      if (torpor_duration) {
+        let numStats = 7;
+        let totalDamage =
+          damage * Math.ceil(numHitsRaw) * totalMultipliers * (userDamage / 100);
 
-          let propsurvival =
+        let chanceOfSurvial =
+          totalDamage < baseHealth
+            ? 100
+            : state.level - 1 <
+              Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0)
+              ? 0
+              : calculatePropability(
+                state.level - 1,
+                numStats,
+                Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0)
+              );
+        bodyChanceOfDeath = Math.round(100 - chanceOfSurvial);
+        minChanceOfDeath = bodyChanceOfDeath;
+
+        for (const hitbox of hitboxStats) {
+          totalDamage =
+            damage *
+            Math.ceil(hitbox.hitsRaw) *
+            totalMultipliers *
+            (userDamage / 100) *
+            hitbox.multiplier;
+
+          chanceOfSurvial =
             totalDamage < baseHealth
               ? 100
-              : state.level - 1 <
+              : calculatePropability(
+                state.level - 1,
+                numStats,
                 Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0)
-                ? 0
-                : calculatePropability(
-                  state.level - 1,
-                  numStats,
-                  Math.max(
-                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                    0
-                  )
-                );
+              );
 
-          bodyChanceOfDeath = Math.round(100 - propsurvival);
-          minChanceOfDeath = bodyChanceOfDeath;
-
-          for (const hitbox of hitboxes) {
-            totalDamage =
-              damage *
-              Math.ceil(hitbox.hitsRaw) *
-              totalMultipliers *
-              (userDamage / 100) *
-              hitbox.multiplier;
-
-            propsurvival =
-              totalDamage < baseHealth
-                ? 100
-                : calculatePropability(
-                  state.level - 1,
-                  numStats,
-                  Math.max(
-                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                    0
-                  )
-                );
-
-            const chanceOfDeath = Math.round(100 - propsurvival);
-            hitbox.chanceOfDeath = chanceOfDeath;
-            hitbox.chanceOfDeathHigh = chanceOfDeath > 40;
-            minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
-          }
+          const chanceOfDeath = Math.round(100 - chanceOfSurvial);
+          hitbox.chanceOfDeath = chanceOfDeath;
+          hitbox.chanceOfDeathHigh = chanceOfDeath > 40;
+          minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
         }
       }
 
@@ -528,58 +496,66 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         chanceOfDeath: bodyChanceOfDeath,
         chanceOfDeathHigh,
         minChanceOfDeath: minChanceOfDeath || 0,
-        isPossible,
-        isRecommended: isPossible && minChanceOfDeath < 90,
-        hitboxes,
+        isPossible: torpor_duration ? torpor : true,
+        isRecommended: torpor_duration && minChanceOfDeath < 90,
+        hitboxes: hitboxStats,
       };
     });
   };
 
+  const calculateFoodStats = (state: DinoState): Food[] => {
+    const {
+      affinity_needed,
+      aff_inc: affinty_increase_per_level,
+      DinoStat,
+      base_stats,
+      disable_mult: disable_multipliers,
+      food_consumption_base,
+      food_consumption_mult,
+      non_violent_food_rate_mult = 1,
+      taming_method
+    } = dino;
 
-  const calculateFoodStats = (state: DinoState) => {
-    const affinityNeeded = dino.affinity_needed + dino.aff_inc * state.level;
+
+    const { settings, level, selected_food } = state;
+    const { consumptionMultiplier, tamingMultiplier: taming_multiplier } = settings;
+
+    const affinityNeeded = affinity_needed + affinty_increase_per_level * state.level;
     const foodConsumption =
-      dino.food_consumption_base *
-      dino.food_consumption_mult *
-      state.settings.consumptionMultiplier *
+      food_consumption_base *
+      food_consumption_mult *
+      consumptionMultiplier *
       1;
 
-    const tamingMultiplier = dino.disable_mult
-      ? 4
-      : state.settings.tamingMultiplier * 4;
+    const tamingMultiplier = disable_multipliers ? 4 : taming_multiplier * 4;
 
-    return dino.DinoStat.filter(
-      (ds) => ds.type === "food" && ds.Item.food != null
-    ).map(({ Item }) => {
-      const foodValue = Item.food;
-      const affinityValue = Item.affinity;
-      let foodMaxRaw = affinityNeeded / affinityValue / tamingMultiplier;
-      let foodMax = 0;
+    return DinoStat.filter(
+      ({ type, Item }) => type === "food" && Item.food != null
+    ).map(({ Item, type }) => {
+      const { id, name, image, food, affinity } = Item;
+
+      let foodMaxRaw = affinityNeeded / affinity / tamingMultiplier;
+      let foodMax = Math.ceil(foodMaxRaw);
       let interval: number = null;
       let interval1: number = null;
-      let foodSecondsPer = 0;
-      let foodSeconds = 0;
-      let isFoodSelected = Item.id === state?.selected_food;
+      let foodSecondsPer = food / foodConsumption;
+      let foodSeconds = Math.ceil(foodMax * foodSecondsPer);
 
-      if (dino.taming_method != "NV") {
-        foodMaxRaw = foodMaxRaw / (dino.non_violent_food_rate_mult || 1);
-        interval = foodValue / foodConsumption;
+      if (taming_method !== "NV") {
+        foodMaxRaw /= (non_violent_food_rate_mult || 1);
+        interval = food / foodConsumption;
 
-        const baseStat = (dino?.base_stats as BaseStats)?.f || null;
-        if (
-          typeof baseStat?.b === "number" &&
-          typeof baseStat?.w === "number"
-        ) {
-          const averagePerStat = Math.round(state.level / 7);
+        const baseStat = (base_stats as BaseStats)?.f || null;
+        if (baseStat?.b && baseStat?.w) {
+          const averagePerStat = Math.round(level / 7);
           const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
-          const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
+          const requiredFood = Math.max(estimatedFood * 0.1, food);
           interval1 = requiredFood / foodConsumption;
         }
 
         foodMax = Math.ceil(foodMaxRaw);
 
         if (foodMax !== 1) {
-          foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
             foodSecondsPer +
@@ -593,26 +569,23 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         }
       } else {
         interval = null;
-        foodMax = Math.ceil(foodMaxRaw);
-        foodSecondsPer = foodValue / foodConsumption;
-        foodSeconds = Math.ceil(foodMax * foodSecondsPer);
       }
 
       return {
+        id,
+        name,
+        type,
+        image,
         max: foodMax,
-        food: foodValue,
+        food,
         seconds: foodSeconds,
         secondsPer: foodSecondsPer,
         percentPer: 100 / foodMaxRaw,
         interval,
         interval1,
-        use: isFoodSelected ? foodMax : 0,
-        affinity: Item.affinity,
-        id: Item.id,
-        name: Item.name,
-        type: Item.__typename,
-        image: Item.image
-      } as Food;
+        use: id === selected_food ? foodMax : 0,
+        affinity,
+      };
     });
   };
 
@@ -807,103 +780,91 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
   // TODO: redo this.
   const tameData = useMemo(() => {
-    if (!state.foods || state.foods.length == 0) return null;
-    let effectiveness = 100;
+    const {
+      aff_inc,
+      affinity_needed,
+      disable_mult,
+      food_consumption_base,
+      food_consumption_mult,
+      non_violent_food_rate_mult,
+      taming_ineffectiveness,
+      torpor_depetion_per_second,
+      taming_method,
+    } = dino;
 
+    const {
+      level,
+      settings: {
+        tamingMultiplier,
+        consumptionMultiplier,
+      },
+      foods,
+      selected_food,
+    } = state;
+
+    if (!foods || foods.length == 0) return null;
+
+    let effectiveness = 100;
     const narcotics = itemsByIds.filter((f) =>
       [121, 123, 713, 719].includes(f.id)
     );
 
-    let affinityNeeded = dino.affinity_needed + dino.aff_inc * state.level;
+    let affinityLeft = affinity_needed + aff_inc * level;
     // sanguineElixir = affinityNeeded *= 0.7
-
-    let affinityLeft = affinityNeeded;
-
     let totalFood = 0;
 
-    let tamingMultiplier = dino.disable_mult
+    let tamingMultiplierValue = disable_mult
       ? 4
-      : state.settings.tamingMultiplier * 4;
+      : tamingMultiplier * 4;
     let foodConsumption =
-      dino.food_consumption_base *
-      dino.food_consumption_mult *
-      state.settings.consumptionMultiplier;
+      food_consumption_base *
+      food_consumption_mult *
+      consumptionMultiplier;
 
     foodConsumption =
-      dino.taming_method !== "NV"
+      taming_method !== "NV"
         ? foodConsumption
-        : foodConsumption * dino.non_violent_food_rate_mult;
+        : foodConsumption * non_violent_food_rate_mult;
+
 
     let tooMuchFood = false;
     let enoughFood = false;
     let numUsedTotal = 0;
-    let numNeeded = 0;
-    let numToUse = 0;
     let totalSecs = 0;
 
-    state.foods.forEach((food) => {
-      if (!food) return;
-      let foodVal = food.food;
-      let affinityVal = food.affinity;
+    state.foods.forEach((foodItem) => {
+      if (!foodItem) return;
+
+      let { food, affinity, use, id, max, interval } = foodItem;
 
       if (affinityLeft > 0) {
-        if (state.selected_food) {
-          food.use = food.id == state.selected_food ? food.max : 0;
+        if (selected_food) {
+          use = id === selected_food ? max : 0;
         }
-        numNeeded =
-          dino.taming_method !== "NV"
-            ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
-            : Math.ceil(
-              affinityLeft /
-              affinityVal /
-              tamingMultiplier /
-              dino.non_violent_food_rate_mult
-            );
 
-        numToUse = numNeeded >= food.use ? food.use : numNeeded;
-        tooMuchFood = numNeeded >= food.use;
+        const numNeeded = Math.ceil(affinityLeft / affinity / tamingMultiplierValue);
+        const numToUse = Math.min(numNeeded, use);
+        tooMuchFood = numNeeded >= use;
 
-        affinityLeft =
-          dino.taming_method !== "NV"
-            ? affinityLeft - numToUse * affinityVal * tamingMultiplier
-            : affinityLeft -
-            numToUse *
-            affinityVal *
-            tamingMultiplier *
-            dino.non_violent_food_rate_mult;
+        affinityLeft -= numToUse * affinity * tamingMultiplierValue;
+        totalFood += numToUse * food;
 
-        totalFood += numToUse * foodVal;
+        for (let i = 1; i <= numToUse && numUsedTotal < 1000; i++) {
+          const effectivenessMultiplier = Math.pow(effectiveness, 2) * taming_ineffectiveness;
+          effectiveness -= taming_method !== "NV"
+            ? effectivenessMultiplier / affinity / tamingMultiplierValue / 100
+            : effectivenessMultiplier / affinity / tamingMultiplierValue / non_violent_food_rate_mult / 100;
 
-        let i = 1;
-        numToUse = numToUse < 1000 ? numToUse : 1;
-        while (i <= numToUse) {
-          effectiveness -=
-            dino.taming_method !== "NV"
-              ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              100
-              : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              dino.non_violent_food_rate_mult /
-              100;
-
-          totalSecs =
-            numUsedTotal == 1
-              ? totalSecs + food.interval
-              : foodVal / foodConsumption;
-
+          totalSecs += numUsedTotal === 1 ? interval : food / foodConsumption;
           numUsedTotal++;
-          i++;
         }
-        if (effectiveness < 0) {
-          effectiveness = 0;
-        }
-      } else if (food.use > 0) {
+
+        effectiveness = Math.max(effectiveness, 0);
+      } else if (use > 0) {
         tooMuchFood = true;
       }
     });
+
     totalSecs = Math.ceil(totalSecs);
     const neededValues = {};
     const neededValuesSecs = {};
@@ -914,35 +875,36 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       enoughFood = false;
 
       state.foods.forEach((food) => {
-        numNeeded = Math.ceil(affinityLeft / food.affinity / tamingMultiplier);
+        const numNeeded = Math.ceil(affinityLeft / food.affinity / tamingMultiplierValue);
         neededValues[food.id] = numNeeded;
         neededValuesSecs[food.id] = Math.ceil(
           (numNeeded * food.food) / foodConsumption + totalSecs
         );
       });
     }
-    let percentLeft = affinityLeft / affinityNeeded;
-    let percentTamed = 1 - percentLeft;
-    let totalTorpor =
-      dino.base_taming_time + dino.taming_interval * (state.level - 1);
-    let torporDepletionPS =
-      dino.torpor_depetion_per_second +
-      Math.pow(state.level - 1, 0.800403041) /
-      (22.39671632 / dino.torpor_depetion_per_second);
+    const percentLeft = affinityLeft / affinity_needed;
+    const percentTamed = 1 - percentLeft;
+    const totalTorpor =
+      dino.base_taming_time + dino.taming_interval * (level - 1);
+
+    const torporDepletionPerSecond =
+      torpor_depetion_per_second +
+      Math.pow(level - 1, 0.800403041) /
+      (22.39671632 / torpor_depetion_per_second);
 
     const calcNarcotics = narcotics.map(({ name, torpor, torpor_duration }) => {
       return {
         [`${name.replace(" ", "-")}Min`]: Math.max(
           Math.ceil(
-            (totalSecs * torporDepletionPS - totalTorpor) /
-            (torpor + torporDepletionPS * torpor_duration)
+            (totalSecs * torporDepletionPerSecond - totalTorpor) /
+            (torpor + torporDepletionPerSecond * torpor_duration)
           ),
           0
         ),
       };
     });
     return {
-      affinityNeeded,
+      affinityNeeded: affinity_needed + aff_inc * level,
       effectiveness,
       neededValues,
       neededValuesSecs,
@@ -950,9 +912,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       tooMuchFood,
       totalFood,
       totalSecs,
-      levelsGained: Math.floor((state.level * 0.5 * effectiveness) / 100),
+      levelsGained: Math.floor((level * 0.5 * effectiveness) / 100),
       totalTorpor,
-      torporDepletionPS,
+      torporDepletionPS: torporDepletionPerSecond,
       percentTamed,
       ...calcNarcotics.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
     };
@@ -1897,7 +1859,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     single: true,
                   }}
                   options={state.foods.map(({ id, name, max, image }) => ({
-                    value: id as number,
+                    value: id,
                     label: `${name} (${max})`,
                     image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
                   }))}

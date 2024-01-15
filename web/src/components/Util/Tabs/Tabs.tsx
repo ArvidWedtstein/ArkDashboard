@@ -120,11 +120,11 @@ const Tabs = memo(({
         <div aria-label="Indicator" className={clsx(`absolute transition-all ease-in-out duration-300`, { // -mb-px
           "h-0.5 w-0 bottom-0 left-0": orientation === "horizontal",
           "w-0.5 h-0 top-0 right-0": orientation === "vertical",
-          "bg-blue-400": activeColor === 'primary',
-          "bg-zinc-500": activeColor === 'secondary',
-          "bg-pea-600": activeColor === "success",
-          "bg-orange-400": activeColor === 'warning',
-          "bg-red-500": activeColor === 'error',
+          "bg-primary-400": activeColor === 'primary',
+          "bg-secondary-500": activeColor === 'secondary',
+          "bg-success-600": activeColor === "success",
+          "bg-warning-400": activeColor === 'warning',
+          "bg-error-500": activeColor === 'error',
           "dark:bg-white bg-zinc-900": activeColor === 'DEFAULT',
         })} style={tabStyle} />
       </div>
