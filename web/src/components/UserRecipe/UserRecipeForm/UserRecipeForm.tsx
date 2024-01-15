@@ -318,7 +318,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               return (
                 <Button
                   key={`recipe-${id}`}
-                  className="fadetransition aspect-square"
+                  className="aspect-square"
                   variant="outlined"
                   color="DEFAULT"
                   title={`${ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.name} - ${amount}`}

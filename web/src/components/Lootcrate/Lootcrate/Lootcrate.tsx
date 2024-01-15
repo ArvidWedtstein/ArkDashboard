@@ -104,7 +104,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
                 : `exactly ${(entries[0][1][0].set_qty_scale as qty).min}`}{" "}
               of the following entries.
             </p>
-            <Tabs size="md">
+            <Tabs size="medium">
               {entries.map(([entry, items]) => (
                 <Tab label={entry}>
                   <div className="py-2">

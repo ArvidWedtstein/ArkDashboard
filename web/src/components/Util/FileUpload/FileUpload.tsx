@@ -477,7 +477,7 @@ const FileUpload = ({
                   type="button"
                   onClick={(e) => {
                     setAnchorRef((prev) => ({
-                      element: e.currentTarget,
+                      element: e.currentTarget || e.target as HTMLButtonElement,
                       open: !prev.open,
                       file: file,
                     }))

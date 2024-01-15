@@ -9,7 +9,7 @@ import {
   useFieldArray,
   NumberField,
 } from "@redwoodjs/forms";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
@@ -27,6 +27,7 @@ import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import DatePicker from "src/components/Util/DatePicker/DatePicker";
 import Button from "src/components/Util/Button/Button";
 import clsx from "clsx";
+import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -212,8 +213,7 @@ const DinoForm = (props: DinoFormProps) => {
 
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
   const onSubmit = (data: FormDino) => {
-    // data.eats = eats.map((f) => f.id.toString());
-    // data.drops = ["12"];
+
     console.log(data);
     // delete data.immobilized_by
     // Test Dino Object
@@ -236,20 +236,24 @@ const DinoForm = (props: DinoFormProps) => {
     //   //   },
     //   // ],
     // };
-    // props.onSave(d, props?.dino?.id);
+
     props.onSave(data, props?.dino?.id);
   };
 
+  const formRef = useRef<HTMLFormElement>();
   return (
     <div className="rw-form-wrapper">
-      <Form onSubmit={onSubmit} error={props.error}>
+      <Form onSubmit={onSubmit} ref={formRef} error={props.error}>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        <Stepper completion>
+        <Stepper completion onStepComplete={(step, final) => {
+          if (!final) return;
+          formRef?.current?.requestSubmit();
+        }}>
           <Step title="General">
             <div className="flex flex-row items-start space-x-3">
               <Input
@@ -259,11 +263,7 @@ const DinoForm = (props: DinoFormProps) => {
                 color="DEFAULT"
                 helperText="Dinos name"
               />
-              {/* TODO: TagInput or Lookup */}
-              {/* <TagInput
-                name="synonyms"
-              /> */}
-              {/* <Lookup multiple options={[]} /> */}
+
               <Input
                 label="Synonyms"
                 margin="normal"
@@ -280,22 +280,6 @@ const DinoForm = (props: DinoFormProps) => {
                 }}
               />
             </div>
-
-            <FileUpload
-              label="Image"
-              name="image"
-              secondaryName="icon"
-              defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
-              defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
-              storagePath={`arkimages`}
-              valueFormatter={(filename) => filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
-            />
-            {/* <FileUpload
-                name="icon"
-                label="Icon"
-                defaultValue={props?.dino?.icon}
-                storagePath={"arkimages/DinoIcon"}
-              /> */}
 
             <div className="flex flex-row items-start space-x-3">
               <Input
@@ -319,14 +303,51 @@ const DinoForm = (props: DinoFormProps) => {
               />
             </div>
 
-            <div className="flex flex-col space-y-2">
-              {/* <Switch
-                name="x_variant"
-                onLabel="X Variant"
-                defaultChecked={props.dino?.x_variant}
-                helperText="Does this dino have a x-variant?"
-              /> */}
+            <Input
+              label="Variants"
+              margin="normal"
+              name="variants"
+              defaultValue={props.dino?.variants.join(', ')}
+              helperText="Variants that this dino has, comma seperated"
+              validation={{
+                required: false,
+              }}
+            />
 
+
+            {/* <Input
+              label="Release Date"
+              variant="contained"
+              color="success"
+              type="date"
+              name="released"
+              placeholder="YYYY-MM-DD"
+              defaultValue={props.dino?.released || null}
+              validation={{
+                valueAsDate: true
+              }}
+              InputLabelProps={{
+                shrink: true
+              }}
+            /> */}
+
+            <DatePicker
+              label="Release Date"
+              defaultValue={props.dino?.released ? new Date(props.dino?.released) : new Date()}
+            />
+            <br />
+
+            <FileUpload
+              label="Image"
+              name="image"
+              secondaryName="icon"
+              defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
+              defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
+              storagePath={`arkimages`}
+              valueFormatter={(filename) => filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
+            />
+
+            <div className="flex flex-col space-y-2 my-2">
               <Switch
                 name="ridable"
                 onLabel="Ridable"
@@ -470,28 +491,6 @@ const DinoForm = (props: DinoFormProps) => {
             />
 
 
-            {/* <Input
-              label="Release Date"
-              variant="contained"
-              color="success"
-              type="date"
-              name="released"
-              placeholder="YYYY-MM-DD"
-              defaultValue={props.dino?.released || null}
-              validation={{
-                valueAsDate: true
-              }}
-              InputLabelProps={{
-                shrink: true
-              }}
-            /> */}
-
-            <DatePicker
-              label="Release Date"
-              defaultValue={props.dino?.released ? new Date(props.dino?.released) : new Date()}
-            />
-            <br />
-
             <Input
               label="Blueprint"
               name="bp"
@@ -569,13 +568,6 @@ const DinoForm = (props: DinoFormProps) => {
           </Step>
 
           <Step title="Taming" className="flex flex-col" optional>
-            {/* <Form<FormDino> onSubmit={onSubmit} error={props.error}>
-            <FormError
-              error={props.error}
-              wrapperClassName="rw-form-error-wrapper"
-              titleClassName="rw-form-error-title"
-              listClassName="rw-form-error-list"
-            /> */}
 
             <Input
               label="Taming Notice"
@@ -756,8 +748,8 @@ const DinoForm = (props: DinoFormProps) => {
               Base stats
             </Label>
             <div className="grid w-fit grid-rows-[8] text-white">
-              {Object.entries(basestat).map(([statChar, statVariants]) => (
-                <div className="my-1 grid grid-cols-4">
+              {Object.entries(basestat).map(([statChar, statVariants], sIndex) => (
+                <div className="my-1 grid grid-cols-4" key={`basestat-${sIndex}`}>
                   {Object.entries(statVariants).map(
                     ([variantChar, variants], index) => {
                       const stat = {
@@ -778,7 +770,7 @@ const DinoForm = (props: DinoFormProps) => {
                         a: "Additive",
                       }[variantChar];
                       return (
-                        <>
+                        <Fragment key={`basestat-${sIndex}-${index}`}>
                           <Input
                             label={`${variant} ${stat}`}
                             defaultValue={variants?.toString() ?? 0}
@@ -813,7 +805,7 @@ const DinoForm = (props: DinoFormProps) => {
                             type="number"
                             validation={{ valueAsNumber: true }}
                           />
-                        </>
+                        </Fragment>
                       );
                     }
                   )}
@@ -1896,12 +1888,10 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </div>
       </Disclosure> */}
-        {/* TODO: fix */}
 
-
-        <Button variant="contained" color="success" disabled={props.loading} type="submit">
+        {/* <Button variant="contained" color="success" disabled={props.loading} type="submit">
           Submit
-        </Button>
+        </Button> */}
       </Form>
     </div>
   );

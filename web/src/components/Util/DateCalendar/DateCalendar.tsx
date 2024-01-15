@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, cloneElement, useEffect, useState } from "react";
 import {
   addToDate,
   adjustCalendarDate,
@@ -10,6 +10,7 @@ import {
   getDateDiff,
 } from "src/lib/formatters";
 import Button from "../Button/Button";
+import { TransitionGroup, CSSTransition, Transition } from 'react-transition-group';
 
 type ViewType = "year" | "month" | "day";
 type DateCalendarProps = {
@@ -47,6 +48,10 @@ const DateCalendar = ({
   const [currentView, setCurrentView] = useState<ViewType>(
     views.includes("day") ? "day" : views[0] || "day"
   );
+
+  const [state, setState] = useState<{ slideDirection: 'left' | 'right' }>({
+    slideDirection: 'left',
+  });
 
   const days = getDateUnit("weekday", firstDayOfWeek);
 
@@ -122,16 +127,17 @@ const DateCalendar = ({
     }
   );
 
+
   const navigateMonth = (change: -1 | 1) => {
     const newDate = addToDate(new Date(period), change, "month");
 
     setPeriod(toLocalPeriod(newDate));
+    setState({ slideDirection: change === 1 ? 'left' : 'right' })
   };
 
   const selectYear = (year: number) => {
     if (readOnly) return;
-
-    const newDate = new Date(`${year}-${Number(period.substring(5))}`);
+    const newDate = new Date(`${year}-${period.split('-')[1]}`);
     setPeriod(toLocalPeriod(newDate));
     setCurrentView(views.includes("month") ? "month" : "day");
   };
@@ -146,6 +152,12 @@ const DateCalendar = ({
 
   const selectView = (view: ViewType) => {
     setCurrentView(view);
+  };
+
+  const childFactoryCreator = (slideDirection: 'left' | 'right') => (child) => {
+    return cloneElement(child, {
+      classNames: slideDirection,
+    });
   };
 
   return (
@@ -204,7 +216,6 @@ const DateCalendar = ({
                 focusable="false"
                 aria-hidden="true"
                 viewBox="0 0 24 24"
-                data-testid="ArrowDropDownIcon"
               >
                 <path d="M7 10l5 5 5-5z" />
               </svg>
@@ -249,215 +260,245 @@ const DateCalendar = ({
           </Button>
         </div>
       </div>
-      <div className="relative block">
+      <TransitionGroup
+        className="relative block"
+        aria-label="TransitionGroup"
+      >
         {currentView === "year" && (
-          <div
-            className="relative box-border flex h-full max-h-[280px] w-full flex-wrap overflow-y-auto px-1"
-            style={{ alignContent: "stretch" }}
-            role="radiogroup"
+          <CSSTransition
+            timeout={200}
+            classNames="item"
           >
-            {years.map((year, yearIndex) => (
-              <div
-                className="flex basis-1/4 items-center justify-center"
-                key={`year-${year}-${yearIndex}`}
-              >
-                <button
-                  role="radio"
-                  type="button"
-                  className={clsx(
-                    "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10",
-                    {
-                      "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
-                        year === Number(period.substring(0, 4)),
-                    }
-                  )}
-                  tabIndex={-1}
-                  aria-checked={Number(period.substring(0, 4)) === year}
-                  onClick={() => selectYear(year)}
-                >
-                  {year}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {currentView === "month" && (
-          <div
-            className="relative box-border flex h-full max-h-[280px] w-full flex-wrap overflow-y-auto px-1"
-            style={{ alignContent: "stretch" }}
-            role="radiogroup"
-          >
-            {months.map((month, index) => (
-              <div
-                className="flex basis-1/3 items-center justify-center"
-                key={`month-${index}`}
-              >
-                <button
-                  role="radio"
-                  type="button"
-                  className={clsx(
-                    "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10",
-                    {
-                      "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
-                        month.getMonth() === Number(period.substring(5)) - 1,
-                    }
-                  )}
-                  tabIndex={-1}
-                  aria-checked={
-                    month.getMonth() === Number(period.substring(5)) - 1
-                  }
-                  onClick={() => selectMonth(month.getMonth() + 1)}
-                  aria-label={month.toLocaleDateString(
-                    navigator && navigator.language,
-                    { month: "long" }
-                  )}
-                >
-                  {month.toLocaleDateString(navigator && navigator.language, {
-                    month: "short",
-                  })}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {currentView === "day" && (
-          <div className="opacity-100">
             <div
-              className="flex items-center justify-center"
-              // className="grid gap-px grid-cols-7"
-              role="row"
+              className="relative box-border flex h-full max-h-[280px] w-full flex-wrap overflow-y-auto px-1 fadetransition"
+              style={{ alignContent: "stretch" }}
+              role="radiogroup"
             >
-              {displayWeekNumber && (
-                <span
-                  role="columnheader"
-                  className="mx-0.5 flex h-10 w-9 items-center justify-center text-center text-xs font-normal text-white/50"
-                  aria-label={"Week number"}
+              {years.map((year, yearIndex) => (
+                <div
+                  className="flex basis-1/4 items-center justify-center"
+                  key={`year-${year}-${yearIndex}`}
                 >
-                  #
-                </span>
-              )}
-              {days.map((day: Date, index) => (
-                <span
-                  key={`weekday-${index}`}
-                  className="mx-0.5 flex h-10 w-9 items-center justify-center text-center text-xs font-normal leading-[1.66] tracking-[0.03333em] text-white/70"
-                  role="columnheader"
-                  aria-label={day.toLocaleDateString(
-                    navigator && navigator.language,
-                    { weekday: "long" }
-                  )}
-                >
-                  {day.toLocaleDateString(navigator && navigator.language, {
-                    weekday: "narrow",
-                    localeMatcher: "best fit",
-                  })}
-                </span>
+                  <button
+                    role="radio"
+                    type="button"
+                    className={clsx(
+                      "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10",
+                      {
+                        "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
+                          year === Number(period.substring(0, 4)),
+                      }
+                    )}
+                    tabIndex={-1}
+                    aria-checked={Number(period.substring(0, 4)) === year}
+                    onClick={() => selectYear(year)}
+                  >
+                    {year}
+                  </button>
+                </div>
               ))}
             </div>
-            <div
-              className="relative block min-h-[240px] overflow-x-hidden"
-              role="presentation"
-            >
-              <div
-                // className={"absolute top-0 right-0 left-0 overflow-hidden rounded-lg bg-gray-200 grid gap-px grid-cols-7 isolate"}
-                className={"absolute top-0 right-0 left-0 overflow-hidden "}
-                role="rowgroup"
-              >
-                {daysOfMonth.map((week, index) => {
-                  return (
-                    <div
-                      className="my-0.5 mx-0 flex justify-center"
-                      role="row"
-                      key={`row-${index + 1}`}
-                      aria-rowindex={index + 1}
-                    >
-                      {displayWeekNumber && (
-                        <p
-                          className="font-montserrat relative mx-0.5 box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white/50 outline-0"
-                          role="rowheader"
-                          aria-label={`Week ${getISOWeek(week[0])}`}
-                        >
-                          {getISOWeek(week[0])}.
-                        </p>
-                      )}
-                      {week.map((day, j) => {
-                        return (
-                          <div
-                            key={`day-${day.toISOString()}-${j}`}
-                            className={clsx(
-                              "relative mx-0.5 inline-flex shrink-0",
-                              {
-                                "rounded-l-full":
-                                  toLocaleISODate(selectedRange[0]) ===
-                                  toLocaleISODate(day),
-                                "rounded-r-full":
-                                  toLocaleISODate(selectedRange[1]) ===
-                                  toLocaleISODate(day),
-                                // "bg-pea-300/10":
-                                //   toLocaleISODate(selectedRange[0]) <=
-                                //   toLocaleISODate(day) &&
-                                //   toLocaleISODate(selectedRange[1]) >=
-                                //   toLocaleISODate(day),
-                              }
-                            )}
-                            title={`${toLocaleISODate(
-                              selectedRange[0]
-                            )}-${toLocaleISODate(selectedRange[1])}`}
-                          >
-                            <button
-                              className={clsx(
-                                "font-montserrat hover:bg-pea-300/10 relative box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
-                                {
-                                  "text-white/70":
-                                    day.getMonth() !==
-                                    Number(period.substring(5)) - 1,
-                                  "invisible":
-                                    !showDaysOutsideCurrentMonth &&
-                                    day.getMonth() !==
-                                    Number(period.substring(5)) - 1,
-                                  "border border-white/70":
-                                    toLocaleISODate(new Date()) ===
-                                    toLocaleISODate(day) &&
-                                    toLocaleISODate(day) !=
-                                    toLocaleISODate(selectedDate),
-                                  "bg-pea-400 hover:!bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
-                                    toLocaleISODate(day) ===
-                                    toLocaleISODate(selectedDate),
-                                }
-                              )}
-                              type="button"
-                              role="gridcell"
-                              aria-disabled="false"
-                              tabIndex={-1}
-                              aria-colindex={j + 1}
-                              disabled={disabled}
-                              aria-selected={
-                                toLocaleISODate(selectedDate) ===
-                                toLocaleISODate(day)
-                              }
-                              data-timestamp={day.getTime()}
-                              onClick={(e) => onSelectDate(e, day)}
-                              aria-current={
-                                toLocaleISODate(new Date()) ===
-                                  toLocaleISODate(day)
-                                  ? "date"
-                                  : undefined
-                              }
-                            >
-                              {day.getDate()}
-                            </button>
-                            {/* <Badge content="s" /> */}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          </CSSTransition>
         )}
-      </div>
-    </div>
+
+
+        {currentView === "month" && (
+          <CSSTransition
+            timeout={200}
+            classNames="item"
+          >
+            <div
+              className="relative box-border flex h-full max-h-[280px] w-full flex-wrap overflow-y-auto px-1 fadetransition"
+              style={{ alignContent: "stretch" }}
+              role="radiogroup"
+            >
+              {months.map((month, index) => (
+                <div
+                  className="flex basis-1/3 items-center justify-center"
+                  key={`month-${index}`}
+                >
+                  <button
+                    role="radio"
+                    type="button"
+                    className={clsx(
+                      "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10",
+                      {
+                        "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
+                          month.getMonth() === Number(period.substring(5)) - 1,
+                      }
+                    )}
+                    tabIndex={-1}
+                    aria-checked={
+                      month.getMonth() === Number(period.substring(5)) - 1
+                    }
+                    onClick={() => selectMonth(month.getMonth() + 1)}
+                    aria-label={month.toLocaleDateString(
+                      navigator && navigator.language,
+                      { month: "long" }
+                    )}
+                  >
+                    {month.toLocaleDateString(navigator && navigator.language, {
+                      month: "short",
+                    })}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </CSSTransition>
+        )}
+
+
+        {currentView === "day" && (
+          <CSSTransition
+            timeout={200}
+            classNames="item"
+          >
+            <div className="fadetransition">
+              <div
+                className="flex items-center justify-center"
+                role="row"
+              >
+                {displayWeekNumber && (
+                  <span
+                    role="columnheader"
+                    className="mx-0.5 flex h-10 w-9 items-center justify-center text-center text-xs font-normal text-white/50"
+                    aria-label={"Week number"}
+                  >
+                    #
+                  </span>
+                )}
+                {days.map((day: Date, index) => (
+                  <span
+                    key={`weekday-${index}`}
+                    className="mx-0.5 flex h-10 w-9 items-center justify-center text-center text-xs font-normal leading-[1.66] tracking-[0.03333em] text-white/70"
+                    role="columnheader"
+                    aria-label={day.toLocaleDateString(
+                      navigator && navigator.language,
+                      { weekday: "long" }
+                    )}
+                  >
+                    {day.toLocaleDateString(navigator && navigator.language, {
+                      weekday: "narrow",
+                      localeMatcher: "best fit",
+                    })}
+                  </span>
+                ))}
+              </div>
+              <TransitionGroup
+                className="relative block min-h-[15rem] overflow-x-hidden"
+                childFactory={childFactoryCreator(state.slideDirection)}
+                role="presentation"
+              >
+                <CSSTransition
+                  mountOnEnter
+                  unmountOnExit
+                  key={period}
+                  classNames={state.slideDirection}
+                  timeout={1000}
+                >
+                  <div
+                    className="slide absolute left-0 top-0 right-0 overflow-hidden"
+                    role="rowgroup"
+                  >
+                    {daysOfMonth.map((week, index) => {
+                      return (
+                        <div
+                          className="my-0.5 mx-0 flex justify-center"
+                          role="row"
+                          key={`row-${index + 1}`}
+                          aria-rowindex={index + 1}
+                          aria-label="WeekContainer"
+                        >
+                          {displayWeekNumber && (
+                            <p
+                              className="font-montserrat relative mx-0.5 box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white/50 outline-0"
+                              role="rowheader"
+                              aria-label={`Week ${getISOWeek(week[0])}`}
+                            >
+                              {getISOWeek(week[0])}.
+                            </p>
+                          )}
+                          {week.map((day, j) => {
+                            return (
+                              <div
+                                key={`day-${day?.toISOString()}-${j}`}
+                                className={clsx(
+                                  "relative mx-0.5 inline-flex shrink-0",
+                                  {
+                                    "rounded-l-full":
+                                      toLocaleISODate(selectedRange[0]) ===
+                                      toLocaleISODate(day),
+                                    "rounded-r-full":
+                                      toLocaleISODate(selectedRange[1]) ===
+                                      toLocaleISODate(day),
+                                    // "bg-pea-300/10":
+                                    //   toLocaleISODate(selectedRange[0]) <=
+                                    //   toLocaleISODate(day) &&
+                                    //   toLocaleISODate(selectedRange[1]) >=
+                                    //   toLocaleISODate(day), // Range select
+                                  }
+                                )}
+                                title={`${toLocaleISODate(
+                                  selectedRange[0]
+                                )}-${toLocaleISODate(selectedRange[1])}`}
+                              >
+                                <button
+                                  className={clsx(
+                                    "font-montserrat hover:bg-pea-300/10 relative box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
+                                    {
+                                      "text-white/70":
+                                        day.getMonth() !==
+                                        Number(period.substring(5)) - 1,
+                                      "invisible":
+                                        !showDaysOutsideCurrentMonth &&
+                                        day.getMonth() !==
+                                        Number(period.substring(5)) - 1,
+                                      "border border-white/70":
+                                        toLocaleISODate(new Date()) ===
+                                        toLocaleISODate(day) &&
+                                        toLocaleISODate(day) !=
+                                        toLocaleISODate(selectedDate),
+                                      "bg-pea-400 hover:!bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
+                                        toLocaleISODate(day) ===
+                                        toLocaleISODate(selectedDate),
+                                    }
+                                  )}
+                                  type="button"
+                                  role="gridcell"
+                                  aria-disabled="false"
+                                  tabIndex={-1}
+                                  aria-colindex={j + 1}
+                                  disabled={disabled}
+                                  aria-selected={
+                                    toLocaleISODate(selectedDate) ===
+                                    toLocaleISODate(day)
+                                  }
+                                  data-timestamp={day.getTime()}
+                                  onClick={(e) => onSelectDate(e, day)}
+                                  aria-current={
+                                    toLocaleISODate(new Date()) ===
+                                      toLocaleISODate(day)
+                                      ? "date"
+                                      : undefined
+                                  }
+                                >
+                                  {day.getDate()}
+                                </button>
+                                {/* <Badge content="s" /> */}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CSSTransition>
+              </TransitionGroup>
+            </div>
+          </CSSTransition>
+        )}
+      </TransitionGroup>
+    </div >
   );
 };
 

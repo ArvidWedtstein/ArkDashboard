@@ -109,7 +109,7 @@ const Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
           <CSSTransition
             key={state.slideNo}
             classNames={state.slideDirection}
-            timeout={1000}
+            timeout={700}
           >
             <div className="slide">
               <Card

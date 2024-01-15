@@ -1017,10 +1017,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       </section>
 
       <section className="col-span-2">
-        <Tabs>
+        <Tabs activeColor="success">
           <Tab
             label="Stats"
-            icon={
+            startIcon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -1782,7 +1782,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           </Tab>
           <Tab
             label="Taming"
-            icon={
+            startIcon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -2231,7 +2231,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               (!dino.maturation_time && !dino.incubation_time) ||
               (dino.egg_max == null && dino.egg_min == null)
             }
-            icon={
+            startIcon={
               <>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
