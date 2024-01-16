@@ -1,10 +1,10 @@
 import { useController } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { forwardRef, useMemo, useRef, useState } from "react";
 import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
 
-interface CheckboxGroupProps {
+type CheckboxGroupProps = {
   name?: string;
   options: {
     label: string;
@@ -12,7 +12,7 @@ interface CheckboxGroupProps {
     image?: string | React.ReactNode;
   }[];
   exclusive?: boolean;
-  form?: boolean;
+  enforce?: boolean;
   className?: string;
   defaultValue?: string[] | string;
   size?: "small" | "medium" | "large";
@@ -24,55 +24,60 @@ interface CheckboxGroupProps {
     valueAsJSON?: boolean;
     valueAsNumber?: boolean;
     required?: boolean;
-    single?: boolean;
   };
 }
-const CheckboxGroup = (props: CheckboxGroupProps) => {
+const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>((props, ref) => {
   const {
     name,
     options,
-    form = true,
     defaultValue = [],
     onChange,
     className,
     size = "large",
     disabled = false,
     exclusive = false,
+    enforce = false,
     disableRipple,
     validation = {
       required: false,
-      single: false,
     }
   } = props
   // TODO: fix errorStyles for checkbox group
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    () => validation.single || exclusive ? defaultValue as string[] : Array.isArray(defaultValue) ? defaultValue : [defaultValue] as string[]
+    () => exclusive ? defaultValue as string[] : Array.isArray(defaultValue) ? defaultValue : [defaultValue] as string[]
   );
+
   const { field } =
-    form && !!name
+    !!name
       ? useController({ name: name, rules: validation, defaultValue })
       : { field: null };
+
   const memoizedOptions = useMemo(() => options, [options]);
 
   const handleCheckboxChange = ((event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    let newSelectedOptions;
+    let newSelectedOptions: string[];
 
     if (selectedOptions.includes(value)) {
       newSelectedOptions = selectedOptions.filter(
         (option) => option !== value
       );
     } else {
-      newSelectedOptions = validation.single || exclusive
+      newSelectedOptions = exclusive
         ? [value]
         : [...selectedOptions, value];
+    }
+
+    if (enforce) {
+      const slicedOptions = newSelectedOptions.slice(0, 1);
+      newSelectedOptions = slicedOptions.length >= 1 ? slicedOptions : []
     }
 
     setSelectedOptions(newSelectedOptions);
 
     if (name && field) {
       field.onChange(
-        validation.single || exclusive
+        exclusive
           ? validation.valueAsNumber
             ? parseInt(newSelectedOptions[0])
             : newSelectedOptions[0]
@@ -88,6 +93,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
   return (
     <div
       className={clsx("flex h-fit flex-wrap gap-1 md:gap-3", className)}
+      ref={ref}
     >
       {memoizedOptions.map(({ label, image, value: optValue }) => {
         const rippleRef = useRef(null);
@@ -98,10 +104,9 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         })
 
         return (
-
           <label key={label} aria-details={`Item: ${optValue}`} className="overflow-hidden" {...getRippleHandlers()}>
             <input
-              disabled={(!name && !label) || (!name && !form) || disabled}
+              disabled={(!name && !label) || disabled}
               type="checkbox"
               name={name || optValue.toString() || label + "checkbox"}
               value={optValue || label}
@@ -146,6 +151,6 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
       })}
     </div>
   );
-};
+});
 
 export default CheckboxGroup;

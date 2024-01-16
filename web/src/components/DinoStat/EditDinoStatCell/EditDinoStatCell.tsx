@@ -19,6 +19,14 @@ export const QUERY = gql`
       rank
       type
     }
+    itemsByCategory(category: "Resource") {
+      items {
+        id
+        name
+        image
+      }
+      count
+    }
   }
 `
 const UPDATE_DINO_STAT_MUTATION = gql`
@@ -56,7 +64,7 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 )
 
-export const Success = ({ dinoStat }: CellSuccessProps<EditDinoStatById>) => {
+export const Success = ({ dinoStat, itemsByCategory }: CellSuccessProps<EditDinoStatById>) => {
   const [updateDinoStat, { loading, error }] = useMutation(
     UPDATE_DINO_STAT_MUTATION,
     {
@@ -69,6 +77,7 @@ export const Success = ({ dinoStat }: CellSuccessProps<EditDinoStatById>) => {
       },
     }
   )
+
 
   const onSave = (
     input: UpdateDinoStatInput,
@@ -94,6 +103,7 @@ export const Success = ({ dinoStat }: CellSuccessProps<EditDinoStatById>) => {
           onSave={onSave}
           error={error}
           loading={loading}
+          itemsByCategory={itemsByCategory}
         />
       </div>
     </div>

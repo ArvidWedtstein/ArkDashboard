@@ -666,7 +666,7 @@
 
   /* Success */
   .rw-toast.rw-toast-success {
-    @apply text-pea-800 border-pea-300 dark:text-pea-400 dark:border-pea-600;
+    @apply text-success-800 border-success-300 dark:text-success-400 dark:border-success-600;
   }
 
   /* Warning */
@@ -678,7 +678,7 @@
   .rw-toast.rw-toast-error {
     @apply border-red-300 text-black dark:border-red-600 dark:text-white;
   }
-
+  /* TODO: cleanup */
   /* Table */
   .rw-table-wrapper-responsive {
     @apply overflow-x-auto;
@@ -698,13 +698,6 @@
   .rw-table th,
   .rw-table td {
     @apply whitespace-nowrap py-3 px-6 text-left;
-  }
-
-  .rw-table input {
-    @apply ml-0;
-  }
-  .rw-table-actions {
-    @apply flex items-center justify-center;
   }
 
   /* || PAGINATION */

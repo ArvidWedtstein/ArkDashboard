@@ -10,7 +10,7 @@ import {
   formatNumber,
   getHexCodeFromPercentage,
 } from "src/lib/formatters";
-import { Fragment, useCallback, useEffect, useMemo, useReducer } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
@@ -29,6 +29,8 @@ import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
 import Badge from "src/components/Util/Badge/Badge";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
+import NewDinoStatCell from "src/components/DinoStat/NewDinoStatCell";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -923,9 +925,49 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   }, [state.foods]);
 
 
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const modalRef = useRef<HTMLDivElement>();
   return (
     <article className="grid grid-cols-1 gap-3 text-black dark:text-white md:grid-cols-2">
-
+      <Dialog ref={modalRef} open={openModal} onClose={() => setOpenModal(false)}>
+        <DialogTitle>
+          New Dino Stat
+        </DialogTitle>
+        <DialogContent dividers>
+          <NewDinoStatCell dino_id={dino?.id} />
+        </DialogContent>
+        <DialogActions className="space-x-1">
+          <Button
+            type="button"
+            color="success"
+            variant="contained"
+            onClick={() => {
+              if (modalRef?.current) {
+                modalRef.current.querySelector("form")?.requestSubmit();
+              }
+            }}
+            startIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="pointer-events-none"
+                fill="currentColor"
+              >
+                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+              </svg>
+            }
+          >
+            Save
+          </Button>
+          <Button
+            type="reset"
+            color="error"
+            onClick={() => setOpenModal(null)}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
       <section className="col-span-full grid auto-cols-auto grid-cols-1 md:grid-cols-2">
         <img
           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
@@ -977,6 +1019,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             ).toFixed() || 0}
             xp
           </div>
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={() => setOpenModal(true)}
+          >
+            New Stat
+          </Button>
         </div>
       </section>
 
@@ -1004,7 +1053,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     defaultValue={dino.DinoStat.filter(
                       (d) => d.type == "immobilized_by"
                     ).map((item) => item?.Item.id.toString())}
-                    form={false}
                     disabled={true}
                     options={[
                       {
@@ -1059,7 +1107,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   <h4 className="rw-label">Carryable by</h4>
                   <CheckboxGroup
                     defaultValue={dino?.carryable_by}
-                    form={false}
                     disabled={true}
                     options={[
                       {
@@ -1163,7 +1210,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     defaultValue={dino.DinoStat.filter(
                       (d) => d.type == "fits_through"
                     ).map((item) => item?.Item.id.toString())}
-                    form={false}
                     disabled={true}
                     options={[
                       {
@@ -1851,14 +1897,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   Select Food
                 </Label>
 
+                {/* TODO: add live update */}
                 <CheckboxGroup
                   className="animate-fade-in"
                   name="selected_food"
-                  form={true}
                   defaultValue={[state?.selected_food?.toString() ?? ""]}
                   validation={{
                     required: true,
-                    single: true,
                   }}
                   exclusive
                   options={state.foods.map(({ id, name, max, image }) => ({

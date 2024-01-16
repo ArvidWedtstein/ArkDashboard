@@ -304,7 +304,8 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
 
         <CheckboxGroup
           defaultValue={props.itemRecipe?.crafting_station_id?.toString()}
-          validation={{ single: true, valueAsNumber: true }}
+          exclusive
+          validation={{ valueAsNumber: true }}
           name="crafting_station_id"
           options={[
             {

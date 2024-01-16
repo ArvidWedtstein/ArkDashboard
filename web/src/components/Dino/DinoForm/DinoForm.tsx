@@ -17,12 +17,9 @@ import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
 import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
-import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
 import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
-import Alert from "src/components/Util/Alert/Alert";
-import NewDinoStat from "src/components/DinoStat/NewDinoStat/NewDinoStat";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import DatePicker from "src/components/Util/DatePicker/DatePicker";
 import Button from "src/components/Util/Button/Button";
@@ -59,6 +56,7 @@ const DinoForm = (props: DinoFormProps) => {
     props.dino?.disable_food ?? false
   );
 
+  // TODO: convert to NewDinoCell?
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
     variables: { category: "Resource,Consumable" },
     onCompleted: (data) => {
@@ -1110,311 +1108,49 @@ const DinoForm = (props: DinoFormProps) => {
 
             <FieldError name="movement" className="rw-field-error" />
 
-            <Input
-              label={"Base points"}
-              name="base_points"
-              defaultValue={props.dino?.base_points || 0}
-              InputProps={{
-                min: 0,
-              }}
-              color="DEFAULT"
-              type="number"
-              variant="outlined"
-              validation={{ valueAsNumber: true, min: 0 }}
-            />
+            {/* TODO: add dinostats */}
 
-            {/* TODO: add info box here about base point */}
-
-            <div className="flex flex-row items-start space-x-3">
-              <Input
-                label="Default Damage"
-                name="default_dmg"
-                defaultValue={props.dino?.default_dmg || 0}
-                InputProps={{
-                  min: 0,
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-
-              <Input
-                label="Default Swing Radius"
-                name="default_swing_radius"
-                defaultValue={props.dino?.default_swing_radius || 0}
-                InputProps={{
-                  min: 0,
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-            </div>
-            {/* https://react-hook-form.com/docs/usefieldarray */}
-            <Label
-              name="attack"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Attacks
-            </Label>
-
-            {attackFields.map((atk, index) => (
-              <div
-                className="rw-button-group !mt-0 justify-start"
-                role="group"
-                key={`attack-${index}`}
-              >
-                <input
-                  {...register(`attack.${index}.name`, { required: true })}
-                  type="text"
-                  className="rw-input mt-0"
-                  defaultValue={atk.name}
-                  placeholder={"Name of attack"}
-                />
-                <input
-                  {...register(`attack.${index}.dmg`, { required: false })}
-                  type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.dmg}
-                  placeholder={"Damage"}
-                />
-                <input
-                  {...register(`attack.${index}.radius`, { required: false })}
-                  type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.radius}
-                  placeholder={"Radius"}
-                />
-                <input
-                  {...register(`attack.${index}.stamina`, { required: false })}
-                  type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.stamina}
-                  placeholder={"Stamina drained per use"}
-                />
-                <input
-                  {...register(`attack.${index}.interval`, { required: false })}
-                  type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.interval}
-                  placeholder={"Cooldown"}
-                />
-                <button
-                  type="button"
-                  className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                  onClick={() => removeAttack(index)}
-                >
-                  Remove
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                    className="rw-button-icon-end"
-                  >
-                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                  </svg>
-                </button>
+            {props.dino && (
+              <div className="mt-3 table table-auto rounded-lg max-w-2xl border border-zinc-500 border-opacity-70 p-2 text-left">
+                <div className="table-header-group w-full text-xs text-black dark:text-zinc-300">
+                  <div className="table-cell p-2">Item</div>
+                  <div className="table-cell w-1/5 p-2">Value</div>
+                  <div className="table-cell p-2">Type</div>
+                  <div className="table-cell p-2">Action</div>
+                </div>
+                {props.dino?.DinoStat.map((dinoStat) => {
+                  return (
+                    <div className={`table-row-group w-full text-xs text-black dark:text-white`}>
+                      <div className="table-cell w-2/5 p-2">{dinoStat.Item.name}</div>
+                      <div className="table-cell p-2">
+                        {dinoStat.value}
+                      </div>
+                      <div className="table-cell truncate p-2">
+                        {dinoStat.type}
+                      </div>
+                      <div className="table-cell align-middle relative">
+                        <Button
+                          permission="gamedata_update"
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                          onClick={() => { }}
+                          startIcon={
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                              <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                            </svg>
+                          }
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
-            ))}
-            <div className="rw-button-group justify-start">
-              <button
-                type="button"
-                className="rw-button rw-button-gray"
-                onClick={() =>
-                  appendAttack({
-                    name: "",
-                    dmg: null,
-                    radius: null,
-                    stamina: null,
-                    interval: null,
-                  })
-                }
-              >
-                Add Attack
-              </button>
-            </div>
-            {/*
-        <TextField
-          name="attack"
-          defaultValue={JSON.stringify(props.dino?.attack)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={"undefined"}
-          validation={{ valueAsJSON: true }}
-        /> */}
+            )}
 
-            <FieldError name="attack" className="rw-field-error" />
-            {/* </Form> */}
-          </Step>
-
-          <Step title="Mating">
-            {/* <Form<FormDino> onSubmit={onSubmit} error={props.error}>
-              <FormError
-                error={props.error}
-                wrapperClassName="rw-form-error-wrapper"
-                titleClassName="rw-form-error-title"
-                listClassName="rw-form-error-list"
-              /> */}
-            <Switch
-              name="breedable"
-              onLabel="Breedable"
-              defaultChecked={props.dino?.breedable}
-              helperText="Is this dino breedable?"
-            />
-
-            <FieldError name="breedable" className="rw-field-error" />
-
-            <div className="flex flex-row items-start space-x-3">
-
-              <Input
-                label="Egg minimum temperature"
-                name="egg_min"
-                defaultValue={props.dino?.egg_min || 0}
-                InputProps={{
-                  min: 0,
-                  endAdornment: (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 fill-current" viewBox="0 0 512 512">
-                      <path d="M159.1 354.7l.0005-50.72c0-8.869-7.125-15.99-15.1-15.99S128 295.1 128 303.1l.0015 50.72c-21.1 7.871-35.24 30.36-31.24 53.35C100.6 431.1 120.6 447.1 144 447.1s43.37-16.83 47.24-39.94C195.2 385 181.1 362.6 159.1 354.7zM223.1 79.98C223.1 35.88 188.1 0 144 0S64.01 35.88 64.01 79.98l.0068 241.7c-43.12 43.98-42.62 114.4 1.125 157.8c43.62 43.35 114.1 43.35 157.7 0c43.74-43.35 44.24-113.8 1.125-157.8L223.1 79.98zM219.9 425.1C208.1 457.7 178.4 479.7 144 479.7s-64.99-21.99-75.86-54.6s.375-68.46 27.87-89.08v-256.1c0-26.48 21.5-47.97 47.99-47.97s47.99 21.49 47.99 47.97v256.1C219.5 356.7 230.7 392.5 219.9 425.1zM507.3 356.7c-6.25-6.25-16.38-6.25-22.62 0L416 425.4V48C416 39.16 408.8 32 400 32S384 39.16 384 48v377.4l-68.69-68.69C312.2 353.6 308.1 352 304 352s-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l96 96c6.25 6.25 16.38 6.25 22.62 0l96-96C513.6 373.1 513.6 362.9 507.3 356.7z" />
-                    </svg>
-                  )
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                helperText="Minimum temperature for the egg to hatch"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-
-              <Input
-                label="Egg maximum temperature"
-                name="egg_max"
-                defaultValue={props.dino?.egg_max || 0}
-                InputProps={{
-                  min: 0,
-                  endAdornment: (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-4 h-4 fill-current">
-                      <path d="M223.1 79.98C223.1 35.88 188.1 0 144 0S64.01 35.88 64.01 79.98l.0068 241.7c-43.12 43.98-42.62 114.4 1.125 157.8c43.62 43.35 114.1 43.35 157.7 0c43.74-43.35 44.24-113.8 1.125-157.8L223.1 79.98zM219.9 425.1C208.1 457.7 178.4 479.7 144 479.7s-64.99-21.99-75.86-54.6s.375-68.46 27.87-89.08v-256.1c0-26.48 21.5-47.97 47.99-47.97s47.99 21.49 47.99 47.97v256.1C219.5 356.7 230.7 392.5 219.9 425.1zM159.1 354.7v-274.7c0-8.869-7.125-15.96-15.1-15.96S128 71.09 128 79.96v274.7c-21.1 7.871-35.24 30.36-31.24 53.35C100.6 431.1 120.6 447.1 144 447.1s43.37-16.83 47.24-39.94C195.2 385 181.1 362.6 159.1 354.7zM507.3 132.7l-96-96c-6.25-6.25-16.38-6.25-22.62 0l-96 96c-6.25 6.25-6.25 16.38 0 22.62s16.38 6.25 22.62 0L384 86.63V464c0 8.844 7.156 16 16 16s16-7.156 16-16V86.63l68.69 68.69C487.8 158.4 491.9 160 496 160s8.188-1.562 11.31-4.688C513.6 149.1 513.6 138.9 507.3 132.7z" />
-                    </svg>
-                  )
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                helperText="Maximum temperature for the egg to hatch"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-            </div>
-
-            <div className="flex flex-row items-start space-x-3">
-              <Input
-                label="Mating cooldown minimum"
-                name="mating_cooldown_min"
-                defaultValue={props.dino?.mating_cooldown_min || 0}
-                InputProps={{
-                  min: 0,
-                  endAdornment: (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 h-4 fill-current">
-                      <path d="M32 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C64 270.3 49.67 256 32 256zM84.35 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.26C117.1 433.9 96.85 433.9 84.35 446.4zM129.6 129.6c12.5-12.5 12.5-32.76 0-45.25c-12.5-12.5-32.76-12.5-45.26 0c-12.5 12.5-12.5 32.76 0 45.25C96.85 142.1 117.1 142.1 129.6 129.6zM288 64c17.67 0 32-14.33 32-32c0-17.67-14.33-32-32-32c-17.67 0-32 14.33-32 32C256 49.67 270.3 64 288 64zM446.4 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.26S458.9 433.9 446.4 446.4zM401.1 174.9c-62.48-62.48-163.8-62.48-226.3 .002s-62.48 163.8 0 226.3c62.48 62.49 163.8 62.49 226.3 .002S463.6 237.3 401.1 174.9zM378.5 378.5c-46.03 46.03-118.4 49.05-168.6 10.17l89.37-89.37c6.254-6.254 6.254-16.37 0-22.63c-6.252-6.254-16.37-6.254-22.63 0L187.3 366.1c-38.89-50.17-35.86-122.5 10.17-168.6c49.91-49.91 131.1-49.91 181 0C428.4 247.4 428.4 328.6 378.5 378.5zM544 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C576 270.3 561.7 256 544 256zM446.4 84.35c-12.5 12.5-12.5 32.76 0 45.25c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.25C479.2 71.86 458.9 71.86 446.4 84.35z" />
-                    </svg>
-                  )
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-
-
-              <Input
-                label="Mating cooldown maximum"
-                name="mating_cooldown_max"
-                defaultValue={props.dino?.mating_cooldown_max || 0}
-                InputProps={{
-                  min: 0,
-                  endAdornment: (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 h-4 fill-current">
-                      <path d="M32 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C64 270.3 49.67 256 32 256zM129.6 129.6c12.5-12.5 12.5-32.76 0-45.25c-12.5-12.5-32.76-12.5-45.26 0c-12.5 12.5-12.5 32.76 0 45.25C96.85 142.1 117.1 142.1 129.6 129.6zM288 64c17.67 0 32-14.33 32-32c0-17.67-14.33-32-32-32c-17.67 0-32 14.33-32 32C256 49.67 270.3 64 288 64zM84.35 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.26C117.1 433.9 96.85 433.9 84.35 446.4zM544 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C576 270.3 561.7 256 544 256zM446.4 84.35c-12.5 12.5-12.5 32.76 0 45.25c12.5 12.5 32.76 12.5 45.25 0c12.5-12.5 12.5-32.76 0-45.25C479.2 71.86 458.9 71.86 446.4 84.35zM446.4 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.25 0c12.5-12.5 12.5-32.76 0-45.26S458.9 433.9 446.4 446.4zM401.1 174.9c-62.48-62.48-163.8-62.48-226.3 0s-62.48 163.8 0 226.3s163.8 62.48 226.3 0S463.6 237.3 401.1 174.9zM388.7 366.1l-89.37-89.37c-6.254-6.252-16.37-6.252-22.63 0c-6.254 6.254-6.254 16.37 0 22.63l89.36 89.37c-50.17 38.89-122.5 35.86-168.6-10.17c-49.91-49.91-49.91-131.1-.002-181c49.91-49.91 131.1-49.91 181 0C424.5 243.5 427.6 315.9 388.7 366.1z" />
-                    </svg>
-                  )
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-            </div>
-
-            <div className="flex flex-row items-start space-x-3">
-              <Input
-                label="Incubation Time"
-                name="incubation_time"
-                defaultValue={props.dino?.incubation_time || 0}
-                InputProps={{
-                  min: 0,
-                  endAdornment: (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="w-4 h-4 fill-current">
-                      <path d="M192 16c-106 0-192 200.6-192 300S85.1 496 192 496c105.1 0 192-80.63 192-180S297.1 16 192 16zM192 464c-88.22 0-160-66.39-160-148C32 222.3 114.2 48 192 48s160 174.3 160 268C352 397.6 280.2 464 192 464zM135.2 117.1C100.7 160.7 64 240.4 64 304C64 312.8 71.16 320 80 320S96 312.8 96 304c0-54.19 32.59-126.9 64.13-165.1c5.547-6.875 4.469-16.94-2.406-22.5C150.9 109.1 140.8 111 135.2 117.1z" />
-                    </svg>
-                  )
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-
-              <Input
-                label="Maturation Time"
-                name="maturation_time"
-                defaultValue={props.dino?.maturation_time || 0}
-                InputProps={{
-                  min: 0,
-                  endAdornment: (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-4 h-4 fill-current">
-                      <path d="M80 96h-64C7.156 96 0 103.2 0 112C0 226.7 93.31 320 208 320H256v144c0 8.836 7.164 16 16 16s16-7.164 16-16v-160C288 189.3 194.7 96 80 96zM208 288C116.3 288 40.83 217.6 32.72 128H80c91.66 0 167.2 70.41 175.3 160H208zM496 32h-64c-66.75 0-129.9 32.41-168.1 86.66C257.9 125.8 259.5 135.8 266.7 141c7.141 5.125 17.16 3.5 22.33-3.656C322.1 91.41 375.5 64 432 64h47.27c-7.734 83.78-75.48 152.4-160.6 159.4c-8.812 .7187-15.36 8.438-14.64 17.25c.7031 8.375 7.688 14.69 15.94 14.69c.4375 0 .8906-.0313 1.328-.0625C428.2 246.5 512 155.4 512 48C512 39.16 504.8 32 496 32z" />
-                    </svg>
-                  )
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-
-              <Input
-                label="Gestation Time"
-                name="gestation_time"
-                defaultValue={props.dino?.gestation_time || 0}
-                InputProps={{
-                  min: 0,
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-
-              <Input
-                label="Baby food consumption multiplier"
-                name="baby_food_consumption_mult"
-                defaultValue={props.dino?.baby_food_consumption_mult || 0}
-                InputProps={{
-                  min: 0,
-                }}
-                color="DEFAULT"
-                type="number"
-                variant="outlined"
-                validation={{ valueAsNumber: true, min: 0 }}
-              />
-
-            </div>
-            {/* </Form> */}
-          </Step>
-        </Stepper>
-
-        {/* <Disclosure className="mt-5" title="Other" text_size="text-lg">
+            {/* <Disclosure className="mt-5" title="Other" text_size="text-lg">
         <NewDinoStat dino_id={props?.dino?.id} />
         <div>
           <div>
@@ -1889,6 +1625,313 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </div>
       </Disclosure> */}
+
+
+
+
+            <Input
+              label={"Base points"}
+              name="base_points"
+              defaultValue={props.dino?.base_points || 0}
+              InputProps={{
+                min: 0,
+              }}
+              color="DEFAULT"
+              type="number"
+              variant="outlined"
+              validation={{ valueAsNumber: true, min: 0 }}
+            />
+
+            {/* TODO: add info box here about base point */}
+
+            <div className="flex flex-row items-start space-x-3">
+              <Input
+                label="Default Damage"
+                name="default_dmg"
+                defaultValue={props.dino?.default_dmg || 0}
+                InputProps={{
+                  min: 0,
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+
+              <Input
+                label="Default Swing Radius"
+                name="default_swing_radius"
+                defaultValue={props.dino?.default_swing_radius || 0}
+                InputProps={{
+                  min: 0,
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+            </div>
+            {/* https://react-hook-form.com/docs/usefieldarray */}
+            <Label
+              name="attack"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Attacks
+            </Label>
+
+            {attackFields.map((atk, index) => (
+              <div
+                className="rw-button-group !mt-0 justify-start"
+                role="group"
+                key={`attack-${index}`}
+              >
+                <input
+                  {...register(`attack.${index}.name`, { required: true })}
+                  type="text"
+                  className="rw-input mt-0"
+                  defaultValue={atk.name}
+                  placeholder={"Name of attack"}
+                />
+                <input
+                  {...register(`attack.${index}.dmg`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.dmg}
+                  placeholder={"Damage"}
+                />
+                <input
+                  {...register(`attack.${index}.radius`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.radius}
+                  placeholder={"Radius"}
+                />
+                <input
+                  {...register(`attack.${index}.stamina`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.stamina}
+                  placeholder={"Stamina drained per use"}
+                />
+                <input
+                  {...register(`attack.${index}.interval`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.interval}
+                  placeholder={"Cooldown"}
+                />
+                <button
+                  type="button"
+                  className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                  onClick={() => removeAttack(index)}
+                >
+                  Remove
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                    className="rw-button-icon-end"
+                  >
+                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+            <div className="rw-button-group justify-start">
+              <button
+                type="button"
+                className="rw-button rw-button-gray"
+                onClick={() =>
+                  appendAttack({
+                    name: "",
+                    dmg: null,
+                    radius: null,
+                    stamina: null,
+                    interval: null,
+                  })
+                }
+              >
+                Add Attack
+              </button>
+            </div>
+            {/*
+        <TextField
+          name="attack"
+          defaultValue={JSON.stringify(props.dino?.attack)}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          emptyAs={"undefined"}
+          validation={{ valueAsJSON: true }}
+        /> */}
+
+            <FieldError name="attack" className="rw-field-error" />
+            {/* </Form> */}
+          </Step>
+
+          <Step title="Mating">
+            {/* <Form<FormDino> onSubmit={onSubmit} error={props.error}>
+              <FormError
+                error={props.error}
+                wrapperClassName="rw-form-error-wrapper"
+                titleClassName="rw-form-error-title"
+                listClassName="rw-form-error-list"
+              /> */}
+            <Switch
+              name="breedable"
+              onLabel="Breedable"
+              defaultChecked={props.dino?.breedable}
+              helperText="Is this dino breedable?"
+            />
+
+            <FieldError name="breedable" className="rw-field-error" />
+
+            <div className="flex flex-row items-start space-x-3">
+
+              <Input
+                label="Egg minimum temperature"
+                name="egg_min"
+                defaultValue={props.dino?.egg_min || 0}
+                InputProps={{
+                  min: 0,
+                  endAdornment: (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 fill-current" viewBox="0 0 512 512">
+                      <path d="M159.1 354.7l.0005-50.72c0-8.869-7.125-15.99-15.1-15.99S128 295.1 128 303.1l.0015 50.72c-21.1 7.871-35.24 30.36-31.24 53.35C100.6 431.1 120.6 447.1 144 447.1s43.37-16.83 47.24-39.94C195.2 385 181.1 362.6 159.1 354.7zM223.1 79.98C223.1 35.88 188.1 0 144 0S64.01 35.88 64.01 79.98l.0068 241.7c-43.12 43.98-42.62 114.4 1.125 157.8c43.62 43.35 114.1 43.35 157.7 0c43.74-43.35 44.24-113.8 1.125-157.8L223.1 79.98zM219.9 425.1C208.1 457.7 178.4 479.7 144 479.7s-64.99-21.99-75.86-54.6s.375-68.46 27.87-89.08v-256.1c0-26.48 21.5-47.97 47.99-47.97s47.99 21.49 47.99 47.97v256.1C219.5 356.7 230.7 392.5 219.9 425.1zM507.3 356.7c-6.25-6.25-16.38-6.25-22.62 0L416 425.4V48C416 39.16 408.8 32 400 32S384 39.16 384 48v377.4l-68.69-68.69C312.2 353.6 308.1 352 304 352s-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l96 96c6.25 6.25 16.38 6.25 22.62 0l96-96C513.6 373.1 513.6 362.9 507.3 356.7z" />
+                    </svg>
+                  )
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                helperText="Minimum temperature for the egg to hatch"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+
+              <Input
+                label="Egg maximum temperature"
+                name="egg_max"
+                defaultValue={props.dino?.egg_max || 0}
+                InputProps={{
+                  min: 0,
+                  endAdornment: (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-4 h-4 fill-current">
+                      <path d="M223.1 79.98C223.1 35.88 188.1 0 144 0S64.01 35.88 64.01 79.98l.0068 241.7c-43.12 43.98-42.62 114.4 1.125 157.8c43.62 43.35 114.1 43.35 157.7 0c43.74-43.35 44.24-113.8 1.125-157.8L223.1 79.98zM219.9 425.1C208.1 457.7 178.4 479.7 144 479.7s-64.99-21.99-75.86-54.6s.375-68.46 27.87-89.08v-256.1c0-26.48 21.5-47.97 47.99-47.97s47.99 21.49 47.99 47.97v256.1C219.5 356.7 230.7 392.5 219.9 425.1zM159.1 354.7v-274.7c0-8.869-7.125-15.96-15.1-15.96S128 71.09 128 79.96v274.7c-21.1 7.871-35.24 30.36-31.24 53.35C100.6 431.1 120.6 447.1 144 447.1s43.37-16.83 47.24-39.94C195.2 385 181.1 362.6 159.1 354.7zM507.3 132.7l-96-96c-6.25-6.25-16.38-6.25-22.62 0l-96 96c-6.25 6.25-6.25 16.38 0 22.62s16.38 6.25 22.62 0L384 86.63V464c0 8.844 7.156 16 16 16s16-7.156 16-16V86.63l68.69 68.69C487.8 158.4 491.9 160 496 160s8.188-1.562 11.31-4.688C513.6 149.1 513.6 138.9 507.3 132.7z" />
+                    </svg>
+                  )
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                helperText="Maximum temperature for the egg to hatch"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+            </div>
+
+            <div className="flex flex-row items-start space-x-3">
+              <Input
+                label="Mating cooldown minimum"
+                name="mating_cooldown_min"
+                defaultValue={props.dino?.mating_cooldown_min || 0}
+                InputProps={{
+                  min: 0,
+                  endAdornment: (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 h-4 fill-current">
+                      <path d="M32 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C64 270.3 49.67 256 32 256zM84.35 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.26C117.1 433.9 96.85 433.9 84.35 446.4zM129.6 129.6c12.5-12.5 12.5-32.76 0-45.25c-12.5-12.5-32.76-12.5-45.26 0c-12.5 12.5-12.5 32.76 0 45.25C96.85 142.1 117.1 142.1 129.6 129.6zM288 64c17.67 0 32-14.33 32-32c0-17.67-14.33-32-32-32c-17.67 0-32 14.33-32 32C256 49.67 270.3 64 288 64zM446.4 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.26S458.9 433.9 446.4 446.4zM401.1 174.9c-62.48-62.48-163.8-62.48-226.3 .002s-62.48 163.8 0 226.3c62.48 62.49 163.8 62.49 226.3 .002S463.6 237.3 401.1 174.9zM378.5 378.5c-46.03 46.03-118.4 49.05-168.6 10.17l89.37-89.37c6.254-6.254 6.254-16.37 0-22.63c-6.252-6.254-16.37-6.254-22.63 0L187.3 366.1c-38.89-50.17-35.86-122.5 10.17-168.6c49.91-49.91 131.1-49.91 181 0C428.4 247.4 428.4 328.6 378.5 378.5zM544 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C576 270.3 561.7 256 544 256zM446.4 84.35c-12.5 12.5-12.5 32.76 0 45.25c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.25C479.2 71.86 458.9 71.86 446.4 84.35z" />
+                    </svg>
+                  )
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+
+
+              <Input
+                label="Mating cooldown maximum"
+                name="mating_cooldown_max"
+                defaultValue={props.dino?.mating_cooldown_max || 0}
+                InputProps={{
+                  min: 0,
+                  endAdornment: (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 h-4 fill-current">
+                      <path d="M32 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C64 270.3 49.67 256 32 256zM129.6 129.6c12.5-12.5 12.5-32.76 0-45.25c-12.5-12.5-32.76-12.5-45.26 0c-12.5 12.5-12.5 32.76 0 45.25C96.85 142.1 117.1 142.1 129.6 129.6zM288 64c17.67 0 32-14.33 32-32c0-17.67-14.33-32-32-32c-17.67 0-32 14.33-32 32C256 49.67 270.3 64 288 64zM84.35 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.26 0c12.5-12.5 12.5-32.76 0-45.26C117.1 433.9 96.85 433.9 84.35 446.4zM544 256c-17.67 0-32 14.33-32 32c0 17.67 14.33 32 32 32s32-14.33 32-32C576 270.3 561.7 256 544 256zM446.4 84.35c-12.5 12.5-12.5 32.76 0 45.25c12.5 12.5 32.76 12.5 45.25 0c12.5-12.5 12.5-32.76 0-45.25C479.2 71.86 458.9 71.86 446.4 84.35zM446.4 446.4c-12.5 12.5-12.5 32.76 0 45.26c12.5 12.5 32.76 12.5 45.25 0c12.5-12.5 12.5-32.76 0-45.26S458.9 433.9 446.4 446.4zM401.1 174.9c-62.48-62.48-163.8-62.48-226.3 0s-62.48 163.8 0 226.3s163.8 62.48 226.3 0S463.6 237.3 401.1 174.9zM388.7 366.1l-89.37-89.37c-6.254-6.252-16.37-6.252-22.63 0c-6.254 6.254-6.254 16.37 0 22.63l89.36 89.37c-50.17 38.89-122.5 35.86-168.6-10.17c-49.91-49.91-49.91-131.1-.002-181c49.91-49.91 131.1-49.91 181 0C424.5 243.5 427.6 315.9 388.7 366.1z" />
+                    </svg>
+                  )
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+            </div>
+
+            <div className="flex flex-row items-start space-x-3">
+              <Input
+                label="Incubation Time"
+                name="incubation_time"
+                defaultValue={props.dino?.incubation_time || 0}
+                InputProps={{
+                  min: 0,
+                  endAdornment: (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="w-4 h-4 fill-current">
+                      <path d="M192 16c-106 0-192 200.6-192 300S85.1 496 192 496c105.1 0 192-80.63 192-180S297.1 16 192 16zM192 464c-88.22 0-160-66.39-160-148C32 222.3 114.2 48 192 48s160 174.3 160 268C352 397.6 280.2 464 192 464zM135.2 117.1C100.7 160.7 64 240.4 64 304C64 312.8 71.16 320 80 320S96 312.8 96 304c0-54.19 32.59-126.9 64.13-165.1c5.547-6.875 4.469-16.94-2.406-22.5C150.9 109.1 140.8 111 135.2 117.1z" />
+                    </svg>
+                  )
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+
+              <Input
+                label="Maturation Time"
+                name="maturation_time"
+                defaultValue={props.dino?.maturation_time || 0}
+                InputProps={{
+                  min: 0,
+                  endAdornment: (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-4 h-4 fill-current">
+                      <path d="M80 96h-64C7.156 96 0 103.2 0 112C0 226.7 93.31 320 208 320H256v144c0 8.836 7.164 16 16 16s16-7.164 16-16v-160C288 189.3 194.7 96 80 96zM208 288C116.3 288 40.83 217.6 32.72 128H80c91.66 0 167.2 70.41 175.3 160H208zM496 32h-64c-66.75 0-129.9 32.41-168.1 86.66C257.9 125.8 259.5 135.8 266.7 141c7.141 5.125 17.16 3.5 22.33-3.656C322.1 91.41 375.5 64 432 64h47.27c-7.734 83.78-75.48 152.4-160.6 159.4c-8.812 .7187-15.36 8.438-14.64 17.25c.7031 8.375 7.688 14.69 15.94 14.69c.4375 0 .8906-.0313 1.328-.0625C428.2 246.5 512 155.4 512 48C512 39.16 504.8 32 496 32z" />
+                    </svg>
+                  )
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+
+              <Input
+                label="Gestation Time"
+                name="gestation_time"
+                defaultValue={props.dino?.gestation_time || 0}
+                InputProps={{
+                  min: 0,
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+
+              <Input
+                label="Baby food consumption multiplier"
+                name="baby_food_consumption_mult"
+                defaultValue={props.dino?.baby_food_consumption_mult || 0}
+                InputProps={{
+                  min: 0,
+                }}
+                color="DEFAULT"
+                type="number"
+                variant="outlined"
+                validation={{ valueAsNumber: true, min: 0 }}
+              />
+
+            </div>
+          </Step>
+        </Stepper>
+
 
         {/* <Button variant="contained" color="success" disabled={props.loading} type="submit">
           Submit

@@ -308,48 +308,6 @@ const MapResourcesList = ({ mapResources }: FindMapResourcesByMap) => {
           }}
         />
       </div>
-
-      {/* <table className="rw-table">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Created at</th>
-            <th>Updated at</th>
-            <th>Map id</th>
-            <th>Item id</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>Type</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
-          {mapResources.map((mapResource) => (
-            <tr key={mapResource.id}>
-              <td>{truncate(mapResource.id)}</td>
-              <td>{timeTag(mapResource.created_at)}</td>
-              <td>{timeTag(mapResource.updated_at)}</td>
-              <td>{truncate(mapResource.map_id)}</td>
-              <td>{truncate(mapResource.item_id)}</td>
-              <td>{truncate(mapResource.latitude)}</td>
-              <td>{truncate(mapResource.longitude)}</td>
-              <td>{truncate(mapResource.type)}</td>
-              <td>
-                <nav className="rw-table-actions">
-                  <Link
-                    to={routes.mapResource({ id: mapResource.id })}
-                    title={'Show mapResource ' + mapResource.id + ' detail'}
-                    className="rw-button rw-button-small"
-                  >
-                    Show
-                  </Link>
-
-                </nav>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
     </div>
   )
 }

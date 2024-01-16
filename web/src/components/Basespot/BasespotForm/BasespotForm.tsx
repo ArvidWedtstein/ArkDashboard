@@ -267,8 +267,8 @@ const BasespotForm = (props: BasespotFormProps) => {
         {/* TODO: fix icons here */}
         <CheckboxGroup
           name="type"
-          form={true}
-          validation={{ required: true, single: true }}
+          exclusive
+          validation={{ required: true }}
           defaultValue={props?.basespot?.type || "cave"}
           options={
             props.basespotTypes
@@ -373,8 +373,8 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <CheckboxGroup
           name="level"
-          form={true}
-          validation={{ required: true, single: true }}
+          exclusive
+          validation={{ required: true }}
           defaultValue={props.basespot?.level || "starter"}
           options={[
             {
