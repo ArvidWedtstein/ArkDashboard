@@ -10,7 +10,7 @@ import type { DinoStat, EditDinoById, FindItemsByCategory, UpdateDinoStatInput, 
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Input } from "src/components/Util/Input/Input";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { ArrayElement } from "src/lib/formatters";
 
@@ -116,6 +116,10 @@ const DinoStatForm = (props: DinoStatFormProps) => {
     ]
   }
 
+  useEffect(() => {
+    setSelectedType(props?.dinoStat?.type)
+  }, [props.dinoStat])
+
   return (
     <div className="rw-form-wrapper my-3">
       <Form<FormDinoStat> onSubmit={onSubmit} error={props.error}>
@@ -152,7 +156,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
             closeOnSelect
           />
 
-          {!["immobilized_by", "fits_through"].includes(selectedType) && (
+          {!["immobilized_by", "fits_through", "saddle"].includes(selectedType) && (
             <Input
               label="Value"
               name="value"
@@ -188,7 +192,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
           <Lookup
             margin="none"
             label="Item"
-            options={props?.itemsByCategory.items.filter((c) => c.type === (selectedType === 'saddle' ? 'Saddle' : ''))}
+            options={props?.itemsByCategory.items.filter((c) => (selectedType === 'saddle' ? c.type === 'Saddle' : true))}
             name="item_id"
             defaultValue={props.dinoStat?.item_id}
             getOptionValue={(opt) => opt.id}

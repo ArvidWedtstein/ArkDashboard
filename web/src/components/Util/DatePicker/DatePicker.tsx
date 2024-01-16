@@ -1,6 +1,6 @@
 import { FieldError, RegisterOptions } from "@redwoodjs/forms/dist";
 import clsx from "clsx";
-import { CSSProperties, Fragment, HTMLAttributes, useRef, useState } from "react";
+import { CSSProperties, Fragment, HTMLAttributes, useEffect, useRef, useState } from "react";
 
 import DateCalendar from "../DateCalendar/DateCalendar";
 import Popper from "../Popper/Popper";
@@ -128,6 +128,14 @@ const DatePicker = ({
     setOpen(false);
   };
 
+  useEffect(() => {
+    setInternalValue(defaultValue.toLocaleDateString(navigator && navigator.language, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }));
+  }, [defaultValue])
+
   return (
     <div
       className={"group relative flex w-fit min-w-[10rem] items-center text-black dark:text-white"}
@@ -141,6 +149,7 @@ const DatePicker = ({
         color={color}
         required={required}
         onClick={handleClick}
+        defaultValue={internalValue}
       >
         <InputLabel
           children={label ?? name}

@@ -96,6 +96,7 @@ const SigninPage = () => {
             margin="normal"
             autoComplete="current-password"
             InputProps={{
+              autoComplete: 'password',
               endAdornment: (
                 <Button
                   variant="icon"

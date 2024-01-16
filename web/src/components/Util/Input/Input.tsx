@@ -371,11 +371,11 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
       },
     };
     const colors = {
-      primary: `text-blue-400`,
-      secondary: `text-zinc-500`,
-      success: `text-green-500`,
-      error: `text-red-500`,
-      warning: `text-amber-400`,
+      primary: `text-primary-400`,
+      secondary: `text-secondary-500`,
+      success: `text-success-500`,
+      error: `text-error-500`,
+      warning: `text-warning-400`,
       disabled: `dark:text-white/50 text-black/50`,
       DEFAULT: `dark:text-white text-black`,
       DEFAULTNOFOCUS: `dark:text-white/70 text-black/70`,
@@ -789,11 +789,11 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
     };
 
     const borders = {
-      primary: `after:border-blue-400`,
-      secondary: `after:border-zinc-500`,
-      success: `after:border-pea-500`,
-      error: `after:border-red-500`,
-      warning: `after:border-amber-400`,
+      primary: `after:border-primary-400`,
+      secondary: `after:border-secondary-500`,
+      success: `after:border-success-500`,
+      error: `after:border-error-500`,
+      warning: `after:border-warning-400`,
       DEFAULT: `after:border-black after:dark:border-white`,
     };
 
@@ -899,22 +899,23 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
               aria-invalid={fcs.error}
               aria-describedby={ariaDescribedby}
               autoComplete={autoComplete}
+              aria-multiline={multiline}
               autoFocus={autoFocus}
               defaultValue={defaultValue}
               disabled={fcs.disabled}
               id={id}
-              onAnimationStart={handleAutoFill}
               name={name}
               placeholder={placeholder}
               readOnly={readOnly}
               required={fcs.required}
               rows={rows}
               value={value}
-              onKeyDown={onKeyDown}
-              onKeyUp={onKeyUp}
               type={type}
               min={min}
               max={max}
+              onAnimationStart={handleAutoFill}
+              onKeyDown={onKeyDown}
+              onKeyUp={onKeyUp}
               ref={handleInputRef}
               {...inputProps}
               className={clsx(
