@@ -184,29 +184,18 @@ const DinoForm = (props: DinoFormProps) => {
   );
 
   type FormValues = {
-    attack: any[];
-    "DinoStat.create": { type: string; item_id: number; value: number }[];
-    wr: any[];
+    attack: {
+      id?: string;
+      dmg?: number;
+      name?: string;
+      interval?: number;
+      radius?: number;
+      stamina?: number;
+    }[];
   };
-  const { register, control } = useForm<FormValues>({
+  const { register, control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      attack: [],
-      "DinoStat.create": [
-        {
-          type: "",
-          value: 0,
-          item_id: null,
-        },
-      ],
-      wr: props?.dino?.DinoStat.filter(
-        (f) => f.type === "weight_reduction"
-      ) ?? [
-          {
-            type: "",
-            value: 0,
-            item_id: null,
-          },
-        ],
+      attack: props.dino.attack as FormValues["attack"] || [],
     },
   });
 
@@ -221,8 +210,9 @@ const DinoForm = (props: DinoFormProps) => {
 
 
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
-  const onSubmit = (data: FormDino) => {
 
+  const onSubmit = (data: FormDino) => (e) => {
+    e.preventDefault();
     console.log(data);
 
 
@@ -235,6 +225,7 @@ const DinoForm = (props: DinoFormProps) => {
     open: boolean;
     dino_stat?: ArrayElement<EditDinoById["dino"]["DinoStat"]>
   }>({ open: false, dino_stat: null });
+
   const modalRef = useRef<HTMLDivElement>();
 
   const [createDinoStat] = useMutation(
@@ -315,7 +306,7 @@ const DinoForm = (props: DinoFormProps) => {
         </DialogActions>
       </Dialog>
 
-      <Form onSubmit={onSubmit} ref={formRef} error={props.error}>
+      <Form onSubmit={handleSubmit(onSubmit)} ref={formRef} error={props.error}>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -324,7 +315,8 @@ const DinoForm = (props: DinoFormProps) => {
         />
         <Stepper completion onStepComplete={(step, final) => {
           if (!final) return;
-          formRef?.current?.requestSubmit();
+          formRef.current.submit();
+          // formRef?.current?.requestSubmit();
         }}>
           <Step title="General">
             <div className="flex flex-row items-start space-x-3">
@@ -558,7 +550,7 @@ const DinoForm = (props: DinoFormProps) => {
             \
             {/* TODO: add newer fields. */}
             {/* FIELD checklist:
-            ["flags","multipliers","default_dmg","default_swing_radius","hitboxes","targeting_team_name","icon","image"*/}
+            ["flags","multipliers","hitboxes","icon","image"*/}
           </Step>
 
           <Step title="Food" className="flex flex-col-reverse" optional>
@@ -1266,102 +1258,88 @@ const DinoForm = (props: DinoFormProps) => {
               Attacks
             </Label>
 
-            {attackFields.map((atk, index) => (
-              <div
-                className="rw-button-group !mt-0 justify-start"
-                role="group"
-                key={`attack-${index}`}
-              >
-                <input
+            {attackFields.map(({ id, name, dmg, radius, stamina, interval }, index) => (
+              <ButtonGroup key={`attack-${index}`} className="mt-2">
+                <Input
+                  label={`Name`}
                   {...register(`attack.${index}.name`, { required: true })}
-                  type="text"
-                  className="rw-input mt-0"
-                  defaultValue={atk.name}
-                  placeholder={"Name of attack"}
+                  defaultValue={name}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Damage`}
                   {...register(`attack.${index}.dmg`, { required: false })}
+                  defaultValue={dmg}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.dmg}
-                  placeholder={"Damage"}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Radius`}
                   {...register(`attack.${index}.radius`, { required: false })}
+                  defaultValue={radius}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.radius}
-                  placeholder={"Radius"}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Stamina`}
                   {...register(`attack.${index}.stamina`, { required: false })}
+                  defaultValue={stamina}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.stamina}
-                  placeholder={"Stamina drained per use"}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Interval`}
                   {...register(`attack.${index}.interval`, { required: false })}
+                  defaultValue={interval}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.interval}
-                  placeholder={"Cooldown"}
+                  margin="none"
                 />
-                <button
-                  type="button"
-                  className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                <Button
+                  variant="contained"
+                  color="error"
                   onClick={() => removeAttack(index)}
+                  startIcon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                    >
+                      <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                    </svg>
+                  }
                 >
                   Remove
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                    className="rw-button-icon-end"
-                  >
-                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                  </svg>
-                </button>
-              </div>
+                </Button>
+              </ButtonGroup>
             ))}
-            <div className="rw-button-group justify-start">
-              <button
-                type="button"
-                className="rw-button rw-button-gray"
-                onClick={() =>
-                  appendAttack({
-                    name: "",
-                    dmg: null,
-                    radius: null,
-                    stamina: null,
-                    interval: null,
-                  })
-                }
-              >
-                Add Attack
-              </button>
-            </div>
-            {/*
-        <TextField
-          name="attack"
-          defaultValue={JSON.stringify(props.dino?.attack)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={"undefined"}
-          validation={{ valueAsJSON: true }}
-        /> */}
+            <Button
+              variant="contained"
+              color="success"
+              className="my-2"
+              onClick={() =>
+                appendAttack({
+                  name: "",
+                  dmg: null,
+                  radius: null,
+                  stamina: null,
+                  interval: null,
+                })
+              }
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              Add Attack
+            </Button>
 
             <FieldError name="attack" className="rw-field-error" />
-            {/* </Form> */}
           </Step>
 
           <Step title="Mating">
-            {/* <Form<FormDino> onSubmit={onSubmit} error={props.error}>
-              <FormError
-                error={props.error}
-                wrapperClassName="rw-form-error-wrapper"
-                titleClassName="rw-form-error-title"
-                listClassName="rw-form-error-list"
-              /> */}
             <Switch
               name="breedable"
               onLabel="Breedable"

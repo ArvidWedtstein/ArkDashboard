@@ -164,7 +164,6 @@ export const Success = ({ dino }: CellSuccessProps<EditDinoById>) => {
   const [updateDino, { loading, error }] = useMutation(UPDATE_DINO_MUTATION, {
     onCompleted: () => {
       toast.success("Dino updated");
-      navigate(routes.dinos());
     },
     onError: (error) => {
       toast.error(error.message);
