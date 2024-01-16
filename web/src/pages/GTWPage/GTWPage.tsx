@@ -10,6 +10,7 @@ import { toast } from "@redwoodjs/web/dist/toast";
 import { Input } from "src/components/Util/Input/Input";
 import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 interface GTWPageProps {
   error: RWGqlError;
   loading: boolean;
@@ -260,7 +261,10 @@ const GtwPage = (props: GTWPageProps) => {
             {getWord(word)}
           </h1>
         </div>
-        <Form error={props.error} className="m-6 p-3 flex justify-center">
+        <Form error={props.error} onSubmit={(data) => {
+          console.log('submit')
+          console.log(data)
+        }} className="m-6 p-3 flex justify-center">
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"
@@ -283,6 +287,7 @@ const GtwPage = (props: GTWPageProps) => {
               }
             }}
           />
+
           <button type="submit">submit</button>
         </Form>
       </div>

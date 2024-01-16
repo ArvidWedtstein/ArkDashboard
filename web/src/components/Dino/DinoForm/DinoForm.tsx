@@ -3,18 +3,15 @@ import {
   FormError,
   FieldError,
   Label,
-  TextField,
-  Submit,
   useForm,
   useFieldArray,
-  NumberField,
 } from "@redwoodjs/forms";
 import { Fragment, useEffect, useRef, useState } from "react";
-import type { EditDinoById, UpdateDinoInput } from "types/graphql";
+import type { DinoStat, EditDinoById, FindItemsByCategory, UpdateDinoInput, UpdateDinoStatInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import { truncate } from "src/lib/formatters";
+import { ArrayElement, truncate } from "src/lib/formatters";
 import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
@@ -24,7 +21,10 @@ import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import DatePicker from "src/components/Util/DatePicker/DatePicker";
 import Button from "src/components/Util/Button/Button";
 import clsx from "clsx";
-import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
+import DinoStatForm from "src/components/DinoStat/DinoStatForm/DinoStatForm";
+import NewDinoStatCell from "src/components/DinoStat/NewDinoStatCell";
+import { useMutation } from "@redwoodjs/web";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -34,6 +34,26 @@ interface DinoFormProps {
   error?: RWGqlError;
   loading: boolean;
 }
+
+const CREATE_DINO_STAT_MUTATION = gql`
+  mutation CreateDinoStatMutation($input: CreateDinoStatInput!) {
+    createDinoStat(input: $input) {
+      id
+    }
+  }
+`;
+
+const UPDATE_DINO_STAT_MUTATION = gql`
+  mutation UpdateDinoStatMutation($id: String!, $input: UpdateDinoStatInput!) {
+    updateDinoStat(id: $id, input: $input) {
+      id
+      dino_id
+      item_id
+      value
+      type
+    }
+  }
+`
 
 const ITEMQUERY = gql`
   query FindItemsByCategory($category: String!) {
@@ -57,9 +77,9 @@ const DinoForm = (props: DinoFormProps) => {
   );
 
   // TODO: convert to NewDinoCell?
-  const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
-    variables: { category: "Resource,Consumable" },
-    onCompleted: (data) => {
+  const [loadItems, { called, loading, data }] = useLazyQuery<FindItemsByCategory>(ITEMQUERY, {
+    variables: { category: "Resource,Consumable,Saddle" },
+    onCompleted: () => {
       toast.success("Items loaded");
     },
     onError: (error) => {
@@ -190,15 +210,6 @@ const DinoForm = (props: DinoFormProps) => {
   });
 
   const {
-    fields: statFields,
-    append: appendStat,
-    remove: removeStat,
-  } = useFieldArray({
-    control,
-    name: "DinoStat.create", // the name of the field array in your form data
-  });
-
-  const {
     fields: attackFields,
     append: appendAttack,
     remove: removeAttack,
@@ -207,40 +218,102 @@ const DinoForm = (props: DinoFormProps) => {
     name: "attack", // the name of the field array in your form data
   });
 
-  const [eats, setEats] = useState([]);
 
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
   const onSubmit = (data: FormDino) => {
 
     console.log(data);
-    // delete data.immobilized_by
-    // Test Dino Object
-    // const d = {
-    //   name: "test",
-    //   description: "test",
-    //   synonyms: "test",
-    //   can_destroy: ["t"],
-    //   fits_through: ["381"],
-    //   immobilized_by: ["t"],
-    //   carryable_by: ["t"],
-    //   drops: ["11"],
-    //   type: ["Ground"],
-    //   eats: ["11"],
-    //   // DinoStat: [
-    //   //   {
-    //   //     type: "gather_efficiency",
-    //   //     value: 5,
-    //   //     item_id: 8,
-    //   //   },
-    //   // ],
-    // };
+
 
     props.onSave(data, props?.dino?.id);
   };
 
   const formRef = useRef<HTMLFormElement>();
+
+  const [openModal, setOpenModal] = useState<{
+    open: boolean;
+    dino_stat?: ArrayElement<EditDinoById["dino"]["DinoStat"]>
+  }>({ open: false, dino_stat: null });
+  const modalRef = useRef<HTMLDivElement>();
+
+  const [createDinoStat] = useMutation(
+    CREATE_DINO_STAT_MUTATION,
+    {
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+  const [updateDinoStat] = useMutation(
+    UPDATE_DINO_STAT_MUTATION,
+    {
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    }
+  )
+
+  const onSave = (
+    input: UpdateDinoStatInput,
+    id: DinoStat["id"]
+  ) => {
+    toast.promise(id ? updateDinoStat({ variables: { id, input } }) : createDinoStat({ variables: { input } }), {
+      loading: `${id ? 'Updating' : 'Creating'} dinostat...`,
+      success: `Dinostat successfully ${id ? 'updated' : 'created'}`,
+      error: `Failed to ${id ? 'update' : 'create'} dinostat.`,
+    });
+  }
+
+
   return (
     <div className="rw-form-wrapper">
+      <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, dino_stat: null })}>
+        <DialogTitle>
+          {openModal.dino_stat ? 'Edit' : 'New'} Dino Stat
+        </DialogTitle>
+        <DialogContent dividers>
+          <DinoStatForm
+            onSave={onSave}
+            dinoStat={openModal.dino_stat}
+            loading={props.loading}
+            error={props.error}
+            dino_id={props.dino?.id}
+            itemsByCategory={data.itemsByCategory}
+          />
+        </DialogContent>
+        <DialogActions className="space-x-1">
+          <Button
+            type="button"
+            color="success"
+            variant="contained"
+            onClick={() => {
+              if (modalRef?.current) {
+                modalRef.current.querySelector("form")?.requestSubmit();
+              }
+            }}
+            startIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="pointer-events-none"
+                fill="currentColor"
+              >
+                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+              </svg>
+            }
+          >
+            Save
+          </Button>
+          <Button
+            type="reset"
+            color="error"
+            onClick={() => setOpenModal({ open: false, dino_stat: null })}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Form onSubmit={onSubmit} ref={formRef} error={props.error}>
         <FormError
           error={props.error}
@@ -311,23 +384,6 @@ const DinoForm = (props: DinoFormProps) => {
                 required: false,
               }}
             />
-
-
-            {/* <Input
-              label="Release Date"
-              variant="contained"
-              color="success"
-              type="date"
-              name="released"
-              placeholder="YYYY-MM-DD"
-              defaultValue={props.dino?.released || null}
-              validation={{
-                valueAsDate: true
-              }}
-              InputLabelProps={{
-                shrink: true
-              }}
-            /> */}
 
             <DatePicker
               label="Release Date"
@@ -928,8 +984,6 @@ const DinoForm = (props: DinoFormProps) => {
               />
             </div>
 
-
-
             <Input
               label="Experience per kill"
               name="exp_per_kill"
@@ -942,7 +996,9 @@ const DinoForm = (props: DinoFormProps) => {
               variant="outlined"
               validation={{ valueAsNumber: true, min: 0 }}
             />
+
             <br />
+
             <Label
               name="movement"
               className="rw-label"
@@ -1110,7 +1166,7 @@ const DinoForm = (props: DinoFormProps) => {
 
             {/* TODO: add dinostats */}
 
-            {props.dino && (
+            {props?.dino && (
               <div className="mt-3 table table-auto rounded-lg max-w-2xl border border-zinc-500 border-opacity-70 p-2 text-left">
                 <div className="table-header-group w-full text-xs text-black dark:text-zinc-300">
                   <div className="table-cell p-2">Item</div>
@@ -1118,7 +1174,7 @@ const DinoForm = (props: DinoFormProps) => {
                   <div className="table-cell p-2">Type</div>
                   <div className="table-cell p-2">Action</div>
                 </div>
-                {props.dino?.DinoStat.map((dinoStat) => {
+                {props?.dino?.DinoStat.map((dinoStat) => {
                   return (
                     <div className={`table-row-group w-full text-xs text-black dark:text-white`}>
                       <div className="table-cell w-2/5 p-2">{dinoStat.Item.name}</div>
@@ -1134,7 +1190,7 @@ const DinoForm = (props: DinoFormProps) => {
                           color="primary"
                           variant="outlined"
                           size="small"
-                          onClick={() => { }}
+                          onClick={() => setOpenModal({ open: true, dino_stat: dinoStat })}
                           startIcon={
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                               <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
@@ -1147,11 +1203,36 @@ const DinoForm = (props: DinoFormProps) => {
                     </div>
                   )
                 })}
+                <div className={`table-row-group w-full text-xs text-black dark:text-white`}>
+                  <div className="table-cell w-2/5 p-2">-</div>
+                  <div className="table-cell p-2">
+                    -
+                  </div>
+                  <div className="table-cell truncate p-2">
+                    -
+                  </div>
+                  <div className="table-cell align-middle relative">
+                    <Button
+                      permission="gamedata_update"
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setOpenModal({ open: true, dino_stat: null })}
+                      startIcon={
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                          <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                        </svg>
+                      }
+                    >
+                      New
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
 
             {/* <Disclosure className="mt-5" title="Other" text_size="text-lg">
-        <NewDinoStat dino_id={props?.dino?.id} />
+
         <div>
           <div>
              TODO: convert this to DinoStat Form *

@@ -4,23 +4,23 @@ import {
   FieldError,
   Label,
   TextField,
-  Submit,
 } from "@redwoodjs/forms";
 
-import type { EditDinoStatById, NewDinoStat, UpdateDinoStatInput } from "types/graphql";
+import type { DinoStat, EditDinoById, FindItemsByCategory, UpdateDinoStatInput, dinostattype } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Input } from "src/components/Util/Input/Input";
-import Button from "src/components/Util/Button/Button";
+import { Fragment, useState } from "react";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import { ArrayElement } from "src/lib/formatters";
 
-type FormDinoStat = NonNullable<EditDinoStatById["dinoStat"]>;
+type FormDinoStat = NonNullable<UpdateDinoStatInput>;
 
-// highlight-start
 interface DinoStatFormProps {
-  dinoStat?: EditDinoStatById["dinoStat"];
-  itemsByCategory?: NewDinoStat["itemsByCategory"];
+  dinoStat?: ArrayElement<EditDinoById["dino"]["DinoStat"]>;
+  itemsByCategory?: FindItemsByCategory["itemsByCategory"];
   dino_id?: string;
-  onSave: (data: UpdateDinoStatInput, id?: FormDinoStat["id"]) => void;
+  onSave: (data: UpdateDinoStatInput, id?: ArrayElement<EditDinoById["dino"]["DinoStat"]>["id"]) => void;
   error: RWGqlError;
   loading: boolean;
 }
@@ -30,6 +30,91 @@ const DinoStatForm = (props: DinoStatFormProps) => {
     props.onSave(data, props?.dinoStat?.id);
   };
 
+  const [selectedType, setSelectedType] = useState<dinostattype>(null);
+  const checkTypes = {
+    "immobilized_by": [
+      {
+        value: "733",
+        label: "Lasso",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/lasso.webp",
+      },
+      {
+        value: "1040",
+        label: "Bola",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bola.webp",
+      },
+      {
+        value: "725",
+        label: "Chain Bola",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chain-bola.webp",
+      },
+      {
+        value: "785",
+        label: "Net Projectile",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/net-projectile.webp",
+      },
+      {
+        value: "1252",
+        label: "Plant Species Y Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/plant-species-y-trap.webp",
+      },
+      {
+        value: "383",
+        label: "Bear Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bear-trap.webp",
+      },
+      {
+        value: "384",
+        label: "Large Bear Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/large-bear-trap.webp",
+      },
+    ],
+    "fits_through": [
+      {
+        value: "322",
+        label: "Doorframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-doorframe.webp",
+      },
+      {
+        value: 1066,
+        label: "Double Doorframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+      },
+      {
+        value: "143",
+        label: "Dinosaur Gateway",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
+      },
+      {
+        value: "381",
+        label: "Behemoth Dino Gateway",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/behemoth-stone-dinosaur-gateway.webp",
+      },
+      {
+        value: "316",
+        label: "Hatchframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
+      },
+      {
+        value: "619",
+        label: "Giant Hatchframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+      },
+    ]
+  }
 
   return (
     <div className="rw-form-wrapper my-3">
@@ -43,17 +128,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
 
         <div className="flex flex-row space-x-3">
           <Lookup
-            margin="none"
-            options={props?.itemsByCategory.items}
-            name="item_id"
-            defaultValue={props.dinoStat?.item_id}
-            getOptionValue={(opt) => opt.id}
-            getOptionLabel={(opt) => opt.name}
-            getOptionImage={(opt) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${opt.image}`}
-            label="Item"
-            validation={{ required: true }}
-          />
-          <Lookup
+            label="Type"
             margin="none"
             isOptionEqualToValue={(option, value) => option.value === value.value}
             getOptionLabel={(option) => option.label}
@@ -68,22 +143,60 @@ const DinoStatForm = (props: DinoStatFormProps) => {
               { value: "saddle", label: "Saddle" },
               { value: "bossrecipe", label: "Bossrecipe" },
               { value: "engrams", label: "Engrams" },
-            ]}
+            ] as { value: dinostattype, label: string }[]}
+            onSelect={(e) => {
+              setSelectedType(e.value)
+            }}
             name="type"
             defaultValue={props.dinoStat?.type}
             closeOnSelect
-            label="Type"
           />
 
-          <Input
-            label="Value"
-            name="value"
-            type="number"
-            defaultValue={props.dinoStat?.value}
-            margin="none"
-            validation={{ valueAsNumber: true }}
-          />
+          {!["immobilized_by", "fits_through"].includes(selectedType) && (
+            <Input
+              label="Value"
+              name="value"
+              type="number"
+              defaultValue={props.dinoStat?.value}
+              margin="none"
+              validation={{ valueAsNumber: true }}
+            />
+          )}
         </div>
+
+
+        {["immobilized_by", "fits_through"].includes(selectedType) ? (
+          <Fragment>
+            <Label
+              name="item_id"
+              className="rw-label capitalize"
+              errorClassName="rw-label rw-label-error"
+            >
+              {selectedType.replaceAll('_', ' ')}
+            </Label>
+
+            <CheckboxGroup
+              name="item_id"
+              defaultValue={props.dinoStat?.item_id?.toString()}
+              exclusive
+              options={checkTypes[selectedType]}
+            />
+
+            <FieldError name="item_id" className="rw-field-error" />
+          </Fragment>
+        ) : (
+          <Lookup
+            margin="none"
+            label="Item"
+            options={props?.itemsByCategory.items.filter((c) => c.type === (selectedType === 'saddle' ? 'Saddle' : ''))}
+            name="item_id"
+            defaultValue={props.dinoStat?.item_id}
+            getOptionValue={(opt) => opt.id}
+            getOptionLabel={(opt) => opt.name}
+            getOptionImage={(opt) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${opt.image}`}
+            validation={{ required: true }}
+          />
+        )}
 
 
         <TextField

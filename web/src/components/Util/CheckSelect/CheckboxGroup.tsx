@@ -4,19 +4,19 @@ import { forwardRef, useMemo, useRef, useState } from "react";
 import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
 
-type CheckboxGroupProps = {
+type CheckboxGroupProps<T extends string | number> = {
   name?: string;
   options: {
     label: string;
-    value?: string | number;
+    value?: T;
     image?: string | React.ReactNode;
   }[];
   exclusive?: boolean;
   enforce?: boolean;
   className?: string;
-  defaultValue?: string[] | string;
+  defaultValue?: T[] | T;
   size?: "small" | "medium" | "large";
-  onChange?: (name: string, value: string[]) => void;
+  onChange?: (changedValue: T, selectedValues: T[]) => void;
   disabled?: boolean;
   disableRipple?: boolean;
   validation?: {
@@ -26,7 +26,7 @@ type CheckboxGroupProps = {
     required?: boolean;
   };
 }
-const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>((props, ref) => {
+const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps<string | number>>((props, ref) => {
   const {
     name,
     options,
@@ -43,8 +43,8 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>((props, ref
     }
   } = props
   // TODO: fix errorStyles for checkbox group
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    () => exclusive ? defaultValue as string[] : Array.isArray(defaultValue) ? defaultValue : [defaultValue] as string[]
+  const [selectedOptions, setSelectedOptions] = useState<(string | number)[]>(
+    () => (exclusive ? [defaultValue] : Array.isArray(defaultValue) ? defaultValue : [defaultValue]) as (string | number)[]
   );
 
   const { field } =
@@ -55,17 +55,18 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>((props, ref
   const memoizedOptions = useMemo(() => options, [options]);
 
   const handleCheckboxChange = ((event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    let newSelectedOptions: string[];
+    const { value, ariaValueText } = event.target;
+    let correctValue = ariaValueText === 'number' ? parseInt(value) : value;
+    let newSelectedOptions: (string | number)[];
 
-    if (selectedOptions.includes(value)) {
+    if (selectedOptions.includes(correctValue)) {
       newSelectedOptions = selectedOptions.filter(
-        (option) => option !== value
+        (option) => option !== correctValue
       );
     } else {
       newSelectedOptions = exclusive
-        ? [value]
-        : [...selectedOptions, value];
+        ? [correctValue]
+        : [...selectedOptions, correctValue];
     }
 
     if (enforce) {
@@ -79,14 +80,14 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>((props, ref
       field.onChange(
         exclusive
           ? validation.valueAsNumber
-            ? parseInt(newSelectedOptions[0])
+            ? parseInt(newSelectedOptions[0] as string)
             : newSelectedOptions[0]
           : newSelectedOptions
       );
     }
 
     if (onChange) {
-      onChange(value, newSelectedOptions);
+      onChange(correctValue as string | number, newSelectedOptions as (string | number)[]);
     }
   });
 
@@ -111,7 +112,9 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>((props, ref
               name={name || optValue.toString() || label + "checkbox"}
               value={optValue || label}
               onChange={handleCheckboxChange}
-              checked={selectedOptions.includes(optValue.toString() ?? label)}
+              aria-valuetext={typeof optValue}
+              aria-checked={selectedOptions.includes(optValue ?? label)}
+              checked={selectedOptions.includes(optValue ?? label)}
               className="rw-check-input absolute hidden overflow-hidden"
             />
             <span

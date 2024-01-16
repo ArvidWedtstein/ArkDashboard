@@ -64,14 +64,15 @@ export const QUERY = gql`
       icon
       image
       DinoStat {
+        id
         item_id
+        dino_id
         Item {
-          name
           id
+          name
           image
         }
         value
-        rank
         type
       }
     }
@@ -137,6 +138,7 @@ const UPDATE_DINO_MUTATION = gql`
   }
 `;
 
+// TODO: fix loading
 export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => {
