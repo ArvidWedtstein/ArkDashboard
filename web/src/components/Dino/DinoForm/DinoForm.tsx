@@ -62,7 +62,7 @@ const DinoForm = (props: DinoFormProps) => {
 
   // TODO: fix this
   const [basestat, setBasestat] = useState(
-    props.dino?.base_stats ?? {
+    dino?.base_stats ?? {
       d: { b: 0, t: 0, w: 0, a: [{ b: 0 }] },
       f: { b: 0, t: 0, w: 0 },
       h: { b: 0, t: 0, w: 0 },
@@ -110,7 +110,7 @@ const DinoForm = (props: DinoFormProps) => {
   };
 
   const [movement, setMovement] = useState<Movement>(
-    (props.dino?.movement as Movement) ?? {
+    (dino?.movement as Movement) ?? {
       w: {
         walk: {
           base: 0,
@@ -159,7 +159,7 @@ const DinoForm = (props: DinoFormProps) => {
 
   const { register, control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      attack: props.dino.attack as FormValues["attack"] || [],
+      attack: dino?.attack as FormValues["attack"] || [],
     },
   });
 
@@ -435,9 +435,9 @@ const DinoForm = (props: DinoFormProps) => {
         </DialogActions>
       </Dialog>
 
-      <Form onSubmit={handleSubmit(onSubmit)} ref={formRef} error={props.error}>
+      <Form onSubmit={handleSubmit(onSubmit)} ref={formRef} error={error}>
         <FormError
-          error={props.error}
+          error={error}
           wrapperClassName="rw-form-error-wrapper"
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
@@ -452,7 +452,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Name"
                 name="name"
-                defaultValue={props.dino?.name}
+                defaultValue={dino?.name}
                 color="DEFAULT"
                 helperText="Dinos name"
               />
@@ -461,7 +461,7 @@ const DinoForm = (props: DinoFormProps) => {
                 label="Synonyms"
                 margin="normal"
                 name="synonyms"
-                defaultValue={props.dino?.synonyms}
+                defaultValue={dino?.synonyms}
                 helperText="Other names for this dino, comma seperated"
                 validation={{
                   required: false,
@@ -477,7 +477,7 @@ const DinoForm = (props: DinoFormProps) => {
             <div className="flex flex-row items-start space-x-3">
               <Input
                 name="description"
-                defaultValue={props.dino?.description}
+                defaultValue={dino?.description}
                 color="DEFAULT"
                 label="Description"
                 variant="contained"
@@ -487,7 +487,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Admin Note"
                 name="admin_note"
-                defaultValue={props.dino?.admin_note}
+                defaultValue={dino?.admin_note}
                 color="DEFAULT"
                 variant="contained"
                 rows={5}
@@ -500,7 +500,7 @@ const DinoForm = (props: DinoFormProps) => {
               label="Variants"
               margin="normal"
               name="variants"
-              defaultValue={props.dino?.variants.join(', ')}
+              defaultValue={dino?.variants.join(', ')}
               helperText="Variants that this dino has, comma seperated"
               validation={{
                 required: false,
@@ -510,7 +510,7 @@ const DinoForm = (props: DinoFormProps) => {
             <DatePicker
               label="Release Date"
               name="relased"
-              defaultValue={props.dino?.released ? new Date(props.dino?.released) : new Date()}
+              defaultValue={dino?.released ? new Date(dino?.released) : new Date()}
             />
 
             <br />
@@ -529,27 +529,27 @@ const DinoForm = (props: DinoFormProps) => {
               <Switch
                 name="ridable"
                 onLabel="Ridable"
-                defaultChecked={props.dino?.ridable}
+                defaultChecked={dino?.ridable}
                 helperText="Is this dino ridable?"
               />
 
               <Switch
                 name="mounted_weaponry"
                 onLabel="Mounted Weaponry"
-                defaultChecked={props.dino?.mounted_weaponry}
+                defaultChecked={dino?.mounted_weaponry}
                 helperText="Can you use weapons while riding this dino?"
               />
 
               <Switch
                 name="disable_mult"
                 onLabel="Disable multipliers"
-                defaultChecked={props.dino?.disable_mult}
+                defaultChecked={dino?.disable_mult}
               />
             </div>
 
             <CheckboxGroup
               name="type"
-              defaultValue={props.dino?.type ?? []}
+              defaultValue={dino?.type ?? []}
               validation={{
                 required: true,
               }}
@@ -592,7 +592,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Temperament"
               name="temperament"
-              defaultValue={props.dino?.temperament ?? "Neutral"}
+              defaultValue={dino?.temperament ?? "Neutral"}
               options={[
                 "Aggressive",
                 "Angry",
@@ -628,7 +628,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Target Team"
               name="targeting_team_name"
-              defaultValue={props.dino?.targeting_team_name ?? "TargetOnlyPlayers"}
+              defaultValue={dino?.targeting_team_name ?? "TargetOnlyPlayers"}
               getOptionLabel={(option) => option.label}
               isOptionEqualToValue={(option, value) => option.value === value.value}
               getOptionValue={(opt) => opt.value}
@@ -672,7 +672,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Blueprint"
               name="bp"
-              defaultValue={props.dino?.bp}
+              defaultValue={dino?.bp}
               color="DEFAULT"
               variant="outlined"
             />
@@ -687,7 +687,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Switch
               name="disable_food"
               onLabel="Disable Food?"
-              defaultChecked={disableFood || props.dino?.disable_food}
+              defaultChecked={disableFood || dino?.disable_food}
               onChange={(e) => {
                 setDisableFood(e.target.checked);
               }}
@@ -696,7 +696,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Diet"
               name="diet"
-              defaultValue={props.dino?.diet}
+              defaultValue={dino?.diet}
               options={[
                 "Sanguivore",
                 "Minerals",
@@ -717,7 +717,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Food consumption base"
               name="food_consumption_base"
-              defaultValue={props.dino?.food_consumption_base || 0}
+              defaultValue={dino?.food_consumption_base || 0}
               validation={{ valueAsNumber: true }}
               color="DEFAULT"
               type="number"
@@ -727,7 +727,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Food consumption base multiplier"
               name="food_consumption_mult"
-              defaultValue={props.dino?.food_consumption_mult || 0}
+              defaultValue={dino?.food_consumption_mult || 0}
               validation={{ valueAsNumber: true }}
               color="DEFAULT"
               type="number"
@@ -736,7 +736,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Non violent food rate multiplier"
               name="non_violent_food_rate_mult"
-              defaultValue={props.dino?.non_violent_food_rate_mult || 0}
+              defaultValue={dino?.non_violent_food_rate_mult || 0}
               validation={{ valueAsNumber: true }}
               color="DEFAULT"
               type="number"
@@ -749,7 +749,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Taming Notice"
               name="taming_notice"
-              defaultValue={props.dino?.taming_notice}
+              defaultValue={dino?.taming_notice}
               color="DEFAULT"
               multiline
               variant="outlined"
@@ -759,7 +759,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Switch
               name="tamable"
               onLabel="Tamable"
-              defaultChecked={props.dino?.tamable}
+              defaultChecked={dino?.tamable}
             />
 
             <Lookup
@@ -773,13 +773,13 @@ const DinoForm = (props: DinoFormProps) => {
               multiple
               label="Taming Method"
               name="taming_method"
-              defaultValue={props.dino?.taming_method}
+              defaultValue={dino?.taming_method}
             />
 
             <Input
               label="Torpor Depletion per second"
               name="torpor_depetion_per_second"
-              defaultValue={props.dino?.torpor_depetion_per_second}
+              defaultValue={dino?.torpor_depetion_per_second}
               InputProps={{
                 min: 0
               }}
@@ -793,7 +793,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Affinity needed"
               name="affinity_needed"
-              defaultValue={props.dino?.affinity_needed}
+              defaultValue={dino?.affinity_needed}
               InputProps={{
                 min: 0
               }}
@@ -807,7 +807,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Affinity Increase Per Level"
               name="aff_inc"
-              defaultValue={props.dino?.affinity_needed}
+              defaultValue={dino?.affinity_needed}
               InputProps={{
                 min: 0
               }}
@@ -823,7 +823,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Non violent food affinity multiplier"
               name="non_violent_food_affinity_mult"
-              defaultValue={props.dino?.non_violent_food_affinity_mult}
+              defaultValue={dino?.non_violent_food_affinity_mult}
               InputProps={{
                 min: 0
               }}
@@ -837,7 +837,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Flee Threshold"
               name="flee_threshold"
-              defaultValue={props.dino?.flee_threshold}
+              defaultValue={dino?.flee_threshold}
               InputProps={{
                 min: 0
               }}
@@ -851,7 +851,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Base Taming Time"
               name="base_taming_time"
-              defaultValue={props.dino?.base_taming_time}
+              defaultValue={dino?.base_taming_time}
               InputProps={{
                 min: 0,
                 endAdornment: (
@@ -868,7 +868,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Taming Interval"
               name="taming_interval"
-              defaultValue={props.dino?.taming_interval}
+              defaultValue={dino?.taming_interval}
               InputProps={{
                 min: 0,
                 endAdornment: (
@@ -885,7 +885,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Taming Ineffectiveness"
               name="taming_ineffectiveness"
-              defaultValue={props.dino?.taming_ineffectiveness}
+              defaultValue={dino?.taming_ineffectiveness}
               InputProps={{
                 min: 0,
               }}
@@ -898,7 +898,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Hitboxes"
               name="hitboxes"
-              defaultValue={JSON.stringify(props.dino?.hitboxes, null, 2)}
+              defaultValue={JSON.stringify(dino?.hitboxes, null, 2)}
               InputProps={{
                 min: 0,
               }}
@@ -1055,7 +1055,7 @@ const DinoForm = (props: DinoFormProps) => {
                 multiple
                 helperText="Structuretypes this dino can destroy"
                 getOptionLabel={(option) => option.label}
-                defaultValue={props.dino?.can_destroy}
+                defaultValue={dino?.can_destroy}
                 isOptionEqualToValue={(option, value) => option.value === value.value}
                 getOptionValue={(opt) => opt.value}
                 getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${option.label.replaceAll(' ', '').toLowerCase()}-wall.webp`}
@@ -1095,7 +1095,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Experience per kill"
               name="exp_per_kill"
-              defaultValue={props.dino?.exp_per_kill || 0}
+              defaultValue={dino?.exp_per_kill || 0}
               InputProps={{
                 min: 0,
               }}
@@ -1339,7 +1339,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label={"Base points"}
               name="base_points"
-              defaultValue={props.dino?.base_points || 0}
+              defaultValue={dino?.base_points || 0}
               InputProps={{
                 min: 0,
               }}
@@ -1355,7 +1355,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Default Damage"
                 name="default_dmg"
-                defaultValue={props.dino?.default_dmg || 0}
+                defaultValue={dino?.default_dmg || 0}
                 InputProps={{
                   min: 0,
                 }}
@@ -1368,7 +1368,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Default Swing Radius"
                 name="default_swing_radius"
-                defaultValue={props.dino?.default_swing_radius || 0}
+                defaultValue={dino?.default_swing_radius || 0}
                 InputProps={{
                   min: 0,
                 }}
@@ -1472,7 +1472,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Switch
               name="breedable"
               onLabel="Breedable"
-              defaultChecked={props.dino?.breedable}
+              defaultChecked={dino?.breedable}
               helperText="Is this dino breedable?"
             />
 
@@ -1483,7 +1483,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Egg minimum temperature"
                 name="egg_min"
-                defaultValue={props.dino?.egg_min || 0}
+                defaultValue={dino?.egg_min || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1502,7 +1502,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Egg maximum temperature"
                 name="egg_max"
-                defaultValue={props.dino?.egg_max || 0}
+                defaultValue={dino?.egg_max || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1523,7 +1523,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Mating cooldown minimum"
                 name="mating_cooldown_min"
-                defaultValue={props.dino?.mating_cooldown_min || 0}
+                defaultValue={dino?.mating_cooldown_min || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1542,7 +1542,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Mating cooldown maximum"
                 name="mating_cooldown_max"
-                defaultValue={props.dino?.mating_cooldown_max || 0}
+                defaultValue={dino?.mating_cooldown_max || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1562,7 +1562,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Incubation Time"
                 name="incubation_time"
-                defaultValue={props.dino?.incubation_time || 0}
+                defaultValue={dino?.incubation_time || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1580,7 +1580,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Maturation Time"
                 name="maturation_time"
-                defaultValue={props.dino?.maturation_time || 0}
+                defaultValue={dino?.maturation_time || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1598,7 +1598,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Gestation Time"
                 name="gestation_time"
-                defaultValue={props.dino?.gestation_time || 0}
+                defaultValue={dino?.gestation_time || 0}
                 InputProps={{
                   min: 0,
                 }}
@@ -1611,7 +1611,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Baby food consumption multiplier"
                 name="baby_food_consumption_mult"
-                defaultValue={props.dino?.baby_food_consumption_mult || 0}
+                defaultValue={dino?.baby_food_consumption_mult || 0}
                 InputProps={{
                   min: 0,
                 }}

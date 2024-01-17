@@ -246,7 +246,7 @@ const Map = ({ map }: Props) => {
 
   const types = useMemo(() => {
     const mapData =
-      map.other_Map && map.other_Map.length > 0 ? map.other_Map[realm] : map;
+      map.other_Map && map.other_Map.length > 0 ? map.other_Map.find((f) => f.id === realm) : map;
     if (!mapData) return [];
     const resourceData = mapData?.MapResource ?? [];
     const groupedByType = groupBy(
@@ -315,7 +315,7 @@ const Map = ({ map }: Props) => {
               </Tabs>
             </section>
           )}
-          <div className="mb-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
+          <div className="my-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
             <div className="h-16 px-4">
               <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
                 Released
@@ -343,21 +343,20 @@ const Map = ({ map }: Props) => {
                 disable_sub_map={!(map?.other_Map && map.other_Map.length > 0)}
                 className="col-span-1 w-fit"
                 map_id={map.parent_map_id ? map.parent_map_id : map.id}
-                submap_id={map?.other_Map ? map.other_Map[realm]?.id : null}
+                submap_id={map?.other_Map ? map.other_Map.find(({ id }) => id === realm)?.id : null}
                 disable_map={true}
                 size={{ width: 500, height: 500 }}
                 pos={Object.values(
                   types
                     .filter((f) =>
                       selectedTypes.find((v) => v === f.value || v === f.label)
-                        ? true
-                        : false
                     )
-                    .flatMap((f) =>
-                      f.items.map((entry) => ({
+                    .flatMap((f) => {
+                      return f.items.map((entry) => ({
                         ...entry,
                         lat: entry.latitude,
                         lon: entry.longitude,
+                        // color: `${f.color || "#ff0000"}`,
                         color: `${f.color}${checkedItems.includes(
                           `${entry.type}|${entry.latitude}-${entry.longitude}`
                         )
@@ -366,6 +365,7 @@ const Map = ({ map }: Props) => {
                           }`,
                         image: entry.item_id !== null ? f.image : null,
                       }))
+                    }
                     )
                 )}
                 onSubMapChange={(id) => {
@@ -413,13 +413,6 @@ const Map = ({ map }: Props) => {
               <Card variant="outlined" className="relative p-2 w-full !overflow-y-scroll min-h-full max-h-full h-96">
                 <TreeView
                   className="relative"
-                  // onCheck={(e, d) => {
-                  //   setCheckedItems((prev) => {
-                  //     return e.target.checked
-                  //       ? [...prev, d.id.toString()]
-                  //       : prev.filter((p) => p !== d.id.toString());
-                  //   });
-                  // }}
                   onOptionSelect={(opt) => {
                     let c: SVGCircleElement = document.getElementById(
                       `map-pos-${opt["lat"]}-${opt["lon"]}`
@@ -429,7 +422,7 @@ const Map = ({ map }: Props) => {
                         "outline",
                         "outline-offset-4",
                         "outline-red-500",
-                        "animate-pulse",
+                        "animate-fade",
                       ];
 
                       classNames.forEach((className) =>
@@ -441,6 +434,13 @@ const Map = ({ map }: Props) => {
                         );
                       }, 3000);
                     }
+                    // if (!opt.children) {
+                    //   setCheckedItems((prev) => {
+                    //     return !prev.includes(opt["id"].toString())
+                    //       ? [...prev, opt["id"]?.toString()]
+                    //       : prev.filter((p) => p !== opt["id"]?.toString());
+                    //   });
+                    // }
                   }}
                   options={Object.entries(
                     groupBy(
@@ -458,9 +458,9 @@ const Map = ({ map }: Props) => {
                     children: v.map((i) => ({
                       label: `${i.latitude.toFixed(1)}, ${i.longitude.toFixed(1)}`,
                       id: `${i.type}|${i.latitude}-${i.longitude}`,
-                      checked: checkedItems.includes(
-                        `${i.type}|${i.latitude}-${i.longitude}`
-                      ),
+                      // checked: checkedItems.includes(
+                      //   `${i.type}|${i.latitude}-${i.longitude}`
+                      // ),
                       lat: i.latitude,
                       lon: i.longitude,
                     })),
@@ -475,7 +475,7 @@ const Map = ({ map }: Props) => {
                 options={types}
                 onChange={(val, values) => {
                   setSelectedTypes(
-                    values.filter((v) => values.some((h) => h === v))
+                    values.filter((v) => values.some((h) => h.toString() === v.toString())) as string[]
                   );
                 }}
               />

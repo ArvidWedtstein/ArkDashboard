@@ -1,14 +1,22 @@
-import {  navigate, routes } from "@redwoodjs/router";
+import { navigate, routes } from "@redwoodjs/router";
+import clsx from "clsx";
+import { useState } from "react";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import {
   Card,
   CardActionArea,
+  CardContent,
   CardHeader,
   CardMedia,
 } from "src/components/Util/Card/Card";
+import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 
 import type { FindMaps } from "types/graphql";
 
 const MapsList = ({ maps }: FindMaps) => {
+
+  const [view, setView] = useState<"grid" | "list">("grid");
+
   const mapImages = {
     TheIsland:
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -237,10 +245,63 @@ const MapsList = ({ maps }: FindMaps) => {
 
   return (
     <div>
-      <p className="text-center text-xl text-gray-900 before:content-['-\00a0'] after:content-['\00a0-'] dark:text-white">
-        Ark Maps
-      </p>
-      <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
+        <h1 className="mr-4 py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+          Maps
+        </h1>
+
+        <nav className="flex w-full items-stretch justify-end space-x-3">
+          <Button
+            to={routes.newMap()}
+            color="success"
+            variant="outlined"
+            permission="gamedata_create"
+            startIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+              >
+                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+              </svg>
+            }
+          >
+            New Map
+          </Button>
+
+          <ToggleButtonGroup
+            orientation="horizontal"
+            value={view}
+            exclusive
+            enforce
+            size="medium"
+            onChange={(_, value) => setView(value)}
+          >
+            <ToggleButton value="list">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="h-5 w-5 fill-current"
+              >
+                <path d="M64 48H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 62.33 81.67 48 64 48zM64 112H32v-32h32V112zM64 368H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 382.3 81.67 368 64 368zM64 432H32v-32h32V432zM176 112h320c8.801 0 16-7.201 16-15.1C512 87.2 504.8 80 496 80h-320C167.2 80 160 87.2 160 95.1C160 104.8 167.2 112 176 112zM496 240h-320C167.2 240 160 247.2 160 256c0 8.799 7.201 16 16 16h320C504.8 272 512 264.8 512 256C512 247.2 504.8 240 496 240zM496 400h-320C167.2 400 160 407.2 160 416c0 8.799 7.201 16 16 16h320c8.801 0 16-7.201 16-16C512 407.2 504.8 400 496 400zM64 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 222.3 81.67 208 64 208zM64 272H32v-32h32V272z" />
+              </svg>
+            </ToggleButton>
+            <ToggleButton value="grid">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="h-5 w-5 fill-current"
+              >
+                <path d="M160 0H64C28.65 0 0 28.65 0 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C224 28.65 195.3 0 160 0zM192 160c0 17.64-14.36 32-32 32H64C46.36 192 32 177.6 32 160V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM160 288H64c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C224 316.7 195.3 288 160 288zM192 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448zM448 0h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C512 28.65 483.3 0 448 0zM480 160c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM448 288h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C512 316.7 483.3 288 448 288zM480 448c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448z" />
+              </svg>
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </nav>
+      </div>
+
+      <div className={clsx("grid w-full pt-6 gap-4", {
+        "grid-cols-1": view === "list",
+        "grid-cols-1 md:grid-cols-2 xl:grid-cols-3": view === "grid"
+      })}>
         {maps.map((map) => (
           <Card key={map.id} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
             <CardActionArea
@@ -289,6 +350,66 @@ const MapsList = ({ maps }: FindMaps) => {
           </Card>
         ))}
       </div>
+      {/* <div className={clsx("grid w-full pt-6 gap-4", {
+        "grid-cols-1": view === "list",
+        "grid-cols-1 md:grid-cols-3 xl:grid-cols-6": view === "grid"
+      })}>
+        {maps.map(({ id, name, icon }) => (
+          <Card key={id} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+            <CardActionArea
+              to={routes.map({ id })}
+              sx={{
+                height: "100%",
+                minHeight: "240px",
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                width: "100%",
+              }}
+            >
+              <CardHeader
+                title={name}
+                sx={{
+                  position: "relative",
+                  width: "100%",
+                  zIndex: 10,
+                  textAlign: "left",
+                  backgroundImage:
+                    "linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.8) 100%)",
+                }}
+                avatar={
+                  <img
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${icon}`}
+                    alt={name}
+                    className="h-10 w-10 object-cover object-center"
+                  />
+                }
+              />
+
+              <CardContent className="z-10 flex flex-col justify-end h-full">
+                <div className="w-8 h-1 rounded-full bg-current" />
+                <div className="mt-1.5 text-xs font-medium">Ark: Survival Evolved</div>
+                {name.split(' ').map(n => (
+                  <div className="font-semibold text-xl uppercase">{n}</div>
+                ))}
+              </CardContent>
+
+              <CardMedia
+                sx={{
+                  objectFit: "fill",
+                  background: `url(${mapImages[name.replace(" ", "")]})`,
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 0,
+                }}
+                component="div"
+                image={mapImages[name.replace(" ", "")]}
+              />
+            </CardActionArea>
+          </Card>
+        ))}
+      </div> */}
     </div>
   );
 };

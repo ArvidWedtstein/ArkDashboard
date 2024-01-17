@@ -42,11 +42,8 @@ const UPDATE_MAP_MUTATION = gql`
     }
   }
 `;
-// MapNote {
-//   latitude
-//   longitude
-//   note_index
-// }
+
+// TODO: fix
 export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (

@@ -120,7 +120,6 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           outputColorFormat="hex"
         />
 
-
         <Switch
           onLabel="Repeat in sets"
           defaultChecked={props.lootcrate?.repeat_in_sets}
@@ -132,6 +131,8 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           defaultValue={props.lootcrate?.image}
           storagePath={`arkimages/Item`}
         />
+
+        {/* TODO: add dialog for lootcrateitems and lootcratemaps */}
 
         <Button
           type="submit"
