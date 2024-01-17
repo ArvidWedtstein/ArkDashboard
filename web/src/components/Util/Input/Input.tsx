@@ -1055,11 +1055,11 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   }
 
   const borders = {
-    primary: `border-blue-400`,
-    secondary: `border-zinc-500`,
-    success: `border-pea-500`,
-    error: `border-red-500`,
-    warning: `border-amber-400`,
+    primary: `border-primary-400`,
+    secondary: `border-secondary-500`,
+    success: `border-success-500`,
+    error: `border-error-500`,
+    warning: `border-warning-400`,
     disabled: `dark:border-white/30 border-black/30`,
     DEFAULT: `border-black dark:border-white`,
     DEFAULTNOFOCUS: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`,

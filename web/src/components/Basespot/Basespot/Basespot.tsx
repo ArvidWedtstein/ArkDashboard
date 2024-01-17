@@ -75,7 +75,7 @@ const Basespot = ({ basespot }: Props) => {
       />
     ));
   };
-  // TODO: add underwater stats
+  // TODO: add underwater stats?
 
   const getImage = useCallback(async () => {
     const baseURL = `M${basespot.map_id}-${basespot.id}`;

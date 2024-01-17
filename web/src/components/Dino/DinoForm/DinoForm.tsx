@@ -5,25 +5,22 @@ import {
   Label,
   useForm,
   useFieldArray,
+  TextField,
 } from "@redwoodjs/forms";
-import { Fragment, useEffect, useRef, useState } from "react";
-import type { DinoStat, EditDinoById, FindItemsByCategory, UpdateDinoInput, UpdateDinoStatInput } from "types/graphql";
+import { Fragment, useRef, useState } from "react";
+import type { DinoStat, EditDinoById, NewDino, UpdateDinoInput, UpdateDinoStatInput, dinostattype } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { ArrayElement, truncate } from "src/lib/formatters";
 import { toast } from "@redwoodjs/web/toast";
-import { useLazyQuery } from "@apollo/client";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
 import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import DatePicker from "src/components/Util/DatePicker/DatePicker";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
-import clsx from "clsx";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
-import DinoStatForm from "src/components/DinoStat/DinoStatForm/DinoStatForm";
-import NewDinoStatCell from "src/components/DinoStat/NewDinoStatCell";
 import { useMutation } from "@redwoodjs/web";
 import { Card, CardContent, CardHeader } from "src/components/Util/Card/Card";
 
@@ -31,6 +28,7 @@ type FormDino = NonNullable<EditDinoById["dino"]>;
 
 interface DinoFormProps {
   dino?: EditDinoById["dino"];
+  itemsByCategory: NewDino["itemsByCategory"];
   onSave: (data: UpdateDinoInput, id?: FormDino["id"]) => void;
   error?: RWGqlError;
   loading: boolean;
@@ -56,46 +54,11 @@ const UPDATE_DINO_STAT_MUTATION = gql`
   }
 `
 
-const ITEMQUERY = gql`
-  query FindItemsByCategory($category: String!) {
-    itemsByCategory(category: $category) {
-      items {
-        id
-        name
-        description
-        image
-        color
-        type
-        category
-      }
-      count
-    }
-  }
-`;
 const DinoForm = (props: DinoFormProps) => {
+  const { dino, itemsByCategory, loading, error } = props;
   const [disableFood, setDisableFood] = useState(
-    props.dino?.disable_food ?? false
+    dino?.disable_food ?? false
   );
-
-  // TODO: convert to NewDinoCell?
-  const [loadItems, { called, loading, data }] = useLazyQuery<FindItemsByCategory>(ITEMQUERY, {
-    variables: { category: "Resource,Consumable,Armor" },
-    onCompleted: () => {
-      toast.success("Items loaded");
-    },
-    onError: (error) => {
-      console.log(error);
-      toast.error(error.message);
-    },
-  });
-
-  useEffect(() => {
-    if (!called && !loading) {
-      loadItems();
-    }
-  }, []);
-
-  // https://www.apollographql.com/docs/react/api/react/hooks/#uselazyquery
 
   // TODO: fix this
   const [basestat, setBasestat] = useState(
@@ -193,6 +156,7 @@ const DinoForm = (props: DinoFormProps) => {
       stamina?: number;
     }[];
   };
+
   const { register, control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       attack: props.dino.attack as FormValues["attack"] || [],
@@ -207,7 +171,6 @@ const DinoForm = (props: DinoFormProps) => {
     control,
     name: "attack", // the name of the field array in your form data
   });
-
 
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
 
@@ -256,6 +219,91 @@ const DinoForm = (props: DinoFormProps) => {
     });
   }
 
+  const [selectedType, setSelectedType] = useState<dinostattype>(null);
+  const checkTypes = {
+    "immobilized_by": [
+      {
+        value: "733",
+        label: "Lasso",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/lasso.webp",
+      },
+      {
+        value: "1040",
+        label: "Bola",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bola.webp",
+      },
+      {
+        value: "725",
+        label: "Chain Bola",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chain-bola.webp",
+      },
+      {
+        value: "785",
+        label: "Net Projectile",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/net-projectile.webp",
+      },
+      {
+        value: "1252",
+        label: "Plant Species Y Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/plant-species-y-trap.webp",
+      },
+      {
+        value: "383",
+        label: "Bear Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bear-trap.webp",
+      },
+      {
+        value: "384",
+        label: "Large Bear Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/large-bear-trap.webp",
+      },
+    ],
+    "fits_through": [
+      {
+        value: "322",
+        label: "Doorframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-doorframe.webp",
+      },
+      {
+        value: 1066,
+        label: "Double Doorframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+      },
+      {
+        value: "143",
+        label: "Dinosaur Gateway",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
+      },
+      {
+        value: "381",
+        label: "Behemoth Dino Gateway",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/behemoth-stone-dinosaur-gateway.webp",
+      },
+      {
+        value: "316",
+        label: "Hatchframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
+      },
+      {
+        value: "619",
+        label: "Giant Hatchframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+      },
+    ]
+  }
 
   return (
     <div className="rw-form-wrapper">
@@ -264,14 +312,95 @@ const DinoForm = (props: DinoFormProps) => {
           {openModal.dino_stat ? 'Edit' : 'New'} Dino Stat
         </DialogTitle>
         <DialogContent dividers>
-          <DinoStatForm
-            onSave={onSave}
-            dinoStat={openModal.dino_stat}
-            loading={props.loading}
-            error={props.error}
-            dino_id={props.dino?.id}
-            itemsByCategory={data?.itemsByCategory}
-          />
+          <Form<NonNullable<UpdateDinoStatInput>> onSubmit={(data) => onSave(data, openModal?.dino_stat?.id)} error={error} className="rw-form-wrapper my-3">
+            <FormError
+              error={props.error}
+              wrapperClassName="rw-form-error-wrapper"
+              titleClassName="rw-form-error-title"
+              listClassName="rw-form-error-list"
+            />
+
+            <div className="flex flex-row space-x-3">
+              <Lookup
+                label="Type"
+                margin="none"
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(opt) => opt.value}
+                options={[
+                  { value: "food", label: "Food" },
+                  { value: "gather_efficiency", label: "Gather Efficiency" },
+                  { value: "weight_reduction", label: "Weight Reduction" },
+                  { value: "immobilized_by", label: "Immobilized By" },
+                  { value: "fits_through", label: "Fits Through" },
+                  { value: "drops", label: "Drops" },
+                  { value: "saddle", label: "Saddle" },
+                  { value: "bossrecipe", label: "Bossrecipe" },
+                  { value: "engrams", label: "Engrams" },
+                ] as { value: dinostattype, label: string }[]}
+                onSelect={(e) => {
+                  setSelectedType(e.value)
+                }}
+                name="type"
+                defaultValue={openModal?.dino_stat?.type}
+                closeOnSelect
+              />
+
+              {!["immobilized_by", "fits_through", "saddle", "food"].includes(selectedType) && (
+                <Input
+                  label="Value"
+                  name="value"
+                  type="number"
+                  defaultValue={openModal?.dino_stat?.value}
+                  margin="none"
+                  validation={{ valueAsNumber: true }}
+                />
+              )}
+            </div>
+
+
+            {["immobilized_by", "fits_through"].includes(selectedType) ? (
+              <Fragment>
+                <Label
+                  name="item_id"
+                  className="rw-label capitalize"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  {selectedType.replaceAll('_', ' ')}
+                </Label>
+
+                <CheckboxGroup
+                  name="item_id"
+                  defaultValue={openModal?.dino_stat?.item_id?.toString()}
+                  exclusive
+                  options={checkTypes[selectedType]}
+                />
+
+                <FieldError name="item_id" className="rw-field-error" />
+              </Fragment>
+            ) : (
+              <Lookup
+                margin="normal"
+                label="Item"
+                options={itemsByCategory?.items.filter((c) => (selectedType === 'saddle' ? c.type === 'Saddle' : true))}
+                name="item_id"
+                loading={loading}
+                defaultValue={openModal?.dino_stat?.item_id}
+                getOptionValue={({ id }) => id}
+                getOptionLabel={({ name }) => name}
+                getOptionImage={({ image }) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                validation={{ required: true }}
+              />
+            )}
+
+            <TextField
+              name="dino_id"
+              defaultValue={openModal?.dino_stat?.dino_id || dino?.id}
+              className="rw-input hidden"
+              errorClassName="rw-input rw-input-error"
+              validation={{ required: true }}
+            />
+          </Form>
         </DialogContent>
         <DialogActions className="space-x-1">
           <Button

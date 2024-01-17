@@ -55,24 +55,24 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
 
   const variants = {
     standard: {
-      primary: "bg-blue-400 text-white",
-      secondary: "text-white bg-zinc-500",
+      primary: "bg-primary-400 text-white",
+      secondary: "text-white bg-secondary-500",
       info: "bg-sky-400 text-black/90",
       purple: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-      success: "text-black/90 bg-green-500",
-      warning: "text-black/90 bg-orange-400",
-      error: "bg-red-500 text-white",
+      success: "text-black/90 bg-success-500",
+      warning: "text-black/90 bg-warning-400",
+      error: "bg-error-500 text-white",
       DEFAULT: "dark:text-black/90 text-white bg-black dark:bg-white",
       none: "dark:text-white/90 text-black",
     },
     outlined: {
-      primary: "bg-blue-400/10 text-blue-600 ring-1 ring-inset ring-blue-500/10 dark:text-blue-500 dark:ring-blue-400/30",
-      secondary: "bg-zinc-300 text-zinc-600 ring-1 ring-inset ring-zinc-500/10 dark:bg-zinc-400/10 dark:text-zinc-400 dark:ring-zinc-400/20",
+      primary: "bg-primary-400/10 text-primary-600 ring-1 ring-inset ring-primary-500/10 dark:text-primary-500 dark:ring-primary-400/30",
+      secondary: "bg-secondary-300 text-secondary-600 ring-1 ring-inset ring-secondary-500/10 dark:bg-secondary-400/10 dark:text-secondary-400 dark:ring-secondary-400/20",
       info: "bg-blue-400/10 text-blue-700 ring-1 ring-inset ring-blue-700/30 dark:bg-blue-400/20 dark:text-blue-400 dark:ring-blue-400/30",
       purple: "bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-blue-400/10 dark:text-purple-400 dark:ring-purple-400/30",
-      success: "bg-pea-50 text-pea-700 ring-pea-600/20 dark:bg-pea-500/10 dark:text-pea-400 dark:ring-pea-500/20 ring-1 ring-inset",
-      warning: "bg-yellow-50 text-yellow-800 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-500 dark:ring-yellow-400/20",
-      error: "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20",
+      success: "bg-success-50 text-success-700 ring-success-600/20 dark:bg-success-500/10 dark:text-success-400 dark:ring-success-500/20 ring-1 ring-inset",
+      warning: "bg-warning-50 text-warning-800 ring-1 ring-inset ring-warning-600/20 dark:bg-warning-400/10 dark:text-warning-500 dark:ring-warning-400/20",
+      error: "bg-error-50 text-error-700 ring-1 ring-inset ring-error-600/10 dark:bg-error-400/10 dark:text-error-400 dark:ring-error-400/20",
       DEFAULT: "dark:bg-white/10 bg-black/10 ring-1 ring-inset dark:ring-white/30 ring-black/30 dark:text-white/90 text-black/70",
       none: "ring-1 ring-inset dark:ring-white/30 ring-black/30 dark:text-white/90 text-black/70"
     }
