@@ -295,7 +295,7 @@ const Map = ({
           size="small"
           // defaultValue={map}
           loading={loading}
-          value={data.maps?.find(({ id }) => id === (map || 1)) || { id: 2, name: 'The Island' }}
+          value={data?.maps?.find(({ id }) => id === (map || 1)) || { id: 2, name: 'The Island' }}
           disabled={disable_map}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(option) => option.name}
@@ -304,7 +304,7 @@ const Map = ({
             (m) =>
               m.parent_map_id == null &&
               (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
-          ) as { id: number; name: string }[])}
+          ) as { id: number; name: string }[]) || []}
           onSelect={(e) => {
             if (!e) return;
 
@@ -321,7 +321,7 @@ const Map = ({
               disableClearable
               size="small"
               loading={loading}
-              value={(data.maps?.find((m) => m.id === map || m.id === map_id)
+              value={(data?.maps?.find((m) => m.id === map || m.id === map_id)
                 .other_Map as { id: number; name: string }[]).find((s) => s?.id === subMap)}
               disabled={disable_sub_map}
               isOptionEqualToValue={(option, value) => option.id === value.id}
