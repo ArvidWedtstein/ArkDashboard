@@ -243,52 +243,6 @@ const Routes = () => {
         </Set>
         <Set
           wrap={ScaffoldLayout}
-          title="MapRegions"
-          titleTo="mapRegions"
-          buttonLabel="New MapRegion"
-          buttonTo="newMapRegion"
-        >
-          <Route
-            path="/map-regions"
-            page={MapRegionMapRegionsPage}
-            name="mapRegions"
-          />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
-          title="MapResources"
-          titleTo="mapResources"
-          buttonLabel="New MapResource"
-          buttonTo="newMapResource"
-        >
-          <Private
-            unauthenticated="home"
-            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
-          >
-            <Route
-              path="/map-resources/new"
-              page={MapResourceNewMapResourcePage}
-              name="newMapResource"
-            />
-            <Route
-              path="/map-resources/{id:Int}/edit"
-              page={MapResourceEditMapResourcePage}
-              name="editMapResource"
-            />
-          </Private>
-          <Route
-            path="/map-resources/{id:Int}"
-            page={MapResourceMapResourcePage}
-            name="mapResource"
-          />
-          <Route
-            path="/map-resources"
-            page={MapResourceMapResourcesPage}
-            name="mapResources"
-          />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
           title="Dinos"
           titleTo="dinos"
           buttonLabel="New Dino"

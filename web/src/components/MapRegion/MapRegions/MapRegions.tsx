@@ -7,8 +7,8 @@ import {
   truncate,
 } from "src/lib/formatters";
 
-import type { CreateMapRegionInput, DeleteMapRegionMutationVariables, EditMapRegionById, FindMapRegionsByMap, UpdateMapRegionInput, permission } from "types/graphql";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { DeleteMapRegionMutationVariables, FindMapRegionsByMap, UpdateMapRegionInput, UpdateMapRegionMutation, permission } from "types/graphql";
+import { useEffect, useMemo, useState } from "react";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Table from "src/components/Util/Table/Table";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
@@ -285,11 +285,12 @@ const MapRegionsList = ({ mapRegionsByMap, map }: FindMapRegionsByMap) => {
   };
 
   // MapRegion Create / Update / Delete
-  const [createMapRegion] = useMutation(
+  const [createMapRegion, { reset: createReset }] = useMutation(
     CREATE_MAP_REGION_MUTATION,
     {
       onCompleted: () => {
-        setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null })
+        setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null });
+        createReset();
       },
       onError: (error) => {
         toast.error(error.message)
@@ -297,11 +298,12 @@ const MapRegionsList = ({ mapRegionsByMap, map }: FindMapRegionsByMap) => {
     }
   )
 
-  const [updateMapRegion, { loading, error }] = useMutation(
+  const [updateMapRegion, { loading, error, reset: updateReset }] = useMutation(
     UPDATE_MAP_REGION_MUTATION,
     {
       onCompleted: () => {
-        setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null })
+        setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null });
+        updateReset();
       },
       onError: (error) => {
         toast.error(error.message)
@@ -309,25 +311,15 @@ const MapRegionsList = ({ mapRegionsByMap, map }: FindMapRegionsByMap) => {
     }
   )
 
-  const [deleteMapRegion] = useMutation(DELETE_MAP_REGION_MUTATION, {
+  const [deleteMapRegion, { reset: deleteReset }] = useMutation(DELETE_MAP_REGION_MUTATION, {
     onCompleted: () => {
-      setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null })
+      setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null });
+      deleteReset();
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
-
-  const onSave = (
-    input: UpdateMapRegionInput,
-    id: EditMapRegionById['mapRegion']['id']
-  ) => {
-    toast.promise(id ? updateMapRegion({ variables: { id, input } }) : createMapRegion({ variables: { input } }), {
-      loading: `${id ? 'Updating' : 'Creating'} new MapRegion...`,
-      success: `MapRegion successfully ${id ? 'updated' : 'created'}`,
-      error: `Failed to ${id ? 'update' : 'create'} MapRegion.`,
-    })
-  }
 
   const onDeleteClick = (id: DeleteMapRegionMutationVariables["id"]) => {
     toast.custom(
@@ -344,10 +336,30 @@ const MapRegionsList = ({ mapRegionsByMap, map }: FindMapRegionsByMap) => {
     );
   };
 
+  const onSave = (
+    input: UpdateMapRegionInput,
+    id: UpdateMapRegionMutation["updateMapRegion"]['id']
+  ) => {
+    setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null });
+
+    toast.promise(id ? updateMapRegion({ variables: { id, input } }) : createMapRegion({ variables: { input } }), {
+      loading: `${id ? 'Updating' : 'Creating new'} MapRegion...`,
+      success: `MapRegion successfully ${id ? 'updated' : 'created'}`,
+      error: `Failed to ${id ? 'update' : 'create'} MapRegion.`,
+    })
+  }
+
+  const handleDialogClose = () => {
+    setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null });
+    createReset();
+    updateReset();
+    deleteReset();
+  }
+
 
   return (
     <div className="rw-segment">
-      <Dialog open={anchorRef.open_dialog} onClose={() => setAnchorRef({ open: false, open_dialog: false, map_region: null, element: null })}>
+      <Dialog open={anchorRef.open_dialog} onClose={handleDialogClose}>
         <DialogTitle>{anchorRef?.map_region ? 'Edit' : 'New'} Map Region</DialogTitle>
         <DialogContent dividers>
           <MapRegionForm
@@ -363,7 +375,7 @@ const MapRegionsList = ({ mapRegionsByMap, map }: FindMapRegionsByMap) => {
               type="reset"
               color="secondary"
               variant="outlined"
-              onClick={() => setAnchorRef({ open: false, open_dialog: false, element: null, map_region: null })}
+              onClick={handleDialogClose}
             >
               Cancel
             </Button>

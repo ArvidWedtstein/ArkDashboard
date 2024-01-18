@@ -21,6 +21,18 @@ export const QUERY = gql`
         name
       }
     }
+    itemsByCategory(category: "Resource") {
+      items {
+        id
+        name
+        description
+        image
+        color
+        type
+        category
+      }
+      count
+    }
   }
 `
 
@@ -98,6 +110,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   mapResources,
+  itemsByCategory,
 }: CellSuccessProps<FindMapResourcesByMap>) => {
-  return <MapResources mapResources={mapResources} />
+  return <MapResources mapResources={mapResources} itemsByCategory={itemsByCategory} />
 }

@@ -26,6 +26,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/component
 import { useRef, useState } from "react";
 import Table from "src/components/Util/Table/Table";
 import MapRegionsCell from "src/components/MapRegion/MapRegionsCell";
+import MapResourcesCell from "src/components/MapResource/MapResourcesCell";
 
 type FormMap = NonNullable<EditMapById["map"]>;
 
@@ -224,6 +225,13 @@ const MapForm = (props: MapFormProps) => {
       </div>
       {props?.map?.id && (
         <MapRegionsCell map_id={props?.map?.id} />
+      )}
+
+      <div className="rw-divide dark:text-white text-black my-3">
+        <span>Map Resources</span>
+      </div>
+      {props?.map?.id && (
+        <MapResourcesCell map_id={props?.map?.id} />
       )}
     </div>
   );
