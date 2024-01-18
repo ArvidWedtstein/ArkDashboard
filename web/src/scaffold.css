@@ -656,7 +656,7 @@
 
   /* || Toasts */
   .rw-toast {
-    @apply rounded-lg border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-700 dark:text-white;
+    @apply rounded-lg border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-800 dark:text-white;
   }
 
   /* Info */
@@ -671,12 +671,12 @@
 
   /* Warning */
   .rw-toast.rw-toast-warning {
-    @apply border-yellow-300 text-yellow-800 dark:border-yellow-800 dark:text-yellow-400;
+    @apply border-warning-300 text-warning-800 dark:border-warning-800 dark:text-warning-400;
   }
 
   /* Error */
   .rw-toast.rw-toast-error {
-    @apply border-red-300 text-black dark:border-red-600 dark:text-white;
+    @apply border-error-300 text-black dark:border-error-600 dark:text-white;
   }
   /* TODO: cleanup */
   /* Table */

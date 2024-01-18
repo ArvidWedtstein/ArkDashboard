@@ -248,26 +248,6 @@ const Routes = () => {
           buttonLabel="New MapRegion"
           buttonTo="newMapRegion"
         >
-          <Private
-            unauthenticated="home"
-            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
-          >
-            <Route
-              path="/map-regions/new"
-              page={MapRegionNewMapRegionPage}
-              name="newMapRegion"
-            />
-            <Route
-              path="/map-regions/{id:Int}/edit"
-              page={MapRegionEditMapRegionPage}
-              name="editMapRegion"
-            />
-          </Private>
-          <Route
-            path="/map-regions/{id:Int}"
-            page={MapRegionMapRegionPage}
-            name="mapRegion"
-          />
           <Route
             path="/map-regions"
             page={MapRegionMapRegionsPage}

@@ -31,14 +31,18 @@ const UPDATE_MAP_MUTATION = gql`
     updateMap(id: $id, input: $input) {
       id
       created_at
+      created_at
       name
-      MapResource {
-        latitude
-        longitude
-        type
-      }
-
       img
+      icon
+      description
+      release_date
+      boundaries
+      cord_shift_lat
+      cord_shift_lon
+      cord_mult_lat
+      cord_mult_lon
+      parent_map_id
     }
   }
 `;
@@ -68,7 +72,7 @@ export const Success = ({ map }: CellSuccessProps<EditMapById>) => {
   const [updateMap, { loading, error }] = useMutation(UPDATE_MAP_MUTATION, {
     onCompleted: () => {
       toast.success("Map updated");
-      navigate(routes.maps());
+      // navigate(routes.maps());
     },
     onError: (error) => {
       toast.error(error.message);
@@ -79,7 +83,7 @@ export const Success = ({ map }: CellSuccessProps<EditMapById>) => {
     toast.promise(updateMap({ variables: { id, input } }), {
       loading: "Updating map...",
       success: "Map successfully updated",
-      error: <b>Failed to update map.</b>,
+      error: `Failed to update map.`,
     });
   };
 

@@ -436,7 +436,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FileUpload
           name="base_images"
-          thumbnail
+          secondaryName="thumbnail"
           multiple
           defaultValue={props?.basespot?.base_images
             ?.split(",")
@@ -445,6 +445,7 @@ const BasespotForm = (props: BasespotFormProps) => {
                 `M${props?.basespot?.map_id}-${props?.basespot?.id}/${f.trim()}`
             )
             .join(",")}
+          defaultSecondaryValue={props?.basespot?.thumbnail}
           storagePath={
             props.basespot?.id ? `basespotimages` : "basespotimages/temp"
           }

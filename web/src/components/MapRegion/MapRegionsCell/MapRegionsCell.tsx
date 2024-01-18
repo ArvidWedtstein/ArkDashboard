@@ -21,13 +21,14 @@ export const QUERY = gql`
       end_x
       end_y
       end_z
-      Map {
-        topographic_img
-        cord_mult_lat
-        cord_mult_lon
-        cord_shift_lat
-        cord_shift_lon
-      }
+    }
+    map: map(id: $map_id) {
+      topographic_img
+      img
+      cord_mult_lat
+      cord_mult_lon
+      cord_shift_lat
+      cord_shift_lon
     }
   }
 `
@@ -104,6 +105,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 )
 
-export const Success = ({ mapRegionsByMap }: CellSuccessProps<FindMapRegionsByMap>) => {
-  return <MapRegions mapRegionsByMap={mapRegionsByMap} />
+export const Success = ({ mapRegionsByMap, map }: CellSuccessProps<FindMapRegionsByMap>) => {
+  return <MapRegions mapRegionsByMap={mapRegionsByMap} map={map} />
 }

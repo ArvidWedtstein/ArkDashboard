@@ -1083,7 +1083,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       error={error || Boolean(fieldState?.error)}
       fullWidth={fullWidth}
       ref={ref}
-      required={Boolean(validation?.required)}
+      required={Boolean(validation?.required) || other?.required}
       color={color}
       variant={variant}
       ownerState={ownerState}
@@ -1133,6 +1133,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         renderSuffix={(state) =>
           variant === "outlined" ? (
             <fieldset
+              form={null}
               {...SuffixProps}
               aria-hidden
               className={clsx(

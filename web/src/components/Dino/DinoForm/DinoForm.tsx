@@ -522,7 +522,7 @@ const DinoForm = (props: DinoFormProps) => {
               defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
               defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
               storagePath={`arkimages`}
-              valueFormatter={(filename) => filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
+              valueFormatter={(filename, isUpload) => isUpload ? filename.includes('DinoIcon/') ? filename : `DinoIcon/${filename} ` : filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
             />
 
             <div className="flex flex-col space-y-2 my-2">

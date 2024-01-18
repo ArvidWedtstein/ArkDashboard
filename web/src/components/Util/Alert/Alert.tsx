@@ -3,7 +3,7 @@ import clsx from "clsx";
 interface AlertProps {
   icon?: React.ReactNode;
   severity?: 'error' | 'info' | 'success' | 'warning';
-  variant?: 'filled' | 'outlined' | 'standard';
+  variant?: 'contained' | 'outlined' | 'standard';
   title?: React.ReactNode;
   action?: React.ReactNode;
   children?: React.ReactNode;
@@ -14,48 +14,44 @@ const Alert = ({ severity = "error", variant = "outlined", children, className, 
 
 
   const severityClasses = {
-    error: {
-      standard: 'text-red-200 bg-stone-900',
-      filled: 'bg-red-600 text-white',
-      outlined: 'border border-red-400 text-red-500 bg-transparent',
+    standard: {
+      info: `text-sky-200 bg-slate-900`,
+      success: `text-[#cce8cd] bg-neutral-900`,
+      warning: `text-warning-200 bg-stone-900`,
+      error: `text-error-200 bg-stone-900`,
     },
-    warning: {
-      standard: 'text-orange-200 bg-stone-900',
-      filled: 'bg-orange-500 text-black/80',
-      outlined: 'border border-amber-300 text-orange-200 bg-transparent'
+    contained: {
+      info: `bg-sky-500 text-black/80`,
+      success: `bg-success-600 text-black/80`,
+      warning: `bg-warning-500 text-black/80`,
+      error: `bg-error-600 text-white`,
     },
-    info: {
-      standard: 'text-sky-200 bg-slate-900',
-      filled: 'bg-sky-500 text-black/80',
-      outlined: 'border border-sky-500 text-sky-300 bg-transparent'
-    },
-    success: {
-      standard: 'text-[#cce8cd] bg-neutral-900',
-      filled: 'bg-green-600 text-black/80',
-      outlined: 'border border-green-300 text-[#cce8cd] bg-transparent'
+    outlined: {
+      info: `border border-sky-500 text-sky-300 bg-transparent`,
+      success: `border border-success-300 text-[#cce8cd] bg-transparent`,
+      warning: `border border-warning-300 text-warning-200 bg-transparent`,
+      error: `border border-error-400 text-error-500 bg-transparent`,
     },
   }
 
   const iconClasses = {
-    error: {
-      standard: 'text-red-500',
-      filled: '',
-      outlined: 'text-red-500'
+    standard: {
+      info: `text-sky-400`,
+      success: `text-success-500`,
+      warning: `text-warning-400`,
+      error: `text-error-500`,
     },
-    warning: {
-      standard: 'text-amber-400',
-      filled: '',
-      outlined: 'text-amber-400'
+    contained: {
+      info: `text-white`,
+      success: `text-white`,
+      warning: `text-white`,
+      error: `text-white`,
     },
-    info: {
-      standard: 'text-sky-400',
-      filled: '',
-      outlined: 'text-sky-400'
-    },
-    success: {
-      standard: 'text-green-500',
-      filled: '',
-      outlined: 'text-green-500'
+    outlined: {
+      info: `text-sky-400`,
+      success: `text-success-500`,
+      warning: `text-warning-400`,
+      error: `text-error-500`,
     },
   }
 
@@ -84,10 +80,10 @@ const Alert = ({ severity = "error", variant = "outlined", children, className, 
 
   return (
     <div className={clsx("flex items-center rounded shadow-none py-1.5 px-4 text-sm w-fit", className, {
-      [severityClasses[severity][variant]]: severity,
+      [severityClasses[variant][severity]]: severity,
     })}>
       <div className={clsx("mr-2 py-2 flex text-base opacity-90", {
-        [iconClasses[severity][variant]]: severity,
+        [iconClasses[variant][severity]]: severity,
       })}>
         {icon[severity]}
       </div>
