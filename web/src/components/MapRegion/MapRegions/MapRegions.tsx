@@ -1,15 +1,12 @@
 import { useAuth } from "src/auth";
 import {
   ArrayElement,
-  checkboxInputTag,
   dynamicSort,
   groupBy,
-  truncate,
 } from "src/lib/formatters";
 
 import type { DeleteMapRegionMutationVariables, FindMapRegionsByMap, UpdateMapRegionInput, UpdateMapRegionMutation, permission } from "types/graphql";
 import { useEffect, useMemo, useState } from "react";
-import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Table from "src/components/Util/Table/Table";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import Popper from "src/components/Util/Popper/Popper";

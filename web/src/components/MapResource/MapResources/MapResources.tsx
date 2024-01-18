@@ -1,9 +1,8 @@
 
 import type {
-  DeleteMapResourceMutationVariables,
-  EditMapResourceById,
   FindMapResourcesByMap,
   UpdateMapResourceInput,
+  UpdateMapResourceMutation,
   permission,
 } from 'types/graphql'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
@@ -392,7 +391,7 @@ const MapResourcesList = ({ mapResources, itemsByCategory }: FindMapResourcesByM
 
   const onSave = (
     input: UpdateMapResourceInput,
-    id: EditMapResourceById['mapResource']['id']
+    id: UpdateMapResourceMutation["updateMapResource"]['id']
   ) => {
     setAnchorRef({ open: false, open_dialog: false, map_resource: null, element: null });
 
@@ -431,7 +430,7 @@ const MapResourcesList = ({ mapResources, itemsByCategory }: FindMapResourcesByM
               type="button"
               color="success"
               variant="contained"
-              onClick={() => document.forms["form-map-region"].requestSubmit()}
+              onClick={() => document.forms["form-map-resource"].requestSubmit()}
               startIcon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

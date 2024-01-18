@@ -3,18 +3,19 @@ import {
   FormError,
 } from '@redwoodjs/forms'
 
-import type { EditMapRegionById, UpdateMapRegionInput } from 'types/graphql'
+import type { FindMapRegionsByMap, UpdateMapRegionInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 import Button, { ButtonGroup } from 'src/components/Util/Button/Button'
 import { Input } from 'src/components/Util/Input/Input'
 import Switch from 'src/components/Util/Switch/Switch'
 import Alert from 'src/components/Util/Alert/Alert'
 import { forwardRef } from 'react'
+import { ArrayElement } from 'src/lib/formatters'
 
-type FormMapRegion = NonNullable<EditMapRegionById['mapRegion']>
+type FormMapRegion = NonNullable<ArrayElement<FindMapRegionsByMap["mapRegionsByMap"]>>
 
 interface MapRegionFormProps {
-  mapRegion?: EditMapRegionById['mapRegion']
+  mapRegion?: ArrayElement<FindMapRegionsByMap["mapRegionsByMap"]>
   onSave: (data: UpdateMapRegionInput, id?: FormMapRegion['id']) => void
   error: RWGqlError
   loading: boolean

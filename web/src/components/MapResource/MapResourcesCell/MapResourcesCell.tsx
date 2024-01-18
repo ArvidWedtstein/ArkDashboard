@@ -82,10 +82,7 @@ export const Loading = () => (
 export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
-      {'No mapResources yet. '}
-      <Link to={routes.newMapResource()} className="rw-link">
-        {'Create one?'}
-      </Link>
+      {'No map resources created yet. '}
     </div>
   )
 }

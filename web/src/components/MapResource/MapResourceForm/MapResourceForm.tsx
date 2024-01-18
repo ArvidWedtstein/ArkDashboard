@@ -3,16 +3,17 @@ import {
   FormError,
 } from '@redwoodjs/forms'
 
-import type { EditMapResourceById, FindMapResourcesByMap, UpdateMapResourceInput } from 'types/graphql'
+import type { FindMapResourcesByMap, UpdateMapResourceInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 import { Input } from 'src/components/Util/Input/Input'
 import { Lookup } from 'src/components/Util/Lookup/Lookup'
 import { ButtonGroup } from 'src/components/Util/Button/Button'
+import { ArrayElement } from 'src/lib/formatters'
 
-type FormMapResource = NonNullable<EditMapResourceById['mapResource']>
+type FormMapResource = NonNullable<ArrayElement<FindMapResourcesByMap['mapResources']>>
 
 interface MapResourceFormProps {
-  mapResource?: EditMapResourceById['mapResource'];
+  mapResource?: ArrayElement<FindMapResourcesByMap['mapResources']>;
   itemsByCategory: FindMapResourcesByMap["itemsByCategory"];
   onSave: (data: UpdateMapResourceInput, id?: FormMapResource['id']) => void
   error: RWGqlError
@@ -29,7 +30,7 @@ const MapResourceForm = (props: MapResourceFormProps) => {
   }
 
   return (
-    <Form<FormMapResource> onSubmit={onSubmit} error={error}>
+    <Form<FormMapResource> onSubmit={onSubmit} id="form-map-resource" error={error}>
       <FormError
         error={error}
         wrapperClassName="rw-form-error-wrapper"
