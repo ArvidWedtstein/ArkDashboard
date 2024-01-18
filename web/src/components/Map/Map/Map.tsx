@@ -1,9 +1,10 @@
 import { navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { Card, CardActionArea, CardHeader, CardMedia } from "src/components/Util/Card/Card";
+import Chart from "src/components/Util/Chart/Chart";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
@@ -390,7 +391,7 @@ const Map = ({ map }: Props) => {
             <Button
               permission="gamedata_delete"
               color="error"
-              variant="outlined"
+              variant="contained"
               onClick={() => onDeleteClick(map.id)}
               startIcon={
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -400,8 +401,6 @@ const Map = ({ map }: Props) => {
             >
               Delete
             </Button>
-
-
           </ButtonGroup>
 
           <div className="relative grid grid-flow-row gap-3 grid-cols-1 md:grid-cols-2">
@@ -625,6 +624,45 @@ const Map = ({ map }: Props) => {
                     />
                   </CardActionArea>
                 </Card>
+              </div>
+              <div className="w-full relative">
+                <Chart
+                  type="pie"
+                  series={[
+                    {
+                      innerRadius: 60,
+                      paddingAngle: 3,
+                      // arcLabel: true,
+                      // data: [
+                      //   { id: 0, value: 90, label: 'series A' },
+                      //   { id: 1, value: 90, label: 'series B' },
+                      //   { id: 2, value: 90, label: 'series C' },
+                      //   { id: 3, value: 90, label: `${types.length}` },
+                      // ],
+                      data: Object.entries(
+                        groupBy(
+                          types
+                            .filter((f) =>
+                              selectedTypes.find((v) => v === f.value || v === f.label)
+                                ? true
+                                : false
+                            )
+                            .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
+                          "label"
+                        )
+                      ).map(([k, v]) => ({
+                        label: k,
+                        value: v.length,
+                      }))
+
+                      // types?.map((type, i) => ({
+                      //   id: i,
+                      //   value: 1,
+                      //   label: type.label
+                      // })),
+                    }
+                  ]}
+                />
               </div>
             </div>
           </div>

@@ -427,6 +427,10 @@ type ChartPropsWithType = {
   scatter: IChartProps & { series: ScatterChartSeries[] };
 }[IChartProps["type"]];
 
+/**
+ *
+ * @returns a chart of your type
+ */
 const Chart = ({
   xAxis,
   yAxis,
@@ -860,6 +864,8 @@ const Chart = ({
 
         //#region Pie
         if (type === "pie") {
+
+
           const outerRadiusSize = Math.min(cx, cy) - outerRadius;
           const innerRadiusValue = Math.max(0, innerRadius);
 
@@ -868,7 +874,7 @@ const Chart = ({
 
           const sliceAngle =
             (val.value / totalValue) *
-            (endAngle - startAngle - d.data.length * paddingAngle);
+            (endAngle - startAngle - (d.data.length) * paddingAngle);
 
           const sliceEndAngle = sliceStartAngle + sliceAngle;
 
