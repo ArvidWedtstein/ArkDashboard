@@ -30,6 +30,9 @@ module.exports = {
           "fillProgess 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         fill: "fill 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         "auto-fill-cancel": "auto-fill-cancel 10ms",
+        "ripple-enter": "rippleenter 550ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "ripple-exit": "rippleexit 550ms cubic-bezier(0.4, 0, 0.2, 1)",
+        wave: "wave 2s linear 0.5s infinite",
       },
       keyframes: {
         progress: {
@@ -103,6 +106,17 @@ module.exports = {
           },
           to: {
             transform: "translateY(0)",
+          },
+        },
+        wave: {
+          "0%": {
+            transform: "translateX(-100%)",
+          },
+          "50%": {
+            transform: "translateX(100%)",
+          },
+          "100%": {
+            transform: "translateX(100%)",
           },
         },
       },

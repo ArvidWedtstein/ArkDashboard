@@ -42,12 +42,43 @@ const RippleElement = (props) => {
     return undefined;
   }, [onExited, inProp, timeout]);
 
+
+  // .ripple {
+  //   opacity: 0;
+  //   position: absolute;
+  // }
+  // .ripple-rippleVisible {
+  //   opacity: 0.12;
+  //   transform: scale(1);
+  //   animation-name: rippleenter;
+  //   animation-duration: 550ms;
+  //   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  // }
+  // .ripple-child {
+  //   opacity: 1;
+  //   display: block;
+  //   width: 100%;
+  //   height: 100%;
+  //   border-radius: 50%;
+  //   background-color: currentColor;
+  // }
+  // .ripple-childLeaving {
+  //   opacity: 0;
+  //   animation-name: rippleexit;
+  //   animation-duration: 550ms;
+  //   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  // }
   return (
-    <span className={"ripple ripple-rippleVisible"} style={rippleStyles}>
-      <span className={clsx("ripple-child", {
-        "ripple-childLeaving": leaving,
+    <span className={"absolute opacity-[.12] scale-100 animate-ripple-enter"} style={rippleStyles}>
+      <span className={clsx("opacity-100 block w-full h-full rounded-[50%] bg-current", {
+        "opacity-0 animate-ripple-exit": leaving,
       })} />
     </span>
+    // <span className={"ripple ripple-rippleVisible"} style={rippleStyles}>
+    //   <span className={clsx("ripple-child", {
+    //     "ripple-childLeaving": leaving,
+    //   })} />
+    // </span>
   );
 };
 type RippleProps = {

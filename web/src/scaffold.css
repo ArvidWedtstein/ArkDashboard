@@ -130,31 +130,6 @@
   }
 
   /* Ripple */
-  .ripple {
-    opacity: 0;
-    position: absolute;
-  }
-  .ripple-rippleVisible {
-    opacity: 0.12;
-    transform: scale(1);
-    animation-name: rippleenter;
-    animation-duration: 550ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .ripple-child {
-    opacity: 1;
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background-color: currentColor;
-  }
-  .ripple-childLeaving {
-    opacity: 0;
-    animation-name: rippleexit;
-    animation-duration: 550ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
   @keyframes rippleenter {
     0% {
       transform: scale(0);
@@ -676,7 +651,7 @@
 
   /* Error */
   .rw-toast.rw-toast-error {
-    @apply border-error-300 text-black dark:border-error-600 dark:text-white;
+    @apply border-error-300 dark:border-error-600 text-black dark:text-white;
   }
   /* TODO: cleanup */
   /* Table */

@@ -7,7 +7,7 @@
 
 [web]
   title = "ArkDashboard"
-  port = 8911
+  port = 8913
   apiUrl = "/.netlify/functions"
   includeEnvironmentVariables = ["NODE_ENV", "DATABASE_URL", "SUPABASE_URL", "SUPABASE_KEY", "RWJS_DEV_API_URL"] # any ENV vars that should be available to the web side, see https://redwoodjs.com/docs/environment-variables#web
   fastRefresh = true

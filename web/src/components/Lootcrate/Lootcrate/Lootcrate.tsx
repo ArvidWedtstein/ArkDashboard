@@ -1,13 +1,14 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { useAuth } from "src/auth";
 import Alert from "src/components/Util/Alert/Alert";
 import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
 import Map from "src/components/Util/Map/Map";
+import Skeleton from "src/components/Util/Skeleton/Skeleton";
 import Table from "src/components/Util/Table/Table";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 import Toast from "src/components/Util/Toast/Toast";
@@ -121,6 +122,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
                     <div className="grid grid-flow-row grid-cols-4 gap-1 py-3">
                       {items.map((item) => (
                         <Link
+                          key={item.id}
                           to={routes.item({ id: item.Item.id })}
                           className="inline-flex max-w-xs flex-1 items-center space-x-1 rounded bg-zinc-200 p-1  dark:bg-zinc-500"
                         >

@@ -4,6 +4,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Lootcrate from "src/components/Lootcrate/Lootcrate";
 import { Fragment } from "react";
+import Skeleton from "src/components/Util/Skeleton/Skeleton";
 
 export const QUERY = gql`
   query FindLootcrateById($id: BigInt!) {
@@ -50,16 +51,17 @@ export const QUERY = gql`
 `;
 
 export const Loading = () => (
-  <Fragment>
+  <div className="animate-pulse" role="status">
     <div
-      role="status"
-      className="animate-pulse rounded border border-zinc-200 p-2 mb-2 shadow dark:border-zinc-700 md:p-4"
+      className="rounded border border-zinc-200 p-2 mb-2 shadow dark:border-zinc-700 md:p-4"
     >
       <div className="flex">
         <div className="flex flex-col">
-          <div className="mb-4 h-2.5 w-60 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-          <div className="mb-2.5 h-2 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <Skeleton animation="pulse" variant="text" className="text-md" />
+          <Skeleton animation="pulse" variant="text" className="text-xs" width={200} />
+
         </div>
+        <Skeleton animation="pulse" variant="image" width={"33%"} height={500} />
 
         <div className="flex ml-auto">
           <div className="w-24 h-6 rounded bg-zinc-200 dark:bg-zinc-700" />
@@ -102,7 +104,7 @@ export const Loading = () => (
         <div className="w-full h-1 rounded bg-zinc-200 dark:bg-zinc-700" />
       </div>
     </div>
-  </Fragment>
+  </div>
 );
 
 export const Empty = () => <div>Lootcrate not found</div>;
