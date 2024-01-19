@@ -147,7 +147,7 @@ const MapForm = (props: MapFormProps) => {
           />
         </ButtonGroup>
 
-        <Alert variant="outlined" className="w-fit" severity="info" title={"Info"}>
+        <Alert variant="outlined" className="w-fit" color="info" title={"Info"}>
           Unsed to calculate coordinates on map
         </Alert>
 
@@ -162,7 +162,7 @@ const MapForm = (props: MapFormProps) => {
           defaultValue={JSON.stringify(props.map?.boundaries, null, 2)}
         />
 
-        <Alert variant="outlined" className="w-fit" severity="info" title={"Info"}>
+        <Alert variant="outlined" className="w-fit" color="info" title={"Info"}>
           Boundaries are used to calculate map, when main map has submaps and these submaps go outside main map
         </Alert>
         <br />

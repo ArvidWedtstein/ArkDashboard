@@ -1755,7 +1755,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           >
             <section>
               {dino?.taming_notice && (
-                <Alert className="my-3" variant="outlined" severity="info">
+                <Alert className="my-3" variant="outlined" color="info">
                   {dino?.taming_notice}
                 </Alert>
               )}

@@ -430,6 +430,27 @@ type ChartPropsWithType = {
 /**
  *
  * @returns a chart of your type
+ *
+ *
+ * @example Pie
+ *
+ * Pie Charts must only have 1 series and then the data inside of that.
+ * <Chart
+    type="pie"
+    series={[
+      {
+        innerRadius: 60,
+        paddingAngle: 3,
+        arcLabel: true,
+        data: [
+          { id: 0, value: 90, label: 'series A' },
+          { id: 1, value: 90, label: 'series B' },
+          { id: 2, value: 90, label: 'series C' },
+          { id: 3, value: 90, label: `${types.length}` },
+        ],
+      }
+    ]}
+  />
  */
 const Chart = ({
   xAxis,
@@ -471,7 +492,7 @@ const Chart = ({
 
   const dataSeries: ChartPropsWithType["series"] = useMemo(() => {
     // Autogenerate unique hex colors
-
+    // `hsl(${(index * 360) / data.length}, 70%, 50%)`
     return series?.map((s, i) => {
       const colors = generateChartColors(
         type === "pie" ? s.data.length : Array(series.length).length
@@ -497,20 +518,16 @@ const Chart = ({
     });
   }, [series, dataset]);
 
-  const xAxisData = (xAxis ?? [{ id: "bottom" }]).map((x) => {
-    let id = x?.id ?? "bottom";
+  const xAxisData = xAxis.map(({ id = "bottom", data: axisData, dataKey, scale, scaleType = 'linear', tickSize = 6, min, max, disableTicks = false, disableLine = false, label, valueFormatter }) => {
     let position: AxisPosition = AxisPositionMap[id] || "bottom";
 
     let data =
-      (dataset.length > 0 && x.dataKey
-        ? dataset?.map((d) => d[x.dataKey])
-        : x.data) ?? [];
-
-    let scaleType = x.scaleType ?? "linear";
-    let tickSize = x.tickSize ?? 6;
+      (dataset.length > 0 && dataKey
+        ? dataset?.map((d) => d[dataKey])
+        : axisData) ?? [];
 
     let valueMin =
-      x.min ??
+      min ??
       Math.min(
         ...[type === "bar" ? 0 : null,
         ...(!data || data.length == 0
@@ -527,7 +544,7 @@ const Chart = ({
       ) ??
       null;
     let valueMax =
-      x.max ??
+      max ??
       Math.max(
         ...(!data || data.length == 0
           ? dataSeries.flatMap((s) =>
@@ -543,7 +560,7 @@ const Chart = ({
       ) ??
       null;
 
-    const axisValues = generateAxisRangeValues(
+    const axisPointValues = generateAxisRangeValues(
       {
         margin,
         width,
@@ -556,46 +573,42 @@ const Chart = ({
       scaleType,
       position,
       tickSize,
-      x.disableTicks ?? false,
+      disableTicks,
       data
     );
 
     return {
-      ...x,
+      label,
+      scale,
       id,
       data,
-      axisValues,
+      axisValues: axisPointValues,
       scaleType,
       valueMin,
       valueMax,
       position,
-      disableLine: x.disableLine ?? false,
-      disableTicks: x.disableTicks ?? false,
+      disableLine,
+      disableTicks,
       tickSize,
+      valueFormatter
     };
   });
 
-  const yAxisData = (yAxis ?? [{ id: "left" }])?.map((y) => {
-    let id = y?.id ?? "left";
+  const yAxisData = yAxis?.map(({ id = "left", data: axisData, dataKey, scale, scaleType = 'linear', tickSize = 6, min, max, disableTicks = false, disableLine, label, valueFormatter }) => {
     let position: AxisPosition = AxisPositionMap[id] || "left";
 
-    let scaleType = y.scaleType ?? "linear";
-    let tickSize = y.tickSize ?? 6;
-
-    let disableTicks = y.disableTicks ?? false;
-
     let data =
-      (dataset.length > 0 && y.dataKey
+      (dataset.length > 0 && dataKey
         ? dataset?.map((d) => {
           if (scaleType === 'linear') {
-            return parseInt(d[y.dataKey].toString())
+            return parseInt(d[dataKey].toString())
           }
-          return d[y.dataKey]
+          return d[dataKey]
         })
-        : y.data) ?? [];
+        : axisData) ?? [];
 
     let valueMin =
-      y.min ??
+      min ??
       Math.min(
         type === "bar" ? 0 : null, ...(!data || data.length == 0
           ? dataSeries.flatMap((s) =>
@@ -610,7 +623,7 @@ const Chart = ({
             : [])
       );
     let valueMax =
-      y.max ??
+      max ??
       Math.max(
         ...dataSeries.flatMap((s) =>
           type === "scatter"
@@ -619,8 +632,8 @@ const Chart = ({
             )
             : s.data
         ),
-        ...(y?.data && y?.data.every((x) => !isNaN(parseInt(x.toString())))
-          ? y.data.map((x) => parseInt(x.toString()))
+        ...(axisData && axisData.every((x) => !isNaN(parseInt(x.toString())))
+          ? axisData.map((x) => parseInt(x.toString()))
           : [])
       );
 
@@ -642,7 +655,8 @@ const Chart = ({
     );
 
     return {
-      ...y,
+      label,
+      scale,
       id,
       data,
       axisValues,
@@ -650,9 +664,10 @@ const Chart = ({
       valueMin,
       valueMax,
       position,
-      disableLine: y.disableLine ?? false,
+      disableLine,
       disableTicks,
       tickSize,
+      valueFormatter
     };
   });
 
@@ -865,7 +880,7 @@ const Chart = ({
         //#region Pie
         if (type === "pie") {
 
-
+          // TODO: fix gap between
           const outerRadiusSize = Math.min(cx, cy) - outerRadius;
           const innerRadiusValue = Math.max(0, innerRadius);
 

@@ -625,45 +625,6 @@ const Map = ({ map }: Props) => {
                   </CardActionArea>
                 </Card>
               </div>
-              <div className="w-full relative">
-                <Chart
-                  type="pie"
-                  series={[
-                    {
-                      innerRadius: 60,
-                      paddingAngle: 3,
-                      // arcLabel: true,
-                      // data: [
-                      //   { id: 0, value: 90, label: 'series A' },
-                      //   { id: 1, value: 90, label: 'series B' },
-                      //   { id: 2, value: 90, label: 'series C' },
-                      //   { id: 3, value: 90, label: `${types.length}` },
-                      // ],
-                      data: Object.entries(
-                        groupBy(
-                          types
-                            .filter((f) =>
-                              selectedTypes.find((v) => v === f.value || v === f.label)
-                                ? true
-                                : false
-                            )
-                            .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
-                          "label"
-                        )
-                      ).map(([k, v]) => ({
-                        label: k,
-                        value: v.length,
-                      }))
-
-                      // types?.map((type, i) => ({
-                      //   id: i,
-                      //   value: 1,
-                      //   label: type.label
-                      // })),
-                    }
-                  ]}
-                />
-              </div>
             </div>
           </div>
         </div>

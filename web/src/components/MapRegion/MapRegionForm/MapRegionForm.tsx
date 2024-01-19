@@ -165,7 +165,7 @@ const MapRegionForm = forwardRef<HTMLFormElement, MapRegionFormProps>((props, re
       </ButtonGroup>
 
 
-      <Alert severity='info'>
+      <Alert color='info' variant='outlined'>
         Corner coordinates for region. These are Unreal Coordinates and not latitude / longitude
       </Alert>
 

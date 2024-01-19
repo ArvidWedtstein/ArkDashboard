@@ -32,7 +32,7 @@ type ColorInputProps = {
   >;
   required?: boolean;
   margin?: "dense" | "normal" | "none";
-  variant?: "standard" | "filled" | "outlined";
+  variant?: "standard" | "contained" | "outlined";
   size?: "small" | "medium" | "large";
   value?: string;
   validation?: RegisterOptions & {

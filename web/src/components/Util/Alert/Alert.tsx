@@ -1,19 +1,20 @@
 import clsx from "clsx";
+import { DetailedHTMLProps, HTMLAttributes, forwardRef } from "react";
 
-interface AlertProps {
+type AlertProps = {
   icon?: React.ReactNode;
-  severity?: 'error' | 'info' | 'success' | 'warning';
+  color?: 'error' | 'info' | 'success' | 'warning';
   variant?: 'contained' | 'outlined' | 'standard';
   title?: React.ReactNode;
   action?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
-}
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
-const Alert = ({ severity = "error", variant = "outlined", children, className, title }: AlertProps) => {
+const Alert = forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
+  const { color = "error", variant = "outlined", children, className, title, ...other } = props;
 
-
-  const severityClasses = {
+  const colorClasses = {
     standard: {
       info: `text-sky-200 bg-slate-900`,
       success: `text-[#cce8cd] bg-neutral-900`,
@@ -79,13 +80,18 @@ const Alert = ({ severity = "error", variant = "outlined", children, className, 
   }
 
   return (
-    <div className={clsx("flex items-center rounded shadow-none py-1.5 px-4 text-sm w-fit", className, {
-      [severityClasses[variant][severity]]: severity,
-    })}>
+    <div
+      role="alert"
+      ref={ref}
+      className={clsx("flex items-center rounded shadow-none py-1.5 px-4 text-sm w-fit", className, {
+        [colorClasses[variant][color]]: color,
+      })}
+      {...other}
+    >
       <div className={clsx("mr-2 py-2 flex text-base opacity-90", {
-        [iconClasses[variant][severity]]: severity,
+        [iconClasses[variant][color]]: color,
       })}>
-        {icon[severity]}
+        {icon[color]}
       </div>
       <div className="py-2 min-w-0 overflow-auto align-middle">
         <div className="text-base -mt-0.5 font-medium">{title}</div>
@@ -93,6 +99,6 @@ const Alert = ({ severity = "error", variant = "outlined", children, className, 
       </div>
     </div>
   )
-}
+});
 
 export default Alert
