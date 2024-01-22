@@ -38,7 +38,7 @@ export const QUERY = gql`
       img
     }
     basespotTypes {
-      type
+      __typename
     }
   }
 `;
@@ -132,6 +132,7 @@ export const Success = ({ basespot, maps, basespotTypes }: CellSuccessProps<Edit
     });
   };
 
+  console.log(basespotTypes)
   return (
     <div className="rw-segment">
       <div className="rw-segment-main">
@@ -140,7 +141,7 @@ export const Success = ({ basespot, maps, basespotTypes }: CellSuccessProps<Edit
           onSave={onSave}
           error={error}
           loading={loading}
-          basespotTypes={basespotTypes.map((g) => ({ id: g.type, type: g.type, name: g.type }))}
+          basespotTypes={basespotTypes?.map((g) => ({ id: g.type, type: g.type, name: g.type }))}
           maps={maps}
         />
       </div>

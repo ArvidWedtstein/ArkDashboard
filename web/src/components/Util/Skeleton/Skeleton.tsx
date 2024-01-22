@@ -24,7 +24,7 @@ const Skeleton = forwardRef<HTMLSpanElement, SkeletonProps>((props, ref) => {
       </svg>
     )
   }
-  const classes = clsx(`block h-[1.2em] dark:bg-white/[.13] bg-black/[.11]`, {
+  const classes = clsx(`block h-[1.2em] dark:bg-white/[.13] bg-black/[.11]`, className, {
     "rounded-full": variant === 'circular',
     "rounded": variant === 'rounded',
     "my-0 h-auto origin-left scale-x-100 scale-y-[0.6] rounded empty:before:content-['\\a0']": variant === 'text',
@@ -33,7 +33,7 @@ const Skeleton = forwardRef<HTMLSpanElement, SkeletonProps>((props, ref) => {
     "h-auto": children && !height,
     "animate-pulse": animation === 'pulse',
     "relative overflow-hidden after:content-[''] after:absolute after:inset-0 after:-translate-x-full after:bg-gradient-to-r after:from-transparent after:via-white/10 after:to-transparent after:animate-wave": animation === 'wave',
-  }, className);
+  });
 
   return (
     <SkeletonRoot ref={ref} className={classes} style={{ width, height, ...style }} {...other} children={children} />

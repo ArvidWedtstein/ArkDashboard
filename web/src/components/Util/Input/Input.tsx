@@ -766,6 +766,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       multiline,
       size: fcs.size,
       variant: fcs.variant || variant,
+      required: fcs.required,
       startAdornment,
       type,
     };
@@ -1194,7 +1195,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         <p
           id={helperTextId}
           className={clsx("rw-helper-text", {
-            "!text-red-500": error || fieldState?.error || fieldState?.invalid,
+            "!text-error-500": error || fieldState?.error || fieldState?.invalid,
             "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
           })}
           {...FormHelperTextProps}
@@ -1203,7 +1204,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         </p>
       )}
 
-      {field && (<FieldError name={name} className="rw-field-error" />)}
+      {field && (<FieldError name={name} className="mt-1 block text-xs font-semibold uppercase text-error-600" />)}
     </FormControl>
   );
 });

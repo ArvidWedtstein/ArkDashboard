@@ -419,23 +419,36 @@ const ItemsList = ({
             }
           )}
         >
-          {itemsPage.items.map((item, i) => (
+
+          {itemsPage.items.map(({ id, name, image, category, type }, i) => (
             <Fragment key={`item-${i}`}>
               <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
                 <CardActionArea
-                  onClick={() => navigate(routes.item({ id: item.id }))}
+                  onClick={() => navigate(routes.item({ id }))}
                   className="flex w-full justify-start text-left"
                 >
                   <CardHeader
                     sx={{
                       flexGrow: 1,
                     }}
-                    title={item.name}
-                    subheader={item.type}
+                    title={name}
+                    subheader={`${category}${type ? `, ${type}` : ''}`}
+                    avatar={
+                      <img
+                        src={
+                          image && image.length > 0
+                            ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
+                            : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
+                        }
+                        className="h-12 w-12 rounded-lg border border-zinc-500 bg-neutral-700 object-contain p-2.5"
+                        loading="lazy"
+                        alt={name}
+                      />
+                    }
                   />
                   <CardMedia
                     className="max-h-32 max-w-[128px] shrink p-4 pl-0"
-                    image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                    image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                   />
                 </CardActionArea>
               </Card>

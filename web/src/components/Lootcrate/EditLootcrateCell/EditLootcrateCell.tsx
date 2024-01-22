@@ -23,6 +23,11 @@ export const QUERY = gql`
       image
       type
     }
+    maps {
+      id
+      name
+      icon
+    }
   }
 `
 const UPDATE_LOOTCRATE_MUTATION = gql`
@@ -87,7 +92,7 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 )
 
-export const Success = ({ lootcrate }: CellSuccessProps<EditLootcrateById>) => {
+export const Success = ({ lootcrate, maps }: CellSuccessProps<EditLootcrateById>) => {
   const [updateLootcrate, { loading, error }] = useMutation(
     UPDATE_LOOTCRATE_MUTATION,
     {
@@ -121,6 +126,7 @@ export const Success = ({ lootcrate }: CellSuccessProps<EditLootcrateById>) => {
       <div className="rw-segment-main">
         <LootcrateForm
           lootcrate={lootcrate}
+          maps={maps}
           onSave={onSave}
           error={error}
           loading={loading}

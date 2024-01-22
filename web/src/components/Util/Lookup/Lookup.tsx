@@ -1669,7 +1669,6 @@ export const Lookup = (<
             variant === 'outlined' ? (
               <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
                 "border-2": state.focused,
-                "ring-8 ring-red-500": !state.required
               }, SuffixProps?.className)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
                   "max-w-full": state.focused || state.filled || (multiple && (Array.isArray(value) && value.length > 0)),
@@ -1696,7 +1695,7 @@ export const Lookup = (<
           value={inputValue}
           placeholder={placeholder}
           className={className}
-          required
+          required={required}
           inputProps={{
             role: "combobox",
             spellCheck: false,
