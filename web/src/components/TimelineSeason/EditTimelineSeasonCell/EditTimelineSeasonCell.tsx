@@ -81,7 +81,7 @@ export const Success = ({
     <div className="rw-segment">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">
-          Edit TimelineSeason {timelineSeason?.id}
+          Edit Season {timelineSeason?.server} {timelineSeason?.cluster}, Season: {timelineSeason?.season}
         </h2>
       </header>
       <div className="rw-segment-main">

@@ -1,29 +1,24 @@
 import {
   Form,
   FormError,
-  FieldError,
-  Label,
-  TextField,
-  Submit,
-  SelectField,
 } from "@redwoodjs/forms";
 import type {
-  EditTimelineSeasonPersonById,
-  NewTimelineSeasonPerson,
+  FindTimelineSeasonPeople,
   UpdateTimelineSeasonPersonInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Input } from "src/components/Util/Input/Input";
+import { ArrayElement } from "src/lib/formatters";
 
 type FormTimelineSeasonPerson = NonNullable<
-  EditTimelineSeasonPersonById["timelineSeasonPerson"]
+  ArrayElement<FindTimelineSeasonPeople["timelineSeasonPeople"]>
 >;
 
 interface TimelineSeasonPersonFormProps {
-  timelineSeasonPerson?: EditTimelineSeasonPersonById["timelineSeasonPerson"];
+  timelineSeasonPerson?: ArrayElement<FindTimelineSeasonPeople["timelineSeasonPeople"]>;
   timeline_season_id?: string;
-  profiles?: NewTimelineSeasonPerson["profiles"];
+  profiles?: FindTimelineSeasonPeople["profiles"];
   onSave: (
     data: UpdateTimelineSeasonPersonInput,
     id?: FormTimelineSeasonPerson["id"]

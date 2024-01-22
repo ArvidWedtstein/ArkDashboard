@@ -66,7 +66,7 @@ const TimelineSeasonEventsList = ({
                 </li>
                 {timeGroup.map(
                   ({ id, title, content, tags, created_at, images }, idx) => (
-                    <li className="relative">
+                    <li className="relative" key={`timeline-${idx}`}>
                       <span className="absolute -left-2.5 z-30 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-600 dark:bg-zinc-300">
                         {tags && tags.includes("raid") && (
                           <svg
@@ -155,9 +155,6 @@ const TimelineSeasonEventsList = ({
             )
           )}
       </ul>
-      {/* <div className="shadow-lg border border-zinc-500 rounded-lg -mx-2 mt-2">
-        <NewTimelineSeasonEventCell timeline_season_id={timelineSeasonEvents[0].id} />
-      </div> */}
     </div >
   );
 };

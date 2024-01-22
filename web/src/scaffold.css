@@ -374,29 +374,21 @@
     @apply flex-col;
   }
   .rw-button-group > .rw-button,
-  .rw-button-group > .rw-input,
-  .rw-button-group > .rw-float-input,
-  .rw-button-group > .rw-input-underline {
+  .rw-button-group > .rw-input {
     @apply mt-0 rounded-none;
   }
   .rw-button-group > .rw-button:only-child,
-  .rw-button-group > .rw-input:only-child,
-  .rw-button-group > .rw-float-input:only-child {
+  .rw-button-group > .rw-input:only-child {
     @apply rounded-lg;
   }
 
   /* Horizontal Button Group */
   .rw-button-group:not(.rw-button-group-vertical) > .rw-input,
-  .rw-button-group:not(.rw-button-group-vertical) > .rw-input-underline,
   .rw-button-group:not(.rw-button-group-vertical) > .rw-button {
     @apply first:rounded-l-lg last:rounded-r-lg;
   }
-  .rw-button-group:not(.rw-button-group-vertical) .rw-float-input {
-    @apply first-of-type:rounded-l-lg last-of-type:rounded-r-lg;
-  }
 
   .rw-button-group.rw-button-group-vertical .rw-input,
-  .rw-button-group.rw-button-group-vertical .rw-input-underline,
   .rw-button-group.rw-button-group-vertical .rw-button {
     @apply first:rounded-t-lg last:rounded-b-lg;
   }
@@ -404,19 +396,11 @@
   .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
     .rw-input,
   .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
-    .rw-input-underline,
-  .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
-    .rw-float-input,
-  .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
     .rw-button {
     @apply between:!border-l-0 not-only:last:!border-l-0 border border-zinc-500;
   }
 
   .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-input,
-  .rw-button-group.rw-button-group-vertical.rw-button-group-border
-    .rw-input-underline,
-  .rw-button-group.rw-button-group-vertical.rw-button-group-border
-    .rw-float-input,
   .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-button {
     @apply between:border-t-0 not-only:last:border-t-0 border border-zinc-500;
   }
@@ -427,7 +411,7 @@
   }
 
   /* Input Sizes */
-  .rw-input.rw-input-small {
+  /* .rw-input.rw-input-small {
     @apply py-1 px-2 text-xs;
   }
   .rw-input.rw-input-medium {
@@ -435,42 +419,7 @@
   }
   .rw-input.rw-input-large {
     @apply py-3 px-8 text-base;
-  }
-
-  /* Float */
-  .rw-float-input {
-    @apply focus:after:border-b-pea-500 block w-full appearance-none rounded border border-zinc-500 bg-zinc-300 px-2.5 pb-2.5 pt-4 text-sm text-gray-900 transition-colors after:absolute after:inset-0 after:border-b-2 after:content-[''] focus:outline-none focus:ring-0 dark:bg-zinc-600 dark:text-white;
-  }
-  .rw-float-label {
-    @apply absolute top-4 left-1 z-[2] origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 transition-all duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-4 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-gray-400;
-  }
-
-  /* Underline */
-  .rw-input-underline {
-    @apply relative;
-  }
-  .rw-input-underline textarea,
-  .rw-input-underline input {
-    @apply relative block w-full rounded-t border-b border-black/40 bg-black/[.06] px-3 pb-2 pt-6 text-base text-gray-900 transition-colors duration-200 placeholder:opacity-0 hover:border-black/80 hover:bg-black/[.09] focus:bg-black/[.06] focus:outline-none focus:ring-0 dark:border-white/70 dark:bg-white/[.09] dark:text-white dark:hover:border-white dark:hover:bg-white/[.13] dark:focus:bg-white/[.09];
-  }
-  .rw-input-underline textarea:disabled,
-  .rw-input-underline input:disabled {
-    @apply pointer-events-none select-none border-dotted text-white/50 hover:border-black/40 hover:bg-black/[.06] dark:hover:border-white/70 dark:hover:bg-white/[.09];
-  }
-  .rw-input-underline.small textarea,
-  .rw-input-underline.small input {
-    @apply px-3 pt-5 pb-1;
-  }
-  .rw-input-underline label {
-    @apply pointer-events-none absolute top-4 left-1 z-10 origin-[0] -translate-y-4 scale-75 transform select-none px-2 text-base text-gray-500 duration-300 will-change-transform dark:text-gray-400;
-  }
-  .rw-input-underline:focus-within::after {
-    @apply scale-x-100;
-  }
-
-  .rw-input-underline::after {
-    @apply border-pea-500 pointer-events-none absolute inset-0 block h-full w-full scale-x-0 transform border-b-2 transition-transform duration-200 ease-out content-['\00a0'];
-  }
+  } */
 
   /* Select */
   select.rw-input.rw-input-small {

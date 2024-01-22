@@ -470,25 +470,6 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="has_air" className="rw-field-error" />
-
-        {/* TODO: Phase out Turretsetup_image? */}
-        {/*
-        <Label
-          name="turretsetup_image"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Turret Setup image
-        </Label>
-
-        <TextField
-          name="turretsetup_image"
-          defaultValue={props.basespot?.turretsetup_image}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="turretsetup_image" className="rw-field-error" /> */}
       </Form>
     </div>
   );

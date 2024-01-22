@@ -7,7 +7,6 @@ import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/T
 import NewTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/NewTimelineSeasonEventCell";
 import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/EditTimelineSeasonEventCell";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
-import NewTimelineSeasonPersonCell from "src/components/TimelineSeasonPerson/NewTimelineSeasonPersonCell";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import { timeTag } from "src/lib/formatters";
 
@@ -16,7 +15,6 @@ import type {
   FindTimelineSeasonById,
 } from "types/graphql";
 import Toast from "src/components/Util/Toast/Toast";
-import Ripple from "src/components/Util/Ripple/Ripple";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import SplitPane from "src/components/Util/SplitPane/SplitPane";
 import Badge from "src/components/Util/Badge/Badge";
@@ -88,30 +86,37 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   };
   type modalType =
     | "timelineseasonevent"
-    | "timelineseasonperson"
     | "timelineseasonbasespot"
     | "editevent"
     | "previewimage";
   const [editEvent, setEditEvent] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState<modalType>(null);
-  const modalRef = useRef<HTMLDivElement>()
+  const modalRef = useRef<HTMLDivElement>();
 
   return (
     <article>
       <Dialog ref={modalRef} open={openModal !== null} onClose={() => setOpenModal(null)}>
         <DialogTitle>
-          {openModal === "timelineseasonperson"
-            ? "Add person"
-            : openModal === "timelineseasonbasespot"
-              ? "Add Basespot"
-              : openModal === "timelineseasonevent"
-                ? "Add Event"
-                : ""}
+          {openModal === "timelineseasonbasespot"
+            ? "Add Basespot"
+            : openModal === "timelineseasonevent"
+              ? "Add Event"
+              : openModal === 'editevent'
+                ? 'Edit Event'
+                : ''}
         </DialogTitle>
+        <Button
+          variant="icon"
+          color="DEFAULT"
+          size="small"
+          className="!absolute right-2 top-2 w-8 m-1"
+          onClick={() => setOpenModal(null)}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+          </svg>
+        </Button>
         <DialogContent dividers>
-          {openModal === "timelineseasonperson" && (
-            <NewTimelineSeasonPersonCell timeline_season_id={timelineSeason.id} />
-          )}
           {openModal === "timelineseasonbasespot" && (
             <NewTimelineSeasonBasespotCell
               timeline_season_id={timelineSeason.id}
@@ -257,45 +262,6 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg`}
         />
       </Card>
-      {/* <header
-        className="flex w-full mt-2 flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"
-        style={{
-          backgroundImage:
-            "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
-        }}
-      >
-        <div className="flex justify-between pb-5">
-          <div className="text-xl font-bold uppercase tracking-widest">
-            <span className="align-middle font-medium text-white">
-              {timelineSeason.server}{" "}
-              {timelineSeason.cluster && (
-                <Badge standalone variant="outlined" color={servers[timelineSeason.server]?.badge || 'DEFAULT'} content={(<>
-                  {timelineSeason.cluster}{" "}
-                  <span className="mx-2 border-l border-current"></span> Season{" "}
-                  {timelineSeason.season}
-                </>)} />
-              )}
-            </span>
-          </div>
-          <div className="flex items-center space-x-3 text-sm opacity-50">
-            {timeTag(timelineSeason.season_start_date)}
-            <span>-</span>
-            {timeTag(timelineSeason.season_end_date)}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              className="w-5 fill-current"
-            >
-              <path d="M272 249.4V128c0-8.844-7.156-16-16-16s-16 7.156-16 16v128c0 4.25 1.688 8.312 4.688 11.31l80 80C327.8 350.4 331.9 352 336 352s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62L272 249.4zM255.1 0c-141.4 0-256 114.6-256 256s114.6 256 256 256s255.1-114.6 255.1-256S397.4 0 255.1 0zM256 480c-123.5 0-224-100.5-224-224s100.5-224 224-224s224 100.5 224 224S379.5 480 256 480z" />
-            </svg>
-          </div>
-        </div>
-        <div className="pt-12">
-          <h1 className="my-3 text-5xl font-bold">
-            {timelineSeason.tribe_name}
-          </h1>
-        </div>
-      </header> */}
 
       <div className="relative my-3 grid w-full grid-flow-row grid-cols-4 gap-3 md:grid-cols-6">
         <Card variant="outlined" className="col-span-5 row-span-3">
@@ -353,29 +319,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         </Card>
 
 
-        <Card variant="outlined" className="col-span-5 row-span-1">
-          <CardHeader
-            title={`Persons in this season`}
-            titleProps={{
-              className: 'text-lg'
-            }}
-            action={(
-              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonperson")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  fill="currentColor"
-                  className="h-5 w-5 transition-transform ease-in-out"
-                >
-                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-                </svg>
-              </Button>
-            )}
-          />
-          <CardContent>
-            <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
-          </CardContent>
-        </Card>
+        <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
       </div>
     </article>
   );

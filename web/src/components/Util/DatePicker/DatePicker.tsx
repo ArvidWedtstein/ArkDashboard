@@ -196,6 +196,7 @@ const DatePicker = ({
           }}
           endAdornment={(
             <Button
+              ignoreButtonGroupPosition
               variant="icon"
               color={"DEFAULT"}
               className="-mr-0.5 !p-2"

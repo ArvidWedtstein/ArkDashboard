@@ -1,6 +1,5 @@
-import { HTMLAttributes, forwardRef, useEffect, useId, useMemo, useRef } from "react";
+import { HTMLAttributes, forwardRef, useId, useMemo, useRef } from "react";
 import { Transition } from 'react-transition-group'
-import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import clsx from "clsx";
 import ReactDOM from "react-dom";
 
@@ -115,7 +114,9 @@ export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
               role="dialog"
               aria-labelledby={ariaLabelledby}
             >
-              <DialogContext.Provider value={dialogContextValue}>{children}</DialogContext.Provider>
+              <DialogContext.Provider value={dialogContextValue}>
+                {children}
+              </DialogContext.Provider>
             </div>
           </div>
         )}

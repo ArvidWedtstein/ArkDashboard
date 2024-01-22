@@ -15,6 +15,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Button from "src/components/Util/Button/Button";
+import { Input } from "src/components/Util/Input/Input";
 
 type FormResetPassword = NonNullable<{
   old_password?: string;
@@ -82,11 +83,9 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
                   />
                 </svg>
               </div>
-              {/* TODO: change inputs */}
-              <PasswordField
+              <Input
+                label="Enter New Passord"
                 name="new_password"
-                className="rw-float-input peer w-60"
-                errorClassName="rw-float-input rw-input-error"
                 validation={{
                   required: true,
                   pattern: {
@@ -95,17 +94,8 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
                   },
                 }}
                 autoComplete="nope"
-                placeholder=" "
+                type="password"
               />
-              <Label
-                name="new_password"
-                className="rw-float-label"
-                errorClassName="rw-float-label rw-label-error"
-              >
-                Enter New Password
-              </Label>
-
-              <FieldError name="new_password" className="rw-field-error" />
             </div>
 
             <div className="relative">
@@ -126,10 +116,9 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
                   />
                 </svg>
               </div>
-              <PasswordField
+              <Input
+                label="Repeat Passord"
                 name="repeat_password"
-                className="rw-float-input peer w-60"
-                errorClassName="rw-float-input rw-input-error"
                 validation={{
                   required: true,
                   pattern: {
@@ -141,17 +130,8 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
                     "The passwords do not match",
                 }}
                 autoComplete="nope"
-                placeholder=" "
+                type="password"
               />
-              <Label
-                name="repeat_password"
-                className="rw-float-label"
-                errorClassName="rw-float-label rw-label-error"
-              >
-                Repeat Password
-              </Label>
-
-              <FieldError name="repeat_password" className="rw-field-error" />
             </div>
 
             <Button type="submit" variant="contained" color="success" className="my-3">

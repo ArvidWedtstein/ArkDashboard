@@ -16,7 +16,7 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Input } from "src/components/Util/Input/Input";
 import DatePicker from "src/components/Util/DatePicker/DatePicker";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
@@ -54,8 +54,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         <DatePicker
           label="Start Date"
           name="start_date"
-          defaultValue={new Date(props.timelineSeasonBasespot?.start_date) ??
-            new Date()}
+          defaultValue={new Date(props.timelineSeasonBasespot?.start_date || new Date())}
         />
 
 
@@ -102,38 +101,38 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           placeholder="Select a map"
         />
 
-        <Input
-          color="DEFAULT"
-          label="Latitude"
-          name="latitude"
-          type="number"
-          defaultValue={props.timelineSeasonBasespot?.latitude ?? 0}
-          validation={{
-            valueAsNumber: true
-          }}
-          SuffixProps={{
-            style: {
-              borderRadius: '0.375rem 0 0 0.375rem',
-              marginRight: '-0.5px'
-            }
-          }}
-        />
-        <Input
-          color="DEFAULT"
-          label="Longitude"
-          name="longitude"
-          type="number"
-          defaultValue={props.timelineSeasonBasespot?.longitude ?? 0}
-          validation={{
-            valueAsNumber: true
-          }}
-          SuffixProps={{
-            style: {
-              borderRadius: '0 0.375rem 0.375rem 0',
-              marginLeft: '-0.5px'
-            }
-          }}
-        />
+        <ButtonGroup>
+          <Input
+            color="DEFAULT"
+            label="Latitude"
+            name="latitude"
+            type="number"
+            defaultValue={props.timelineSeasonBasespot?.latitude ?? 0}
+            validation={{
+              valueAsNumber: true
+            }}
+            InputProps={{
+              inputProps: {
+                inputMode: 'decimal'
+              }
+            }}
+          />
+          <Input
+            color="DEFAULT"
+            label="Longitude"
+            name="longitude"
+            type="number"
+            defaultValue={props.timelineSeasonBasespot?.longitude ?? 0}
+            validation={{
+              valueAsNumber: true
+            }}
+            InputProps={{
+              inputProps: {
+                inputMode: 'decimal'
+              }
+            }}
+          />
+        </ButtonGroup>
 
         {/* <br /> */}
         {/* <Button

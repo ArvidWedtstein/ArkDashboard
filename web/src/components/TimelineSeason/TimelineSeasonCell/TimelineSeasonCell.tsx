@@ -19,6 +19,7 @@ export const QUERY = gql`
     }
   }
 `;
+
 export const Loading = () => (
   <div
     role="status"

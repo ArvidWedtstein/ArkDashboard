@@ -396,8 +396,8 @@ const DinoForm = (props: DinoFormProps) => {
             <TextField
               name="dino_id"
               defaultValue={openModal?.dino_stat?.dino_id || dino?.id}
-              className="rw-input hidden"
-              errorClassName="rw-input rw-input-error"
+              className="hidden"
+              errorClassName="text-error-500"
               validation={{ required: true }}
             />
           </Form>

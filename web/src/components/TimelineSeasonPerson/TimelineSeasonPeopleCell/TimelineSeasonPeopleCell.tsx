@@ -23,6 +23,10 @@ export const QUERY = gql`
         avatar_url
       }
     }
+    profiles {
+      id,
+      username
+    }
   }
 `;
 
@@ -127,6 +131,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   timelineSeasonPeople,
+  profiles,
 }: CellSuccessProps<FindTimelineSeasonPeople>) => {
-  return <TimelineSeasonPeople timelineSeasonPeople={timelineSeasonPeople} />;
+  return <TimelineSeasonPeople timelineSeasonPeople={timelineSeasonPeople} profiles={profiles} />;
 };

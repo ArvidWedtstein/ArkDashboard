@@ -7,7 +7,7 @@ import {
 } from "@redwoodjs/router";
 import { CheckboxField, Form, Label, Submit } from "@redwoodjs/forms/dist";
 import type { FindDinos } from "types/graphql";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import clsx from "clsx";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
@@ -77,7 +77,7 @@ const DinosList = ({
 
   const Filters = useMemo(
     () => (
-      <>
+      <Fragment>
         <h3 className="sr-only">Categories</h3>
         <Disclosure title="Type">
           <div className="flex flex-col space-y-5">
@@ -166,7 +166,7 @@ const DinosList = ({
               ))}
           </div>
         </Disclosure>
-      </>
+      </Fragment>
     ),
     []
   );

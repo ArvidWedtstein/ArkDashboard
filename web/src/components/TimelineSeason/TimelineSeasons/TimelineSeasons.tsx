@@ -1,8 +1,7 @@
 import { routes } from "@redwoodjs/router";
 import Badge from "src/components/Util/Badge/Badge";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import Gantt from "src/components/Util/Gantt/Gantt";
-
 import type { FindTimelineSeasons } from "types/graphql";
 
 const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
@@ -32,27 +31,30 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
 
   return (
     <article className="rw-segment overflow-x-auto">
-      <header className="rw-segment-header">
-        <h2 className="rw-heading text-xl">Timeline Seasons</h2>
-        <Button
-          to={routes.newTimelineSeason()}
-          size="large"
-          className="my-3"
-          color="success"
-          variant="outlined"
-          startIcon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              focusable="false"
-            >
-              <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-            </svg>
-          }
-        >
-          New Timeline Season
-        </Button>
-      </header>
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
+        <h1 className="py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0 font-montserrat">
+          Seasons Timeline
+        </h1>
+
+        <ButtonGroup>
+          <Button
+            to={routes.newTimelineSeason()}
+            color="success"
+            variant="outlined"
+            startIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                focusable="false"
+              >
+                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+              </svg>
+            }
+          >
+            New Timeline Season
+          </Button>
+        </ButtonGroup>
+      </div>
 
       <Gantt
         data={timelineSeasons}
@@ -62,6 +64,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         labelKey="tribe_name"
       />
 
+      {/* https://github.com/mui/material-ui/blob/master/packages/mui-lab/src/Timeline/Timeline.tsx */}
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(
           ({

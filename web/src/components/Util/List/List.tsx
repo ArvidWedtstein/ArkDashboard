@@ -1,4 +1,4 @@
-import { ElementType, HTMLAttributes, useRef } from "react";
+import { DetailedHTMLProps, ElementType, HTMLAttributes, MouseEventHandler, ReactNode, createElement, useRef } from "react";
 import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
 import clsx from "clsx";
@@ -10,41 +10,47 @@ const List = (props: ListProps) => {
   return <ul className={clsx("relative m-0 list-none py-2", props?.className)} {...props}>{props.children}</ul>;
 };
 
-type ListItemProps = {
-  icon?: React.ReactNode;
+type ListItemProps<T extends ElementType = 'div'> = {
+  icon?: ReactNode;
   size?: 'small' | 'medium' | 'large'
   disabled?: boolean;
   disableRipple?: boolean;
-  secondaryAction?: React.ReactNode;
-  secondaryActionProps?: React.DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+  secondaryAction?: ReactNode;
+  secondaryActionProps?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
   to?: string;
   href?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement> | React.MouseEventHandler<HTMLLIElement>
-} & React.DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
+  linkProps?: Omit<HTMLAttributes<HTMLElement>, 'disabled' | 'color'>;
+  onClick?: T extends 'button' ? MouseEventHandler<HTMLButtonElement> : T extends 'a' ? MouseEventHandler<HTMLAnchorElement> : MouseEventHandler<HTMLDivElement>;
+} & DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
 
-export const ListItem = (props: ListItemProps) => {
-  const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, children, className, size = "medium", onClick, ...other } = props;
+export const ListItem = <T extends ElementType = 'div'>(props: ListItemProps<T>) => {
+  const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, linkProps, children, className, size = "medium", onClick, ...other } = props;
   const rippleRef = useRef(null);
   const { enableRipple, getRippleHandlers } = useRipple({
     disabled,
     disableRipple,
     rippleRef,
   });
-  const Root: ElementType = props.href || props.to ? "a" : props.onClick ? "button" : 'div';
+
+  const Root: ElementType = props.href || props.to ? "a" : props.onClick ? "button" : "div";
   return (
     <li
       className={clsx("relative box-border flex w-full items-center justify-start text-left text-black dark:text-white", className)}
       {...other}
       {...getRippleHandlers()}
     >
-      <Root className={clsx("flex justify-start w-full items-center relative box-border", {
-        "px-4 py-1.5": size === 'small',
-        "py-2 px-4": size === "medium"
-      })} href={props?.to || props?.href} type="button" onClick={(e) => {
-        if (!(props.href || props.to)) {
-          onClick?.(e)
-        }
-      }}>
+      <Root
+        {...linkProps}
+        className={clsx("flex justify-start w-full items-center relative box-border", linkProps?.className, {
+          "px-4 py-1.5": size === 'small',
+          "py-2 px-4": size === "medium",
+          "py-2.5 px-5": size === 'large',
+          "text-zinc-500": disabled,
+        })}
+        disabled={disabled}
+        href={props?.to || props?.href}
+        {...(Root === 'button' ? { type: "button", onClick: (e) => onClick?.(e) } : {})}
+      >
         {icon && (
           <div className="inline-flex shrink-0 min-w-[36px]">
             {icon}
