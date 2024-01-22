@@ -78,13 +78,13 @@ export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
 
 export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
   // return db.basespot.findMany();
-  const distinctTypes = db.$queryRaw`SELECT DISTINCT type FROM public.Basespot;`;
-  console.log("distinctTypes");
-  console.log(distinctTypes);
-  return distinctTypes;
-  // return db.basespot.groupBy({
-  //   by: "type",
-  // });
+  // const distinctTypes = db.$queryRaw`SELECT DISTINCT type FROM public.Basespot;`;
+  // console.log("distinctTypes");
+  // console.log(distinctTypes);
+  // return distinctTypes;
+  return db.basespot.groupBy({
+    by: "type",
+  });
   // return db.basespot.findMany({
   //   distinct: "type",
   // });
