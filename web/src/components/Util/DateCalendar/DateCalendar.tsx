@@ -285,7 +285,7 @@ const DateCalendar = ({
                     className={clsx(
                       "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10",
                       {
-                        "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
+                        "bg-success-400 hover:bg-success-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
                           year === Number(period.substring(0, 4)),
                       }
                     )}
@@ -323,7 +323,7 @@ const DateCalendar = ({
                     className={clsx(
                       "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10",
                       {
-                        "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
+                        "bg-success-400 hover:bg-success-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
                           month.getMonth() === Number(period.substring(5)) - 1,
                       }
                     )}
@@ -431,7 +431,7 @@ const DateCalendar = ({
                                     "rounded-r-full":
                                       toLocaleISODate(selectedRange[1]) ===
                                       toLocaleISODate(day),
-                                    // "bg-pea-300/10":
+                                    // "bg-success-300/10":
                                     //   toLocaleISODate(selectedRange[0]) <=
                                     //   toLocaleISODate(day) &&
                                     //   toLocaleISODate(selectedRange[1]) >=
@@ -444,7 +444,7 @@ const DateCalendar = ({
                               >
                                 <button
                                   className={clsx(
-                                    "font-montserrat hover:bg-pea-300/10 relative box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
+                                    "font-montserrat hover:bg-success-300/10 relative box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
                                     {
                                       "text-white/70":
                                         day.getMonth() !==
@@ -458,7 +458,7 @@ const DateCalendar = ({
                                         toLocaleISODate(day) &&
                                         toLocaleISODate(day) !=
                                         toLocaleISODate(selectedDate),
-                                      "bg-pea-400 hover:!bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
+                                      "bg-success-400 hover:!bg-success-500 font-medium text-black/80 hover:will-change-[background-color]":
                                         toLocaleISODate(day) ===
                                         toLocaleISODate(selectedDate),
                                     }

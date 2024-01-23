@@ -384,7 +384,7 @@ const Profile = ({ profile }: Props) => {
                               })}
                               key={`season-${season.TimelineSeason.id}`}
                               className={clsx(
-                                "hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
+                                "hover:border-success-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
                                 {
                                   "rounded-bl-lg":
                                     arrayToRows(profile.TimelineSeasonPerson, 2)
@@ -429,7 +429,7 @@ const Profile = ({ profile }: Props) => {
                             })}
                             key={`basespot-${basespot.id}`}
                             className={clsx(
-                              "hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
+                              "hover:border-success-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
                               {
                                 "rounded-bl-lg":
                                   arrayToRows(profile.Basespot, 2).length ===

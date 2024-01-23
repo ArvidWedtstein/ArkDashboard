@@ -422,7 +422,7 @@ const ItemsList = ({
 
           {itemsPage.items.map(({ id, name, image, category, type }, i) => (
             <Fragment key={`item-${i}`}>
-              <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+              <Card className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
                 <CardActionArea
                   onClick={() => navigate(routes.item({ id }))}
                   className="flex w-full justify-start text-left"

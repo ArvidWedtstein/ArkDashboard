@@ -151,7 +151,7 @@ const Sidebar = memo(({ }) => {
         <NavLink
           to={routes.home()}
           title={"Home"}
-          activeClassName={`text-white !ring-pea-400 !bg-pea-500`}
+          activeClassName={`text-white !ring-success-400 !bg-success-500`}
           matchSubPaths={true}
           className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
         >
@@ -161,7 +161,7 @@ const Sidebar = memo(({ }) => {
         <NavLink
           to={routes.basespots()}
           title={"Basespots"}
-          activeClassName={`text-white !ring-pea-400 !bg-blue-500`}
+          activeClassName={`text-white !ring-success-400 !bg-blue-500`}
           matchSubPaths={true}
           // activeMatchParams={["page"]}
           className="relative flex w-full flex-auto items-center justify-start space-x-3.5 rounded py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"

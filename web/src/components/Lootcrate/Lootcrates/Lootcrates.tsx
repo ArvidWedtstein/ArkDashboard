@@ -267,7 +267,7 @@ const LootcratesList = ({
           {lootcratesByMap.map(({ id, name, required_level, image }) => (
             <Card
               key={`lootcrate-${id}`}
-              className="hover:border-pea-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
+              className="hover:border-success-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
             >
               <CardActionArea
                 component="link"

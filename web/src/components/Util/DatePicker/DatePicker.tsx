@@ -78,7 +78,7 @@ const DatePicker = ({
   const borders = {
     primary: `border-blue-400`,
     secondary: `border-zinc-500`,
-    success: `border-pea-500`,
+    success: `border-success-500`,
     error: `border-red-500`,
     warning: `border-amber-400`,
     disabled: `dark:border-white/30 border-black/30`,

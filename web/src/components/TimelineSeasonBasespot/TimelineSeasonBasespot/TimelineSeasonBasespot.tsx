@@ -265,7 +265,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                                 ))}
                             </p>
 
-                            <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                            <span className="bg-success-500 mt-8 inline-block h-1 w-10 rounded" />
                             <h2 className="title-font my-4 text-lg font-medium tracking-wider text-zinc-600 dark:text-gray-200">
                               {title}
                             </h2>
@@ -310,7 +310,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
             </div>
             <div className="flex flex-col flex-wrap border-l border-black/20 text-center dark:border-white/20 lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
               <div className="mb-10 flex flex-col items-center lg:items-start">
-                <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
+                <div className="dark:bg-success-50 text-success-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 576 512"
@@ -351,7 +351,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               </div>
               {timelineSeasonBasespot.Basespot && (
                 <div className="mb-10 flex flex-col items-center lg:items-start">
-                  <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
+                  <div className="dark:bg-success-50 text-success-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 288 512"
@@ -385,7 +385,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               )}
               <div className="mb-10 flex flex-col items-center justify-start lg:items-start">
                 <div className="flex flex-col">
-                  <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
+                  <div className="dark:bg-success-50 text-success-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                     <svg
                       fill="none"
                       stroke="currentColor"
@@ -419,7 +419,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
             <div className="container mx-auto px-5 py-24">
               <div className="mb-20 flex w-full flex-col text-center">
-                <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
+                <h2 className="title-font text-success-500 mb-1 text-xs font-medium tracking-widest">
                   Images & Screenshots taken during this base
                 </h2>
                 <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl">

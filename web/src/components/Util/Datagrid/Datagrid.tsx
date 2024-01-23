@@ -202,7 +202,7 @@ const DataGrid = (props: DataGridProps) => {
     const classes = {
       DataGridColumnHeaders: clsx("flex relative items-center box-border border-b border-zinc-500 rounded-t"),
       DataGridColumnHeadersInner: clsx("flex items-start flex-col"),
-      DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-pea-500"),
+      DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-success-500"),
       DataGridColumnCheckbox: clsx("!p-0 justify-center"),
       DataGridColumnHeaderTitle: clsx("overflow-hidden whitespace-nowrap text-ellipsis"),
       DataGridColumnHeaderTitleContainer: clsx("flex items-center min-w-0 relative overflow-hidden whitespace-nowrap flex-1", {
@@ -371,7 +371,7 @@ const DataGrid = (props: DataGridProps) => {
     DataGridFooter: clsx("flex justify-between min-h-[3rem]"),
     DataGridColumnHeaders: clsx("flex relative items-center box-border border-b border-zinc-500 rounded-t"),
     DataGridColumnHeadersInner: clsx("flex items-start flex-col"),
-    DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-pea-500"),
+    DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-success-500"),
     DataGridColumnCheckbox: clsx("!p-0 justify-center"),
     DataGridColumnHeaderTitle: clsx("overflow-hidden whitespace-nowrap text-ellipsis"),
     DataGridColumnHeaderTitleContainer: clsx("flex items-center min-w-0 relative overflow-hidden whitespace-nowrap flex-1"),
@@ -451,7 +451,7 @@ const DataGrid = (props: DataGridProps) => {
                               "justify-start": col.align === 'left',
                               "justify-center": col.align === 'center',
                               "justify-end": col.align === 'right',
-                              "outline outline-1 outline-pea-300 -outline-offset-1": focusedCells.some((c) => c.col === col && c.row === row)
+                              "outline outline-1 outline-success-300 -outline-offset-1": focusedCells.some((c) => c.col === col && c.row === row)
                             })}
                             role="gridcell"
                             style={{ width: col.width || 100 }}

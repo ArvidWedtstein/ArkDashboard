@@ -182,7 +182,7 @@ const Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
             <div
               key={`slide-control-${idx}`}
               title={title || `Slide ${idx + 1}`}
-              className={clsx(`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer bg-pea-500 bg-clip-padding p-0 transition-opacity`, {
+              className={clsx(`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer bg-success-500 bg-clip-padding p-0 transition-opacity`, {
                 "opacity-100": state.slideNo === idx,
                 "opacity-50": state.slideNo !== idx
               })}
@@ -201,7 +201,7 @@ const Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
       {imageTabs && (
         <div className="relative grid grid-cols-5 flex-nowrap gap-4 overflow-hidden">
           {slides.map(({ url, title }, idx) => (
-            <Card key={`image-slider-${idx}`} variant="outlined" className="hover:border-pea-500 border border-transparent transition-all cursor-pointer ease-in-out">
+            <Card key={`image-slider-${idx}`} variant="outlined" className="hover:border-success-500 border border-transparent transition-all cursor-pointer ease-in-out">
               <CardActionArea onClick={() => {
                 setState((prevState) => ({
                   slideNo: idx,

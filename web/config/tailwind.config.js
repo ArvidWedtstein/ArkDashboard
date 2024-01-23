@@ -141,31 +141,6 @@ module.exports = {
       // https://uicolors.app/create
       // https://realtimecolors.com/?colors=0a070e-f4f1f8-14eba3-25211e-12d393
       colors: {
-        pea: {
-          50: "#f1fcf5",
-          100: "#e0f8e8",
-          200: "#c2f0d2",
-          300: "#92e3b0",
-          400: "#5bcd85",
-          500: "#34b364",
-          600: "#26934f",
-          700: "#1f6d3d",
-          800: "#1f5c37",
-          900: "#1b4c2f",
-          950: "#0a2917",
-        },
-        grey: {
-          50: "#FAFAFA",
-          100: "#F4F4F5",
-          200: "#E4E4E7",
-          300: "#D4D4D8",
-          400: "#A1A1AA",
-          500: "#71717A",
-          600: "#52525B",
-          700: "#3F3F46",
-          800: "#27272A",
-          900: "#18181B",
-        },
         primary: {
           // default blue colors
           100: "#ebf8ff",

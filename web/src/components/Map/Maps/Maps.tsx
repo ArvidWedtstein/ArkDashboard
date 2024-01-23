@@ -303,7 +303,7 @@ const MapsList = ({ maps }: FindMaps) => {
         "grid-cols-1 md:grid-cols-2 xl:grid-cols-3": view === "grid"
       })}>
         {maps.map((map) => (
-          <Card key={map.id} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+          <Card key={map.id} className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
             <CardActionArea
               to={routes.map({ id: map.id })}
               sx={{
@@ -355,7 +355,7 @@ const MapsList = ({ maps }: FindMaps) => {
         "grid-cols-1 md:grid-cols-3 xl:grid-cols-6": view === "grid"
       })}>
         {maps.map(({ id, name, icon }) => (
-          <Card key={id} className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+          <Card key={id} className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
             <CardActionArea
               to={routes.map({ id })}
               sx={{

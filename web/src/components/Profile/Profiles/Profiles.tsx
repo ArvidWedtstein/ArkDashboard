@@ -130,7 +130,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
 
                 <h2 className="mb-1 text-base font-normal">
                   {profile.full_name}
-                  <span className="text-pea-500 block text-sm">
+                  <span className="text-success-500 block text-sm">
                     {profile.role_profile_role_idTorole.name}
                   </span>
                 </h2>
@@ -196,7 +196,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                         />
                         <h2 className="mb-1 font-light">
                           {row.full_name}
-                          <span className="text-pea-500 block text-xs">
+                          <span className="text-success-500 block text-xs">
                             {row.role_profile_role_idTorole.name}
                           </span>
                         </h2>

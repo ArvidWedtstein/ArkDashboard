@@ -357,7 +357,7 @@ const DinosList = ({
             }) => (
               <Card
                 key={`dino-${id}`}
-                className="hover:border-pea-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out"
+                className="hover:border-success-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out"
               >
                 <CardActionArea
                   to={routes.dino({ id })}

@@ -96,7 +96,7 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
                     className={clsx(
                       "inline-flex h-8 w-8 items-center justify-center rounded-full bg-zinc-600 text-center align-middle font-light text-white ring-1 ring-inset ring-zinc-500",
                       {
-                        "ring-pea-500":
+                        "ring-success-500":
                           index === currentStep ||
                           completedSteps.includes(index),
                       }
@@ -125,7 +125,7 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
                     <div className="relative h-px w-full grow overflow-hidden bg-zinc-500">
                       <span
                         className={clsx(
-                          "bg-pea-500 absolute left-0 bottom-0 top-0 w-full -translate-x-full transition-transform duration-300 ease-in-out",
+                          "bg-success-500 absolute left-0 bottom-0 top-0 w-full -translate-x-full transition-transform duration-300 ease-in-out",
                           {
                             "translate-x-0": index < currentStep,
                           }

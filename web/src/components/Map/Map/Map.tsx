@@ -548,7 +548,7 @@ const Map = ({ map }: Props) => {
               />
 
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 my-4">
-                <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+                <Card className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
                   <CardActionArea
                     to={routes.basespots({ map: map.name })}
                     sx={{
@@ -587,7 +587,7 @@ const Map = ({ map }: Props) => {
                   </CardActionArea>
                 </Card>
 
-                <Card className="hover:border-pea-500 h-full border border-transparent transition-all duration-75 ease-in-out">
+                <Card className="hover:border-success-500 h-full border border-transparent transition-all duration-75 ease-in-out">
                   <CardActionArea
                     to={routes.lootcrates({ map: map.id })}
                     className="h-full w-full"

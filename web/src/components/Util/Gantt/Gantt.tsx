@@ -437,7 +437,7 @@ const Gantt = <T extends Record<string, unknown>>({
                                       className={clsx(
                                         "flex items-center justify-center",
                                         {
-                                          "bg-pea-500 h-8 w-12 rounded-full text-white":
+                                          "bg-success-500 h-8 w-12 rounded-full text-white":
                                             (toLocaleISODate(date) ===
                                               toLocaleISODate(new Date()) &&
                                               (viewType === "week" ||
@@ -445,7 +445,7 @@ const Gantt = <T extends Record<string, unknown>>({
                                             (toLocalPeriod(date) ===
                                               toLocalPeriod(new Date()) &&
                                               viewType === "year"),
-                                          "bg-pea-500 rounded-full px-1 text-white":
+                                          "bg-success-500 rounded-full px-1 text-white":
                                             viewType === "day" &&
                                             hour.toLocaleString(
                                               navigator && navigator.language,
