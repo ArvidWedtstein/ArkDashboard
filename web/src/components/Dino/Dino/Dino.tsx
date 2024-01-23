@@ -239,7 +239,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
-          className="fill-pea-500 w-6"
+          className="fill-success-500 w-6"
         >
           <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
         </svg>
@@ -247,7 +247,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 320 512"
-          className="h-6 fill-red-500"
+          className="h-6 fill-error-500"
         >
           <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
         </svg>
@@ -977,6 +977,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           </div>
         </div>
       </section>
+
 
       <section className="col-span-2">
         <Tabs activeColor="success">
@@ -2269,7 +2270,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         className={clsx(`flex items-center space-x-2.5`, {
                           "text-black dark:text-gray-400 [&>*]:border-gray-500 [&>*]:fill-gray-500 [&>*]:dark:border-gray-400 [&>*]:dark:fill-gray-400":
                             calcMaturationPercent() < time,
-                          "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500 [&>*]:dark:fill-pea-500 [&>*]:fill-pea-600":
+                          "dark:text-success-500 text-success-600 [&>*]:border-success-600 [&>*]:dark:border-success-500 [&>*]:dark:fill-success-500 [&>*]:fill-success-600":
                             calcMaturationPercent() >= time,
                         })}
                       >
