@@ -111,11 +111,12 @@ const ${singularPascalName}Form = (props: ${singularPascalName}FormProps) => {
 
         <FieldError name="${column.name}" className="rw-field-error" />
 <% }) %>
-        <div className="rw-button-group">
+
           <Button
             variant="outlined"
             color="success"
             type="submit"
+            className="my-3"
             disabled={props.loading}
             startIcon={(
               <svg
@@ -130,7 +131,6 @@ const ${singularPascalName}Form = (props: ${singularPascalName}FormProps) => {
           >
             Save
           </Button>
-        </div>
       </Form>
     </div>
   )

@@ -50,7 +50,7 @@ const RippleElement = (props) => {
   // .ripple-rippleVisible {
   //   opacity: 0.12;
   //   transform: scale(1);
-  //   animation-name: rippleenter;
+  //   animation-name: ripple-enter;
   //   animation-duration: 550ms;
   //   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   // }
@@ -64,7 +64,7 @@ const RippleElement = (props) => {
   // }
   // .ripple-childLeaving {
   //   opacity: 0;
-  //   animation-name: rippleexit;
+  //   animation-name: ripple-exit;
   //   animation-duration: 550ms;
   //   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   // }

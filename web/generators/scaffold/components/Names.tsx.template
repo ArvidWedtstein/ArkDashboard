@@ -44,9 +44,22 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
   }
 
   return (
-    <article className="rw-segment rw-table-wrapper-responsive">
-
-      <table className="rw-table">
+    <article className="rw-segment overflow-x-auto">
+      {/*<Table
+        columns={[
+          <% columns.forEach(column => { %>
+            {field: ${column.label} }<% }) %>
+        ]}
+        rows={[
+          {${pluralCamelName}.map((${singularCamelName}) => (
+            { id: singularCamelName.id }
+              <% columns.forEach(column => { %>
+              <td>{${column.listDisplayFunction}(${singularCamelName}.${column.name})}</td><% }) %>
+            </tr>
+          ))}
+        ]}
+      />*/}
+      <table className="rw-table min-w-[48rem]">
         <thead>
           <tr><% columns.forEach(column => { %>
             <th>${column.label}</th><% }) %>

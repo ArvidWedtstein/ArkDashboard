@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAuth } from "src/auth";
 
 import { QUERY } from "src/components/Profile/ProfilesCell";
+import Button from "src/components/Util/Button/Button";
 import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayListener";
 import Popper from "src/components/Util/Popper/Popper";
 import Table from "src/components/Util/Table/Table";
@@ -136,19 +137,13 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                 <p className="flex-auto text-sm tracking-wide opacity-80">
                   {profile.biography}
                 </p>
-                <div className="justify-self-end">
-                  <a
-                    href="#"
-                    className="rw-button rw-button-blue-outline rw-button-small opacity-60 hover:opacity-100"
-                  >
+                <div className="justify-self-end inline-flex space-x-2">
+                  <Button variant="text" color="primary" size="small">
                     Follow
-                  </a>
-                  <Link
-                    to={routes.profile({ id: profile.id })}
-                    className="rw-button rw-button-gray-outline rw-button-small ml-2"
-                  >
+                  </Button>
+                  <Button variant="outlined" color="secondary" size="small" to={routes.profile({ id: profile.id })}>
                     More Info
-                  </Link>
+                  </Button>
                 </div>
               </figcaption>
             </figure>
@@ -247,17 +242,13 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
             field: "id",
             header: "Actions",
             render: ({ row }) => (
-              <button
-                className="rw-button rounded-full p-2 hover:bg-black/10 dark:hover:bg-white/10"
-                type="button"
-                onClick={(e) => {
-                  setAnchorRef({
-                    open: anchorRef?.element ? !anchorRef?.open : true,
-                    element: e.currentTarget,
-                    id: row["id"],
-                  });
-                }}
-              >
+              <Button variant="icon" color="DEFAULT" onClick={(e) => {
+                setAnchorRef({
+                  open: anchorRef?.element ? !anchorRef?.open : true,
+                  element: e.currentTarget,
+                  id: row["id"],
+                });
+              }}>
                 <svg
                   className="h-4 w-4 fill-current"
                   xmlns="http://www.w3.org/2000/svg"
@@ -265,7 +256,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                 >
                   <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
                 </svg>
-              </button>
+              </Button>
             ),
           },
         ]}

@@ -30,8 +30,8 @@ module.exports = {
           "fillProgess 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         fill: "fill 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         "auto-fill-cancel": "auto-fill-cancel 10ms",
-        "ripple-enter": "rippleenter 550ms cubic-bezier(0.4, 0, 0.2, 1)",
-        "ripple-exit": "rippleexit 550ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "ripple-enter": "ripple-enter 550ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "ripple-exit": "ripple-exit 550ms cubic-bezier(0.4, 0, 0.2, 1)",
         wave: "wave 2s linear 0.5s infinite",
       },
       keyframes: {
@@ -117,6 +117,24 @@ module.exports = {
           },
           "100%": {
             transform: "translateX(100%)",
+          },
+        },
+        "ripple-enter": {
+          "0%": {
+            transform: "scale(0)",
+            opacity: "0.1",
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "0.12",
+          },
+        },
+        "ripple-exit": {
+          "0%": {
+            opacity: "1",
+          },
+          "100%": {
+            opacity: "0",
           },
         },
       },

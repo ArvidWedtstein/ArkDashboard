@@ -497,15 +497,17 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                               )}
                             </div>
                             {/* TODO: add logic for not opening modal */}
-                            {/* <a
-                              className="rw-button rw-button-small rw-button-gray-outline"
+                            {/* <Button
+                              size="small"
+                              color="secondary"
+                              variant="outlined"
                               download
                               target="_blank"
                               href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`}
                             >
                               <span className="sr-only">Download</span>
                               Download icon
-                            </a> */}
+                            </Button> */}
                           </div>
                         </div>
                         <div className="absolute right-3 top-3">

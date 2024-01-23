@@ -253,7 +253,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
           </div>
         </header>
         <div className="flex items-center justify-center space-x-3 w-full">
-          <div className="rw-button-group !w-full justify-start space-x-3">
+          <div className="flex !w-full justify-start space-x-3">
             <Button
               to={routes.newBasespot()}
               color="success"

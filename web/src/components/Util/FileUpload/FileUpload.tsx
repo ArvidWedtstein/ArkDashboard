@@ -556,9 +556,11 @@ const FileUpload = ({
 
       {files && files.some((f) => f.preview) && (
         <div className="animate-fade-in relative rounded-lg border border-zinc-500 p-2">
-          <button
-            className="rw-button rw-button-small rw-button-red absolute top-1 right-1"
-            type="button"
+          <Button
+            className="!absolute top-1 right-1"
+            variant="contained"
+            color="error"
+            size="small"
             onClick={() => {
               setFiles((prev) =>
                 prev.map((f) => ({
@@ -571,12 +573,14 @@ const FileUpload = ({
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
-              className="rw-button-icon-start !mr-0"
+              className="w-5"
+              fill="currentColor"
             >
               <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
             </svg>
             <span className="sr-only">Close</span>
-          </button>
+          </Button>
+
           <img
             src={files.find((f) => f.preview)?.url}
             className="aspect-square w-max max-w-full object-cover"

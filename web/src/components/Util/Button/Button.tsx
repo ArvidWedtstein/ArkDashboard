@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Ripple from "../Ripple/Ripple";
 import {
+  AnchorHTMLAttributes,
   CSSProperties,
   Children,
   Context,
@@ -51,7 +52,7 @@ export type ButtonProps = {
   permission?: permission | 'authenticated';
   to?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement> &
-  LinkHTMLAttributes<HTMLAnchorElement>;
+  AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (props: ButtonProps, ref) => {
