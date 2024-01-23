@@ -104,7 +104,7 @@ const HomePage = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <article className=" -m-3">
+    <article className="-m-3">
       <MetaTags
         title="ArkDashboard, the best Ark Survival Evolved companion app"
         description="Home page"
@@ -158,10 +158,15 @@ const HomePage = () => {
                 Welcome Home Bob!
               </h1>
               <p className="mb-6 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Here you can find{" "}
-                <Link to={routes.basespots()} className="rw-link">
+                Here you can find
+                <Button
+                  variant="text"
+                  color="success"
+                  className="lowercase underline underline-offset-2 text-lg"
+                  to={routes.basespots()}
+                >
                   base
-                </Link>{" "}
+                </Button>
                 locations, material calculator and much more
               </p>
               <Button

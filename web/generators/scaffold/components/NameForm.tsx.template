@@ -42,7 +42,7 @@ const ${singularPascalName}Form = (props: ${singularPascalName}FormProps) => {
   }
 
   return (
-    <div className="rw-form-wrapper">
+    <div className="-mt-4 text-sm">
       <Form<Form${singularPascalName}> onSubmit={onSubmit} error={props.error}>
         <FormError
           error={props.error}
@@ -67,16 +67,16 @@ const ${singularPascalName}Form = (props: ${singularPascalName}FormProps) => {
         </Label>
         <% if (column.isEnum) { %>
           <% if (!column.isRequired) { %>
-          <div className="rw-check-radio-items">
+          <div className="flex items-center justify-items-center space-x-1 text-zinc-800 dark:text-zinc-200">
             <${column.component}
               id="${singularCamelName}-${column.name}-none"
               name="${column.name}"
               defaultValue=""
               ${column.defaultProp}={!props.spot?.spotType}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
+              className=""
+              errorClassName="text-error-500"
             />
-            <div className="rw-check-radio-item-none">
+            <div className="text-gray-600">
               None
             </div>
           </div>
@@ -84,14 +84,14 @@ const ${singularPascalName}Form = (props: ${singularPascalName}FormProps) => {
           <% column.values?.forEach((value, i) => {
             const columnComponentName = column.isList ? `${column.name}[${i}]` : column.name
             %>
-        <div className="rw-check-radio-items">
+        <div className="flex items-center justify-items-center space-x-1 text-zinc-800 dark:text-zinc-200">
           <${column.component}
             id="${singularCamelName}-${column.name}-${i}"
             name="${columnComponentName}"
             defaultValue="${value.name}"
             ${column.defaultProp}={props.${singularCamelName}?.${column.name}?.includes('${value.name}')}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
+            className=""
+            errorClassName="text-error-500"
           />
           <div>
             ${value.name.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
@@ -102,8 +102,8 @@ const ${singularPascalName}Form = (props: ${singularPascalName}FormProps) => {
           <${column.component}
             name="${column.name}"
             ${column.defaultProp}={${column.deserializeFunction && column.deserializeFunction + '('}props.${singularCamelName}?.<%= column.name %>${column.deserializeFunction && ')'}}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
+            className=""
+            errorClassName="text-error-500"
             <%= !column.validation ? '' : `validation=${column.validation}` %>
             <%= column.isRelationalField && !column.isRequired ? `emptyAs={'undefined'}` : '' %>
           />

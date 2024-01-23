@@ -126,11 +126,13 @@ const SigninPage = () => {
             }}
           />
 
-          <div className="rw-link mt-1">
-            <Link to={routes.forgotPassword()} className="rw-link">
-              Forgot da Password?
-            </Link>
-          </div>
+          <Button
+            variant="text"
+            color="primary"
+            to={routes.forgotPassword()}
+          >
+            Forgot da Password?
+          </Button>
 
           <Button
             type="submit"
@@ -143,9 +145,13 @@ const SigninPage = () => {
 
           <div className="space-x-2 text-sm text-gray-300 dark:text-stone-300">
             <span>Don&apos;t have an account?</span>
-            <Link to={routes.signup()} className="rw-link">
+            <Button
+              variant="text"
+              color="success"
+              to={routes.signup()}
+            >
               Sign up!
-            </Link>
+            </Button>
           </div>
         </Form>
         <div className="order-1 max-h-40 w-full sm:order-2 sm:max-h-full">

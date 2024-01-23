@@ -221,7 +221,7 @@ const DatePicker = ({
         />
         {/* TODO: add formerror */}
         {helperText && (
-          <p className="rw-helper-text" {...HelperTextProps}>
+          <p className="mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70" {...HelperTextProps}>
             {helperText}
           </p>
         )}

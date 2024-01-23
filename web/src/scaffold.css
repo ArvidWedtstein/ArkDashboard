@@ -1,21 +1,5 @@
 @import "tailwindcss/components";
 @layer components {
-  /* Link */
-  .rw-link {
-    @apply text-pea-500;
-  }
-  .rw-link:hover {
-    @apply underline;
-  }
-  span > .rw-link,
-  p > .rw-link {
-    @apply decoration-pea-500 text-pea-500 underline underline-offset-4 transition ease-in-out hover:no-underline;
-  }
-
-  .rw-header {
-    @apply flex justify-between py-4 px-8;
-  }
-
   .rw-segment::-webkit-scrollbar {
     height: initial;
   }
@@ -41,25 +25,16 @@
     @apply text-sm;
   }
 
-  .rw-heading .rw-link {
-    @apply text-gray-600 no-underline;
-  }
-  .rw-heading .rw-link:hover {
-    @apply text-gray-900 underline;
-  }
-
   .rw-cell-error {
     @apply animate-fly-in text-sm font-semibold;
   }
 
   /* || FORM */
-  .rw-form-wrapper {
-    @apply -mt-4 text-sm;
-  }
+
   /* Form Error */
   .rw-cell-error,
   .rw-form-error-wrapper {
-    @apply my-4 rounded border border-red-100 bg-red-50 p-4 text-red-600;
+    @apply text-error-600 border-error-100 bg-error-50 my-4 rounded border p-4;
   }
   .rw-form-error-title {
     @apply m-0 font-semibold;
@@ -76,21 +51,7 @@
   }
   .rw-label.rw-label-error,
   .rw-sublabel.rw-label-error {
-    @apply text-red-600;
-  }
-  .rw-helper-text {
-    @apply mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70;
-  }
-  /* Form Collapsible Section */
-  .rw-form-group {
-    @apply mt-2 flex flex-col items-start border-stone-500 pt-2 text-gray-900 dark:border-zinc-300 dark:text-stone-200 [&:not(details)]:border-t [&:not(fieldset)]:border-b [&:not(fieldset)]:pb-2;
-  }
-  .rw-form-group legend,
-  .rw-form-group summary {
-    @apply relative mb-2 pr-2 text-xl; /* list-decimal */
-  }
-  .rw-form-group:not(.custom) > div {
-    @apply flex flex-col items-start space-y-3 md:flex-row md:space-y-0 md:space-x-3;
+    @apply text-error-600;
   }
 
   /* || BUTTONS */
@@ -98,44 +59,18 @@
     @apply bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0;
   }
 
-  /* || INPUT FIELDS */
-  .rw-input {
-    @apply block rounded-lg border border-zinc-500 bg-zinc-50 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !placeholder-opacity-60 !outline-none [-moz-appearance:_textfield] invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-default disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
-  }
-
-  /* Input Sizes */
-  /* .rw-input.rw-input-small {
-    @apply py-1 px-2 text-xs;
-  }
-  .rw-input.rw-input-medium {
-    @apply py-1.5 px-4 text-sm;
-  }
-  .rw-input.rw-input-large {
-    @apply py-3 px-8 text-base;
-  } */
-
-  /* Select */
-  select.rw-input.rw-input-small {
-    @apply text-sm;
-  }
-  .rw-input option {
-    @apply appearance-none border-b border-black focus:outline-none dark:border-white;
-  }
-
   /* input[type="number"] {
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
     appearance: textfield;
   } */
+
   /* Checkbox */
   .rw-checkbox,
-  .rw-input[type="checkbox"],
-  .rw-input.rw-checkbox[type="checkbox"] {
-    @apply focus:outline-pea-500 relative ml-0 mr-1 block h-6 w-6 cursor-pointer appearance-none rounded p-2 transition duration-200;
+  .rw-checkbox[type="checkbox"] {
+    @apply focus:outline-success-500 relative ml-0 mr-1 block h-6 w-6 cursor-pointer appearance-none rounded border border-zinc-500 bg-zinc-50 p-2 text-sm transition duration-200 focus:border-stone-500 dark:bg-zinc-600 dark:text-stone-200;
   }
-  .rw-input.rw-input-small[type="checkbox"] {
-    @apply h-4 w-4 p-1;
-  }
+
   .rw-checkbox:checked::before,
   .rw-input[type="checkbox"]:checked::before {
     @apply absolute top-0 left-1/2 inline translate-y-[2px] -translate-x-1/2 transform whitespace-pre content-['✓'];
@@ -143,10 +78,10 @@
 
   /* Checkbox Group Comp */
   .rw-check-input:checked + .rw-check-tile {
-    @apply border-pea-500 text-pea-500 shadow-lg;
+    @apply border-success-500 text-success-500 shadow-lg;
   }
   .rw-check-input:checked + .rw-check-tile::before {
-    @apply bg-pea-500 border-pea-500 scale-100 opacity-100;
+    @apply bg-success-500 border-success-500 scale-100 opacity-100;
   }
   .rw-check-input:checked + .rw-check-tile span {
     @apply text-black dark:text-white;
@@ -159,46 +94,16 @@
     @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];
   }
 
-  /* Radio */
-  .rw-input[type="radio"] {
-    @apply text-pea-600 dark:accent-pea-600 accent-pea-500 inline h-4 w-4 border-zinc-500;
-  }
-  .rw-check-radio-items {
-    @apply flex items-center justify-items-center space-x-1 text-zinc-800 dark:text-zinc-200;
-  }
-  .rw-check-radio-item-none {
-    @apply text-gray-600;
-  }
-
-  /* Range */
-  /* input[type="range"].slider::-ms-track,  */
-  input[type="range"].slider::-webkit-slider-runnable-track,
-  input[type="range"].slider::-moz-range-track {
-    @apply h-6 appearance-none;
-  }
-  input[type="range"].slider::-webkit-slider-thumb,
-  input[type="range"].slider::-moz-range-thumb {
-    @apply pointer-events-auto h-[100px] w-6 cursor-pointer appearance-none border-none bg-transparent outline-none;
-  }
-  input[type="range"].slider::-ms-thumb {
-    @apply pointer-events-auto h-[100px] w-6 cursor-pointer appearance-none border-none bg-transparent outline-none;
-  }
-  input[type="range"].slider:active::-webkit-slider-thumb,
-  input[type="range"].slider:focus::-moz-range-thumb,
-  input[type="range"].slider:active::-moz-range-thumb {
-    @apply border-none bg-none outline-none;
-  }
-
   /* Input Error */
   .rw-input-error {
-    @apply border-red-600 text-red-600 placeholder-red-700;
+    @apply border-error-600 text-error-600 placeholder-error-700;
   }
   .rw-input-error:focus {
-    @apply border-red-600 outline-none;
+    @apply border-error-600 outline-none;
     box-shadow: 0 0 5px #c53030;
   }
   .rw-field-error {
-    @apply mt-1 block text-xs font-semibold uppercase text-red-600;
+    @apply text-error-600 mt-1 block text-xs font-semibold uppercase;
   }
 
   /* || Divider */
@@ -278,114 +183,4 @@
     background: #e0d4be;
     z-index: -1;
   }
-
-  /* || Toasts */
-  .rw-toast {
-    @apply rounded-lg border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-800 dark:text-white;
-  }
-
-  /* Info */
-  .rw-toast.rw-toast-info {
-    @apply border-blue-400 text-blue-800 dark:border-blue-800 dark:text-blue-400;
-  }
-
-  /* Success */
-  .rw-toast.rw-toast-success {
-    @apply text-success-800 border-success-300 dark:text-success-400 dark:border-success-600;
-  }
-
-  /* Warning */
-  .rw-toast.rw-toast-warning {
-    @apply border-warning-300 text-warning-800 dark:border-warning-800 dark:text-warning-400;
-  }
-
-  /* Error */
-  .rw-toast.rw-toast-error {
-    @apply border-error-300 dark:border-error-600 text-black dark:text-white;
-  }
-  /* TODO: cleanup */
-  /* Table */
-
-  .rw-table {
-    @apply w-full min-w-max table-auto text-sm;
-  }
-  .rw-table thead tr {
-    @apply bg-gray-200 text-sm uppercase leading-normal text-gray-600;
-  }
-  .rw-table tbody tr {
-    @apply border-b border-gray-200 text-black hover:bg-gray-100/10 dark:text-white;
-  }
-  .rw-table th,
-  .rw-table td {
-    @apply whitespace-nowrap py-3 px-6 text-left;
-  }
-
-  /* Image */
-  .rw-img-disable img {
-    @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
-  }
 }
-
-[data-tooltip] {
-  position: relative;
-  z-index: 2;
-  cursor: pointer;
-}
-
-/* Hide the tooltip content by default */
-[data-tooltip]:before,
-[data-tooltip]:after {
-  visibility: hidden;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Position tooltip above the element */
-[data-tooltip]:before {
-  position: absolute;
-  bottom: 150%;
-  left: 50%;
-  margin-bottom: 5px;
-  margin-left: -80px;
-  padding: 7px;
-  width: 160px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  background-color: #000;
-  background-color: hsla(0, 0%, 20%, 0.9);
-  color: #fff;
-  content: attr(data-tooltip);
-  text-align: center;
-  font-size: 14px;
-  line-height: 1.2;
-}
-
-/* Triangle hack to make tooltip look like a speech bubble */
-[data-tooltip]:after {
-  position: absolute;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -5px;
-  width: 0;
-  border-top: 5px solid #000;
-  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
-  border-right: 5px solid transparent;
-  border-left: 5px solid transparent;
-  content: " ";
-  font-size: 0;
-  line-height: 0;
-}
-
-/* Show tooltip content on hover */
-[data-tooltip]:hover:before,
-[data-tooltip]:hover:after {
-  visibility: visible;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1;
-}
-
-/* https://codepen.io/andybarefoot/pen/PBPrex */

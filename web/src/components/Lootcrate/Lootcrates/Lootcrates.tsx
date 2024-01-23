@@ -75,9 +75,9 @@ const LootcratesList = ({
                 <CheckboxField
                   name="type"
                   id={`type-${type}`}
-                  className="rw-input"
                   value={ltype}
-                  errorClassName="rw-input rw-input-error"
+                  className="rw-checkbox"
+                  errorClassName="rw-checkbox rw-input-error"
                   defaultChecked={type && type.includes(ltype)}
                 />
                 <Label
@@ -101,8 +101,8 @@ const LootcratesList = ({
                   name="map"
                   value={id}
                   defaultChecked={map && map.includes(id.toString())}
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
+                  className="rw-checkbox"
+                  errorClassName="rw-checkbox rw-input-error"
                 />
                 <Label
                   name="map"
@@ -127,8 +127,8 @@ const LootcratesList = ({
               >
                 <CheckboxField
                   name="color"
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
+                  className="rw-checkbox"
+                  errorClassName="rw-checkbox rw-input-error"
                   id={`color-${HexColor}`}
                   value={HexColor}
                   defaultChecked={color && color.includes(HexColor)}

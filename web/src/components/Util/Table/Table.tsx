@@ -621,7 +621,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
               type="checkbox"
-              className="rw-input rw-checkbox m-0"
+              className="rw-checkbox m-0"
             />
             <label
               htmlFor={header ? "checkbox-all-select" : datarow.row_id}

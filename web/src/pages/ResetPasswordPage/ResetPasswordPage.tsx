@@ -58,7 +58,7 @@ const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
             config={{
               mode: "onBlur",
             }}
-            className="rw-form-wrapper rw-segment-main space-y-3 text-center"
+            className="rw-segment-main space-y-3 text-center"
           >
             <FormError
               wrapperClassName="rw-form-error-wrapper"

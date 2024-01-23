@@ -40,7 +40,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper">
+    <div className="-mt-4 text-sm">
       <Form<FormLootcrate> onSubmit={onSubmit} error={props.error}>
         <FormError
           error={props.error}

@@ -227,13 +227,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   };
   const canDestroy = ({ value, header }: { value: number; header: string }) => (
     <div
-      className={clsx(`space-y-1 flex flex-col justify-center items-center`, {
-        "rw-img-disable": value <= 0,
-      })}
+      className={`space-y-1 flex flex-col justify-center items-center`}
     >
       <img
         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${header.toLowerCase()}-wall.webp`}
-        className="aspect-square w-8"
+        className={clsx("aspect-square w-8", {
+          "opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia": value <= 0
+        })}
       />
       {value > 0 ? (
         <svg
@@ -2051,17 +2051,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 <Card
                                   key={`weapon-${i}-${name}`}
                                   variant="outlined"
-                                  className={clsx(
-                                    "mb-3 flex min-w-[200px] flex-col pb-2",
-                                    {
-                                      "rw-img-disable !text-gray-500":
-                                        !isPossible || chanceOfDeath >= 99,
-                                    }
-                                  )}
+                                  className={"mb-3 flex min-w-[200px] flex-col pb-2"}
                                 >
                                   <div className="mt-4 inline-flex items-center justify-center">
                                     <CardMedia
-                                      className="max-h-24"
+                                      className={clsx("max-h-24", {
+                                        "opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[\.28] sepia !text-gray-500": !isPossible || chanceOfDeath >= 99
+                                      })}
                                       image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                                       src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                                     />

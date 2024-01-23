@@ -443,7 +443,7 @@ const FileUpload = ({
               {maxSize && `(MAX. ${formatBytes(maxSize)})`}
             </p>
             {files.some((f) => f.error) && (
-              <p className="rw-helper-text -mb-2 text-error-500">
+              <p className="mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70 -mb-2 text-error-500">
                 Invalid files will not be uploaded
               </p>
             )}

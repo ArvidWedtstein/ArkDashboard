@@ -51,7 +51,7 @@ const MapForm = (props: MapFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper">
+    <div className="-mt-4 text-sm">
       <Form<FormMap> id="form-map" onSubmit={onSubmit} error={error}>
         <FormError
           error={error}

@@ -4,6 +4,7 @@ import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Lootcrates from "src/components/Lootcrate/Lootcrates";
+import Button from "src/components/Util/Button/Button";
 
 export const QUERY = gql`
   query FindLootcrates(
@@ -97,9 +98,13 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {"No lootcrates yet. "}
-      <Link to={routes.newLootcrate()} className="rw-link">
+      <Button
+        variant="text"
+        color="primary"
+        to={routes.newLootcrate()}
+      >
         {"Create one?"}
-      </Link>
+      </Button>
     </div>
   );
 };

@@ -74,7 +74,7 @@ const Switch = ({
         )}
       </span>
 
-      {helperText && <p className="text-black/60 dark:text-white/70 ml-3 !mt-0 rw-helper-text">{helperText}</p>}
+      {helperText && <p className="text-black/60 dark:text-white/70 ml-3 text-left text-xs leading-6 tracking-wide">{helperText}</p>}
       {children}
     </label>
   );

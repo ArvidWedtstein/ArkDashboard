@@ -36,23 +36,21 @@ const TribeForm = (props: TribeFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormTribe> onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+    <Form<FormTribe> onSubmit={onSubmit} error={props.error}>
+      <FormError
+        error={props.error}
+        wrapperClassName="rw-form-error-wrapper"
+        titleClassName="rw-form-error-title"
+        listClassName="rw-form-error-list"
+      />
 
-        <Input
-          name="name"
-          label="Name"
-          defaultValue={props.tribe?.name}
-          color="DEFAULT"
-        />
-      </Form>
-    </div>
+      <Input
+        name="name"
+        label="Name"
+        defaultValue={props.tribe?.name}
+        color="DEFAULT"
+      />
+    </Form>
   );
 };
 

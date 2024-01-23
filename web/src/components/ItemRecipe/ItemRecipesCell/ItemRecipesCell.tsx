@@ -4,6 +4,7 @@ import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import ItemRecipes from 'src/components/ItemRecipe/ItemRecipes'
+import Button from 'src/components/Util/Button/Button'
 
 
 // export const QUERY = gql`
@@ -43,9 +44,13 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {'No itemRecipes yet. '}
-      <Link to={routes.newItemRecipe()} className="rw-link">
-        {'Create one?'}
-      </Link>
+      <Button
+        variant="text"
+        color="primary"
+        to={routes.newItemRecipe()}
+      >
+        {"Create one?"}
+      </Button>
     </div>
   )
 }

@@ -89,10 +89,10 @@ const DinosList = ({
                 <CheckboxField
                   name="type"
                   id={`type-${dinotype}`}
-                  className="rw-input"
+                  className="rw-checkbox"
                   value={dinotype}
                   defaultChecked={type && type.includes(dinotype)}
-                  errorClassName="rw-input rw-input-error"
+                  errorClassName="rw-checkbox rw-input-error"
                 />
                 <Label
                   name="type"
@@ -118,9 +118,9 @@ const DinosList = ({
                   <CheckboxField
                     name="diet"
                     id={`diet-${dinodiet}`}
-                    className="rw-input"
+                    className="rw-checkbox"
                     value={dinodiet}
-                    errorClassName="rw-input rw-input-error"
+                    errorClassName="rw-checkbox rw-input-error"
                     defaultChecked={(diet && diet.includes(dinodiet)) || false}
                   />
                   <Label
@@ -147,9 +147,9 @@ const DinosList = ({
                   <CheckboxField
                     id={`temperament-${dinotemperament}`}
                     name="temperament"
-                    className="rw-input"
+                    className="rw-checkbox"
+                    errorClassName="rw-checkbox rw-input-error"
                     value={dinotemperament}
-                    errorClassName="rw-input rw-input-error"
                     defaultChecked={
                       temperament && temperament.includes(dinotemperament)
                     }

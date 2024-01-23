@@ -59,18 +59,18 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
           ))}
         ]}
       />*/}
-      <table className="rw-table min-w-[48rem]">
+      <table className="w-full min-w-max table-auto text-sm min-w-[48rem]">
         <thead>
-          <tr><% columns.forEach(column => { %>
-            <th>${column.label}</th><% }) %>
-            <th>&nbsp;</th>
+          <tr className="bg-gray-200 text-sm uppercase leading-normal text-gray-600"><% columns.forEach(column => { %>
+            <th className="whitespace-nowrap py-3 px-6 text-left">${column.label}</th><% }) %>
+            <th className="whitespace-nowrap py-3 px-6 text-left">&nbsp;</th>
           </tr>
         </thead>
         <tbody>
           {${pluralCamelName}.map((${singularCamelName}) => (
-            <tr key={${singularCamelName}.id}><% columns.forEach(column => { %>
-              <td>{${column.listDisplayFunction}(${singularCamelName}.${column.name})}</td><% }) %>
-              <td>
+            <tr className="border-b border-gray-200 text-black hover:bg-gray-100/10 dark:text-white" key={${singularCamelName}.id}><% columns.forEach(column => { %>
+              <td className="whitespace-nowrap py-3 px-6 text-left">{${column.listDisplayFunction}(${singularCamelName}.${column.name})}</td><% }) %>
+              <td className="whitespace-nowrap py-3 px-6 text-left">
                 <ButtonGroup size="small" variant="outlined">
                   <Button
                     color="primary"

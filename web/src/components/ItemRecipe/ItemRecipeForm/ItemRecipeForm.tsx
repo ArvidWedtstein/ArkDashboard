@@ -170,40 +170,38 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
   }
 
   return (
-    <div className="rw-form-wrapper">
+    <div className="-mt-4 text-sm">
       <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, edit: false, item_recipe_item: null })}>
         <DialogTitle>{openModal.edit ? 'Edit' : 'Add'} Item</DialogTitle>
         <DialogContent dividers>
-          <div className="rw-form-wrapper">
-            <Form<FormItemRecipeItem> onSubmit={onSubmitItemRecipeItem} error={createError || updateError}>
-              <FormError
-                error={createError || updateError}
-                wrapperClassName="rw-form-error-wrapper"
-                titleClassName="rw-form-error-title"
-                listClassName="rw-form-error-list"
-              />
+          <Form<FormItemRecipeItem> onSubmit={onSubmitItemRecipeItem} error={createError || updateError}>
+            <FormError
+              error={createError || updateError}
+              wrapperClassName="rw-form-error-wrapper"
+              titleClassName="rw-form-error-title"
+              listClassName="rw-form-error-list"
+            />
 
-              <Lookup
-                label="Item"
-                name="resource_item_id"
-                loading={props.loading}
-                isOptionEqualToValue={(opt, val) => opt.id === val.id}
-                getOptionValue={(opt) => opt.id}
-                getOptionLabel={(opt) => opt.name}
-                defaultValue={openModal.item_recipe_item?.resource_item_id}
-                options={props?.items || []}
-                validation={{ required: true }}
-              />
+            <Lookup
+              label="Item"
+              name="resource_item_id"
+              loading={props.loading}
+              isOptionEqualToValue={(opt, val) => opt.id === val.id}
+              getOptionValue={(opt) => opt.id}
+              getOptionLabel={(opt) => opt.name}
+              defaultValue={openModal.item_recipe_item?.resource_item_id}
+              options={props?.items || []}
+              validation={{ required: true }}
+            />
 
-              <Input
-                label="Amount"
-                name="amount"
-                defaultValue={openModal.item_recipe_item?.amount}
-                validation={{ valueAsNumber: true, required: true, setValueAs: (v) => parseInt(v) }}
-                type="number"
-              />
-            </Form>
-          </div>
+            <Input
+              label="Amount"
+              name="amount"
+              defaultValue={openModal.item_recipe_item?.amount}
+              validation={{ valueAsNumber: true, required: true, setValueAs: (v) => parseInt(v) }}
+              type="number"
+            />
+          </Form>
         </DialogContent>
         <DialogActions className="space-x-1">
           <Button

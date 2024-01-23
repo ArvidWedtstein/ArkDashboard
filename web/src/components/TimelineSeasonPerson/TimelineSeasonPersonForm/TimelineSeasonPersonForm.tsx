@@ -34,49 +34,47 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormTimelineSeasonPerson> onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+    <Form<FormTimelineSeasonPerson> onSubmit={onSubmit} error={props.error}>
+      <FormError
+        error={props.error}
+        wrapperClassName="rw-form-error-wrapper"
+        titleClassName="rw-form-error-title"
+        listClassName="rw-form-error-list"
+      />
 
-        <Lookup
-          name="user_id"
-          label="User"
-          options={props?.profiles ?? []}
-          getOptionLabel={(option) => option.username}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionValue={(opt) => opt.id}
-          defaultValue={props.timelineSeasonPerson?.user_id}
-        />
+      <Lookup
+        name="user_id"
+        label="User"
+        options={props?.profiles ?? []}
+        getOptionLabel={(option) => option.username}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        getOptionValue={(opt) => opt.id}
+        defaultValue={props.timelineSeasonPerson?.user_id}
+      />
 
-        <Lookup
-          name="permission"
-          label="Role"
-          options={[
-            { label: 'Guest', value: 'guest' },
-            { label: 'Member', value: 'member' },
-            { label: 'Admin', value: 'admin' },
-          ]}
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(opt) => opt.value}
-          isOptionEqualToValue={(option, value) => option.value === value.value}
-          defaultValue={props.timelineSeasonPerson?.user_id}
-        />
+      <Lookup
+        name="permission"
+        label="Role"
+        options={[
+          { label: 'Guest', value: 'guest' },
+          { label: 'Member', value: 'member' },
+          { label: 'Admin', value: 'admin' },
+        ]}
+        getOptionLabel={(option) => option.label}
+        getOptionValue={(opt) => opt.value}
+        isOptionEqualToValue={(option, value) => option.value === value.value}
+        defaultValue={props.timelineSeasonPerson?.user_id}
+      />
 
-        <Input
-          name="ingame_name"
-          fullWidth
-          label="Ingame Name"
-          color="DEFAULT"
-          variant="outlined"
-          defaultValue={props.timelineSeasonPerson?.ingame_name}
-        />
-      </Form>
-    </div>
+      <Input
+        name="ingame_name"
+        fullWidth
+        label="Ingame Name"
+        color="DEFAULT"
+        variant="outlined"
+        defaultValue={props.timelineSeasonPerson?.ingame_name}
+      />
+    </Form>
   );
 };
 

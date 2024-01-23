@@ -189,7 +189,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper">
+    <div className="-mt-4 text-sm">
       <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, edit: false, itemRecipe: null })}>
         <DialogTitle>{openModal.edit ? 'Edit' : 'Add'} Recipe</DialogTitle>
         <DialogContent dividers>

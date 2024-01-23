@@ -302,7 +302,7 @@ const GtwPage = (props: GTWPageProps) => {
 
           {attackFields.map((f, i) => (
             <Fragment>
-              <input className="rw-input" {...register(`attack.${i}.name`, { required: true })} />
+              <input className="" {...register(`attack.${i}.name`, { required: true })} />
             </Fragment>
           ))}
           <button type="button"

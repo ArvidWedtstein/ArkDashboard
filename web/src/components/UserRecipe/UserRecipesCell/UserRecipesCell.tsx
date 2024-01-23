@@ -61,9 +61,6 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {"No userRecipes yet. "}
-      <Link to={routes.newUserRecipe()} className="rw-link">
-        {"Create one?"}
-      </Link>
     </div>
   );
 };

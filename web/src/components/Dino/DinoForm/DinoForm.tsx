@@ -306,13 +306,13 @@ const DinoForm = (props: DinoFormProps) => {
   }
 
   return (
-    <div className="rw-form-wrapper">
+    <div className="-mt-4 text-sm">
       <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, dino_stat: null })}>
         <DialogTitle>
           {openModal.dino_stat ? 'Edit' : 'New'} Dino Stat
         </DialogTitle>
         <DialogContent dividers>
-          <Form<NonNullable<UpdateDinoStatInput>> onSubmit={(data) => onSave(data, openModal?.dino_stat?.id)} error={error} className="rw-form-wrapper my-3">
+          <Form<NonNullable<UpdateDinoStatInput>> onSubmit={(data) => onSave(data, openModal?.dino_stat?.id)} error={error} className="text-sm my-3">
             <FormError
               error={props.error}
               wrapperClassName="rw-form-error-wrapper"

@@ -1756,7 +1756,7 @@ export const Lookup = (<
         />
 
         {helperText && (
-          <p id={helperText && id ? `${id}-helper-text` : undefined} className="rw-helper-text" {...HelperTextProps}>
+          <p id={helperText && id ? `${id}-helper-text` : undefined} className={clsx("mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70", HelperTextProps?.className)} {...HelperTextProps}>
             {helperText}
           </p>
         )}

@@ -42,24 +42,23 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormTimelineSeasonBasespot> onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+    <Form<FormTimelineSeasonBasespot> onSubmit={onSubmit} error={props.error}>
+      <FormError
+        error={props.error}
+        wrapperClassName="rw-form-error-wrapper"
+        titleClassName="rw-form-error-title"
+        listClassName="rw-form-error-list"
+      />
 
-        <DatePicker
-          label="Start Date"
-          name="start_date"
-          defaultValue={new Date(props.timelineSeasonBasespot?.start_date || new Date())}
-        />
+      <DatePicker
+        label="Start Date"
+        name="start_date"
+        defaultValue={new Date(props.timelineSeasonBasespot?.start_date || new Date())}
+      />
 
 
-        {/* TODO: set enddate automatically when raid is registered in TimelineSeasonEvent form */}
-        {/* <Label
+      {/* TODO: set enddate automatically when raid is registered in TimelineSeasonEvent form */}
+      {/* <Label
           name="end_date"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -70,72 +69,71 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         <DatetimeLocalField
           name="end_date"
           defaultValue={props.timelineSeasonBasespot?.end_date}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          className=""
         />
 
         <FieldError name="end_date" className="rw-field-error" /> */}
 
-        <Lookup
-          options={props?.basespots || []}
-          name="basespot_id"
-          label="Basespot"
-          getOptionValue={(opt) => opt.id}
-          getOptionLabel={(option) => option.name}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          defaultValue={props.timelineSeasonBasespot?.basespot_id}
-          placeholder="Select a basespot"
+      <Lookup
+        options={props?.basespots || []}
+        name="basespot_id"
+        label="Basespot"
+        getOptionValue={(opt) => opt.id}
+        getOptionLabel={(option) => option.name}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        defaultValue={props.timelineSeasonBasespot?.basespot_id}
+        placeholder="Select a basespot"
+      />
+
+      <FieldError name="basespot_id" className="rw-field-error" />
+
+      <Lookup
+        options={props?.maps || []}
+        name="map_id"
+        label="Map"
+        getOptionLabel={(option) => option.name}
+        getOptionValue={(opt) => opt.id}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+        defaultValue={props.timelineSeasonBasespot?.map_id}
+        placeholder="Select a map"
+      />
+
+      <ButtonGroup>
+        <Input
+          color="DEFAULT"
+          label="Latitude"
+          name="latitude"
+          type="number"
+          defaultValue={props.timelineSeasonBasespot?.latitude ?? 0}
+          validation={{
+            valueAsNumber: true
+          }}
+          InputProps={{
+            inputProps: {
+              inputMode: 'decimal'
+            }
+          }}
         />
-
-        <FieldError name="basespot_id" className="rw-field-error" />
-
-        <Lookup
-          options={props?.maps || []}
-          name="map_id"
-          label="Map"
-          getOptionLabel={(option) => option.name}
-          getOptionValue={(opt) => opt.id}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
-          defaultValue={props.timelineSeasonBasespot?.map_id}
-          placeholder="Select a map"
+        <Input
+          color="DEFAULT"
+          label="Longitude"
+          name="longitude"
+          type="number"
+          defaultValue={props.timelineSeasonBasespot?.longitude ?? 0}
+          validation={{
+            valueAsNumber: true
+          }}
+          InputProps={{
+            inputProps: {
+              inputMode: 'decimal'
+            }
+          }}
         />
+      </ButtonGroup>
 
-        <ButtonGroup>
-          <Input
-            color="DEFAULT"
-            label="Latitude"
-            name="latitude"
-            type="number"
-            defaultValue={props.timelineSeasonBasespot?.latitude ?? 0}
-            validation={{
-              valueAsNumber: true
-            }}
-            InputProps={{
-              inputProps: {
-                inputMode: 'decimal'
-              }
-            }}
-          />
-          <Input
-            color="DEFAULT"
-            label="Longitude"
-            name="longitude"
-            type="number"
-            defaultValue={props.timelineSeasonBasespot?.longitude ?? 0}
-            validation={{
-              valueAsNumber: true
-            }}
-            InputProps={{
-              inputProps: {
-                inputMode: 'decimal'
-              }
-            }}
-          />
-        </ButtonGroup>
-
-        {/* <br /> */}
-        {/* <Button
+      {/* <br /> */}
+      {/* <Button
           type="submit"
           color="success"
           variant="outlined"
@@ -153,8 +151,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         >
           Save
         </Button> */}
-      </Form>
-    </div>
+    </Form>
   );
 };
 

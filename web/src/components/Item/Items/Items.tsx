@@ -164,9 +164,9 @@ const ItemsList = ({
               <CheckboxField
                 name="category"
                 id={`category-${label}`}
-                className="rw-input"
+                className="rw-checkbox"
                 value={value}
-                errorClassName="rw-input rw-input-error"
+                errorClassName="rw-checkbox rw-input-error"
                 onChange={(e) => {
                   setSelectedTypes([]);
                   setSelectedCategories((prev) =>
@@ -203,9 +203,9 @@ const ItemsList = ({
                   <CheckboxField
                     name="type"
                     id={`type-${label}`}
-                    className="rw-input"
+                    className="rw-checkbox"
                     value={value}
-                    errorClassName="rw-input rw-input-error"
+                    errorClassName="rw-checkbox rw-input-error"
                     onChange={(e) => {
                       setSelectedTypes((prev) =>
                         prev.some((p) => p.value === value)
@@ -458,9 +458,13 @@ const ItemsList = ({
         {!loading && itemsPage.items.length === 0 && itemsPage.count === 0 && (
           <div className="w-full text-center text-black dark:text-white">
             {"No items yet. "}
-            <Link to={routes.newItem()} className="rw-link">
+            <Button
+              variant="text"
+              color="primary"
+              to={routes.newItem()}
+            >
               {"Create one?"}
-            </Link>
+            </Button>
           </div>
         )}
       </section>

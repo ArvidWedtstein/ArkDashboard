@@ -48,7 +48,7 @@ const ForgotPasswordPage = () => {
 
           <Form<FormForgotPassword>
             onSubmit={onSubmit}
-            className="rw-form-wrapper rw-segment-main text-center"
+            className="rw-segment-main text-center"
           >
             <div className="relative">
               <Input

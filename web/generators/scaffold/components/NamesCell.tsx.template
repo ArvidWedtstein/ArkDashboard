@@ -2,6 +2,7 @@ import type { Find${pluralPascalName} } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import Button from 'src/components/Util/Button/Button';
 
 import ${pluralPascalName} from '${importComponentNames}'
 
@@ -37,12 +38,13 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {'No ${pluralCamelName} yet. '}
-      <Link
+      <Button
+        variant="text"
+        color="primary"
         to={routes.${newRouteName}()}
-        className="rw-link"
       >
         {'Create one?'}
-      </Link>
+      </Button>
     </div>
   )
 }

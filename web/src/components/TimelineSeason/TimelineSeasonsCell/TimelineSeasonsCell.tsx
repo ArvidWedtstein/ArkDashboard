@@ -5,6 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import TimelineSeasons from "src/components/TimelineSeason/TimelineSeasons";
 import Skeleton from "src/components/Util/Skeleton/Skeleton";
+import Button from "src/components/Util/Button/Button";
 
 export const QUERY = gql`
   query FindTimelineSeasons {
@@ -43,9 +44,14 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {"No timelineSeasons yet. "}
-      <Link to={routes.newTimelineSeason()} className="rw-link">
+      <Button
+        variant="text"
+        color="primary"
+        permission="timeline_create"
+        to={routes.newTimelineSeason()}
+      >
         {"Create one?"}
-      </Link>
+      </Button>
     </div>
   );
 };

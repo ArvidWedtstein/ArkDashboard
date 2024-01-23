@@ -5,6 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Dinos from "src/components/Dino/Dinos";
 import Pagination from "src/components/Util/Pagination/Pagination";
+import Button from "src/components/Util/Button/Button";
 
 export const QUERY = gql`
   query FindDinos($page: Int, $search: String, $type: String, $diet: String, $temperament: String) {
@@ -56,9 +57,13 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {"No dinos yet. "}
-      <Link to={routes.newDino()} className="rw-link">
-        {"Create one?"}
-      </Link>
+      <Button
+        variant="text"
+        color="primary"
+        to={routes.newDino()}
+      >
+        {'Create one?'}
+      </Button>
     </div>
   );
 };

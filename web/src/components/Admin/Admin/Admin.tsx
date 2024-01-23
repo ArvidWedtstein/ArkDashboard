@@ -202,15 +202,15 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   className="inline-flex h-20 w-20 items-center justify-center text-center text-white"
                 >
                   <path
-                    className="stroke-pea-800 fill-none stroke-1"
+                    className="stroke-success-800 fill-none stroke-1"
                     d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"
-                  ></path>
+                  />
                   <path
                     className={clsx(
                       "animate-circle-progress fill-none stroke-2",
-                      "stroke-pea-500"
+                      "stroke-success-500"
                     )}
                     strokeLinecap="round"
                     strokeDasharray={`${formatNumber(
@@ -693,7 +693,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               render: ({ value }) => (
                 <div className="flex items-center gap-x-3">
                   {/* <div className={clsx("p-1 rounded-full flex-none", {
-                    "text-pea-500 bg-pea-500/20": value.verified,
+                    "text-success-500 bg-success-500/20": value.verified,
                     "text-red-500 bg-red-500/20": !value.verified
                   })}>
                     <div className="bg-current rounded-full w-1.5 h-1.5" />

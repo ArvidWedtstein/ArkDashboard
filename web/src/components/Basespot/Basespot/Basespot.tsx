@@ -221,12 +221,15 @@ const Basespot = ({ basespot }: Props) => {
         }}
       >
         <div className="flex justify-between pb-5">
-          <Link
+          <Button
+            variant="text"
+            color="success"
+            size="small"
             to={routes.map({ id: basespot.map_id })}
-            className="rw-link text-xl font-bold uppercase tracking-[0.4rem] text-white opacity-90 transition ease-linear"
           >
             {basespot.Map.name}
-          </Link>
+          </Button>
+
           <div className="flex items-center text-sm opacity-50 transition ease-linear group-hover:opacity-90">
             <p className="text-right">{timeTag(basespot.created_at)}</p>
             <svg
@@ -269,7 +272,7 @@ const Basespot = ({ basespot }: Props) => {
         />
         <div className="flex w-full flex-col flex-wrap space-y-10 py-6 text-center lg:w-1/2 lg:flex-grow lg:pl-12 lg:text-left">
           <div className="flex flex-col items-center space-y-3 lg:items-start">
-            <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
+            <div className="bg-success-50 text-success-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -320,7 +323,7 @@ const Basespot = ({ basespot }: Props) => {
             </div>
           </div>
           <div className="flex flex-col items-center space-y-3 lg:items-start">
-            <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
+            <div className="bg-success-50 text-success-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -351,7 +354,7 @@ const Basespot = ({ basespot }: Props) => {
           <section className="body-font text-neutral-700 dark:text-neutral-200">
             <div className="container mx-auto py-24">
               <div className="mb-20 flex w-full flex-col text-center">
-                <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
+                <h2 className="title-font text-success-500 mb-1 text-xs font-medium tracking-widest">
                   Basespot Defense Setup
                 </h2>
                 <h1 className="title-font text-2xl font-medium text-neutral-900 dark:text-neutral-200 sm:text-3xl">
@@ -376,7 +379,7 @@ const Basespot = ({ basespot }: Props) => {
       <section className="body-font text-neutral-700 dark:text-neutral-200">
         <div className="container mx-auto py-24">
           <div className="mb-20 flex w-full flex-col text-center">
-            <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
+            <h2 className="title-font text-success-500 mb-1 text-xs font-medium tracking-widest">
               Tips & tricks
             </h2>
             <h1 className="title-font text-2xl font-medium text-neutral-900 dark:text-neutral-200 sm:text-3xl">
@@ -410,7 +413,7 @@ const Basespot = ({ basespot }: Props) => {
                           harder for raiders to find a blind spot.
                         </p>
 
-                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                        <span className="bg-success-500 mt-8 inline-block h-1 w-10 rounded" />
                       </div>
                     </div>
                   ),
@@ -433,7 +436,7 @@ const Basespot = ({ basespot }: Props) => {
                           Build multiple turret walls if possible
                         </p>
 
-                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                        <span className="bg-success-500 mt-8 inline-block h-1 w-10 rounded" />
                       </div>
                     </div>
                   ),

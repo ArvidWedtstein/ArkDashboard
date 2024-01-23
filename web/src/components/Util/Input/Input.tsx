@@ -1194,9 +1194,9 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       {helperText && (
         <p
           id={helperTextId}
-          className={clsx("rw-helper-text", {
+          className={clsx("mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70", {
             "!text-error-500": error || fieldState?.error || fieldState?.invalid,
-            "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
+            "opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
           })}
           {...FormHelperTextProps}
         >

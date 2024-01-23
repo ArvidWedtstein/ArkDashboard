@@ -16,7 +16,7 @@ const MainLayout = ({ children }: LayoutProps) => {
       <Toaster
         aria-label="Global notifications"
         toastOptions={{
-          className: "rw-toast",
+          className: "rounded border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-800 dark:text-white",
           duration: 6000,
           position: "top-right",
         }}

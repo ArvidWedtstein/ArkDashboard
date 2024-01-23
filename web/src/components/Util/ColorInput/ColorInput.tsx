@@ -477,8 +477,8 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
       {helperText && (
         <p
           id={helperTextId}
-          className={clsx("rw-helper-text", {
-            "!text-red-500": error || fieldState?.error || fieldState?.invalid,
+          className={clsx("mt-0.5 text-left text-xs leading-6 tracking-wide", {
+            "!text-error-500": error || fieldState?.error || fieldState?.invalid,
             "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
           })}
           {...FormHelperTextProps}
