@@ -31,7 +31,6 @@ interface Props {
 }
 
 const Item = ({ item }: Props) => {
-  const { currentUser } = useAuth();
   const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
     onCompleted: () => {
       toast.success("Item deleted");
@@ -154,7 +153,8 @@ const Item = ({ item }: Props) => {
                 to={routes.dino({ id: Dino.id })}
                 icon={<img
                   src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${Dino.image}`}
-                  className="h-8 w-8 rounded-full bg-zinc-500 p-1"
+                  className="h-12 w-12 rounded-lg border border-zinc-500 bg-neutral-700 object-contain p-2.5"
+                  loading="lazy"
                 />}
                 secondaryActionProps={{
                   className: 'ml-auto ',
@@ -170,7 +170,7 @@ const Item = ({ item }: Props) => {
                   </span>
                 }
               >
-                <div className="flex-auto min-w-0 my-0.5">
+                <div className="flex-auto min-w-0 mx-2 my-0.5">
                   <span>{Dino.name}</span>
                   {value && (
                     <div
@@ -212,7 +212,7 @@ const Item = ({ item }: Props) => {
   }
 
   const [activeTab, setActiveTab] = useState(0);
-
+  console.log(item)
   return (
     <article className="rw-segment flex flex-row gap-3">
       <div className="grid w-full grid-cols-2 md:grid-cols-3 gap-3 text-gray-700 dark:text-white">

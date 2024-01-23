@@ -518,7 +518,7 @@ const Chart = ({
     });
   }, [series, dataset]);
 
-  const xAxisData = xAxis.map(({ id = "bottom", data: axisData, dataKey, scale, scaleType = 'linear', tickSize = 6, min, max, disableTicks = false, disableLine = false, label, valueFormatter }) => {
+  const xAxisData = (xAxis || [{ id: "bottom" }])?.map(({ id = "bottom", data: axisData, dataKey, scale, scaleType = 'linear', tickSize = 6, min, max, disableTicks = false, disableLine = false, label, valueFormatter }) => {
     let position: AxisPosition = AxisPositionMap[id] || "bottom";
 
     let data =
@@ -594,7 +594,7 @@ const Chart = ({
     };
   });
 
-  const yAxisData = yAxis?.map(({ id = "left", data: axisData, dataKey, scale, scaleType = 'linear', tickSize = 6, min, max, disableTicks = false, disableLine, label, valueFormatter }) => {
+  const yAxisData = (yAxis || [{ id: "left" }])?.map(({ id = "left", data: axisData, dataKey, scale, scaleType = 'linear', tickSize = 6, min, max, disableTicks = false, disableLine, label, valueFormatter }) => {
     let position: AxisPosition = AxisPositionMap[id] || "left";
 
     let data =
@@ -670,6 +670,7 @@ const Chart = ({
       valueFormatter
     };
   });
+
 
   // TODO: use this to calculate all chart types?
   const pointData = dataSeries.map((d, i) => {

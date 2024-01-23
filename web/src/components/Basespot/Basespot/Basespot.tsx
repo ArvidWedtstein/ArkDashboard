@@ -1,7 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import Button from "src/components/Util/Button/Button";
 import Map from "src/components/Util/Map/Map";
@@ -259,16 +259,14 @@ const Basespot = ({ basespot }: Props) => {
         </div>
       </header>
 
-      <div className="flex flex-wrap py-12">
-        <div className="w-full overflow-hidden rounded-lg md:w-fit lg:mb-0">
-          <Map
-            className="h-full w-full object-cover object-center"
-            map_id={basespot.map_id}
-            interactive={true}
-            pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
-            disable_map={true}
-          />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 py-12">
+        <Map
+          className="h-full w-full object-cover object-center"
+          map_id={basespot.map_id}
+          interactive={true}
+          pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
+          disable_map={true}
+        />
         <div className="flex w-full flex-col flex-wrap space-y-10 py-6 text-center lg:w-1/2 lg:flex-grow lg:pl-12 lg:text-left">
           <div className="flex flex-col items-center space-y-3 lg:items-start">
             <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
@@ -287,14 +285,16 @@ const Basespot = ({ basespot }: Props) => {
             <h2 className="title-font text-lg font-medium text-gray-900 dark:text-stone-200">
               Coordinates
             </h2>
-            <p className="flex-grow select-none text-base leading-relaxed">
+            <div className="inline-flex items-center flex-grow select-none text-base leading-relaxed">
               <span>
                 This spot is located at <strong>{basespot.latitude}</strong>{" "}
                 Lat, <strong>{basespot.longitude}</strong> Lon
               </span>
-              {/* TODO: add copy command here */}
-              <button
-                className="ml-1 rw-button"
+
+              <Button
+                variant="icon"
+                color="DEFAULT"
+                className="ml-1"
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `cheat SetPlayerPos ${Math.round(
@@ -316,8 +316,8 @@ const Basespot = ({ basespot }: Props) => {
                   </path>
                 </svg>
                 <span className="sr-only">Copy</span>
-              </button>
-            </p>
+              </Button>
+            </div>
           </div>
           <div className="flex flex-col items-center space-y-3 lg:items-start">
             <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
@@ -334,7 +334,7 @@ const Basespot = ({ basespot }: Props) => {
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </div>
-            <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-stone-200">
+            <h2 className="title-font mb-3 text-lg font-medium text-neutral-900 dark:text-neutral-200">
               Players
             </h2>
             <p className="flex-grow text-base leading-relaxed">
@@ -346,35 +346,40 @@ const Basespot = ({ basespot }: Props) => {
       </div>
 
       {images && images.length > 0 && (
-        <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
-          <div className="container mx-auto py-24">
-            <div className="mb-20 flex w-full flex-col text-center">
-              <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
-                Basespot Defense Setup
-              </h2>
-              <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-stone-200 sm:text-3xl">
-                Basespot Images
-              </h1>
-            </div>
+        <Fragment>
+          <hr role="seperator" className="rw-divider my-3 w-full bg-secondary-500 h-px" />
+          <section className="body-font text-neutral-700 dark:text-neutral-200">
+            <div className="container mx-auto py-24">
+              <div className="mb-20 flex w-full flex-col text-center">
+                <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
+                  Basespot Defense Setup
+                </h2>
+                <h1 className="title-font text-2xl font-medium text-neutral-900 dark:text-neutral-200 sm:text-3xl">
+                  Basespot Images
+                </h1>
+              </div>
 
-            <div className="grid gap-4">
-              <Slideshow
-                slides={images.map((img) => ({ url: img.url }))}
-                autoPlay={false}
-                imageTabs={true}
-              />
+              <div className="grid gap-4">
+                <Slideshow
+                  slides={images.map((img) => ({ url: img.url }))}
+                  autoPlay={false}
+                  imageTabs={true}
+                />
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </Fragment>
       )}
 
-      <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
+      <hr role="seperator" className="rw-divider my-3 w-full bg-secondary-500 h-px" />
+
+      <section className="body-font text-neutral-700 dark:text-neutral-200">
         <div className="container mx-auto py-24">
           <div className="mb-20 flex w-full flex-col text-center">
             <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
               Tips & tricks
             </h2>
-            <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-stone-200 sm:text-3xl">
+            <h1 className="title-font text-2xl font-medium text-neutral-900 dark:text-neutral-200 sm:text-3xl">
               Tips for building basespots
             </h1>
           </div>

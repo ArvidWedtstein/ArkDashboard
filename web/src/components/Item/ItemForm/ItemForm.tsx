@@ -15,7 +15,7 @@ import { useLazyQuery } from "@apollo/client";
 import { Input } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Switch from "src/components/Util/Switch/Switch";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import ColorInput from "src/components/Util/ColorInput/ColorInput";
 
 type FormItem = NonNullable<EditItemById["item"]>;
@@ -143,8 +143,17 @@ const ItemForm = (props: ItemFormProps) => {
           <FileUpload
             name="image"
             label="Image"
-            defaultValue={props?.item?.image}
-            storagePath={`arkimages/Item`}
+            defaultValue={props?.item?.image ? `Item/${props?.item?.image}` : null}
+            valueFormatter={(filename, isUpload) => isUpload
+              ? filename.includes('Item/')
+                ? filename
+                : `Item/${filename} `
+              : filename
+                ? filename.includes('Item/')
+                  ? filename.replaceAll('Item/', '')
+                  : filename
+                : null}
+            storagePath={`arkimages`}
           />
         </div>
 
@@ -231,7 +240,7 @@ const ItemForm = (props: ItemFormProps) => {
             }}
           />
         </div>
-        <div className="flex flex-wrap">
+        <ButtonGroup>
           <Input
             label="Torpor"
             name="torpor"
@@ -241,12 +250,6 @@ const ItemForm = (props: ItemFormProps) => {
             validation={{ valueAsNumber: true }}
             InputProps={{
               min: 0,
-            }}
-            SuffixProps={{
-              style: {
-                borderRadius: "0.375rem 0 0 0.375rem",
-                marginRight: "-0.5px",
-              },
             }}
           />
           <Input
@@ -260,14 +263,8 @@ const ItemForm = (props: ItemFormProps) => {
               min: 0,
               endAdornment: "s",
             }}
-            SuffixProps={{
-              style: {
-                borderRadius: "0 0.375rem 0.375rem 0",
-                marginLeft: "-0.5px",
-              },
-            }}
           />
-        </div>
+        </ButtonGroup>
 
         <div className="flex flex-wrap space-x-1">
           <Lookup
@@ -354,7 +351,7 @@ const ItemForm = (props: ItemFormProps) => {
           name="visible"
           helperText="Is this item visible to the public?"
         />
-        {/* TODO: check why this resets category and type */}
+        {/* TODO: check why this resets category and type when creating new item */}
         <Switch
           onLabel="Craftable"
           defaultChecked={craftable}
@@ -374,19 +371,14 @@ const ItemForm = (props: ItemFormProps) => {
 
         <Label
           name="stats"
-          className="rw-label"
+          className="rw-label text-black/60 dark:text-white/70"
           errorClassName="rw-label rw-label-error"
         >
           Stats
         </Label>
 
         {statFields.map((stat, index) => (
-          <div
-            className="rw-button-group mt-2 justify-start"
-            role="group"
-            key={`stat-${index}`}
-          >
-
+          <ButtonGroup className="my-2" key={`stat-${index}`}>
             <Lookup
               margin="none"
               defaultValue={stat.id}
@@ -421,12 +413,6 @@ const ItemForm = (props: ItemFormProps) => {
                 { value: 11, label: "Water" },
                 { value: 20, label: "Other" },
               ]}
-              SuffixProps={{
-                style: {
-                  borderRadius: `0.25rem 0 0 0.25rem`,
-                  marginRight: '-1px'
-                }
-              }}
             />
 
             <Input
@@ -435,21 +421,16 @@ const ItemForm = (props: ItemFormProps) => {
               type="number"
               defaultValue={stat.value}
               margin="none"
-              SuffixProps={{
-                style: {
-                  borderRadius: `0`
-                }
-              }}
             />
             <Button
               variant="contained"
               color="error"
               onClick={() => removeStat(index)}
-              className="rounded-l-none"
             >
               Remove
             </Button>
-          </div>
+
+          </ButtonGroup>
         ))}
 
         <div className="flex justify-start">
@@ -472,28 +453,27 @@ const ItemForm = (props: ItemFormProps) => {
 
         <FieldError name="stats" className="rw-field-error" />
 
-        <div className="rw-button-group">
-          <Button
-            color="success"
-            variant="outlined"
-            permission="basespot_create"
-            disabled={props.loading}
-            type="submit"
-            name="save"
-            endIcon={(
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className=" pointer-events-none"
-                fill="currentColor"
-              >
-                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
-              </svg>
-            )}
-          >
-            Save
-          </Button>
-        </div>
+        <Button
+          color="success"
+          variant="contained"
+          permission="basespot_create"
+          disabled={props.loading}
+          type="submit"
+          className="my-3"
+          name="save"
+          startIcon={(
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              className=" pointer-events-none"
+              fill="currentColor"
+            >
+              <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+            </svg>
+          )}
+        >
+          Save
+        </Button>
       </Form>
     </div>
   );

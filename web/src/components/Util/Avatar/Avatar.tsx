@@ -61,20 +61,17 @@ const Avatar = memo<AvatarProps>(
 
     return (
       <div
-        className={
-          "relative flex items-center justify-center" +
-          ` max-w-[${size}px] max-h-[${size}px]`
-        }
-        style={{ height: size, width: size }}
+        className={"relative flex items-center justify-center"}
+        style={{ width: size, height: size, maxWidth: size, maxHeight: size }}
         ref={anchorRef}
       >
         <ClickAwayListener onClickAway={() => setOpenProfile(false)}>
           <div
             className={clsx(
-              `relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-full bg-zinc-300 shadow ring ring-zinc-500 transition dark:bg-zinc-900`,
+              `relative flex aspect-square w-full items-center justify-center transition-colors overflow-hidden rounded-full bg-zinc-300 border border-secondary-600 dark:bg-zinc-900`,
               className,
               {
-                "cursor-pointer hover:ring-zinc-400": profileMenu,
+                "cursor-pointer hover:border-zinc-500": profileMenu,
               }
             )}
           >

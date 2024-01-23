@@ -145,21 +145,6 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
     awaitRefetchQueries: true
   })
 
-  const onDeleteClick = (id: DeleteItemRecipeItemMutationVariables['id']) => {
-    toast.custom(
-      (t) => (
-        <Toast
-          t={t}
-          title={`You are about to delete itemRecipeItem`}
-          message={`Are you sure you want to delete itemRecipeItem?`}
-          actionType="YesNo"
-          primaryAction={() => deleteItemRecipeItem({ variables: { id } })}
-        />
-      ),
-      { position: 'top-center' }
-    )
-  }
-
   const [openModal, setOpenModal] = useState<{ open: boolean; edit?: boolean, item_recipe_item?: ArrayElement<EditItemRecipeById["itemRecipe"]["ItemRecipeItem"]> }>({
     open: false,
     edit: false,
@@ -250,7 +235,18 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
               color="error"
               variant="contained"
               onClick={() => {
-                onDeleteClick(openModal.item_recipe_item.id);
+                toast.custom(
+                  (t) => (
+                    <Toast
+                      t={t}
+                      title={`You are about to delete itemRecipeItem`}
+                      message={`Are you sure you want to delete itemRecipeItem?`}
+                      actionType="YesNo"
+                      primaryAction={() => deleteItemRecipeItem({ variables: { id: openModal.item_recipe_item.id } })}
+                    />
+                  ),
+                  { position: 'top-center' }
+                )
 
                 setOpenModal({ open: false, item_recipe_item: null })
               }}

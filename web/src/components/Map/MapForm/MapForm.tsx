@@ -151,7 +151,7 @@ const MapForm = (props: MapFormProps) => {
           Unsed to calculate coordinates on map
         </Alert>
 
-        <hr className="rw-divider mt-3 w-full fill-white bg-zinc-500 h-px" />
+        <hr role="seperator" className="rw-divider mt-3 w-full fill-white bg-zinc-500 h-px" />
 
         <Input
           label="Boundaries"

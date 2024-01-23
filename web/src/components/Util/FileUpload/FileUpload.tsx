@@ -116,7 +116,6 @@ const FileUpload = ({
 
       try {
         let paths = defaultValue?.split(",").map((img) => img.trim()) || [];
-
         if (defaultSecondaryValue) {
           paths.push(...defaultSecondaryValue?.split(",").map((img) => img.trim()))
         }

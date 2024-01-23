@@ -209,7 +209,6 @@ const BasespotForm = (props: BasespotFormProps) => {
           />
         </div>
 
-
         <Lookup
           name="map_id"
           label="Map"
@@ -218,7 +217,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           defaultValue={props.basespot?.map_id || map}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(option) => option.name}
-          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+          getOptionImage={({ icon }) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${icon}`}
           options={props?.maps}
           required
           onSelect={(e) => {

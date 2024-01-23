@@ -10,7 +10,7 @@ import { logger } from "./logger";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unreachable code error
 
-BigInt.prototype.toJSON = function () {
+BigInt.prototype.toJSON = function (): number {
   const int = Number.parseInt(this.toString());
   return int ?? this.toString();
 };

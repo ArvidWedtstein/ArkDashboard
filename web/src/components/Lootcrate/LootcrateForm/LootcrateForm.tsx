@@ -92,7 +92,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           getOptionValue={(opt) => opt.id}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
-        // defaultValue={props.timelineSeasonBasespot?.map_id}
+        // defaultValue={props.lootcrate?.map_id}
         />
 
         <br />

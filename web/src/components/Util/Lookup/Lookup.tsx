@@ -1566,7 +1566,7 @@ export const Lookup = (<
       >
         {image && (
           <ImageContainer
-            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+            src={image}
             defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-craftable-resource.webp"
             alt={getOptionLabel(option) as string}
             className="mr-2 h-6 w-6"

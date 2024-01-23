@@ -82,9 +82,10 @@ export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
   // console.log("distinctTypes");
   // console.log(distinctTypes);
   // return distinctTypes;
-  return db.basespot.groupBy({
-    by: "type",
-  });
+  // return db.basespot.groupBy({
+  //   by: "type",
+  // });
+  return db.$queryRaw`SELECT DISTINCT type FROM public."Basespot"`;
   // return db.basespot.findMany({
   //   distinct: "type",
   // });
