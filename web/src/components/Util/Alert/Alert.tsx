@@ -8,7 +8,6 @@ type AlertProps = {
   title?: React.ReactNode;
   action?: React.ReactNode;
   children?: React.ReactNode;
-  className?: string;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
