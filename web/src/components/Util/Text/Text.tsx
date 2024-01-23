@@ -12,7 +12,7 @@ type TextProps = {
 /**
  * @name Text
  * @description
- *
+ *https://github.com/mui/material-ui/blob/a13c0c026692aafc303756998a78f1d6c2dd707d/packages/mui-material/src/Typography/Typography.js
  * @example
  * ```
  *
