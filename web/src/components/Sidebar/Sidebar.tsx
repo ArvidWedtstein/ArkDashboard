@@ -161,10 +161,12 @@ const Sidebar = memo(({ }) => {
     }, '');
     return initials;
   }
+
+  // TODO: fix mobile view
   return (
-    <aside className={clsx("bg-zinc-800 border-r box-border transition-[width] duration-200", {
-      "w-20": !open,
-      "w-60": open
+    <aside className={clsx("bg-zinc-800 border-r box-border transition-[width] duration-200 sm:h-auto", {
+      "h-20 sm:w-20": !open,
+      "h-60 sm:w-60": open
     })}>
       <div className="sticky left-0 top-0 bottom-0 self-start flex-[0_0_auto] p-4 overflow-y-scroll overflow-x-hidden whitespace-nowrap">
         <div className="flex justify-end">

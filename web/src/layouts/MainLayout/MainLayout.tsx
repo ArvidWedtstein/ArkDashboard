@@ -22,7 +22,7 @@ const MainLayout = ({ children }: LayoutProps) => {
           position: "top-right",
         }}
       />
-      <div className="flex">
+      <div className="flex flex-col sm:flex-row">
         <Sidebar />
         <SkipNavContent id="main-content" />
         <main className="flex-grow h-auto min-h-screen overflow-auto sm:w-full">
