@@ -170,7 +170,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
 
       <Card variant="outlined" className="h-80 z-0">
         <CardHeader
-          sx={{
+          style={{
             zIndex: 10,
             backgroundImage:
               "linear-gradient(-2deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%)",
@@ -248,7 +248,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </h1>
         </CardContent>
         <CardMedia
-          sx={{
+          style={{
             objectFit: "fill",
             backgroundPosition: '100% 50%',
             backgroundSize: 'cover',

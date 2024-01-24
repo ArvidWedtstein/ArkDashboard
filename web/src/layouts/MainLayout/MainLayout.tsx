@@ -1,6 +1,7 @@
 import { SkipNavContent } from "@redwoodjs/router";
 import { usePageLoadingContext } from "@redwoodjs/router";
 import { Toaster } from "@redwoodjs/web/toast";
+import { Fragment } from "react";
 import Footer from "src/components/Footer/Footer";
 import Sidebar from "src/components/Sidebar/Sidebar";
 
@@ -11,7 +12,7 @@ type LayoutProps = {
 const MainLayout = ({ children }: LayoutProps) => {
   const { loading } = usePageLoadingContext();
   return (
-    <>
+    <Fragment>
       {/* <SkipNavLink contentId="main-content"></SkipNavLink> */}
       <Toaster
         aria-label="Global notifications"
@@ -21,10 +22,10 @@ const MainLayout = ({ children }: LayoutProps) => {
           position: "top-right",
         }}
       />
-      <div className="flex w-full flex-col sm:flex-row">
+      <div className="flex">
         <Sidebar />
         <SkipNavContent id="main-content" />
-        <main className="m-3 h-auto min-h-screen overflow-x-hidden p-3 sm:w-full sm:overflow-x-auto">
+        <main className="flex-grow h-auto min-h-screen overflow-auto sm:w-full">
           {loading && (
             <div className="z-50 flex h-full w-full items-center justify-center">
               <div className="h-32 w-32 animate-spin rounded-full border-t-2 border-b-2 border-gray-900" />
@@ -34,7 +35,7 @@ const MainLayout = ({ children }: LayoutProps) => {
         </main>
       </div>
       <Footer />
-    </>
+    </Fragment>
   );
 };
 export default MainLayout;

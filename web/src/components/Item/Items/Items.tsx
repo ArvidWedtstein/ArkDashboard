@@ -428,7 +428,7 @@ const ItemsList = ({
                   className="flex w-full justify-start text-left"
                 >
                   <CardHeader
-                    sx={{
+                    style={{
                       flexGrow: 1,
                     }}
                     title={name}

@@ -306,7 +306,7 @@ const MapsList = ({ maps }: FindMaps) => {
           <Card key={map.id} className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
             <CardActionArea
               to={routes.map({ id: map.id })}
-              sx={{
+              style={{
                 height: "100%",
                 minHeight: "200px",
                 position: "relative",
@@ -318,7 +318,7 @@ const MapsList = ({ maps }: FindMaps) => {
             >
               <CardHeader
                 title={map.name}
-                sx={{
+                style={{
                   position: "relative",
                   width: "100%",
                   zIndex: 10,
@@ -336,7 +336,7 @@ const MapsList = ({ maps }: FindMaps) => {
               />
 
               <CardMedia
-                sx={{
+                style={{
                   objectFit: "fill",
                   background: `url(${mapImages[map.name.replace(" ", "")]})`,
                   position: "absolute",
@@ -358,7 +358,7 @@ const MapsList = ({ maps }: FindMaps) => {
           <Card key={id} className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
             <CardActionArea
               to={routes.map({ id })}
-              sx={{
+              style={{
                 height: "100%",
                 minHeight: "240px",
                 position: "relative",
@@ -370,7 +370,7 @@ const MapsList = ({ maps }: FindMaps) => {
             >
               <CardHeader
                 title={name}
-                sx={{
+                style={{
                   position: "relative",
                   width: "100%",
                   zIndex: 10,
@@ -396,7 +396,7 @@ const MapsList = ({ maps }: FindMaps) => {
               </CardContent>
 
               <CardMedia
-                sx={{
+                style={{
                   objectFit: "fill",
                   background: `url(${mapImages[name.replace(" ", "")]})`,
                   position: "absolute",

@@ -10,9 +10,8 @@ import { Fragment, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { Input } from "src/components/Util/Input/Input";
-import DateCalendar from "src/components/Util/DateCalendar/DateCalendar";
-import Slideshow from "src/components/Util/Slideshow/Slideshow";
-import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import Text from "src/components/Util/Text/Text";
+
 interface GTWPageProps {
   error: RWGqlError;
   loading: boolean;
@@ -270,12 +269,14 @@ const GtwPage = (props: GTWPageProps) => {
         description="Type in random dino scabbled and get the solved word!"
       />
 
-      <div className="container-xl m-3 text-center">
+      <div className="container-xl flex flex-col m-3 text-center text-black dark:text-white">
         <div className="text-center">
-          <h1 className="rw-label p-3 text-center text-2xl text-black dark:text-white">
+          <h1 className="rw-label p-3 text-center text-2xl ">
             {getWord(word)}
           </h1>
         </div>
+
+
         <Form error={props.error} onSubmit={handleSubmit(onSubmit)} className="m-6 p-3 flex justify-center">
           <FormError
             error={props.error}

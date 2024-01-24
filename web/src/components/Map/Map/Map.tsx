@@ -551,7 +551,7 @@ const Map = ({ map }: Props) => {
                 <Card className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
                   <CardActionArea
                     to={routes.basespots({ map: map.name })}
-                    sx={{
+                    style={{
                       height: "100%",
                       minHeight: "200px",
                       position: "relative",
@@ -563,7 +563,7 @@ const Map = ({ map }: Props) => {
                   >
                     <CardHeader
                       title={`${map.name} Basespots`}
-                      sx={{
+                      style={{
                         position: "relative",
                         width: "100%",
                         zIndex: 10,
@@ -574,7 +574,7 @@ const Map = ({ map }: Props) => {
                     />
 
                     <CardMedia
-                      sx={{
+                      style={{
                         objectFit: "fill",
                         background: `url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg)`,
                         position: "absolute",
@@ -591,7 +591,7 @@ const Map = ({ map }: Props) => {
                   <CardActionArea
                     to={routes.lootcrates({ map: map.id })}
                     className="h-full w-full"
-                    sx={{
+                    style={{
                       minHeight: "100px",
                       position: "relative",
                       display: "flex",
@@ -601,7 +601,7 @@ const Map = ({ map }: Props) => {
                   >
                     <CardHeader
                       title={`${map.name} Lootcrates`}
-                      sx={{
+                      style={{
                         position: "relative",
                         width: "100%",
                         zIndex: 10,
@@ -612,7 +612,7 @@ const Map = ({ map }: Props) => {
                     />
 
                     <CardMedia
-                      sx={{
+                      style={{
                         objectFit: "fill",
                         background: `url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/aberration_lootcrate.webp)`,
                         position: "absolute",

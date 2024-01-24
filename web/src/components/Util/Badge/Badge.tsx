@@ -117,7 +117,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
       : content;
 
   return (
-    <span className={clsx("", className, {
+    <span className={clsx(className, {
       "relative": !isEmpty(children),
       "cursor-pointer select-none": onClick
     })}
