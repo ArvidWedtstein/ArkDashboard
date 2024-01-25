@@ -166,11 +166,11 @@ const Sidebar = memo(({ }) => {
 
 
   return (
-    <aside className={clsx("bg-zinc-800 sm:border-r border-t z-50 sm:border-t-0 box-border transition-[width] duration-200 fixed bottom-0 left-0 right-0 sm:block", {
+    <aside className={clsx("bg-zinc-800 sm:border-r border-t z-50 sm:border-t-0 box-border transition-[width] duration-200 fixed bottom-0 left-0 right-0 sm:block sm:relative", {
       "sm:w-20": !open,
       "sm:w-60": open
     })}>
-      <div className={clsx("sm:sticky sm:top-0 sm:bottom-0 sm:left-0 self-start flex-[0_0_auto] px-2 sm:p-4 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden whitespace-nowrap")}>
+      <div className={"sm:sticky sm:top-0 sm:bottom-0 sm:left-0 self-start flex-[0_0_auto] sm:p-4 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden whitespace-nowrap"}>
         <div className="sm:flex hidden justify-end">
           <Button
             onClick={() => setOpen(!open)}

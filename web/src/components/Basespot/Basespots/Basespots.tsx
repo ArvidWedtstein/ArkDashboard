@@ -328,6 +328,17 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
                   search: e.target.value
                 }))
               }}
+              InputProps={{
+                onKeyDown: (event) => {
+                  if (event.key !== 'Enter') return
+                  console.log(params)
+                  refreshData({
+                    ...(params.search ? { search: params.search } : { search: (event.target as HTMLInputElement).value }),
+                    ...(params.type && { type: params.type }),
+                    ...(params.map && { map: params.map }),
+                  });
+                }
+              }}
             />
           </div>
           <ToggleButtonGroup

@@ -8,8 +8,8 @@ import Button from "src/components/Util/Button/Button";
 import Skeleton from "src/components/Util/Skeleton/Skeleton";
 
 export const QUERY = gql`
-  query FindNewBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String) {
-    basespotPagination(cursorId: $cursorId, take: $take, skip: $skip, map: $map, type: $type) {
+  query FindNewBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String, $search: String) {
+    basespotPagination(cursorId: $cursorId, take: $take, skip: $skip, map: $map, type: $type, search: $search) {
       basespots {
         id
         name
@@ -39,17 +39,17 @@ export const QUERY = gql`
   }
 `
 
-export const beforeQuery = ({ take, map, type }) => {
+export const beforeQuery = ({ take, map, type, search }) => {
   take = take || 6
   map = parseInt(map) ? parseInt(map) : map
-  return { variables: { take, map, type } };
+  return { variables: { take, map, type, search } };
 };
 
 export const Loading = () => {
   return (
     <div
       role="status"
-      className="relative flex animate-puls flex-col space-y-8"
+      className="relative flex flex-col space-y-8"
     >
       <Skeleton height={"7rem"} width={"100%"} variant="rounded" />
       <div className="flex space-x-1 w-full justify-start">

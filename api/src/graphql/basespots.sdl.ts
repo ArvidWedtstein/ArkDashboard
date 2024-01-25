@@ -37,11 +37,12 @@ export const schema = gql`
     basespots: [Basespot!]! @skipAuth
     basespot(id: String!): Basespot @requireAuth
     basespotTypes: [Basespot] @skipAuth
-    basespotPage(page: Int, map: Int, type: String): BasespotPage @skipAuth
+    # basespotPage(page: Int, map: Int, type: String): BasespotPage @skipAuth
     basespotPagination(
       cursorId: String
       take: Int
       skip: Int
+      search: String
       type: String
       map: Int
     ): BasespotPagination @skipAuth

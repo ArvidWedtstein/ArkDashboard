@@ -38,10 +38,12 @@ type TextProps = {
 /**
  * @name Text
  * @description
- *https://github.com/mui/material-ui/blob/a13c0c026692aafc303756998a78f1d6c2dd707d/packages/mui-material/src/Typography/Typography.js
+ * Component for text.
  * @example
  * ```
- *
+ * <Text variant="h4">
+ *   Your text
+ * </Text>
  * ```
  */
 const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {

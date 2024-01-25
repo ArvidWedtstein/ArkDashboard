@@ -25,7 +25,7 @@ const MainLayout = ({ children }: LayoutProps) => {
       <div className="flex flex-col sm:flex-row">
         <Sidebar />
         <SkipNavContent id="main-content" />
-        <main className="flex-grow h-auto min-h-screen overflow-auto sm:w-full">
+        <main className="flex-grow h-auto min-h-screen overflow-auto sm:w-full m-3">
           {loading && (
             <div className="z-50 flex h-full w-full items-center justify-center">
               <div className="h-32 w-32 animate-spin rounded-full border-t-2 border-b-2 border-gray-900" />

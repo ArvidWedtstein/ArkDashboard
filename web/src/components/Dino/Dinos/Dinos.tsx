@@ -1,11 +1,10 @@
 import {
-
   navigate,
   parseSearch,
   routes,
   useParams,
 } from "@redwoodjs/router";
-import { CheckboxField, Form, Label, Submit } from "@redwoodjs/forms/dist";
+import { CheckboxField, Form, Label } from "@redwoodjs/forms/dist";
 import type { FindDinos } from "types/graphql";
 import { Fragment, useMemo, useState } from "react";
 import clsx from "clsx";
@@ -25,6 +24,7 @@ import {
   ToggleButtonGroup,
 } from "src/components/Util/ToggleButton/ToggleButton";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import Text from "src/components/Util/Text/Text";
 
 const DinosList = ({
   dinosPage,
@@ -175,9 +175,9 @@ const DinosList = ({
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
       <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
-        <h1 className="py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+        <Text variant="h4">
           Dinos
-        </h1>
+        </Text>
 
         <div className="flex items-center justify-center space-x-2">
           <ButtonGroup>
@@ -276,7 +276,7 @@ const DinosList = ({
                     color="success"
                     disabled={loading}
                     type="submit"
-                    className="!rounded"
+                    ignoreButtonGroupPosition
                     startIcon={(
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

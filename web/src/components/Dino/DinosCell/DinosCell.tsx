@@ -6,6 +6,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Dinos from "src/components/Dino/Dinos";
 import Pagination from "src/components/Util/Pagination/Pagination";
 import Button from "src/components/Util/Button/Button";
+import { Fragment } from "react";
 
 export const QUERY = gql`
   query FindDinos($page: Int, $search: String, $type: String, $diet: String, $temperament: String) {
@@ -32,6 +33,7 @@ export const beforeQuery = ({ page, search, type, diet, temperament }) => {
   return { variables: { page, search, type, diet, temperament } };
 };
 
+// TODO: fix
 export const Loading = () => (
   <div role="status" className="w-full animate-pulse">
     <div className="h-12 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full mb-3"></div>
@@ -88,11 +90,11 @@ export const Failure = ({ error }: CellFailureProps) => {
   );
 };
 
-export const Success = ({ dinosPage }: CellSuccessProps<FindDinos>) => {
+export const Success = ({ dinosPage, queryResult, updating }: CellSuccessProps<FindDinos>) => {
   return (
-    <>
-      <Dinos dinosPage={dinosPage} loading={false} />
+    <Fragment>
+      <Dinos dinosPage={dinosPage} loading={updating} />
       <Pagination count={dinosPage.count} route={"dinos"} />
-    </>
+    </Fragment>
   )
 };

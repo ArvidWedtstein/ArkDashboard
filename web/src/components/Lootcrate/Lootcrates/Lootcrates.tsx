@@ -19,6 +19,7 @@ import {
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Input } from "src/components/Util/Input/Input";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
+import Text from "src/components/Util/Text/Text";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 import { objectToSearchParams, removeDuplicates } from "src/lib/formatters";
 
@@ -159,9 +160,9 @@ const LootcratesList = ({
       <Modal content={Filters} />
 
       <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
-        <h1 className="mr-4 py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+        <Text variant="h4">
           Lootcrates
-        </h1>
+        </Text>
 
         <nav className="flex w-full items-center justify-end space-x-3">
           <ButtonGroup>

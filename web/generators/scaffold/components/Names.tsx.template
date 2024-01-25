@@ -1,9 +1,15 @@
+import { Fragment, useState } from "react";
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 import { QUERY } from '${importComponentNamesCell}'
 import { ${listFormattersImports} } from 'src/lib/formatters'
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+} from "src/components/Util/ToggleButton/ToggleButton";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import Text from "src/components/Util/Text/Text";
 import Toast from "src/components/Util/Toast/Toast";
 
 import type { Delete${singularPascalName}MutationVariables, Find${pluralPascalName} } from 'types/graphql'
@@ -43,8 +49,64 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
     ), { position: 'top-center' });
   }
 
+  const [view, setView] = useState<"grid" | "list">("grid");
+
   return (
-    <article className="rw-segment overflow-x-auto">
+    <article className="rw-segment">
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
+        <Text variant="h4">
+          ${pluralPascalName}
+        </Text>
+
+        <div className="flex items-center justify-center space-x-2">
+          <ButtonGroup>
+            <Button
+              to={routes.new${singularPascalName}()}
+              color="success"
+              variant="outlined"
+              permission="gamedata_create"
+              className="grow"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              New ${singularPascalName}
+            </Button>
+          </ButtonGroup>
+
+          <ToggleButtonGroup
+            orientation="horizontal"
+            value={view}
+            exclusive
+            enforce
+            onChange={(_, value) => setView(value)}
+          >
+            <ToggleButton value="list">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="h-5 w-5 fill-current"
+              >
+                <path d="M64 48H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 62.33 81.67 48 64 48zM64 112H32v-32h32V112zM64 368H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 382.3 81.67 368 64 368zM64 432H32v-32h32V432zM176 112h320c8.801 0 16-7.201 16-15.1C512 87.2 504.8 80 496 80h-320C167.2 80 160 87.2 160 95.1C160 104.8 167.2 112 176 112zM496 240h-320C167.2 240 160 247.2 160 256c0 8.799 7.201 16 16 16h320C504.8 272 512 264.8 512 256C512 247.2 504.8 240 496 240zM496 400h-320C167.2 400 160 407.2 160 416c0 8.799 7.201 16 16 16h320c8.801 0 16-7.201 16-16C512 407.2 504.8 400 496 400zM64 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 222.3 81.67 208 64 208zM64 272H32v-32h32V272z" />
+              </svg>
+            </ToggleButton>
+            <ToggleButton value="grid">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="h-5 w-5 fill-current"
+              >
+                <path d="M160 0H64C28.65 0 0 28.65 0 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C224 28.65 195.3 0 160 0zM192 160c0 17.64-14.36 32-32 32H64C46.36 192 32 177.6 32 160V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM160 288H64c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C224 316.7 195.3 288 160 288zM192 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448zM448 0h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C512 28.65 483.3 0 448 0zM480 160c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM448 288h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C512 316.7 483.3 288 448 288zM480 448c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448z" />
+              </svg>
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      </div>
       {/*<Table
         columns={[
           <% columns.forEach(column => { %>

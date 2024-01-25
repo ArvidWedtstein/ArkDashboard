@@ -20,6 +20,7 @@ import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
+import Text from "src/components/Util/Text/Text";
 import {
   ToggleButton,
   ToggleButtonGroup,
@@ -259,9 +260,9 @@ const ItemsList = ({
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
       <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
-        <h1 className="mr-4 py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+        <Text variant="h4">
           Items
-        </h1>
+        </Text>
 
         <nav className="flex w-full items-center justify-end space-x-3">
           <ButtonGroup>

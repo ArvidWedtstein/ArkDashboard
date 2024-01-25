@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardMedia,
 } from "src/components/Util/Card/Card";
+import Text from "src/components/Util/Text/Text";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 
 import type { FindMaps } from "types/graphql";
@@ -244,11 +245,11 @@ const MapsList = ({ maps }: FindMaps) => {
   // };
 
   return (
-    <div>
+    <article>
       <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
-        <h1 className="mr-4 py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+        <Text variant="h4">
           Maps
-        </h1>
+        </Text>
 
         <nav className="flex w-full items-stretch justify-end space-x-3">
           <Button
@@ -302,10 +303,10 @@ const MapsList = ({ maps }: FindMaps) => {
         "grid-cols-1": view === "list",
         "grid-cols-1 md:grid-cols-2 xl:grid-cols-3": view === "grid"
       })}>
-        {maps.map((map) => (
-          <Card key={map.id} className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
+        {maps.map(({ id, name, icon }) => (
+          <Card key={id} aria-label={name} className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
             <CardActionArea
-              to={routes.map({ id: map.id })}
+              to={routes.map({ id })}
               style={{
                 height: "100%",
                 minHeight: "200px",
@@ -317,19 +318,19 @@ const MapsList = ({ maps }: FindMaps) => {
               }}
             >
               <CardHeader
-                title={map.name}
+                title={name}
                 style={{
                   position: "relative",
                   width: "100%",
-                  zIndex: 10,
+                  zIndex: 20,
                   textAlign: "left",
                   backgroundImage:
                     "linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.8) 100%)",
                 }}
                 avatar={
                   <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`}
-                    alt={map.name}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${icon}`}
+                    alt={name}
                     className="h-10 w-10 object-cover object-center"
                   />
                 }
@@ -338,13 +339,13 @@ const MapsList = ({ maps }: FindMaps) => {
               <CardMedia
                 style={{
                   objectFit: "fill",
-                  background: `url(${mapImages[map.name.replace(" ", "")]})`,
+                  background: `url(${mapImages[name.replace(" ", "")]})`,
                   position: "absolute",
                   inset: 0,
-                  zIndex: 0,
+                  zIndex: 5,
                 }}
                 component="div"
-                image={mapImages[map.name.replace(" ", "")]}
+                image={mapImages[name.replace(" ", "")]}
               />
             </CardActionArea>
           </Card>
@@ -410,7 +411,7 @@ const MapsList = ({ maps }: FindMaps) => {
           </Card>
         ))}
       </div> */}
-    </div>
+    </article>
   );
 };
 

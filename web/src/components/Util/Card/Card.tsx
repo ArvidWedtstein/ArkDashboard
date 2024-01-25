@@ -104,14 +104,14 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>((props, re
         <div className="flex-[1_1_auto]">
           {title && (
             <Text variant="body2" {...titleProps} className={clsx("block", titleProps?.className)}>
-              {subheader}
+              {title}
             </Text>
           )}
 
 
           {subheader && (
             <Text variant="body2" {...subheaderProps} className={clsx("block text-black/70 dark:text-white/70", subheaderProps?.className)}>
-              {title}
+              {subheader}
             </Text>
           )}
         </div>
