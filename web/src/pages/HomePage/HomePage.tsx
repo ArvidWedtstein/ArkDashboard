@@ -102,6 +102,24 @@ const HomePage = () => {
   //     document.title = document.visibilityState;
   // });
 
+
+
+  // import { createClient } from '@supabase/supabase-js'
+
+  // const supabaseClient = createClient('URL', 'ANON')
+  // const channel = supabaseClient.channel('presenceChannel', { configs: { presence: 'id123' } })
+
+  // channel
+  //   .on('presence', { event: 'sync' }, () => console.log(channel.presenceState()))
+  //   .on('presence', { event: 'join' }, ({ key, currentPresences, newPresences }) => console.log(key, currentPresences, newPresences))
+  //   .on('presence', { event: 'leave' }, ({ key, currentPresences, leftPresences }) => console.log(key, currentPresences, leftPresences))
+  //   .subscribe((status) => {
+  //     if (status === 'SUBSCRIBED') {
+  //       channel.track({ user_name: 'user123' })
+  //       channel.track({ user_name: 'user345' })
+  //     }
+  //   })
+
   const [open, setOpen] = useState(false);
 
   return (
