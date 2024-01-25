@@ -82,6 +82,8 @@ export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     <div className="fixed inset-0 z-50" role="dialog" onClick={handleBackdropClick} {...other} ref={ref}>
       <div aria-label="backdrop" className="fixed flex items-center justify-center inset-0 bg-black/50 -z-10" />
       <Transition
+        mountOnEnter
+        unmountOnExit
         appear
         in={open}
         timeout={300}

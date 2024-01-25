@@ -137,7 +137,7 @@ const HomePage = () => {
               >
                 <Text variant="h1" align="center">Ark Dashboard</Text>
                 <hr role="seperator" className="rw-divider mx-auto my-3 w-8/12 bg-white/30 h-px" />
-                <Text variant="body1" align="center" gutterBottom> Welcome fellow survivor!</Text>
+                <Text variant="body1" align="center" gutterBottom>Welcome fellow survivor!</Text>
               </div>
             </div>
           </div>

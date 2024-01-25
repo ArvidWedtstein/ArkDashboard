@@ -71,14 +71,14 @@ export const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
 type CardHeaderProps = {
   avatar?: ReactNode;
   action?: ReactNode;
-  title?: ReactNode;
+  title?: ReactNode | string;
   subheader?: ReactNode;
   titleProps?: HTMLAttributes<HTMLSpanElement>;
   subheaderProps?: HTMLAttributes<HTMLSpanElement>;
-} & DetailedHTMLProps<
+} & Omit<DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
->;
+>, 'title'>;
 export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>((props, ref) => {
   const {
     avatar,

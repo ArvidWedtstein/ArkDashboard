@@ -29,6 +29,7 @@ import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
 import Badge from "src/components/Util/Badge/Badge";
+import Text from "src/components/Util/Text/Text";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -1336,7 +1337,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 {dino?.DinoStat &&
                   dino?.DinoStat.some((d) => d.type == "gather_efficiency") && (
                     <section className="col-span-1 space-y-2">
-                      <h4 className="rw-label">Gather Efficiency</h4>
+                      <Text variant="h6" gutterTop>Gather Efficiency</Text>
                       <Table
                         className="min-w-fit"
                         settings={{
@@ -1418,6 +1419,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
                 {dino.DinoStat.some((d) => d.type == "weight_reduction") && (
                   <section className="col-span-1 space-y-2">
+                    <Text variant="h6" gutterTop>Weight Reduction</Text>
                     <h4 className="rw-label">Weight Reduction</h4>
                     <Table
                       className="min-w-fit"

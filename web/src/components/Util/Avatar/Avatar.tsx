@@ -138,7 +138,7 @@ const Avatar = memo<AvatarProps>(
               anchorEl={anchorRef.current}
               open={openProfile}
               paddingToAnchor={4}
-              disablePortal
+            // disablePortal
             >
               <div
                 className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
