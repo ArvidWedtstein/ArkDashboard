@@ -16,7 +16,7 @@ import {
 } from "react";
 import { permission } from "types/graphql";
 import { useAuth } from "src/auth";
-import { useRipple } from "src/components/useRipple";
+import { useRipple } from "src/hooks/useRipple";
 
 type IButtonGroupContext = {
   className?: string;

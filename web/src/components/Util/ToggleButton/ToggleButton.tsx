@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Ripple from "../Ripple/Ripple";
 import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";
-import { useRipple } from "src/components/useRipple";
+import { useRipple } from "src/hooks/useRipple";
 
 type ToggleButtonProps = {
   value?: string;

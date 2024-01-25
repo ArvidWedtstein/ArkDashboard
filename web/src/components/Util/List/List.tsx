@@ -1,6 +1,6 @@
 import { DetailedHTMLProps, ElementType, HTMLAttributes, MouseEventHandler, ReactNode, Ref, forwardRef, useRef } from "react";
 import Ripple from "../Ripple/Ripple";
-import { useRipple } from "src/components/useRipple";
+import { useRipple } from "src/hooks/useRipple";
 import clsx from "clsx";
 
 type ListProps = {

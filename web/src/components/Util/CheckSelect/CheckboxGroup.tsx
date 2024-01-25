@@ -2,7 +2,7 @@ import { useController } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { forwardRef, useMemo, useRef, useState } from "react";
 import Ripple from "../Ripple/Ripple";
-import { useRipple } from "src/components/useRipple";
+import { useRipple } from "src/hooks/useRipple";
 
 type CheckboxGroupProps<T extends string | number> = {
   name?: string;

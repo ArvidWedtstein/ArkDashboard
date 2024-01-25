@@ -14,7 +14,7 @@ import {
   useRef,
 } from "react";
 import Ripple from "../Ripple/Ripple";
-import { useRipple } from "src/components/useRipple";
+import { useRipple } from "src/hooks/useRipple";
 import { IntRange } from "src/lib/formatters";
 import Text from "../Text/Text";
 
