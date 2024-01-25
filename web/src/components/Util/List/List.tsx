@@ -1,14 +1,26 @@
-import { DetailedHTMLProps, ElementType, HTMLAttributes, MouseEventHandler, ReactNode, createElement, useRef } from "react";
+import { DetailedHTMLProps, ElementType, HTMLAttributes, MouseEventHandler, ReactNode, Ref, forwardRef, useRef } from "react";
 import Ripple from "../Ripple/Ripple";
 import { useRipple } from "src/components/useRipple";
 import clsx from "clsx";
 
 type ListProps = {
-  children?: React.ReactNode;
-} & React.DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;;
-const List = (props: ListProps) => {
-  return <ul className={clsx("relative m-0 list-none py-2", props?.className)} {...props}>{props.children}</ul>;
-};
+  children?: ReactNode;
+  orientation?: 'horizontal' | 'vertical'
+} & DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;;
+const List = forwardRef<HTMLUListElement, ListProps>((props, ref) => {
+  const { className, orientation = "vertical" } = props;
+  return (
+    <ul
+      {...props}
+      className={clsx("relative m-0 list-none py-2", className, {
+        "inline-flex": orientation === 'horizontal'
+      })}
+      ref={ref}
+    >
+      {props.children}
+    </ul>
+  );
+});
 
 type ListItemProps<T extends ElementType = 'div'> = {
   icon?: ReactNode;
@@ -24,7 +36,7 @@ type ListItemProps<T extends ElementType = 'div'> = {
   onClick?: T extends 'button' ? MouseEventHandler<HTMLButtonElement> : T extends 'a' ? MouseEventHandler<HTMLAnchorElement> : MouseEventHandler<HTMLDivElement>;
 } & DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
 
-export const ListItem = <T extends ElementType = 'div'>(props: ListItemProps<T>) => {
+export const ListItem = forwardRef(<T extends ElementType = 'div'>(props: ListItemProps<T>, ref: Ref<HTMLLIElement>) => {
   const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, linkProps, iconProps, children, className, size = "medium", onClick, ...other } = props;
   const rippleRef = useRef(null);
   const { enableRipple, getRippleHandlers } = useRipple({
@@ -36,6 +48,7 @@ export const ListItem = <T extends ElementType = 'div'>(props: ListItemProps<T>)
   const Root: ElementType = props.href || props.to ? "a" : props.onClick ? "button" : "div";
   return (
     <li
+      ref={ref}
       className={clsx("relative box-border flex w-full items-center justify-start text-left text-black dark:text-white", className)}
       {...other}
       {...getRippleHandlers()}
@@ -72,7 +85,7 @@ export const ListItem = <T extends ElementType = 'div'>(props: ListItemProps<T>)
       </Root>
     </li>
   );
-};
+});
 
 
 

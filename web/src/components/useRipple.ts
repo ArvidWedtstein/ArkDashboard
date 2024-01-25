@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useEventCallback } from "src/lib/formatters";
 
 type StartActionOptions = {
@@ -74,7 +74,7 @@ export const useRipple = (props: UseRippleProps) => {
 
   const enableRipple = mountedState && !disableRipple && !disabled;
 
-  const getRippleHandlers = React.useMemo(() => {
+  const getRippleHandlers = useMemo(() => {
     const rippleHandlers = {
       onBlur: handleBlur,
       onMouseDown: handleMouseDown,

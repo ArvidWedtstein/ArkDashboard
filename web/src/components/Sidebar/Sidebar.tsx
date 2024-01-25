@@ -128,17 +128,18 @@ const Sidebar = memo(({ }) => {
 
   const [open, setOpen] = useState<boolean>(true);
 
-  const ActiveLink = ({ name, icon, to, activeClassName }: { name: string, icon: string, to: string, activeClassName: string }) => {
+  const ActiveLink = ({ name, icon, to, activeClassName, mobile = false }: { name: string, icon: string, to: string, activeClassName: string, mobile?: boolean }) => {
     const matchInfo = useMatch(to, { matchSubPaths: true });
     return (
       <ListItem
         icon={Icon(icon)}
         to={to}
         iconProps={{
-          className: open ? 'mr-6 !min-w-0' : 'mr-4 !min-w-0'
+          className: mobile ? '!min-w-0' : open ? 'mr-6 !min-w-0' : 'mr-4 !min-w-0'
         }}
         linkProps={{
           className: clsx('rounded', {
+            "flex-col !justify-center": mobile,
             [activeClassName]: matchInfo.match
           })
         }}
@@ -151,6 +152,7 @@ const Sidebar = memo(({ }) => {
     )
   }
 
+
   const getInitials = (text: string) => {
     const allNames = text.trim().split(' ');
     const initials = allNames.reduce((acc, curr, index) => {
@@ -162,14 +164,14 @@ const Sidebar = memo(({ }) => {
     return initials;
   }
 
-  // TODO: fix mobile view
+
   return (
-    <aside className={clsx("bg-zinc-800 border-r box-border transition-[width] duration-200 sm:h-auto", {
-      "h-20 sm:w-20": !open,
-      "h-60 sm:w-60": open
+    <aside className={clsx("bg-zinc-800 sm:border-r border-t z-50 sm:border-t-0 box-border transition-[width] duration-200 fixed bottom-0 left-0 right-0 sm:block", {
+      "sm:w-20": !open,
+      "sm:w-60": open
     })}>
-      <div className="sticky left-0 top-0 bottom-0 self-start flex-[0_0_auto] p-4 overflow-y-scroll overflow-x-hidden whitespace-nowrap">
-        <div className="flex justify-end">
+      <div className={clsx("sm:sticky sm:top-0 sm:bottom-0 sm:left-0 self-start flex-[0_0_auto] px-2 sm:p-4 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden whitespace-nowrap")}>
+        <div className="sm:flex hidden justify-end">
           <Button
             onClick={() => setOpen(!open)}
             color="DEFAULT"
@@ -186,7 +188,7 @@ const Sidebar = memo(({ }) => {
             )}
           </Button>
         </div>
-        <section className="flex items-center max-w-full justify-center border-zinc-300 text-black text-[#ffffffcc] transition-all sm:my-3 sm:w-full sm:flex-col">
+        <section className="items-center max-w-full sm:flex hidden sm:visible invisible justify-center border-zinc-300 text-black text-[#ffffffcc] transition-all sm:my-3 sm:w-full sm:flex-col">
           <Avatar
             url={
               isAuthenticated && currentUser && currentUser?.avatar_url
@@ -226,56 +228,65 @@ const Sidebar = memo(({ }) => {
 
         <hr role="seperator" className="rw-divider w-full bg-secondary-500 h-px sm:visible invisible" />
 
-        <List>
+        <List orientation={window.innerWidth < 640 ? 'horizontal' : 'vertical'}>
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="home"
             icon="Home"
             to={routes.home()}
             activeClassName="text-white !ring-success-400 !bg-success-500"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="basespots"
             icon="basespot"
             to={routes.basespots()}
             activeClassName="text-white !ring-primary-400 !bg-primary-500"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="Crafting"
             icon="Crafting"
             to={routes.materialCalculator()}
             activeClassName="text-white !ring-red-400 !bg-red-500"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="Seasons Timeline"
             icon="Story"
             to={routes.timelineSeasons()}
             activeClassName="text-white !ring-sky-200 !bg-sky-400"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="Dinos"
             icon="Dinos"
             to={routes.dinos()}
             activeClassName="text-white !ring-indigo-400 !bg-indigo-500"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="Items"
             icon="Items"
             to={routes.items()}
             activeClassName="text-white !ring-teal-500 !bg-teal-700"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="Maps"
             icon="Maps"
             to={routes.maps()}
             activeClassName="text-white !ring-amber-400 !bg-amber-500"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="Lootcrates"
             icon="Lootcrates"
             to={routes.lootcrates()}
             activeClassName="text-white !ring-cyan-400 !bg-cyan-500"
           />
           <ActiveLink
+            mobile={window.innerWidth < 640}
             name="Tribes"
             icon="Tribes"
             to={routes.tribes()}
