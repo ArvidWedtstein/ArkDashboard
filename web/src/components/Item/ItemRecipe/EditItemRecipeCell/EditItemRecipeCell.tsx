@@ -5,7 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import ItemRecipeForm from 'src/components/ItemRecipe/ItemRecipeForm'
+import ItemRecipeForm from 'src/components/Item/ItemRecipe/ItemRecipeForm'
 
 export const QUERY = gql`
   query EditItemRecipeById($id: BigInt!) {
@@ -51,6 +51,7 @@ const UPDATE_ITEM_RECIPE_MUTATION = gql`
   }
 `
 
+// TODO: fix
 export const Loading = () => <div>Loading...</div>
 
 export const Failure = ({ error }: CellFailureProps) => (

@@ -70,9 +70,6 @@ const ItemRecipesList = ({ itemRecipesByItem }: FindItemRecipes) => {
             </CardContent>
             <CardActions>
               <ButtonGroup>
-                <Button to={routes.itemRecipe({ id: itemRecipe.id })}>
-                  Show
-                </Button>
                 <Button
                   permission="gamedata_update"
                   color="secondary"

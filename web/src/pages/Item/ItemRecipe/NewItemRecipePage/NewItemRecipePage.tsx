@@ -1,4 +1,4 @@
-import NewItemRecipeCell from 'src/components/ItemRecipe/NewItemRecipeCell'
+import NewItemRecipeCell from 'src/components/Item/ItemRecipe/NewItemRecipeCell'
 
 const NewItemRecipePage = () => {
   return <NewItemRecipeCell />

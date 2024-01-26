@@ -2,7 +2,7 @@ import { navigate, routes } from '@redwoodjs/router'
 import { CellFailureProps, CellSuccessProps, useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import ItemRecipeForm from 'src/components/ItemRecipe/ItemRecipeForm'
+import ItemRecipeForm from 'src/components/Item/ItemRecipe/ItemRecipeForm'
 
 import type { CreateItemRecipeInput, NewItemRecipe } from 'types/graphql'
 
@@ -74,7 +74,7 @@ export const Success = ({
     {
       onCompleted: ({ createItemRecipe }) => {
         toast.success('ItemRecipe created')
-        navigate(routes.itemRecipe({ id: createItemRecipe.id }))
+        navigate(routes.itemRecipes())
       },
       onError: (error) => {
         toast.error(error.message)

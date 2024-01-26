@@ -154,6 +154,7 @@ const Routes = () => {
           <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
           <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
+
         <Set
           wrap={ScaffoldLayout}
           title="ItemRecipes"
@@ -166,19 +167,19 @@ const Routes = () => {
             roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
           >
             <Route
-              path="/item-recipes/new"
-              page={ItemRecipeNewItemRecipePage}
+              path="/item/item-recipes/new"
+              page={ItemItemRecipeNewItemRecipePage}
               name="newItemRecipe"
             />
             <Route
-              path="/item-recipes/{id:Int}/edit"
-              page={ItemRecipeEditItemRecipePage}
+              path="/item/item-recipes/{id:Int}/edit"
+              page={ItemItemRecipeEditItemRecipePage}
               name="editItemRecipe"
             />
           </Private>
           <Route
-            path="/item-recipes"
-            page={ItemRecipeItemRecipesPage}
+            path="/item/item-recipes"
+            page={ItemItemRecipeItemRecipesPage}
             name="itemRecipes"
           />
         </Set>

@@ -1,9 +1,9 @@
 import type { FindItemRecipes } from 'types/graphql'
 
-import { Link, routes } from '@redwoodjs/router'
+import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import ItemRecipes from 'src/components/ItemRecipe/ItemRecipes'
+import ItemRecipes from 'src/components/Item/ItemRecipe/ItemRecipes'
 import Button from 'src/components/Util/Button/Button'
 
 

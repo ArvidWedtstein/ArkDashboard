@@ -1,7 +1,7 @@
-import EditItemRecipeCell from 'src/components/ItemRecipe/EditItemRecipeCell'
+import EditItemRecipeCell from 'src/components/Item/ItemRecipe/EditItemRecipeCell'
 
 type ItemRecipePageProps = {
-  id: string
+  id: number
 }
 
 const EditItemRecipePage = ({ id }: ItemRecipePageProps) => {
