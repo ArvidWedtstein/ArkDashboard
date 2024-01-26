@@ -995,12 +995,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               </svg>
             }
           >
-            <section className="space-y-3 md:space-y-9">
+            <section className="space-y-3 md:space-y-9 mt-3">
               {dino?.DinoStat.some((d) => d.type == "immobilized_by") && (
-                <section className="">
-                  <h4 className="rw-label">Immobilized by</h4>
+                <section>
+                  <Text variant="body1" gutterTop>Immobilized By</Text>
 
                   <CheckboxGroup
+                    size="medium"
                     defaultValue={dino.DinoStat.filter(
                       (d) => d.type == "immobilized_by"
                     ).map((item) => item?.Item.id.toString())}
@@ -1055,8 +1056,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
               {dino.carryable_by && (
                 <section>
-                  <h4 className="rw-label">Carryable by</h4>
+                  <Text variant="body1" gutterTop>Carryable By</Text>
+
                   <CheckboxGroup
+                    size="medium"
                     defaultValue={dino?.carryable_by}
                     disabled={true}
                     options={[
@@ -1156,8 +1159,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
               {dino?.DinoStat.some((d) => d.type == "fits_through") && (
                 <section>
-                  <h4 className="rw-label">Fits Through</h4>
+                  <Text variant="body1" gutterTop>Fits Through</Text>
+
                   <CheckboxGroup
+                    size="medium"
                     defaultValue={dino.DinoStat.filter(
                       (d) => d.type == "fits_through"
                     ).map((item) => item?.Item.id.toString())}
@@ -1205,13 +1210,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               )}
 
               <div className="rw-divide">
-                <span>Movement</span>
+                <Text variant="h6" className="mx-2">Stats</Text>
               </div>
 
               <section className="my-12 grid grid-cols-1 grid-rows-1 gap-3 md:grid-cols-2">
                 {dino.movement && (
                   <section className="col-span-1 row-span-1 space-y-2">
-                    <h4 className="rw-label">Movement</h4>
+                    <Text variant="body1" gutterTop>Movement</Text>
+
                     <Table
                       className="h-full"
                       columns={[
@@ -1273,7 +1279,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
                 {dino.can_destroy && (
                   <section className="col-span-1 row-span-1 space-y-2">
-                    <h4 className="rw-label">Can Destroy</h4>
+                    <Text variant="body1" gutterTop>Can Destroy</Text>
+
                     <Table
                       className="min-w-fit h-full"
                       rows={[
@@ -1337,7 +1344,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 {dino?.DinoStat &&
                   dino?.DinoStat.some((d) => d.type == "gather_efficiency") && (
                     <section className="col-span-1 space-y-2">
-                      <Text variant="h6" gutterTop>Gather Efficiency</Text>
+                      <Text variant="body1" gutterTop>Gather Efficiency</Text>
+
                       <Table
                         className="min-w-fit"
                         settings={{
@@ -1354,55 +1362,70 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           {
                             field: "Item",
                             header: "Name",
-                            render: ({ value }) => (
-                              <div className="inline-flex items-center justify-center gap-2">
-                                <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
-                                  className="h-8 w-8 self-end"
-                                  title={value.name}
-                                />
-                                <Link to={routes.item({ id: value?.id })}>
-                                  {value.name}
-                                </Link>
-                              </div>
-                            ),
+                            render: ({ value, row }) => {
+                              const scoreValue = (row.value * 2);
+                              return (
+                                <div className="flex items-center py-3">
+                                  <span
+                                    className="w-12 h-12 shrink-0 mr-4 flex items-center justify-center"
+                                  >
+                                    <img
+                                      src={
+                                        value.image && value.image.length > 0
+                                          ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${row.Item.image}`
+                                          : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/Stone.webp"
+                                      }
+                                      className="h-12 w-12 rounded-lg border border-zinc-500 bg-neutral-700 object-contain p-2.5"
+                                      loading="lazy"
+                                      alt={value.name}
+                                    />
+                                  </span>
+                                  <div className="space-y-3 flex-1">
+                                    <div className="flex items-center">
+                                      <Text variant="subtitle2" className="mr-auto">{value.name}</Text>
+
+                                      <Badge
+                                        variant="standard"
+                                        size="small"
+                                        color={scoreValue >= 8 ? 'success' : scoreValue >= 5 && scoreValue < 8 ? 'warning' : 'error'}
+                                        standalone
+                                        content={`${scoreValue.toFixed(1)} / 10`}
+                                      />
+                                    </div>
+                                    <div role="progressbar" className="overflow-hidden bg-success-50 h-1.5 rounded-full w-full">
+                                      <span
+                                        className="h-full bg-primary-500 w-full block rounded-full origin-left animate-fill"
+                                        style={{ width: `${(scoreValue / 10) * 100}%` }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            },
                           },
                           {
                             field: "value",
                             header: "Value",
+                            datatype: 'bigint',
                             sortable: true,
                             render: ({ value }) => {
-                              const colors = [
-                                "bg-red-500",
-                                "bg-orange-500",
-                                "bg-yellow-500",
-                                "bg-lime-500",
-                                "bg-green-500",
-                              ];
-
-                              const getBarColor = (index) => {
-                                return Math.round(value) >= index + 1
-                                  ? colors[index]
-                                  : "bg-transparent";
-                              };
                               return (
                                 <div
-                                  className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300"
+                                  className="flex flex-row space-x-0.5"
                                   title={value}
                                 >
-                                  {colors.map((_, i) => (
-                                    <div
-                                      key={`gather-efficiency-${i}`}
-                                      className={clsx(
-                                        `h-full w-1/5`,
-                                        "first:rounded-l-full last:rounded-r-full",
-                                        getBarColor(i)
-                                      )}
-                                    ></div>
+                                  {Array(5).fill('').map((_, i) => (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className={clsx("w-5", {
+                                      "fill-warning-400": Math.round(value) >= i + 1,
+                                      "fill-white": !(Math.round(value) >= i + 1)
+                                    })}>
+                                      {Math.round(value) >= i + 1 ? (<path d="M305.3 12.57L360.2 181.6h177.6c17.6 0 24.92 22.55 10.68 32.9l-143.7 104.5l54.89 169.1c5.44 16.76-13.72 30.69-27.96 20.33L288 403.1l-143.7 104.5c-14.24 10.36-33.4-3.577-27.96-20.33l54.89-169.1L27.53 214.5C13.28 204.2 20.6 181.6 38.21 181.6h177.6l54.89-169.1C276.2-4.19 299.8-4.19 305.3 12.57z" />)
+                                        : (<path d="M528.5 171.5l-146.4-21.29l-65.43-132.4C310.9 5.971 299.4-.002 287.1 0C276.6 0 265.1 5.899 259.3 17.8L193.8 150.2L47.47 171.5C21.2 175.3 10.68 207.6 29.72 226.1l105.9 102.1L110.6 474.6C107 495.3 123.6 512 142.2 512c4.932 0 10.01-1.172 14.88-3.75L288 439.6l130.9 68.7c4.865 2.553 9.926 3.713 14.85 3.713c18.61 0 35.21-16.61 31.65-37.41l-25.05-145.5l105.9-102.1C565.3 207.6 554.8 175.3 528.5 171.5zM407.4 326.2l26.39 153.7l-138.4-72.6c-4.656-2.443-10.21-2.442-14.87 .0008l-138.4 72.66l27.91-162.1l-117.9-114.7l154.7-22.51C211.1 179.9 216.5 176.6 218.8 171.9L288 32l69.21 139.9c2.333 4.716 6.834 7.983 12.04 8.74l154.7 22.49l-111.1 108.9C408.2 315.7 406.5 320.1 407.4 326.2z" />)}
+                                    </svg>
                                   ))}
                                 </div>
                               );
-                            },
+                            }
                           },
                           {
                             field: "rank",
@@ -1419,8 +1442,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
                 {dino.DinoStat.some((d) => d.type == "weight_reduction") && (
                   <section className="col-span-1 space-y-2">
-                    <Text variant="h6" gutterTop>Weight Reduction</Text>
-                    <h4 className="rw-label">Weight Reduction</h4>
+                    <Text variant="body1" gutterTop>Weight Reduction</Text>
+
                     <Table
                       className="min-w-fit"
                       rows={dino.DinoStat.filter(
@@ -1841,17 +1864,12 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 )}
 
                 <br />
-                <Label
-                  name="selected_food"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Select Food
-                </Label>
+
+                <Text variant="body1">Select Food</Text>
 
                 {/* TODO: add live update */}
                 <CheckboxGroup
-                  className="animate-fade-in"
+                  size="medium"
                   name="selected_food"
                   defaultValue={[state?.selected_food?.toString() ?? ""]}
                   validation={{
@@ -1879,7 +1897,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 {tameData && (
                   <section>
                     <div className="rw-divide my-2">
-                      <h4 className="rw-label mt-0 px-3">With Selected Food:</h4>
+                      <Text variant="h6" className="mx-2">With Selected Food</Text>
                     </div>
 
                     <Card variant="outlined">
@@ -1982,7 +2000,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           {!!tameData.totalTorpor &&
                             !!tameData.torporDepletionPS && (
                               <div className="flex flex-col items-center">
-                                <p className="font-light">
+                                <Text variant="body1">
                                   Torpor Drain Rate:{" "}
                                   <span
                                     className="font-bold"
@@ -1995,15 +2013,15 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                   >
                                     {tameData.torporDepletionPS.toFixed(1)}/s
                                   </span>
-                                </p>
+                                </Text>
 
-                                <p>
+                                <Text variant="body1">
                                   {timeFormatL(
                                     tameData.totalTorpor /
                                     tameData.torporDepletionPS
                                   )}{" "}
                                   until unconscious
-                                </p>
+                                </Text>
                               </div>
                             )}
 
@@ -2020,10 +2038,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 alt={name}
                                 className="w-8 sm:w-12"
                               />
-                              <p>{amount.toString()}</p>
-                              <p className="text-xs capitalize">
+                              <Text variant="body1">
+                                {amount.toString()}
+                              </Text>
+
+                              <Text variant="body1">
                                 {name}
-                              </p>
+                              </Text>
                             </div>
                           ))}
                         </div>
@@ -2031,8 +2052,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     </Card>
 
                     {state.weapons && (
-                      <>
-                        <h4 className="rw-label">Knock Out</h4>
+                      <Fragment>
+                        <Text variant="body1" gutterTop>Knock Out</Text>
+
                         <div className="max-w-screen relative flex flex-row gap-3 overflow-x-auto text-center">
                           {state.weapons
                             .sort((a, b) => b.userDamage > a.userDamage)
@@ -2072,6 +2094,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                         color="success"
                                         size="small"
                                         to={routes.item({ id })}
+                                        disabled={id === 1342}
                                       >
                                         {name}
                                       </Button>
@@ -2083,9 +2106,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                           endNumber={hits}
                                           duration={3000 / hits}
                                         />
-                                      ) : (
-                                        <p>Not Possible</p>
-                                      )
+                                      ) : 'Not Possible'
                                     }
                                   />
                                   {chanceOfDeath > 0 && isPossible && (
@@ -2159,7 +2180,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                               )
                             )}
                         </div>
-                      </>
+                      </Fragment>
                     )}
                     <Button
                       variant="outlined"
@@ -2180,7 +2201,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               (dino.egg_max == null && dino.egg_min == null)
             }
             startIcon={
-              <>
+              <Fragment>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
@@ -2197,13 +2218,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 >
                   <path d="M368 176c0-97.2-78.8-176-176-176c-97.2 0-176 78.8-176 176c0 91.8 70.31 167.1 160 175.2V400h-64C103.2 400 96 407.2 96 416s7.156 16 16 16h64v64c0 8.844 7.156 16 16 16s16-7.156 16-16v-64h64c8.844 0 16-7.156 16-16s-7.156-16-16-16h-64v-48.81C297.7 343.1 368 267.8 368 176zM48 176C48 96.6 112.6 32 192 32s144 64.6 144 144S271.4 320 192 320S48 255.4 48 176z" />
                 </svg>
-              </>
+              </Fragment>
             }
           >
             <section className="space-y-3">
               {dino.maturation_time != 0 && dino.incubation_time && (
-                <>
-                  <p className="rw-label !text-center">{dino.name} breeding:</p>
+                <Fragment>
+                  <Text variant="body1" align="center" gutterTop>{dino.name} breeding:</Text>
+
                   <div className="mx-auto flex justify-center">
                     <Input
                       color="success"
@@ -2215,9 +2237,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         endAdornment: (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 text-gray-500 dark:text-gray-400"
+                            className="h-4 dark:fill-secondary-500"
                             viewBox="0 0 384 512"
-                            fill="currentColor"
                           >
                             <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
                           </svg>
@@ -2270,7 +2291,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       <li
                         key={`breeding-stage-${i}`}
                         className={clsx(`flex items-center space-x-2.5`, {
-                          "text-black dark:text-gray-400 [&>*]:border-gray-500 [&>*]:fill-gray-500 [&>*]:dark:border-gray-400 [&>*]:dark:fill-gray-400":
+                          "text-black dark:text-secondary-400 [&>*]:border-secondary-500 [&>*]:fill-secondary-500 [&>*]:dark:border-secondary-400 [&>*]:dark:fill-secondary-400":
                             calcMaturationPercent() < time,
                           "dark:text-success-500 text-success-600 [&>*]:border-success-600 [&>*]:dark:border-success-500 [&>*]:dark:fill-success-500 [&>*]:fill-success-600":
                             calcMaturationPercent() >= time,
@@ -2296,7 +2317,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       </li>
                     ))}
                   </ol>
-                </>
+                </Fragment>
               )}
 
               {dino.egg_max != null &&
@@ -2312,9 +2333,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       className="aspect-square p-2"
                     />
                     <CardContent className="flex flex-col space-y-3">
-                      <h3 className="rw-label mt-0 font-medium leading-tight">
-                        Egg Temperature
-                      </h3>
+                      <Text variant="caption">Egg Temperature</Text>
+
                       <p className="inline-flex gap-2 text-sm">
                         <Badge
                           color="primary"

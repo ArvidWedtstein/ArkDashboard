@@ -54,14 +54,25 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
   } = props;
 
   const variants = {
+    // standard: {
+    //   primary: "bg-primary-400 text-white",
+    //   secondary: "text-white bg-secondary-500",
+    //   info: "bg-sky-400 text-black/90",
+    //   purple: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+    //   success: "text-black/90 bg-success-500",
+    //   warning: "text-black/90 bg-warning-400",
+    //   error: "bg-error-500 text-white",
+    //   DEFAULT: "dark:text-black/90 text-white bg-black dark:bg-white",
+    //   none: "dark:text-white/90 text-black",
+    // },
     standard: {
-      primary: "bg-primary-400 text-white",
-      secondary: "text-white bg-secondary-500",
-      info: "bg-sky-400 text-black/90",
-      purple: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-      success: "text-black/90 bg-success-500",
-      warning: "text-black/90 bg-warning-400",
-      error: "bg-error-500 text-white",
+      primary: "text-primary-500 bg-primary-50",
+      secondary: "text-secondary-500 bg-secondary-50",
+      info: "text-sky-500 bg-sky-50",
+      purple: "bg-purple-50 text-purple-50",
+      success: "text-success-500 bg-success-50",
+      warning: "text-warning-500 bg-warning-50",
+      error: "text-error-500 bg-error-50",
       DEFAULT: "dark:text-black/90 text-white bg-black dark:bg-white",
       none: "dark:text-white/90 text-black",
     },

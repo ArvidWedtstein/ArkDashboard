@@ -143,6 +143,7 @@ module.exports = {
       colors: {
         primary: {
           // default blue colors
+          50: "#eff6ff",
           100: "#ebf8ff",
           200: "#bee3f8",
           300: "#90cdf4",

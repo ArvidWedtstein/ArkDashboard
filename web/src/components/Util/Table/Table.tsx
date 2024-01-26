@@ -1,4 +1,4 @@
-import { ElementType, Fragment, HTMLAttributes, forwardRef, useCallback, useMemo, useRef, useState } from "react";
+import { ElementType, Fragment, HTMLAttributes, ReactNode, forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { IntRange, debounce, formatNumber, pluralize } from "src/lib/formatters";
 import clsx from "clsx";
 import { toast } from "@redwoodjs/web/dist/toast";
@@ -108,13 +108,15 @@ type TableColumn<Row extends TableDataRow> = {
    * @param options.rowIndex - The index of the current row.
    * @returns The rendered content.
    */
-  render?: (options: {
+  render?: <Field extends keyof Row>(options: {
+    // value: Row[TableColumn<Row>["field"]];
+    // value: Row[Field];
     value: any;
     row: TableDataRow & Row;
     rowIndex: number;
-    field: string;
+    field: Field;
     header: string;
-  }) => React.ReactNode;
+  }) => ReactNode;
 };
 
 type TableSettings = {
@@ -168,7 +170,7 @@ type TableProps<Row extends Record<string, any>> = {
   /**
    * The column configurations for the table.
    */
-  columns?: TableColumn<Row>[] | null;
+  columns: TableColumn<Row>[];
   /**
    * The data rows for the table.
    */
@@ -228,11 +230,10 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     },
   };
 
-  const anchorRef = useRef(null);
   const [open, setOpen] = useState<boolean>(false);
   const mergedSettings = { ...defaultSettings, ...settings };
 
-  const columnSettings = columns || [];
+  const columnSettings: TableColumn<Row>[] = columns || [];
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<TableDataRow["row_id"][]>(
