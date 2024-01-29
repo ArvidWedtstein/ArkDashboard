@@ -188,9 +188,15 @@ export const combineBySummingKeys = (...objects: object[]) => {
  *
  * @param {number} seconds - The number of seconds to format.
  * @param {boolean} [onlyLast=false] - Whether to display only the last non-zero unit.
- * @param {boolean} [useAbs=true] - Whether to use the absolute value of the input.
  *
  * @return {string} The formatted string representation.
+ *
+ * @example
+ * timeFormatL(42069)
+ * // 11h 41m 9s
+*
+ * timeFormatL(42069, true)
+ * // 11h
  */
 export const timeFormatL = (seconds, onlyLast = false) => {
   let time = "";

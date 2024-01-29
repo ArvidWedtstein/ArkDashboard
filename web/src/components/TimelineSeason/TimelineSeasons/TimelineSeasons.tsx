@@ -1,14 +1,31 @@
 import { routes } from "@redwoodjs/router";
 import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import { Card, CardActionArea, CardActions, CardHeader } from "src/components/Util/Card/Card";
 import Gantt from "src/components/Util/Gantt/Gantt";
-import { Timeline } from "src/components/Util/Timeline/Timeline";
+import Text from "src/components/Util/Text/Text";
+import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator } from "src/components/Util/Timeline/Timeline";
+import { relativeDate } from "src/lib/formatters";
 import type { FindTimelineSeasons } from "types/graphql";
 
 const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
-  const dateformatter = new Intl.DateTimeFormat("en-GB", {
+  const dateformatter = new Intl.DateTimeFormat(navigator && navigator.language, {
     timeZone: "utc",
-    dateStyle: "long",
+    // dateStyle: "full",
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+
+  const timeFormatter = new Intl.DateTimeFormat(navigator && navigator.language, {
+    timeZone: "utc",
+    hour: '2-digit',
+  });
+
+  const listFormatter = new Intl.ListFormat(navigator && navigator.language, {
+    style: 'short',
+    type: 'unit'
   });
 
   const servers = {
@@ -65,8 +82,76 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         labelKey="tribe_name"
       />
 
+      <div className="relative flex items-center justify-center">
 
-      <Timeline />
+        <Timeline position="right">
+          {timelineSeasons.map(
+            ({
+              id,
+              season,
+              season_start_date,
+              season_end_date,
+              cluster,
+              server,
+              tribe_name,
+            }) => (
+              <TimelineItem key={id}>
+                <TimelineOppositeContent
+                  variant="body2"
+                  className="mb-auto mt-1.5 flex flex-col dark:text-white text-black"
+                >
+                  <span>
+                    {dateformatter.formatRange(
+                      new Date(season_start_date),
+                      new Date(season_end_date)
+                    )}
+                  </span>
+                  <Text variant="caption">
+                    {timeFormatter.formatRange(
+                      new Date(season_start_date),
+                      new Date(season_end_date)
+                    )}
+                  </Text>
+                </TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot variant="outlined" color="secondary">
+                    <div className="relative inline-block w-5">
+                      <img
+                        className="aspect-square"
+                        src={servers[server]?.icon}
+                        loading="lazy"
+                        alt=""
+                      />
+                    </div>
+                  </TimelineDot>
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>
+                  <Card className="max-w-sm">
+                    <CardActionArea className="text-left">
+                      <CardHeader
+                        title={server}
+                        subheader={`${listFormatter.format([season ? `Season ${season}` : null, tribe_name].filter(c => c))}`}
+                        {...(cluster && server ? {
+                          action: (
+                            <Badge
+                              variant="outlined"
+                              color={servers[server]?.badge || 'DEFAULT'}
+                              content={cluster}
+                              standalone
+                            />
+                          )
+                        } : null)}
+                      />
+                    </CardActionArea>
+                  </Card>
+                </TimelineContent>
+              </TimelineItem>
+            ))}
+        </Timeline>
+      </div>
+
+
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(
           ({

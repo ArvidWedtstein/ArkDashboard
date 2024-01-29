@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { DetailedHTMLProps, HTMLAttributes, forwardRef } from 'react'
 
-type TextProps = {
+export type TextProps = {
   align?: 'inherit' | 'justify' | 'left' | 'center' | 'right';
   /**
    * @default 'body1'
@@ -96,6 +96,7 @@ const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
   return (
     <Component
       ref={ref}
+      align={align}
       className={clsx(classes[variant], {
         "text-left ": align === 'left',
         "text-right": align === 'right',

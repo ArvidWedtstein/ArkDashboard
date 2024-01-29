@@ -1,6 +1,6 @@
 import clsx from 'clsx'
-import { DetailedHTMLProps, HTMLAttributes, createContext, forwardRef, isValidElement, useContext, useMemo } from 'react'
-import Text from '../Text/Text';
+import { Children, DetailedHTMLProps, HTMLAttributes, ReactNode, createContext, forwardRef, isValidElement, useContext, useMemo } from 'react'
+import Text, { TextProps } from '../Text/Text';
 import { Colors, TextColor } from 'src/lib/formatters';
 
 
@@ -59,7 +59,7 @@ export const TimelineItem = forwardRef<HTMLLIElement, TimelineItemProps>((props,
 
   let hasOppositeContent = false;
 
-  React.Children.forEach(props.children, (child) => {
+  Children.forEach(props.children, (child) => {
     if (child["type"]["displayName"] === 'TimelineOppositeContent') {
       hasOppositeContent = true;
     }
@@ -81,8 +81,8 @@ export const TimelineItem = forwardRef<HTMLLIElement, TimelineItemProps>((props,
       <li
         className={clsx("list-none flex relative min-h-[4rem]", {
           "flex-row-reverse": ownerState.position === 'left',
-          "even:flex-row-reverse": ownerState.position === 'alternate',
-          "odd:flex-row-reverse": ownerState.position === 'alternate-reverse',
+          'even:flex-row-reverse [&:nth-child(even)_div[align=right]]:text-left [&:nth-child(even)_div[align=left]]:text-right': ownerState.position === 'alternate',
+          'odd:flex-row-reverse [&:nth-child(odd)_div[align=right]]:text-left [&:nth-child(odd)_div[align=left]]:text-right': ownerState.position === 'alternate-reverse',
           "before:content-[''] before:flex-1 before:py-1.5 before:px-4": !hasOppositeContent
         }, className)}
         {...other}
@@ -116,10 +116,6 @@ export const TimelineConnector = forwardRef<HTMLSpanElement, TimelineConnectorPr
   )
 });
 
-type TimelineContentProps = DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->
 /**
  * @name TimelineContent
  * @description
@@ -129,26 +125,27 @@ type TimelineContentProps = DetailedHTMLProps<
  *
  * ```
  */
-export const TimelineContent = forwardRef<HTMLDivElement, TimelineContentProps>((props, ref) => {
+export const TimelineContent = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
   const { className, ...other } = props;
 
   const { position: positionContext } = useContext(TimelineContext);
+
+  const ownerState = {
+    ...props,
+    position: positionContext || 'right',
+  };
 
   return (
     <Text
       {...other}
       ref={ref}
       component="div"
-      className={className}
-      align={positionContext === 'alternate' || positionContext === 'alternate-reverse' ? 'inherit' : positionContext === 'left' ? 'right' : positionContext === 'right' ? 'left' : 'center'}
+      className={clsx("py-1.5 px-4 flex-1", className)}
+      align={ownerState.align || ownerState.position === 'left' ? 'right' : 'left'}
     />
   )
 });
 
-type TimelineOppositeContentProps = DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->
 /**
  * @name TimelineOppositeContent
  * @description
@@ -158,7 +155,7 @@ type TimelineOppositeContentProps = DetailedHTMLProps<
  *
  * ```
  */
-export const TimelineOppositeContent = forwardRef<HTMLDivElement, TimelineOppositeContentProps>((props, ref) => {
+export const TimelineOppositeContent = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
   const { className, ...other } = props;
 
   const { position: positionContext } = useContext(TimelineContext);
@@ -173,11 +170,12 @@ export const TimelineOppositeContent = forwardRef<HTMLDivElement, TimelineOpposi
       {...other}
       ref={ref}
       component="div"
-      className={clsx("py-1.5 px-4 text-right flex-1 mr-auto", className)}
-      align={ownerState.position === 'left' ? 'left' : 'right'}
+      className={clsx("py-1.5 px-4 flex-1 mr-auto", className)}
+      align={ownerState.align || ownerState.position === 'left' ? 'left' : 'right'}
     />
-  )
+  );
 });
+TimelineOppositeContent.displayName = 'TimelineOppositeContent';
 
 type TimelineDotProps = {
   variant?: 'contained' | 'outlined',
@@ -196,22 +194,44 @@ type TimelineDotProps = {
  * ```
  */
 export const TimelineDot = forwardRef<HTMLSpanElement, TimelineDotProps>((props, ref) => {
-  const { className, color = 'text-secondary-500', variant = 'contained', ...other } = props;
+  const { className, color = 'secondary', variant = 'contained', ...other } = props;
 
   const ownerState = {
     ...props,
     color,
     variant,
   };
+  const colors = {
+    red: "bg-red-400 text-red-50",
+    blue: "bg-blue-400 text-blue-50",
+    green: "bg-green-400 text-green-50",
+    purple: "bg-purple-400 text-purple-50",
+    orange: "bg-orange-400 text-orange-50",
+    primary: "bg-primary-400 text-primary-50",
+    secondary: "bg-secondary-400 text-secondary-50",
+    success: "bg-success-400 text-success-50",
+    warning: "bg-warning-400 text-warning-50",
+    error: "bg-error-400 text-error-50"
+  }
+  const colorsOutlined = {
+    red: "border-red-400 text-white",
+    blue: "border-blue-400 text-white",
+    green: "border-green-400 text-white",
+    purple: "border-purple-400 text-black",
+    orange: "border-orange-400 text-orange-100",
+    primary: "border-primary-400 text-primary-50",
+    secondary: "border-secondary-400 text-secondary-50",
+    success: "border-success-400 text-success-50",
+    warning: "border-warning-400 text-warning-50",
+    error: "border-error-400 text-error-50"
+  }
 
   const classes = {
     contained: clsx("border-transparent", {
-      "text-secondary-50 bg-secondary-400": ownerState.color === 'secondary',
-      [`text-${ownerState.color}-50 bg-${ownerState.color}-400`]: ownerState.color !== 'inherit' && ownerState.color !== 'secondary'
+      [colors[color]]: ownerState.color !== 'inherit'
     }),
     outlined: clsx("shadow-none bg-transparent", {
-      "border-secondary-400": ownerState.color === 'secondary',
-      [`border-${ownerState.color}-400`]: ownerState.color !== 'inherit' && ownerState.color !== 'secondary',
+      [colorsOutlined[color]]: ownerState.color !== 'inherit'
     }),
   }
   return (
@@ -223,12 +243,12 @@ export const TimelineDot = forwardRef<HTMLSpanElement, TimelineDotProps>((props,
   )
 });
 
-type TimelineSeperatorProps = DetailedHTMLProps<
+type TimelineSeparatorProps = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 >
 /**
- * @name TimelineSeperator
+ * @name TimelineSeparator
  * @description
  *
  * @example
@@ -236,12 +256,13 @@ type TimelineSeperatorProps = DetailedHTMLProps<
  *
  * ```
  */
-export const TimelineSeperator = forwardRef<HTMLDivElement, TimelineSeperatorProps>((props, ref) => {
+export const TimelineSeparator = forwardRef<HTMLDivElement, TimelineSeparatorProps>((props, ref) => {
   const { className, ...other } = props;
 
   return (
     <div
-      className={clsx("flex flex-col flex-[0] items-center")}
+      className={clsx("flex flex-col flex-[0_1_0%] items-center")}
+      role="separator"
       ref={ref}
       {...other}
     />
