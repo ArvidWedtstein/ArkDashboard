@@ -271,7 +271,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               className: 'text-lg'
             }}
             action={(
-              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonbasespot")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
+              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonbasespot")} className="!rounded-circle !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
@@ -295,7 +295,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               className: 'text-lg'
             }}
             action={(
-              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonevent")} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
+              <Button variant="outlined" onClick={() => setOpenModal("timelineseasonevent")} className="!rounded-circle !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"

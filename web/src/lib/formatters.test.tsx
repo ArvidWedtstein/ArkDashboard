@@ -1,4 +1,4 @@
-import { render, waitFor, screen } from '@redwoodjs/testing/web'
+import { render, waitFor, screen, renderHook } from '@redwoodjs/testing/web'
 
 import {
   formatEnum,

@@ -2,6 +2,7 @@ import { routes } from "@redwoodjs/router";
 import Badge from "src/components/Util/Badge/Badge";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import Gantt from "src/components/Util/Gantt/Gantt";
+import { Timeline } from "src/components/Util/Timeline/Timeline";
 import type { FindTimelineSeasons } from "types/graphql";
 
 const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
@@ -64,7 +65,8 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         labelKey="tribe_name"
       />
 
-      {/* https://github.com/mui/material-ui/blob/master/packages/mui-lab/src/Timeline/Timeline.tsx */}
+
+      <Timeline />
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(
           ({

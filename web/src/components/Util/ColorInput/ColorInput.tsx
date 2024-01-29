@@ -4,7 +4,8 @@ import { Transition } from 'react-transition-group';
 import clsx from "clsx";
 import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import Button from "../Button/Button";
-import { HexToHsl, HexToRgb, HslToHex, RgbToHex, RgbToHsl, useControlled } from "src/lib/formatters";
+import { HexToHsl, HexToRgb, HslToHex, RgbToHex, RgbToHsl } from "src/lib/formatters";
+import { useControlled } from "src/hooks/useControlled";
 
 type ColorInputProps = {
   autoFocus?: boolean;

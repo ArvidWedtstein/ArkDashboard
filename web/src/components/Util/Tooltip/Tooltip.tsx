@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import { Fragment, cloneElement, forwardRef, isValidElement, useRef, useState } from "react";
-import { useControlled, useEventCallback } from "src/lib/formatters";
 import Popper from "../Popper/Popper";
+import { useControlled } from "src/hooks/useControlled";
+import { useEventCallback } from "src/hooks/useEventCallback";
 
 type TooltipProps = {
   content: string | React.ReactNode;

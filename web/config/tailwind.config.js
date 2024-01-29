@@ -17,6 +17,9 @@ module.exports = {
       borderWidth: {
         skew: "55px 0 0 320px",
       },
+      borderRadius: {
+        circle: "50%",
+      },
       animation: {
         "circle-progress": "progress 1s ease-out forwards",
         "fade-in": "fadein 0.3s ease-in forwards",

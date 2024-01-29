@@ -174,7 +174,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       icon: `pointer-events-none cursor-default dark:text-white/30 text-black/30`,
     };
     const base = `inline-flex items-center justify-center box-border relative cursor-pointer select-none appearance-none font-medium uppercase tracking-wide ${variant === "icon"
-      ? "[&>svg]:inline-block aspect-square rounded-[50%] text-center [&>svg]:fill-current flex-[0_0_auto] [&>svg]:shrink-0 overflow-visible"
+      ? "[&>svg]:inline-block aspect-square rounded-circle text-center [&>svg]:fill-current flex-[0_0_auto] [&>svg]:shrink-0 overflow-visible"
       : "rounded"
       }`;
 

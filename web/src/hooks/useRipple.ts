@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useEventCallback } from "src/lib/formatters";
+import { useEventCallback } from "./useEventCallback";
 
 type StartActionOptions = {
   pulsate?: boolean;

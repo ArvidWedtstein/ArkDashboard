@@ -123,7 +123,7 @@ const TimelineSeasonPeopleList = ({
           className: 'text-lg'
         }}
         action={(
-          <Button variant="outlined" onClick={() => setOpenModal({ open: true, person: null })} className="!rounded-[50%] !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
+          <Button variant="outlined" onClick={() => setOpenModal({ open: true, person: null })} className="!rounded-circle !px-[5px] [&:hover>svg]:rotate-45" color="DEFAULT" centerRipple={true}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512"

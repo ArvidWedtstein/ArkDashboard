@@ -17,13 +17,11 @@ import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import clsx from "clsx";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
-import {
-  useControlled,
-  useEventCallback,
-} from "src/lib/formatters";
 import { FormControl, InputBase, InputBaseProps, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
 import ImageContainer from "../ImageContainer/ImageContainer";
+import { useControlled } from "src/hooks/useControlled";
+import { useEventCallback } from "src/hooks/useEventCallback";
 
 function stripDiacritics(string) {
   return typeof string.normalize !== "undefined"

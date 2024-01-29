@@ -741,7 +741,11 @@ export type Colors =
   | "orange"
   | "amber"
   | "yellow"
-  | "pea";
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "error";
 export type Luminance =
   | 50
   | 100
@@ -790,79 +794,3 @@ export type IntRange<F extends number, T extends number> = Exclude<
 export type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-
-type UseControlledOptions<T> = {
-  controlled?: T | undefined;
-  default?: T;
-  name?: string;
-  state?: string;
-};
-
-type UseControlledReturnValue<T> = [T, (newValue: T) => void];
-
-export const useControlled = <T extends unknown>({
-  controlled,
-  default: defaultProp,
-  name = "",
-  state = "value",
-}: UseControlledOptions<T>): UseControlledReturnValue<T> => {
-  const { current: isControlled } = React.useRef(controlled !== undefined);
-  const [valueState, setValue] = React.useState(defaultProp);
-  const value = isControlled ? (controlled as T) : valueState;
-
-  if (process.env.NODE_ENV !== "production") {
-    React.useEffect(() => {
-      if (isControlled !== (controlled !== undefined)) {
-        console.error(
-          [
-            `ArkDashboard: A component is changing the ${isControlled ? "" : "un"
-            }controlled ${state} state of ${name} to be ${isControlled ? "un" : ""
-            }controlled.`,
-            "Elements should not switch from uncontrolled to controlled (or vice versa).",
-            `Decide between using a controlled or uncontrolled ${name} ` +
-            "element for the lifetime of the component.",
-            "The nature of the state is determined during the first render. It's considered controlled if the value is not `undefined`.",
-            ,
-          ].join("\n")
-        );
-      }
-    }, [state, name, controlled]);
-
-    const { current: defaultValue } = React.useRef(defaultProp);
-    React.useEffect(() => {
-      if (!isControlled && defaultValue !== defaultProp) {
-        console.error(
-          [
-            `ArkDashboard: A component is changing the default ${state} state of an uncontrolled ${name} after being initialized. ` +
-            `To suppress this warning opt to use a controlled ${name}.`,
-          ].join("\n")
-        );
-      }
-    }, [JSON.stringify(defaultProp)]);
-  }
-
-  const setValueIfUncontrolled = React.useCallback((newValue: T) => {
-    if (!isControlled) {
-      setValue(newValue);
-    }
-  }, []);
-  return [value, setValueIfUncontrolled];
-};
-
-export function useEventCallback<
-  Fn extends (...args: any[]) => any = (...args: unknown[]) => unknown
->(fn: Fn): Fn;
-export function useEventCallback<Args extends unknown[], Return>(
-  fn: (...args: Args) => Return
-): (...args: Args) => Return;
-export function useEventCallback<Args extends unknown[], Return>(
-  fn: (...args: Args) => Return
-): (...args: Args) => Return {
-  const ref = React.useRef(fn);
-  ref.current = fn;
-  return React.useRef((...args: Args) =>
-    // @ts-expect-error hide `this`
-    // tslint:disable-next-line:ban-comma-operator
-    (0, ref.current!)(...args)
-  ).current;
-}

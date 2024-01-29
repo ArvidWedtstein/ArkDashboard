@@ -70,7 +70,7 @@ const RippleElement = (props) => {
   // }
   return (
     <span className={"absolute opacity-[.12] scale-100 animate-ripple-enter"} style={rippleStyles}>
-      <span className={clsx("opacity-100 block w-full h-full rounded-[50%] bg-current", {
+      <span className={clsx("opacity-100 block w-full h-full rounded-circle bg-current", {
         "opacity-0 animate-ripple-exit": leaving,
       })} />
     </span>
