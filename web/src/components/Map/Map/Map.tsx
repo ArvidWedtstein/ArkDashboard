@@ -295,7 +295,7 @@ const Map = ({ map }: Props) => {
       "item_id"
     );
     const notes = mapData?.MapResource?.filter(r => r.type === 'note') ?? [];
-
+    //  TODO: redo
     const categorizedTypes = Object.entries({
       notes: notes.map((f) => ({
         ...f,

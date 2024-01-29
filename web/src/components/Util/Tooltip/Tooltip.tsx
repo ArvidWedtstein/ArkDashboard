@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import { Fragment, cloneElement, forwardRef, isValidElement, useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { Fragment, cloneElement, forwardRef, isValidElement, useRef, useState } from "react";
 import { useControlled, useEventCallback } from "src/lib/formatters";
 import Popper from "../Popper/Popper";
 

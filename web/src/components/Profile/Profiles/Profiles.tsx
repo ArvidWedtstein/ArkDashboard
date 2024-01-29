@@ -236,7 +236,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
             field: "role_id",
             header: "Role",
             valueFormatter: ({ row }) =>
-              formatEnum(row.role_profile_role_idTorole.name),
+              row.role_profile_role_idTorole.name,
           },
           {
             field: "id",

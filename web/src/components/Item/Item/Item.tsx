@@ -242,12 +242,6 @@ const Item = ({ item }: Props) => {
               titleProps={{
                 className: 'text-2xl font-semibold'
               }}
-              subheader={(getWordType(
-                item.name.split(" ")[item.name.split(" ").length - 1]
-              ))}
-              subheaderProps={{
-                className: 'italic'
-              }}
             />
             <CardContent>
               {item.description}
