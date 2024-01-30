@@ -216,6 +216,7 @@ const TimelineSeasonPeopleList = ({
               </Button>
             </DialogActions>
           </Dialog>
+
           {timelineSeasonPeople.map(
             ({ id, user_id, ingame_name, Profile, permission, ...other }) => (
               <button className="relative flex-none py-6 px-3" key={id}>

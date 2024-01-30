@@ -259,7 +259,7 @@ const ItemsList = ({
     >
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
-      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
+      <header className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
         <Text variant="h4">
           Items
         </Text>
@@ -404,7 +404,7 @@ const ItemsList = ({
             </ToggleButton>
           </ToggleButtonGroup>
         </nav>
-      </div>
+      </header>
 
       <section className="grid grid-cols-1 gap-x-8 gap-y-10 pb-24 pt-6 lg:grid-cols-4">
         {/* Filters */}

@@ -20,6 +20,7 @@ import SplitPane from "src/components/Util/SplitPane/SplitPane";
 import Badge from "src/components/Util/Badge/Badge";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
 import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";
+import Text from "src/components/Util/Text/Text";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -103,7 +104,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               ? "Add Event"
               : openModal === 'editevent'
                 ? 'Edit Event'
-                : ''}
+                : 'Image Preview'}
         </DialogTitle>
         <Button
           variant="icon"
@@ -135,37 +136,39 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             <img src={editEvent} className="w-full rounded" />
           )}
         </DialogContent>
-        <DialogActions className="space-x-1">
-          <Button
-            type="button"
-            color="success"
-            variant="contained"
-            onClick={() => {
-              if (modalRef?.current) {
-                modalRef.current.querySelector("form")?.requestSubmit();
+        {openModal !== "previewimage" && (
+          <DialogActions className="space-x-1">
+            <Button
+              type="button"
+              color="success"
+              variant="contained"
+              onClick={() => {
+                if (modalRef?.current) {
+                  modalRef.current.querySelector("form")?.requestSubmit();
+                }
+              }}
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="pointer-events-none"
+                  fill="currentColor"
+                >
+                  <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+                </svg>
               }
-            }}
-            startIcon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="pointer-events-none"
-                fill="currentColor"
-              >
-                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
-              </svg>
-            }
-          >
-            Save
-          </Button>
-          <Button
-            type="reset"
-            color="error"
-            onClick={() => setOpenModal(null)}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
+            >
+              Save
+            </Button>
+            <Button
+              type="reset"
+              color="error"
+              onClick={() => setOpenModal(null)}
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        )}
       </Dialog>
 
       <Card variant="outlined" className="h-80 z-0">
@@ -173,11 +176,11 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           style={{
             zIndex: 10,
             backgroundImage:
-              "linear-gradient(-2deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%)",
+              "linear-gradient(-2deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.7) 100%)",
           }}
           title={(
             <div className="inline-flex space-x-1 items-center">
-              <span>{timelineSeason.server}</span>
+              <Text variant="subtitle2">{timelineSeason.server}</Text>
               {timelineSeason.cluster && (
                 <Badge
                   standalone
@@ -186,9 +189,13 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
                   content={(
                     <Fragment>
                       {timelineSeason.cluster}
-                      <div role="seperator" className="rw-divider bg-current mx-1" />
-                      Season
-                      {timelineSeason.season}
+                      {timelineSeason.season && (
+                        <Fragment>
+                          <div role="seperator" className="rw-divider bg-current mx-1" />
+                          Season
+                          {timelineSeason.season}
+                        </Fragment>
+                      )}
                     </Fragment>
                   )}
                 />
@@ -213,7 +220,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             <ButtonGroup>
               <Button
                 permission="timeline_update"
-                color="primary"
+                color="secondary"
                 variant="outlined"
                 to={routes.editTimelineSeason({
                   id: timelineSeason.id,
@@ -229,7 +236,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               <Button
                 permission="timeline_delete"
                 color="error"
-                variant="outlined"
+                variant="contained"
                 onClick={() => onDeleteClick(timelineSeason.id)}
                 startIcon={
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -243,9 +250,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           )}
         />
         <CardContent className="z-10 text-right float-right">
-          <h1 className="text-5xl mt-12 rounded my-auto font-bold text-white">
+          <Text variant="h3" className="mt-12">
             {timelineSeason.tribe_name}
-          </h1>
+          </Text>
         </CardContent>
         <CardMedia
           style={{
@@ -317,7 +324,6 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             />
           </CardContent>
         </Card>
-
 
         <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
       </div>
