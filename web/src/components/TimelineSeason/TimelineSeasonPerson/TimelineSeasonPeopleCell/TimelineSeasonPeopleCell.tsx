@@ -1,9 +1,7 @@
 import type { FindTimelineSeasonPeople } from "types/graphql";
-
-import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import TimelineSeasonPeople from "src/components/TimelineSeasonPerson/TimelineSeasonPeople";
+import TimelineSeasonPeople from "src/components/TimelineSeason/TimelineSeasonPerson/TimelineSeasonPeople";
 
 export const QUERY = gql`
   query FindTimelineSeasonPeople($timeline_season_id: String!) {
@@ -30,6 +28,7 @@ export const QUERY = gql`
   }
 `;
 
+// TODO: redo
 export const Loading = () => (
   <div
     role="status"

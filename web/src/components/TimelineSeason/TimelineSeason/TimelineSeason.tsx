@@ -1,4 +1,4 @@
-import { Link, routes, navigate } from "@redwoodjs/router";
+import { routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { Fragment, useRef, useState } from "react";
@@ -7,7 +7,7 @@ import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/T
 import NewTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/NewTimelineSeasonEventCell";
 import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/EditTimelineSeasonEventCell";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
-import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
+import TimelineSeasonPeopleCell from "src/components/TimelineSeason/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -16,7 +16,6 @@ import type {
 } from "types/graphql";
 import Toast from "src/components/Util/Toast/Toast";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
-import SplitPane from "src/components/Util/SplitPane/SplitPane";
 import Badge from "src/components/Util/Badge/Badge";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
 import { Card, CardContent, CardHeader, CardMedia } from "src/components/Util/Card/Card";

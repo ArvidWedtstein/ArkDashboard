@@ -3,7 +3,7 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useRef, useState } from "react";
 
-import { QUERY } from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
+import { QUERY } from "src/components/TimelineSeason/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
 import Toast from "src/components/Util/Toast/Toast";
 
