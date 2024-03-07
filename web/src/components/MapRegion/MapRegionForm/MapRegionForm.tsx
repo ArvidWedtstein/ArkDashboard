@@ -1,82 +1,56 @@
 import {
   Form,
   FormError,
-  FieldError,
-  Label,
-  TextField,
-  CheckboxField,
-  Submit,
 } from '@redwoodjs/forms'
 
-import type { EditMapRegionById, UpdateMapRegionInput } from 'types/graphql'
+import type { FindMapRegionsByMap, UpdateMapRegionInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
-import Button from 'src/components/Util/Button/Button'
+import Button, { ButtonGroup } from 'src/components/Util/Button/Button'
 import { Input } from 'src/components/Util/Input/Input'
-import { Lookup } from 'src/components/Util/Lookup/Lookup'
 import Switch from 'src/components/Util/Switch/Switch'
 import Alert from 'src/components/Util/Alert/Alert'
+import { forwardRef } from 'react'
+import { ArrayElement } from 'src/lib/formatters'
 
-type FormMapRegion = NonNullable<EditMapRegionById['mapRegion']>
+type FormMapRegion = NonNullable<ArrayElement<FindMapRegionsByMap["mapRegionsByMap"]>>
 
 interface MapRegionFormProps {
-  mapRegion?: EditMapRegionById['mapRegion']
+  mapRegion?: ArrayElement<FindMapRegionsByMap["mapRegionsByMap"]>
   onSave: (data: UpdateMapRegionInput, id?: FormMapRegion['id']) => void
   error: RWGqlError
   loading: boolean
 }
 
-const MapRegionForm = (props: MapRegionFormProps) => {
+const MapRegionForm = forwardRef<HTMLFormElement, MapRegionFormProps>((props, ref) => {
   const onSubmit = (data: FormMapRegion) => {
-    props.onSave(data, props?.mapRegion?.id)
+    props.onSave({
+      ...data,
+      map_id: props?.mapRegion?.map_id,
+      temperature: parseFloat(data?.temperature?.toString()),
+      wind: parseFloat(data?.wind?.toString()),
+    }, props?.mapRegion?.id)
   }
 
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormMapRegion> onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+    <Form<FormMapRegion> onSubmit={onSubmit} id="form-map-region" ref={ref} error={props.error}>
+      <FormError
+        error={props.error}
+        wrapperClassName="rw-form-error-wrapper"
+        titleClassName="rw-form-error-title"
+        listClassName="rw-form-error-list"
+      />
 
-        <Input
-          label="Name"
-          name="name"
-          color="DEFAULT"
-          variant='outlined'
-          defaultValue={props.mapRegion?.name}
-        />
+      <Input
+        label="Name"
+        name="name"
+        color="DEFAULT"
+        variant='outlined'
+        defaultValue={props.mapRegion?.name}
+      />
 
-        {/* TODO: insert map id from db */}
-        <Lookup
-          label="Map"
-          name="map_id"
-          defaultValue={props.mapRegion?.map_id}
-          getOptionLabel={(val) => val.label}
-          isOptionEqualToValue={(val, opt) => val.id === opt.id}
-          getOptionValue={(opt) => opt.id}
-          validation={{ required: true }}
-          options={[
-            { label: 'Valguero', id: 1 },
-            { label: 'The Island', id: 2 },
-            { label: 'The Center', id: 3 },
-            { label: 'Ragnarok', id: 4 },
-            { label: 'Aberration', id: 4 },
-            { label: 'Extinction', id: 6 },
-            { label: 'Scorched Earth', id: 7 },
-            { label: 'Genesis 1', id: 8 },
-            { label: 'Genesis 2', id: 9 },
-            { label: 'Crystal Isles', id: 10 },
-            { label: 'Fjordur', id: 11 },
-            { label: 'Lost Island', id: 12 },
-            { label: 'Jotunheim', id: 13 },
-            { label: 'Vanaheim', id: 14 },
-            { label: 'Asgard', id: 15 },
-            { label: 'Midgard', id: 16 },
-          ]}
-        />
+      <br />
 
+      <ButtonGroup>
         <Input
           label="Wind"
           name="wind"
@@ -84,19 +58,13 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           variant='outlined'
           type="number"
           defaultValue={props.mapRegion?.wind || 0}
-          validation={{ valueAsNumber: true }}
+          validation={{ valueAsNumber: true, setValueAs: (e) => parseFloat(e) }}
           InputProps={{
             endAdornment: (
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className='w-4 fill-current'>
                 <path d="M16 192h352C412.1 192 448 156.1 448 112S412.1 32 368 32h-32C327.2 32 320 39.16 320 48S327.2 64 336 64h32C394.5 64 416 85.53 416 112S394.5 160 368 160h-352C7.156 160 0 167.2 0 176S7.156 192 16 192zM176 320h-160C7.156 320 0 327.2 0 336S7.156 352 16 352h160C202.5 352 224 373.5 224 400S202.5 448 176 448h-32C135.2 448 128 455.2 128 464S135.2 480 144 480h32c44.13 0 80-35.88 80-80S220.1 320 176 320zM424 240H16C7.156 240 0 247.2 0 256s7.156 16 16 16h408c30.88 0 56 25.12 56 56S454.9 384 424 384H400c-8.844 0-16 7.156-16 16s7.156 16 16 16h24c48.53 0 88-39.47 88-88S472.5 240 424 240z" />
               </svg>
             )
-          }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0.375rem 0 0 0.375rem",
-              marginRight: '-0.5px'
-            }
           }}
         />
         <Input
@@ -114,16 +82,7 @@ const MapRegionForm = (props: MapRegionFormProps) => {
               </svg>
             )
           }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0 0.375rem 0.375rem 0",
-              marginLeft: '-0.5px'
-            }
-          }}
         />
-
-        <br />
-
         <Input
           label="Priority"
           name="priority"
@@ -133,13 +92,17 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.priority || 0}
           validation={{ valueAsNumber: true }}
         />
+      </ButtonGroup>
 
-        <Switch
-          name="outside"
-          onLabel='Outside'
-          defaultChecked={props.mapRegion?.outside}
-        />
+      <Switch
+        name="outside"
+        onLabel='Outside'
+        defaultChecked={props.mapRegion?.outside}
+      />
 
+      {/* TODO: add conversion from lat/lon to coords */}
+
+      <ButtonGroup>
         <Input
           label="Start X"
           name="start_x"
@@ -148,12 +111,6 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.start_x}
           type="number"
           validation={{ valueAsNumber: true }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0.375rem 0 0 0.375rem",
-              marginRight: '-0.5px'
-            }
-          }}
         />
         <Input
           label="Start Y"
@@ -163,13 +120,6 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.start_y}
           type="number"
           validation={{ valueAsNumber: true }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0",
-              marginRight: '-0.5px',
-              marginLeft: '-0.5px',
-            }
-          }}
         />
         <Input
           label="Start Z"
@@ -179,14 +129,12 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.start_z}
           type="number"
           validation={{ valueAsNumber: true }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0 0.375rem 0.375rem 0",
-              marginLeft: '-0.5px'
-            }
-          }}
         />
-        <br />
+      </ButtonGroup>
+
+      <br />
+
+      <ButtonGroup>
         <Input
           label="End X"
           name="end_x"
@@ -195,12 +143,6 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.end_x}
           type="number"
           validation={{ valueAsNumber: true }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0.375rem 0 0 0.375rem",
-              marginRight: '-0.5px'
-            }
-          }}
         />
         <Input
           label="End Y"
@@ -210,13 +152,6 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.end_y}
           type="number"
           validation={{ valueAsNumber: true }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0",
-              marginRight: '-0.5px',
-              marginLeft: '-0.5px',
-            }
-          }}
         />
         <Input
           label="End Z"
@@ -226,41 +161,36 @@ const MapRegionForm = (props: MapRegionFormProps) => {
           defaultValue={props.mapRegion?.end_z}
           type="number"
           validation={{ valueAsNumber: true }}
-          SuffixProps={{
-            style: {
-              borderRadius: "0 0.375rem 0.375rem 0",
-              marginLeft: '-0.5px'
-            }
-          }}
         />
+      </ButtonGroup>
 
-        <Alert severity='info'>
-          Corner coordinates for region. These are Unreal Coordinates and not latitude / longitude
-        </Alert>
 
-        <div className="rw-button-group">
-          <Button
-            type="submit"
-            variant="outlined"
-            color="success"
-            disabled={props.loading}
-            endIcon={(
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="w-4 pointer-events-none"
-                fill="currentColor"
-              >
-                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
-              </svg>
-            )}
+      <Alert color='info' variant='outlined'>
+        Corner coordinates for region. These are Unreal Coordinates and not latitude / longitude
+      </Alert>
+
+      <Button
+        type="submit"
+        variant="outlined"
+        color="success"
+        hidden
+        className='hidden invisible'
+        disabled={props.loading}
+        endIcon={(
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            className="w-4 pointer-events-none"
+            fill="currentColor"
           >
-            Save
-          </Button>
-        </div>
-      </Form>
-    </div>
+            <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+          </svg>
+        )}
+      >
+        Save
+      </Button>
+    </Form>
   )
-}
+})
 
 export default MapRegionForm

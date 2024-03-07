@@ -1,11 +1,17 @@
 import { Link, routes } from "@redwoodjs/router";
+import Button from "../Util/Button/Button";
 
 const Footer = () => {
   return (
     <footer className="select-none bg-zinc-700 px-4 py-6 text-sm md:flex md:items-center md:justify-between">
-      <Link className="rw-link text-gray-300" to={routes.terms()}>
+      <Button
+        variant="text"
+        color="primary"
+        className="text-gray-300"
+        to={routes.terms()}
+      >
         Terms & conditions
-      </Link>
+      </Button>
       <span className="text-gray-300 sm:text-center">
         Game content are trademarks and copyrights of their respective publisher
         and its licensors. © {new Date().getFullYear()} <b>Arvid Wedtstein</b>.

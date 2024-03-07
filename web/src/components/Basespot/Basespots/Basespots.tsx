@@ -1,6 +1,6 @@
 import { navigate, parseSearch } from "@redwoodjs/router";
 import { routes, useParams } from "@redwoodjs/router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import type { FindNewBasespots } from "types/graphql";
 import { useApolloClient } from "@apollo/client";
@@ -18,6 +18,7 @@ import { toast } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 import { Input } from "src/components/Util/Input/Input";
+import Skeleton from "src/components/Util/Skeleton/Skeleton";
 
 
 const QUERY = gql`
@@ -236,7 +237,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
 
   return (
     <article className="rw-segment">
-      <div className="">
+      <div className="relative">
         <header
           className="flex min-h-[100px] w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-8 text-white"
           style={{
@@ -252,7 +253,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
           </div>
         </header>
         <div className="flex items-center justify-center space-x-3 w-full">
-          <div className="rw-button-group !w-full justify-start space-x-3">
+          <div className="flex my-3 !w-full justify-start space-x-3">
             <Button
               to={routes.newBasespot()}
               color="success"
@@ -327,6 +328,17 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
                   search: e.target.value
                 }))
               }}
+              InputProps={{
+                onKeyDown: (event) => {
+                  if (event.key !== 'Enter') return
+                  console.log(params)
+                  refreshData({
+                    ...(params.search ? { search: params.search } : { search: (event.target as HTMLInputElement).value }),
+                    ...(params.type && { type: params.type }),
+                    ...(params.map && { map: params.map }),
+                  });
+                }
+              }}
             />
           </div>
           <ToggleButtonGroup
@@ -357,7 +369,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
           </ToggleButtonGroup>
         </div>
 
-        <div className={clsx("mb-5 grid grid-cols-1 gap-4", {
+        <div className={clsx("mb-5 grid gap-4", {
           "grid-cols-1": view === "list",
           "grid-cols-1 md:grid-cols-2 xl:grid-cols-3":
             view === "grid",
@@ -390,19 +402,8 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
                   color="success"
                   to={routes.basespot({ id: basespot.id })}
                   endIcon={
-                    <svg
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 14 10"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M1 5h12m0 0L9 1m4 4L9 9"
-                      />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                      <path d="M400 288C391.2 288 384 295.2 384 304V448c0 17.67-14.33 32-32 32H64c-17.67 0-32-14.33-32-32V160c0-17.67 14.33-32 32-32h112C184.8 128 192 120.8 192 112S184.8 96 176 96L64 96c-35.35 0-64 28.65-64 64V448c0 35.35 28.65 64 64 64h288c35.35 0 64-28.65 64-64V304C416 295.2 408.8 288 400 288zM496 0h-160C327.2 0 320 7.156 320 16S327.2 32 336 32h121.4L180.7 308.7c-6.25 6.25-6.25 16.38 0 22.62C183.8 334.4 187.9 336 192 336s8.188-1.562 11.31-4.688L480 54.63V176C480 184.8 487.2 192 496 192S512 184.8 512 176v-160C512 7.156 504.8 0 496 0z" />
                     </svg>
                   }
                 >
@@ -464,14 +465,14 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
             </Card>
           ))}
           {loading && (
-            <>
-              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
-              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
-              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
-              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
-              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
-              <div className="flex h-full w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
-            </>
+            <Fragment>
+              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
+              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
+              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
+              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
+              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
+              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
+            </Fragment>
           )}
         </div>
       </div>

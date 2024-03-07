@@ -1,80 +1,67 @@
 import { navigate } from "@redwoodjs/router";
 import clsx from "clsx";
-import React, { forwardRef, memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { Ref, forwardRef, memo, useCallback, useEffect, useRef, useState } from "react";
+import Button, { ButtonProps } from "../Button/Button";
 
 interface ITabsProps {
   children: React.ReactElement<ITabProps>[];
-  size?: "sm" | "md" | "lg";
+  size?: "small" | "medium" | "large";
   onSelect?: (tab: ITabProps, index: number) => void;
   selectedTabIndex?: number;
   orientation?: "horizontal" | "vertical";
+  activeColor?: ButtonProps["color"];
 }
-interface ITabProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface ITabProps extends ButtonProps {
   label: string | React.ReactNode;
   link?: string;
-  icon?: React.ReactNode | string;
-  disabled?: boolean;
 }
 
 interface ITabItemProps extends ITabProps {
   active: boolean;
-  size?: "sm" | "md" | "lg";
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-  ref: React.LegacyRef<HTMLButtonElement>;
+  activeColor?: ITabProps["color"];
+  onClick: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
+  ref: Ref<HTMLButtonElement | HTMLAnchorElement>;
 }
 export const TabItem = forwardRef(({
   label,
-  icon,
   disabled,
   active,
   onClick,
-  size,
+  activeColor = "success",
   ...props
 }: ITabItemProps,
-  ref: React.Ref<HTMLButtonElement>) => {
+  ref: Ref<HTMLButtonElement | HTMLAnchorElement>) => {
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <Button
       role="tab"
+      onClick={onClick}
       disabled={disabled}
       ref={ref}
-      className={clsx(
-        "inline-flex items-center justify-center rounded-t-lg max-w-xs",
-        {
-          "text-pea-600 dark:text-pea-500":
-            !disabled && active,
-          "hover:text-gray-600 dark:hover:text-gray-300":
-            !active && !disabled,
-          "text-gray-400 dark:text-gray-500":
-            disabled,
-          "p-4": size === "lg",
-          "p-2": size === "md",
-          "p-1 text-xs": size === "sm",
-        }
-      )}
+      variant="text"
       aria-selected={active}
+      className="rounded-none"
+      color={active && !disabled ? activeColor : 'secondary'}
       {...props}
     >
-      {icon}
       {label}
-    </button>
+    </Button>
   );
 });
 
 
 const Tabs = memo(({
-  size = "lg",
+  size = "large",
   onSelect,
   selectedTabIndex = 0,
   orientation = "horizontal",
+  activeColor = "success",
   children
 }: ITabsProps) => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(
     selectedTabIndex
   );
   const [tabStyle, setTabStyle] = useState<React.CSSProperties>({});
-  const tabRefs = useRef<Array<HTMLButtonElement>>([]);
+  const tabRefs = useRef<Array<HTMLButtonElement | HTMLAnchorElement>>([]);
 
   const onClickTabItem = useCallback(
     (index: number) => {
@@ -125,13 +112,20 @@ const Tabs = memo(({
               onClick={() => onClickTabItem(i)}
               ref={(el) => (tabRefs.current[i] = el)}
               size={size}
+              activeColor={activeColor}
               {...child.props}
             />
           )
           )}
-        <div className={clsx(`absolute bg-pea-600 dark:bg-pea-500 transition-all ease-in-out duration-300`, { // -mb-px
+        <div aria-label="Indicator" className={clsx(`absolute transition-all ease-in-out duration-300`, { // -mb-px
           "h-0.5 w-0 bottom-0 left-0": orientation === "horizontal",
           "w-0.5 h-0 top-0 right-0": orientation === "vertical",
+          "bg-primary-400": activeColor === 'primary',
+          "bg-secondary-500": activeColor === 'secondary',
+          "bg-success-600": activeColor === "success",
+          "bg-warning-400": activeColor === 'warning',
+          "bg-error-500": activeColor === 'error',
+          "dark:bg-white bg-zinc-900": activeColor === 'DEFAULT',
         })} style={tabStyle} />
       </div>
 

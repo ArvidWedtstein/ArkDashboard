@@ -4,7 +4,8 @@ import { Transition } from 'react-transition-group';
 import clsx from "clsx";
 import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import Button from "../Button/Button";
-import { HexToHsl, HexToRgb, HslToHex, RgbToHex, RgbToHsl, useControlled } from "src/lib/formatters";
+import { HexToHsl, HexToRgb, HslToHex, RgbToHex, RgbToHsl } from "src/lib/formatters";
+import { useControlled } from "src/hooks/useControlled";
 
 type ColorInputProps = {
   autoFocus?: boolean;
@@ -32,7 +33,7 @@ type ColorInputProps = {
   >;
   required?: boolean;
   margin?: "dense" | "normal" | "none";
-  variant?: "standard" | "filled" | "outlined";
+  variant?: "standard" | "contained" | "outlined";
   size?: "small" | "medium" | "large";
   value?: string;
   validation?: RegisterOptions & {
@@ -287,7 +288,7 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
   const borders = {
     primary: `border-blue-400`,
     secondary: `border-zinc-500`,
-    success: `border-pea-500`,
+    success: `border-success-500`,
     error: `border-red-500`,
     warning: `border-amber-400`,
     disabled: `dark:border-white/30 border-black/30`,
@@ -477,8 +478,8 @@ const ColorInput = forwardRef<HTMLDivElement, ColorInputProps>((props, ref) => {
       {helperText && (
         <p
           id={helperTextId}
-          className={clsx("rw-helper-text", {
-            "!text-red-500": error || fieldState?.error || fieldState?.invalid,
+          className={clsx("mt-0.5 text-left text-xs leading-6 tracking-wide", {
+            "!text-error-500": error || fieldState?.error || fieldState?.invalid,
             "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
           })}
           {...FormHelperTextProps}

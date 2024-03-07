@@ -127,14 +127,18 @@ const SignupPage = () => {
               className="rw-label m-0"
               errorClassName="rw-label m-0 rw-label-error"
             >
-              I agree with the{" "}
-              <Link to={routes.terms()} className="rw-link">
+              I agree with the
+              <Button
+                variant="text"
+                color="primary"
+                to={routes.terms()}
+              >
                 terms and conditions
-              </Link>
+              </Button>
             </Label>
             <CheckboxField
               name="terms"
-              className="rw-input"
+              className="rw-checkbox"
               validation={{
                 required: {
                   value: true,
@@ -153,11 +157,15 @@ const SignupPage = () => {
             Sign Up
           </Button>
 
-          <div className="space-x-2 text-sm text-gray-300 dark:text-stone-300">
+          <div className="space-x-0 text-sm text-gray-300 dark:text-stone-300">
             <span>Already have an account?</span>
-            <Link to={routes.signin()} className="rw-link">
+            <Button
+              variant="text"
+              color="primary"
+              to={routes.signin()}
+            >
               Log in!
-            </Link>
+            </Button>
           </div>
         </Form>
         <div className="order-1 max-h-40 w-full sm:max-h-full">

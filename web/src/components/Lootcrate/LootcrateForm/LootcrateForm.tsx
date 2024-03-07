@@ -3,7 +3,7 @@ import {
   FormError,
 } from "@redwoodjs/forms";
 
-import type { EditLootcrateById, UpdateLootcrateInput } from "types/graphql";
+import type { EditLootcrateById, LootcrateMap, UpdateLootcrateInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
@@ -12,10 +12,13 @@ import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import ColorInput from "src/components/Util/ColorInput/ColorInput";
 
-type FormLootcrate = NonNullable<EditLootcrateById["lootcrate"]>;
+type FormLootcrate = NonNullable<EditLootcrateById["lootcrate"] & {
+  lootcrateMaps: number[]
+}>;
 
 interface LootcrateFormProps {
   lootcrate?: EditLootcrateById["lootcrate"];
+  maps?: EditLootcrateById["maps"];
   onSave: (data: UpdateLootcrateInput, id?: FormLootcrate["id"]) => void;
   error: RWGqlError;
   loading: boolean;
@@ -23,11 +26,21 @@ interface LootcrateFormProps {
 
 const LootcrateForm = (props: LootcrateFormProps) => {
   const onSubmit = (data: FormLootcrate) => {
-    props.onSave(data, props?.lootcrate?.id);
+
+    const input = {
+      ...data,
+      lootcrateMaps: !props?.lootcrate ? {
+        create: data.lootcrateMaps.map((map_id) => ({
+          map_id: map_id
+        }))
+      } : null
+    }
+    console.log(input)
+    props.onSave(input, props?.lootcrate?.id);
   };
 
   return (
-    <div className="rw-form-wrapper">
+    <div className="-mt-4 text-sm">
       <Form<FormLootcrate> onSubmit={onSubmit} error={props.error}>
         <FormError
           error={props.error}
@@ -66,6 +79,20 @@ const LootcrateForm = (props: LootcrateFormProps) => {
             "Event",
             "Volcanic Rock"
           ]}
+        />
+
+        <Lookup
+          options={props?.maps || [
+            { id: 5, name: 'Aberration', icon: 'Aberration.webp' }
+          ]}
+          name="lootcrateMaps"
+          label="Maps"
+          multiple
+          getOptionLabel={(option) => option.name}
+          getOptionValue={(opt) => opt.id}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${option.icon}`}
+        // defaultValue={props.lootcrate?.map_id}
         />
 
         <br />
@@ -120,7 +147,6 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           outputColorFormat="hex"
         />
 
-
         <Switch
           onLabel="Repeat in sets"
           defaultChecked={props.lootcrate?.repeat_in_sets}
@@ -132,6 +158,9 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           defaultValue={props.lootcrate?.image}
           storagePath={`arkimages/Item`}
         />
+
+        {/* TODO: add dialog for lootcrateitems and lootcratemaps */}
+
 
         <Button
           type="submit"

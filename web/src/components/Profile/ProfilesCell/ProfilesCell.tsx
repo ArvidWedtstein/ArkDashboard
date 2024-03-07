@@ -31,12 +31,6 @@ export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
       {'No profiles yet. '}
-      <Link
-        to={routes.newProfile()}
-        className="rw-link"
-      >
-        {'Create one?'}
-      </Link>
     </div>
   )
 }

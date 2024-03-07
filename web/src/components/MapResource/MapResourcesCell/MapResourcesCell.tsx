@@ -21,6 +21,18 @@ export const QUERY = gql`
         name
       }
     }
+    itemsByCategory(category: "Resource") {
+      items {
+        id
+        name
+        description
+        image
+        color
+        type
+        category
+      }
+      count
+    }
   }
 `
 
@@ -70,10 +82,7 @@ export const Loading = () => (
 export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
-      {'No mapResources yet. '}
-      <Link to={routes.newMapResource()} className="rw-link">
-        {'Create one?'}
-      </Link>
+      {'No map resources created yet. '}
     </div>
   )
 }
@@ -98,6 +107,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   mapResources,
+  itemsByCategory,
 }: CellSuccessProps<FindMapResourcesByMap>) => {
-  return <MapResources mapResources={mapResources} />
+  return <MapResources mapResources={mapResources} itemsByCategory={itemsByCategory} />
 }

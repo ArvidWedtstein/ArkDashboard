@@ -23,6 +23,11 @@ export const QUERY = gql`
       image
       type
     }
+    maps {
+      id
+      name
+      icon
+    }
   }
 `
 const UPDATE_LOOTCRATE_MUTATION = gql`
@@ -47,7 +52,27 @@ const UPDATE_LOOTCRATE_MUTATION = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => (
+  <div role="status" className="flex animate-pulse flex-col space-y-8">
+    <div className="h-5 w-60 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+    <div className="flex flex-col gap-y-5">
+      <div className="flex w-full flex-col gap-x-3 space-y-2">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="flex w-full flex-col gap-x-3 space-y-2">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-20 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="flex w-full flex-col gap-x-3 space-y-2">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="h-96 w-96 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+    </div>
+    <span className="sr-only">Loading...</span>
+  </div>
+)
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3">
@@ -67,7 +92,7 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 )
 
-export const Success = ({ lootcrate }: CellSuccessProps<EditLootcrateById>) => {
+export const Success = ({ lootcrate, maps }: CellSuccessProps<EditLootcrateById>) => {
   const [updateLootcrate, { loading, error }] = useMutation(
     UPDATE_LOOTCRATE_MUTATION,
     {
@@ -101,6 +126,7 @@ export const Success = ({ lootcrate }: CellSuccessProps<EditLootcrateById>) => {
       <div className="rw-segment-main">
         <LootcrateForm
           lootcrate={lootcrate}
+          maps={maps}
           onSave={onSave}
           error={error}
           loading={loading}

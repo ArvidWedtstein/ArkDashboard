@@ -57,7 +57,7 @@ const UserRecipesList = ({ userRecipes, onSelect }: Props) => {
           UserRecipeItemRecipe,
           public_access,
         }) => (
-          <Card key={id} className="flex hover:border-pea-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out">
+          <Card key={id} className="flex hover:border-success-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out">
             <CardActionArea
               className="text-left grow"
               onClick={() => {

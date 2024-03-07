@@ -166,7 +166,7 @@ z"
                 console.log(ItemRecipe)
                 return (
                   <Button
-                    className="fadetransition aspect-square"
+                    className="aspect-square"
                     variant="outlined"
                     color="DEFAULT"
                     title={`${ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.name} - ${amount}`}

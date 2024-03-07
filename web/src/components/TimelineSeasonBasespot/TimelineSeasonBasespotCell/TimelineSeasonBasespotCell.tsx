@@ -34,6 +34,17 @@ export const QUERY = gql`
           created_at
           tags
         }
+        TimelineSeasonPerson {
+          id
+          permission
+          user_id
+          ingame_name
+          Profile {
+            full_name
+            username
+            avatar_url
+          }
+        }
       }
       Basespot {
         id

@@ -3,83 +3,66 @@ import {
   FormError,
   FieldError,
   Label,
-  TextField,
-  Submit,
   useForm,
   useFieldArray,
-  NumberField,
+  TextField,
 } from "@redwoodjs/forms";
-import { useEffect, useState } from "react";
-import type { EditDinoById, UpdateDinoInput } from "types/graphql";
+import { Fragment, useRef, useState } from "react";
+import type { DinoStat, EditDinoById, NewDino, UpdateDinoInput, UpdateDinoStatInput, dinostattype } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import { truncate } from "src/lib/formatters";
+import { ArrayElement, truncate } from "src/lib/formatters";
 import { toast } from "@redwoodjs/web/toast";
-import { useLazyQuery } from "@apollo/client";
-import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
 import { Input } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
-import Alert from "src/components/Util/Alert/Alert";
-import NewDinoStat from "src/components/DinoStat/NewDinoStat/NewDinoStat";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import DatePicker from "src/components/Util/DatePicker/DatePicker";
-import Button from "src/components/Util/Button/Button";
-import clsx from "clsx";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
+import { useMutation } from "@redwoodjs/web";
+import { Card, CardContent, CardHeader } from "src/components/Util/Card/Card";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
 interface DinoFormProps {
   dino?: EditDinoById["dino"];
+  itemsByCategory: NewDino["itemsByCategory"];
   onSave: (data: UpdateDinoInput, id?: FormDino["id"]) => void;
   error?: RWGqlError;
   loading: boolean;
 }
 
-const ITEMQUERY = gql`
-  query FindItemsByCategory($category: String!) {
-    itemsByCategory(category: $category) {
-      items {
-        id
-        name
-        description
-        image
-        color
-        type
-        category
-      }
-      count
+const CREATE_DINO_STAT_MUTATION = gql`
+  mutation CreateDinoStatMutation($input: CreateDinoStatInput!) {
+    createDinoStat(input: $input) {
+      id
     }
   }
 `;
-const DinoForm = (props: DinoFormProps) => {
-  const [disableFood, setDisableFood] = useState(
-    props.dino?.disable_food ?? false
-  );
 
-  const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
-    variables: { category: "Resource,Consumable" },
-    onCompleted: (data) => {
-      toast.success("Items loaded");
-    },
-    onError: (error) => {
-      console.log(error);
-      toast.error(error.message);
-    },
-  });
-
-  useEffect(() => {
-    if (!called && !loading) {
-      loadItems();
+const UPDATE_DINO_STAT_MUTATION = gql`
+  mutation UpdateDinoStatMutation($id: String!, $input: UpdateDinoStatInput!) {
+    updateDinoStat(id: $id, input: $input) {
+      id
+      dino_id
+      item_id
+      value
+      type
     }
-  }, []);
+  }
+`
 
-  // https://www.apollographql.com/docs/react/api/react/hooks/#uselazyquery
+const DinoForm = (props: DinoFormProps) => {
+  const { dino, itemsByCategory, loading, error } = props;
+  const [disableFood, setDisableFood] = useState(
+    dino?.disable_food ?? false
+  );
 
   // TODO: fix this
   const [basestat, setBasestat] = useState(
-    props.dino?.base_stats ?? {
+    dino?.base_stats ?? {
       d: { b: 0, t: 0, w: 0, a: [{ b: 0 }] },
       f: { b: 0, t: 0, w: 0 },
       h: { b: 0, t: 0, w: 0 },
@@ -127,7 +110,7 @@ const DinoForm = (props: DinoFormProps) => {
   };
 
   const [movement, setMovement] = useState<Movement>(
-    (props.dino?.movement as Movement) ?? {
+    (dino?.movement as Movement) ?? {
       w: {
         walk: {
           base: 0,
@@ -164,39 +147,20 @@ const DinoForm = (props: DinoFormProps) => {
   );
 
   type FormValues = {
-    attack: any[];
-    "DinoStat.create": { type: string; item_id: number; value: number }[];
-    wr: any[];
+    attack: {
+      id?: string;
+      dmg?: number;
+      name?: string;
+      interval?: number;
+      radius?: number;
+      stamina?: number;
+    }[];
   };
-  const { register, control } = useForm<FormValues>({
-    defaultValues: {
-      attack: [],
-      "DinoStat.create": [
-        {
-          type: "",
-          value: 0,
-          item_id: null,
-        },
-      ],
-      wr: props?.dino?.DinoStat.filter(
-        (f) => f.type === "weight_reduction"
-      ) ?? [
-          {
-            type: "",
-            value: 0,
-            item_id: null,
-          },
-        ],
-    },
-  });
 
-  const {
-    fields: statFields,
-    append: appendStat,
-    remove: removeStat,
-  } = useFieldArray({
-    control,
-    name: "DinoStat.create", // the name of the field array in your form data
+  const { register, control, handleSubmit } = useForm<FormValues>({
+    defaultValues: {
+      attack: dino?.attack as FormValues["attack"] || [],
+    },
   });
 
   const {
@@ -208,67 +172,296 @@ const DinoForm = (props: DinoFormProps) => {
     name: "attack", // the name of the field array in your form data
   });
 
-  const [eats, setEats] = useState([]);
-
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
-  const onSubmit = (data: FormDino) => {
-    // data.eats = eats.map((f) => f.id.toString());
-    // data.drops = ["12"];
+
+  const onSubmit = (data: FormDino) => (e) => {
+    e.preventDefault();
     console.log(data);
-    // delete data.immobilized_by
-    // Test Dino Object
-    // const d = {
-    //   name: "test",
-    //   description: "test",
-    //   synonyms: "test",
-    //   can_destroy: ["t"],
-    //   fits_through: ["381"],
-    //   immobilized_by: ["t"],
-    //   carryable_by: ["t"],
-    //   drops: ["11"],
-    //   type: ["Ground"],
-    //   eats: ["11"],
-    //   // DinoStat: [
-    //   //   {
-    //   //     type: "gather_efficiency",
-    //   //     value: 5,
-    //   //     item_id: 8,
-    //   //   },
-    //   // ],
-    // };
-    // props.onSave(d, props?.dino?.id);
+
+
     props.onSave(data, props?.dino?.id);
   };
 
+  const formRef = useRef<HTMLFormElement>();
+
+  const [openModal, setOpenModal] = useState<{
+    open: boolean;
+    dino_stat?: ArrayElement<EditDinoById["dino"]["DinoStat"]>
+  }>({ open: false, dino_stat: null });
+
+  const modalRef = useRef<HTMLDivElement>();
+
+  const [createDinoStat] = useMutation(
+    CREATE_DINO_STAT_MUTATION,
+    {
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+  const [updateDinoStat] = useMutation(
+    UPDATE_DINO_STAT_MUTATION,
+    {
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    }
+  )
+
+  const onSave = (
+    input: UpdateDinoStatInput,
+    id: DinoStat["id"]
+  ) => {
+    toast.promise(id ? updateDinoStat({ variables: { id, input } }) : createDinoStat({ variables: { input } }), {
+      loading: `${id ? 'Updating' : 'Creating'} dinostat...`,
+      success: `Dinostat successfully ${id ? 'updated' : 'created'}`,
+      error: `Failed to ${id ? 'update' : 'create'} dinostat.`,
+    });
+  }
+
+  const [selectedType, setSelectedType] = useState<dinostattype>(null);
+  const checkTypes = {
+    "immobilized_by": [
+      {
+        value: "733",
+        label: "Lasso",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/lasso.webp",
+      },
+      {
+        value: "1040",
+        label: "Bola",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bola.webp",
+      },
+      {
+        value: "725",
+        label: "Chain Bola",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chain-bola.webp",
+      },
+      {
+        value: "785",
+        label: "Net Projectile",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/net-projectile.webp",
+      },
+      {
+        value: "1252",
+        label: "Plant Species Y Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/plant-species-y-trap.webp",
+      },
+      {
+        value: "383",
+        label: "Bear Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bear-trap.webp",
+      },
+      {
+        value: "384",
+        label: "Large Bear Trap",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/large-bear-trap.webp",
+      },
+    ],
+    "fits_through": [
+      {
+        value: "322",
+        label: "Doorframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-doorframe.webp",
+      },
+      {
+        value: 1066,
+        label: "Double Doorframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+      },
+      {
+        value: "143",
+        label: "Dinosaur Gateway",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
+      },
+      {
+        value: "381",
+        label: "Behemoth Dino Gateway",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/behemoth-stone-dinosaur-gateway.webp",
+      },
+      {
+        value: "316",
+        label: "Hatchframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
+      },
+      {
+        value: "619",
+        label: "Giant Hatchframe",
+        image:
+          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+      },
+    ]
+  }
+
   return (
-    <div className="rw-form-wrapper">
-      <Form onSubmit={onSubmit} error={props.error}>
+    <div className="-mt-4 text-sm">
+      <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, dino_stat: null })}>
+        <DialogTitle>
+          {openModal.dino_stat ? 'Edit' : 'New'} Dino Stat
+        </DialogTitle>
+        <DialogContent dividers>
+          <Form<NonNullable<UpdateDinoStatInput>> onSubmit={(data) => onSave(data, openModal?.dino_stat?.id)} error={error} className="text-sm my-3">
+            <FormError
+              error={props.error}
+              wrapperClassName="rw-form-error-wrapper"
+              titleClassName="rw-form-error-title"
+              listClassName="rw-form-error-list"
+            />
+
+            <div className="flex flex-row space-x-3">
+              <Lookup
+                label="Type"
+                margin="none"
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(opt) => opt.value}
+                options={[
+                  { value: "food", label: "Food" },
+                  { value: "gather_efficiency", label: "Gather Efficiency" },
+                  { value: "weight_reduction", label: "Weight Reduction" },
+                  { value: "immobilized_by", label: "Immobilized By" },
+                  { value: "fits_through", label: "Fits Through" },
+                  { value: "drops", label: "Drops" },
+                  { value: "saddle", label: "Saddle" },
+                  { value: "bossrecipe", label: "Bossrecipe" },
+                  { value: "engrams", label: "Engrams" },
+                ] as { value: dinostattype, label: string }[]}
+                onSelect={(e) => {
+                  setSelectedType(e.value)
+                }}
+                name="type"
+                defaultValue={openModal?.dino_stat?.type}
+                closeOnSelect
+              />
+
+              {!["immobilized_by", "fits_through", "saddle", "food"].includes(selectedType) && (
+                <Input
+                  label="Value"
+                  name="value"
+                  type="number"
+                  defaultValue={openModal?.dino_stat?.value}
+                  margin="none"
+                  validation={{ valueAsNumber: true }}
+                />
+              )}
+            </div>
+
+
+            {["immobilized_by", "fits_through"].includes(selectedType) ? (
+              <Fragment>
+                <Label
+                  name="item_id"
+                  className="rw-label capitalize"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  {selectedType.replaceAll('_', ' ')}
+                </Label>
+
+                <CheckboxGroup
+                  name="item_id"
+                  defaultValue={openModal?.dino_stat?.item_id?.toString()}
+                  exclusive
+                  options={checkTypes[selectedType]}
+                />
+
+                <FieldError name="item_id" className="rw-field-error" />
+              </Fragment>
+            ) : (
+              <Lookup
+                margin="normal"
+                label="Item"
+                options={itemsByCategory?.items.filter((c) => (selectedType === 'saddle' ? c.type === 'Saddle' : true))}
+                name="item_id"
+                loading={loading}
+                defaultValue={openModal?.dino_stat?.item_id}
+                getOptionValue={({ id }) => id}
+                getOptionLabel={({ name }) => name}
+                getOptionImage={({ image }) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                validation={{ required: true }}
+              />
+            )}
+
+            <TextField
+              name="dino_id"
+              defaultValue={openModal?.dino_stat?.dino_id || dino?.id}
+              className="hidden"
+              errorClassName="text-error-500"
+              validation={{ required: true }}
+            />
+          </Form>
+        </DialogContent>
+        <DialogActions className="space-x-1">
+          <Button
+            type="button"
+            color="success"
+            variant="contained"
+            onClick={() => {
+              if (modalRef?.current) {
+                modalRef.current.querySelector("form")?.requestSubmit();
+              }
+            }}
+            startIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="pointer-events-none"
+                fill="currentColor"
+              >
+                <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+              </svg>
+            }
+          >
+            Save
+          </Button>
+          <Button
+            type="reset"
+            color="error"
+            onClick={() => setOpenModal({ open: false, dino_stat: null })}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Form onSubmit={handleSubmit(onSubmit)} ref={formRef} error={error}>
         <FormError
-          error={props.error}
+          error={error}
           wrapperClassName="rw-form-error-wrapper"
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        <Stepper completion>
+        <Stepper completion onStepComplete={(step, final) => {
+          if (!final) return;
+          formRef.current.submit();
+          // formRef?.current?.requestSubmit();
+        }}>
           <Step title="General">
             <div className="flex flex-row items-start space-x-3">
               <Input
                 label="Name"
                 name="name"
-                defaultValue={props.dino?.name}
+                defaultValue={dino?.name}
                 color="DEFAULT"
                 helperText="Dinos name"
               />
-              {/* TODO: TagInput or Lookup */}
-              {/* <TagInput
-                name="synonyms"
-              /> */}
-              {/* <Lookup multiple options={[]} /> */}
+
               <Input
                 label="Synonyms"
                 margin="normal"
                 name="synonyms"
-                defaultValue={props.dino?.synonyms}
+                defaultValue={dino?.synonyms}
                 helperText="Other names for this dino, comma seperated"
                 validation={{
                   required: false,
@@ -281,26 +474,10 @@ const DinoForm = (props: DinoFormProps) => {
               />
             </div>
 
-            <FileUpload
-              label="Image"
-              name="image"
-              secondaryName="icon"
-              defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
-              defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
-              storagePath={`arkimages`}
-              valueFormatter={(filename) => filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
-            />
-            {/* <FileUpload
-                name="icon"
-                label="Icon"
-                defaultValue={props?.dino?.icon}
-                storagePath={"arkimages/DinoIcon"}
-              /> */}
-
             <div className="flex flex-row items-start space-x-3">
               <Input
                 name="description"
-                defaultValue={props.dino?.description}
+                defaultValue={dino?.description}
                 color="DEFAULT"
                 label="Description"
                 variant="contained"
@@ -310,7 +487,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Admin Note"
                 name="admin_note"
-                defaultValue={props.dino?.admin_note}
+                defaultValue={dino?.admin_note}
                 color="DEFAULT"
                 variant="contained"
                 rows={5}
@@ -319,38 +496,60 @@ const DinoForm = (props: DinoFormProps) => {
               />
             </div>
 
-            <div className="flex flex-col space-y-2">
-              {/* <Switch
-                name="x_variant"
-                onLabel="X Variant"
-                defaultChecked={props.dino?.x_variant}
-                helperText="Does this dino have a x-variant?"
-              /> */}
+            <Input
+              label="Variants"
+              margin="normal"
+              name="variants"
+              defaultValue={dino?.variants.join(', ')}
+              helperText="Variants that this dino has, comma seperated"
+              validation={{
+                required: false,
+              }}
+            />
 
+            <DatePicker
+              label="Release Date"
+              name="relased"
+              defaultValue={dino?.released ? new Date(dino?.released) : new Date()}
+            />
+
+            <br />
+
+            <FileUpload
+              label="Image"
+              name="image"
+              secondaryName="icon"
+              defaultValue={props?.dino?.image ? `Dino/${props?.dino?.image}` : null}
+              defaultSecondaryValue={props?.dino?.icon ? `DinoIcon/${props?.dino?.icon}` : null}
+              storagePath={`arkimages`}
+              valueFormatter={(filename, isUpload) => isUpload ? filename.includes('DinoIcon/') ? filename : `DinoIcon/${filename} ` : filename ? filename.includes('DinoIcon/') ? filename.replaceAll('DinoIcon/', '') : filename.includes('Dino/') ? filename.replaceAll('Dino/', '') : filename : null}
+            />
+
+            <div className="flex flex-col space-y-2 my-2">
               <Switch
                 name="ridable"
                 onLabel="Ridable"
-                defaultChecked={props.dino?.ridable}
+                defaultChecked={dino?.ridable}
                 helperText="Is this dino ridable?"
               />
 
               <Switch
                 name="mounted_weaponry"
                 onLabel="Mounted Weaponry"
-                defaultChecked={props.dino?.mounted_weaponry}
+                defaultChecked={dino?.mounted_weaponry}
                 helperText="Can you use weapons while riding this dino?"
               />
 
               <Switch
                 name="disable_mult"
                 onLabel="Disable multipliers"
-                defaultChecked={props.dino?.disable_mult}
+                defaultChecked={dino?.disable_mult}
               />
             </div>
 
             <CheckboxGroup
               name="type"
-              defaultValue={props.dino?.type ?? []}
+              defaultValue={dino?.type ?? []}
               validation={{
                 required: true,
               }}
@@ -393,7 +592,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Temperament"
               name="temperament"
-              defaultValue={props.dino?.temperament ?? "Neutral"}
+              defaultValue={dino?.temperament ?? "Neutral"}
               options={[
                 "Aggressive",
                 "Angry",
@@ -429,7 +628,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Target Team"
               name="targeting_team_name"
-              defaultValue={props.dino?.targeting_team_name ?? "TargetOnlyPlayers"}
+              defaultValue={dino?.targeting_team_name ?? "TargetOnlyPlayers"}
               getOptionLabel={(option) => option.label}
               isOptionEqualToValue={(option, value) => option.value === value.value}
               getOptionValue={(opt) => opt.value}
@@ -470,39 +669,17 @@ const DinoForm = (props: DinoFormProps) => {
             />
 
 
-            {/* <Input
-              label="Release Date"
-              variant="contained"
-              color="success"
-              type="date"
-              name="released"
-              placeholder="YYYY-MM-DD"
-              defaultValue={props.dino?.released || null}
-              validation={{
-                valueAsDate: true
-              }}
-              InputLabelProps={{
-                shrink: true
-              }}
-            /> */}
-
-            <DatePicker
-              label="Release Date"
-              defaultValue={props.dino?.released ? new Date(props.dino?.released) : new Date()}
-            />
-            <br />
-
             <Input
               label="Blueprint"
               name="bp"
-              defaultValue={props.dino?.bp}
+              defaultValue={dino?.bp}
               color="DEFAULT"
               variant="outlined"
             />
             \
             {/* TODO: add newer fields. */}
             {/* FIELD checklist:
-            ["flags","multipliers","default_dmg","default_swing_radius","hitboxes","targeting_team_name","icon","image"*/}
+            ["flags","multipliers","hitboxes","icon","image"*/}
           </Step>
 
           <Step title="Food" className="flex flex-col-reverse" optional>
@@ -510,7 +687,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Switch
               name="disable_food"
               onLabel="Disable Food?"
-              defaultChecked={disableFood || props.dino?.disable_food}
+              defaultChecked={disableFood || dino?.disable_food}
               onChange={(e) => {
                 setDisableFood(e.target.checked);
               }}
@@ -519,7 +696,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Lookup
               label="Diet"
               name="diet"
-              defaultValue={props.dino?.diet}
+              defaultValue={dino?.diet}
               options={[
                 "Sanguivore",
                 "Minerals",
@@ -540,7 +717,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Food consumption base"
               name="food_consumption_base"
-              defaultValue={props.dino?.food_consumption_base || 0}
+              defaultValue={dino?.food_consumption_base || 0}
               validation={{ valueAsNumber: true }}
               color="DEFAULT"
               type="number"
@@ -550,7 +727,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Food consumption base multiplier"
               name="food_consumption_mult"
-              defaultValue={props.dino?.food_consumption_mult || 0}
+              defaultValue={dino?.food_consumption_mult || 0}
               validation={{ valueAsNumber: true }}
               color="DEFAULT"
               type="number"
@@ -559,28 +736,20 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Non violent food rate multiplier"
               name="non_violent_food_rate_mult"
-              defaultValue={props.dino?.non_violent_food_rate_mult || 0}
+              defaultValue={dino?.non_violent_food_rate_mult || 0}
               validation={{ valueAsNumber: true }}
               color="DEFAULT"
               type="number"
               variant="outlined"
             />
-            {/* </Form> */}
           </Step>
 
           <Step title="Taming" className="flex flex-col" optional>
-            {/* <Form<FormDino> onSubmit={onSubmit} error={props.error}>
-            <FormError
-              error={props.error}
-              wrapperClassName="rw-form-error-wrapper"
-              titleClassName="rw-form-error-title"
-              listClassName="rw-form-error-list"
-            /> */}
 
             <Input
               label="Taming Notice"
               name="taming_notice"
-              defaultValue={props.dino?.taming_notice}
+              defaultValue={dino?.taming_notice}
               color="DEFAULT"
               multiline
               variant="outlined"
@@ -590,7 +759,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Switch
               name="tamable"
               onLabel="Tamable"
-              defaultChecked={props.dino?.tamable}
+              defaultChecked={dino?.tamable}
             />
 
             <Lookup
@@ -604,13 +773,13 @@ const DinoForm = (props: DinoFormProps) => {
               multiple
               label="Taming Method"
               name="taming_method"
-              defaultValue={props.dino?.taming_method}
+              defaultValue={dino?.taming_method}
             />
 
             <Input
               label="Torpor Depletion per second"
               name="torpor_depetion_per_second"
-              defaultValue={props.dino?.torpor_depetion_per_second}
+              defaultValue={dino?.torpor_depetion_per_second}
               InputProps={{
                 min: 0
               }}
@@ -624,7 +793,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Affinity needed"
               name="affinity_needed"
-              defaultValue={props.dino?.affinity_needed}
+              defaultValue={dino?.affinity_needed}
               InputProps={{
                 min: 0
               }}
@@ -638,7 +807,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Affinity Increase Per Level"
               name="aff_inc"
-              defaultValue={props.dino?.affinity_needed}
+              defaultValue={dino?.affinity_needed}
               InputProps={{
                 min: 0
               }}
@@ -654,7 +823,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Non violent food affinity multiplier"
               name="non_violent_food_affinity_mult"
-              defaultValue={props.dino?.non_violent_food_affinity_mult}
+              defaultValue={dino?.non_violent_food_affinity_mult}
               InputProps={{
                 min: 0
               }}
@@ -668,7 +837,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Flee Threshold"
               name="flee_threshold"
-              defaultValue={props.dino?.flee_threshold}
+              defaultValue={dino?.flee_threshold}
               InputProps={{
                 min: 0
               }}
@@ -682,7 +851,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Base Taming Time"
               name="base_taming_time"
-              defaultValue={props.dino?.base_taming_time}
+              defaultValue={dino?.base_taming_time}
               InputProps={{
                 min: 0,
                 endAdornment: (
@@ -699,7 +868,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Taming Interval"
               name="taming_interval"
-              defaultValue={props.dino?.taming_interval}
+              defaultValue={dino?.taming_interval}
               InputProps={{
                 min: 0,
                 endAdornment: (
@@ -716,7 +885,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Taming Ineffectiveness"
               name="taming_ineffectiveness"
-              defaultValue={props.dino?.taming_ineffectiveness}
+              defaultValue={dino?.taming_ineffectiveness}
               InputProps={{
                 min: 0,
               }}
@@ -729,7 +898,7 @@ const DinoForm = (props: DinoFormProps) => {
             <Input
               label="Hitboxes"
               name="hitboxes"
-              defaultValue={JSON.stringify(props.dino?.hitboxes, null, 2)}
+              defaultValue={JSON.stringify(dino?.hitboxes, null, 2)}
               InputProps={{
                 min: 0,
               }}
@@ -741,13 +910,6 @@ const DinoForm = (props: DinoFormProps) => {
             {/* </Form> */}
           </Step>
           <Step title="Stats">
-            {/* <Form<FormDino> onSubmit={onSubmit} error={props.error}>
-            <FormError
-              error={props.error}
-              wrapperClassName="rw-form-error-wrapper"
-              titleClassName="rw-form-error-title"
-              listClassName="rw-form-error-list"
-            /> */}
             <Label
               name="base_stats"
               className="rw-label"
@@ -756,8 +918,8 @@ const DinoForm = (props: DinoFormProps) => {
               Base stats
             </Label>
             <div className="grid w-fit grid-rows-[8] text-white">
-              {Object.entries(basestat).map(([statChar, statVariants]) => (
-                <div className="my-1 grid grid-cols-4">
+              {Object.entries(basestat).map(([statChar, statVariants], sIndex) => (
+                <ButtonGroup className="my-1" key={`basestat-${sIndex}`}>
                   {Object.entries(statVariants).map(
                     ([variantChar, variants], index) => {
                       const stat = {
@@ -778,7 +940,7 @@ const DinoForm = (props: DinoFormProps) => {
                         a: "Additive",
                       }[variantChar];
                       return (
-                        <>
+                        <Fragment key={`basestat-${sIndex}-${index}`}>
                           <Input
                             label={`${variant} ${stat}`}
                             defaultValue={variants?.toString() ?? 0}
@@ -791,13 +953,6 @@ const DinoForm = (props: DinoFormProps) => {
                                   className="h-4"
                                 />
                               ),
-                            }}
-                            SuffixProps={{
-                              className: clsx('-mr-px', {
-                                "rounded-l": index === 0,
-                                "rounded-r rounded-l-none": index == Object.entries(statVariants).length - 1,
-                                "rounded-none": index !== Object.entries(statVariants).length - 1
-                              })
                             }}
                             onChange={(e) => {
                               setBasestat((prev: object) => ({
@@ -813,11 +968,11 @@ const DinoForm = (props: DinoFormProps) => {
                             type="number"
                             validation={{ valueAsNumber: true }}
                           />
-                        </>
+                        </Fragment>
                       );
                     }
                   )}
-                </div>
+                </ButtonGroup>
               ))}
             </div>
 
@@ -900,7 +1055,7 @@ const DinoForm = (props: DinoFormProps) => {
                 multiple
                 helperText="Structuretypes this dino can destroy"
                 getOptionLabel={(option) => option.label}
-                defaultValue={props.dino?.can_destroy}
+                defaultValue={dino?.can_destroy}
                 isOptionEqualToValue={(option, value) => option.value === value.value}
                 getOptionValue={(opt) => opt.value}
                 getOptionImage={(option) => `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${option.label.replaceAll(' ', '').toLowerCase()}-wall.webp`}
@@ -937,12 +1092,10 @@ const DinoForm = (props: DinoFormProps) => {
               />
             </div>
 
-
-
             <Input
               label="Experience per kill"
               name="exp_per_kill"
-              defaultValue={props.dino?.exp_per_kill || 0}
+              defaultValue={dino?.exp_per_kill || 0}
               InputProps={{
                 min: 0,
               }}
@@ -951,7 +1104,9 @@ const DinoForm = (props: DinoFormProps) => {
               variant="outlined"
               validation={{ valueAsNumber: true, min: 0 }}
             />
+
             <br />
+
             <Label
               name="movement"
               className="rw-label"
@@ -977,69 +1132,73 @@ const DinoForm = (props: DinoFormProps) => {
                     key={`m-${i}`}
                   >
                     {Object.entries(v).map(([stattype, v2], i2) => (
-                      <div
-                        className="rounded bg-zinc-700 p-4"
-                        key={`m-${i}-c-${i2}`}
-                      >
-                        <legend className="inline-flex w-full border-spacing-6 items-center space-x-3 border-b pb-2 text-base font-medium capitalize">
-                          {stattype === "fly" && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 640 512"
-                              className="h-5 w-5 fill-current"
-                            >
-                              <path d="M624 480H17.11c-8.836 0-16 7.162-16 16c0 8.836 7.164 16 16 16H624c8.801 0 16-7.201 16-16C640 487.2 632.8 480 624 480zM80.49 371.3C88.24 379.4 98.86 384 109.1 384l127.1-.125c11.25-.125 22.38-2.625 32.5-7.625l283-140.4c29.25-14.38 52.88-34.5 68.38-58.13c18-27.25 22.38-50.25 13.25-68.38c-11.62-22.88-42-30.75-72.75-30.75c-26 0-52.5 6.5-78.75 19.62l-92.75 46L181.2 67.63C177.2 65.25 172.7 64 167.1 64c-4 0-7.875 .875-11.5 2.625l-64 31.75c-7.5 3.75-12.62 11-13.75 19.38C77.61 127 82.11 136.1 90.24 141l136.5 84.13l-84 41.63L75.99 233.9c-7.25-3.625-15.63-3.625-22.88 0l-39 19.38c-7 3.375-12.12 9.875-13.62 17.5s.5 15.62 5.625 21.5L80.49 371.3zM64.61 263.9l78.25 38.5l149.9-74.25L118.5 121.3l49.38-24.5l224 82.13l105-52c21.88-10.75 43.63-16.25 64.63-16.25c16.25 0 39.38 3.625 44.25 13.25c3.375 6.75-.875 20.25-11.38 36.25C581.1 179 562.6 195.4 538.5 207.3L255.4 347.5c-5.625 2.875-11.88 4.375-18.25 4.375L110.1 352c-2.375 0-4.625-1-6.375-2.625L36.49 277.8L64.61 263.9z" />
-                            </svg>
+                      <Card variant="elevation" key={`m-${i}-c-${i2}`}>
+                        <CardHeader
+                          title={(
+                            <Fragment>
+                              {stattype === "fly" && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 640 512"
+                                  className="h-5 w-5 fill-current"
+                                >
+                                  <path d="M624 480H17.11c-8.836 0-16 7.162-16 16c0 8.836 7.164 16 16 16H624c8.801 0 16-7.201 16-16C640 487.2 632.8 480 624 480zM80.49 371.3C88.24 379.4 98.86 384 109.1 384l127.1-.125c11.25-.125 22.38-2.625 32.5-7.625l283-140.4c29.25-14.38 52.88-34.5 68.38-58.13c18-27.25 22.38-50.25 13.25-68.38c-11.62-22.88-42-30.75-72.75-30.75c-26 0-52.5 6.5-78.75 19.62l-92.75 46L181.2 67.63C177.2 65.25 172.7 64 167.1 64c-4 0-7.875 .875-11.5 2.625l-64 31.75c-7.5 3.75-12.62 11-13.75 19.38C77.61 127 82.11 136.1 90.24 141l136.5 84.13l-84 41.63L75.99 233.9c-7.25-3.625-15.63-3.625-22.88 0l-39 19.38c-7 3.375-12.12 9.875-13.62 17.5s.5 15.62 5.625 21.5L80.49 371.3zM64.61 263.9l78.25 38.5l149.9-74.25L118.5 121.3l49.38-24.5l224 82.13l105-52c21.88-10.75 43.63-16.25 64.63-16.25c16.25 0 39.38 3.625 44.25 13.25c3.375 6.75-.875 20.25-11.38 36.25C581.1 179 562.6 195.4 538.5 207.3L255.4 347.5c-5.625 2.875-11.88 4.375-18.25 4.375L110.1 352c-2.375 0-4.625-1-6.375-2.625L36.49 277.8L64.61 263.9z" />
+                                </svg>
+                              )}
+                              {stattype === "swim" && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 576 512"
+                                  className="h-5 w-5 fill-current"
+                                >
+                                  <path d="M176 336C184.8 336 192 328.8 192 320c0-28.06 8.625-54.94 24.92-77.77L238.6 211.9C245.1 202.8 252.9 195 261.3 187.9l160.7 128.6C424.1 318.9 428.5 320 431.1 320c4.703 0 9.344-2.062 12.52-6c5.516-6.906 4.391-16.97-2.5-22.5L289.2 169.3c6.895-3.346 14.07-6.143 21.48-8.262c38.11-10.86 78.86-13.14 117.1-6.688l32.72 5.453c8.734 1.5 16.97-4.438 18.41-13.16c1.453-8.719-4.438-16.95-13.16-18.41l-32.72-5.453c-43.73-7.25-89.39-4.703-131.1 7.469C266 140.5 234.3 162.9 212.6 193.3L190.9 223.6C170.7 251.9 160 285.2 160 320C160 328.8 167.2 336 176 336zM104 240c39.77 0 72-32.24 72-72C176 128.2 143.8 96 104 96C64.24 96 32 128.2 32 168C32 207.8 64.24 240 104 240zM104 128C126.1 128 144 145.9 144 168S126.1 208 104 208S64 190.1 64 168S81.94 128 104 128zM562 383.1c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.52 0-64.53-15.35-82.97-41.2c-6.031-8.438-20.03-8.438-26.06 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.51 0-64.53-15.35-82.97-41.2C106 338.5 101.2 336 96 336s-10.02 2.5-13.02 6.719c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94c1.125 8.75 9.029 15.06 17.92 13.81c29.98-3.875 57.48-17.47 77.94-38.09C120.6 401.6 155.3 416 192.1 416C228.9 416 263.4 401.6 288 376.8C312.6 401.6 347.3 416 384.1 416c36.78 0 71.28-14.41 95.9-39.25c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81C576.1 392.3 570.8 384.2 562 383.1z" />
+                                </svg>
+                              )}
+                              {stattype === "sprint" && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 640 512"
+                                  className="h-5 w-5 fill-current"
+                                >
+                                  <path d="M512 224c-8.875 0-16 7.125-16 16S503.1 256 512 256s16-7.125 16-16S520.9 224 512 224zM602.9 191.2c-.625-.5-58.5-36-58.5-36c-2.5-1.625-9.75-5.125-18.38-7.5c-1.249-7.5-2.874-14.75-4.874-22.13C515.3 103.8 492.5 32 446.6 32c-38 0-44.25 41.88-44.5 43.38c-32.13-17.25-55.5-13.25-69.75 1C323.8 85.12 311.9 104.8 328 139.8C297 123.4 266.5 112 240 112c-45.75 0-86.25 18.38-117.9 52.38C108.6 151.2 90.88 144 72 144c-19.25 0-37.38 7.5-51 21.12c-28 28-28 73.75 0 101.8C34.62 280.5 52.75 288 72 288c12.75 0 24.75-3.625 35.5-9.75c3.625 6.25 7.625 12.38 12.88 18l54 58.5l-25 13.5C136 377.1 128 392.1 128 408.2V432c0 17.25 8.875 32.75 23.88 41.5C159.4 477.9 167.7 480 175.9 480c8.125 0 16.46-2.125 23.83-6.375l55.25-31.5l25.5 27.63C286.5 476.2 295 480 304 480h160c17.62 0 32-14.38 32-32c0-35.25-28.75-64-64-64H384l70.38-32h97C600.3 352 640 312.2 640 263.4C640 234.8 626.1 207.8 602.9 191.2zM96.25 246.9C71.75 266.1 49.38 250 43.62 244.2c-15.62-15.62-15.62-40.87 0-56.5c15.62-15.63 41-15.63 56.62 0C101.5 189 102.5 190.5 103.5 192C95.75 209.4 93.12 228.5 96.25 246.9zM183.9 445.9C173.4 451.9 160 444.2 160 432v-23.75c0-5.375 2.625-10.37 5.75-12.62l31-16.62l36 39L183.9 445.9zM551.4 320l-103.4-.0018L384 346.6v-2.25c0-49.75-33.38-93.1-81.25-107.6L260.4 224.6c-20.5-5.875-29.13 25-8.75 30.75L293.1 267.5C328.1 277.2 352 308.9 352 344.4V416h80c17.62 0 31.98 14.38 31.98 32L304 448L143.9 274.5C121.5 250.2 121.1 213.1 143 188.5C163.1 165.8 194.3 144 239.9 144C297.2 144 392.8 219.2 448 256c0-31.12-.5-30.75 3.5-43c-15.25-3.5-37.75-17.88-59.13-39.25c-31-31-47.62-64.38-37.38-74.75c10.75-10.75 45.13 7.875 74.75 37.38C433 139.6 436 142.9 438.9 146.2C427.2 101.6 430.8 64 446.6 64c13.88 0 32.88 30 43.62 70c4 15.25 6.25 29.87 6.875 42.5c14.25-1 25.03 3.351 30.65 6.101l56.48 34.66C599.1 227.9 608 244.1 608 263.4C608 294.6 582.6 320 551.4 320z" />
+                                </svg>
+                              )}
+                              {stattype === "walk" && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 320 512"
+                                  className="h-5 w-5 fill-current"
+                                >
+                                  <path d="M200 112C230.9 112 256 86.88 256 56S230.9 0 200 0S144 25.12 144 56S169.1 112 200 112zM200 32C213.2 32 224 42.77 224 56S213.2 80 200 80S176 69.23 176 56S186.8 32 200 32zM312.9 274.7l-38.84-25.89c-2.969-1.969-5.188-4.922-6.312-8.281l-16.78-50.36c-9.094-27.16-32.16-47.52-60.22-53.13l-19.31-3.859C151.8 129.3 131.6 132.8 114.6 143L61.94 174.6C55.88 178.2 50.59 183.2 46.69 189.1l-28 42.02C13.78 238.5 15.78 248.4 23.13 253.3c7.312 4.859 17.25 2.922 22.19-4.438l28-42.02c1.312-1.953 3.062-3.641 5.062-4.844l45.43-27.23L106.1 245.8c-7.375 29.59 2.406 60.3 25.56 80.13l74.66 64.02c2.375 2.047 4.125 4.75 5 7.75l29.34 102.8C242.6 507.4 249 512 256 512c1.438 0 2.938-.2031 4.406-.6094c8.5-2.438 13.41-11.28 10.97-19.78l-29.34-102.8c-2.656-9.078-7.812-17.11-14.94-23.2L152.4 301.6C138.6 289.7 132.7 271.3 137.1 253.5l22.26-89.03c1.926 .1445 3.82-.3027 5.744 .0723l19.34 3.859C201.3 171.8 215.1 184 220.6 200.3l16.78 50.34c3.375 10.06 10.06 18.84 18.91 24.77l38.88 25.91C297.8 303.1 300.9 304 304 304c5.156 0 10.22-2.5 13.31-7.125C322.2 289.5 320.2 279.6 312.9 274.7zM119.2 353.7c-7.906-3.891-17.5-.7656-21.47 7.156L68 420.2c-.75 1.5-1.75 2.891-3 4.125l-60.31 60.33c-6.25 6.25-6.25 16.38 0 22.62C7.813 510.4 11.91 512 16 512s8.188-1.562 11.31-4.688l60.31-60.33c3.688-3.688 6.719-7.891 9-12.47l29.69-59.36C130.3 367.3 127.1 357.6 119.2 353.7z" />
+                                </svg>
+                              )}
+                              {stattype === "swimOrFly" && (
+                                <div className="inline-flex items-center space-x-1">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 576 512"
+                                    className="h-5 w-5 fill-current"
+                                  >
+                                    <path d="M176 336C184.8 336 192 328.8 192 320c0-28.06 8.625-54.94 24.92-77.77L238.6 211.9C245.1 202.8 252.9 195 261.3 187.9l160.7 128.6C424.1 318.9 428.5 320 431.1 320c4.703 0 9.344-2.062 12.52-6c5.516-6.906 4.391-16.97-2.5-22.5L289.2 169.3c6.895-3.346 14.07-6.143 21.48-8.262c38.11-10.86 78.86-13.14 117.1-6.688l32.72 5.453c8.734 1.5 16.97-4.438 18.41-13.16c1.453-8.719-4.438-16.95-13.16-18.41l-32.72-5.453c-43.73-7.25-89.39-4.703-131.1 7.469C266 140.5 234.3 162.9 212.6 193.3L190.9 223.6C170.7 251.9 160 285.2 160 320C160 328.8 167.2 336 176 336zM104 240c39.77 0 72-32.24 72-72C176 128.2 143.8 96 104 96C64.24 96 32 128.2 32 168C32 207.8 64.24 240 104 240zM104 128C126.1 128 144 145.9 144 168S126.1 208 104 208S64 190.1 64 168S81.94 128 104 128zM562 383.1c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.52 0-64.53-15.35-82.97-41.2c-6.031-8.438-20.03-8.438-26.06 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.51 0-64.53-15.35-82.97-41.2C106 338.5 101.2 336 96 336s-10.02 2.5-13.02 6.719c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94c1.125 8.75 9.029 15.06 17.92 13.81c29.98-3.875 57.48-17.47 77.94-38.09C120.6 401.6 155.3 416 192.1 416C228.9 416 263.4 401.6 288 376.8C312.6 401.6 347.3 416 384.1 416c36.78 0 71.28-14.41 95.9-39.25c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81C576.1 392.3 570.8 384.2 562 383.1z" />
+                                  </svg>
+                                  <span className="font-light">/</span>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 640 512"
+                                    className="h-5 w-5 fill-current"
+                                  >
+                                    <path d="M624 480H17.11c-8.836 0-16 7.162-16 16c0 8.836 7.164 16 16 16H624c8.801 0 16-7.201 16-16C640 487.2 632.8 480 624 480zM80.49 371.3C88.24 379.4 98.86 384 109.1 384l127.1-.125c11.25-.125 22.38-2.625 32.5-7.625l283-140.4c29.25-14.38 52.88-34.5 68.38-58.13c18-27.25 22.38-50.25 13.25-68.38c-11.62-22.88-42-30.75-72.75-30.75c-26 0-52.5 6.5-78.75 19.62l-92.75 46L181.2 67.63C177.2 65.25 172.7 64 167.1 64c-4 0-7.875 .875-11.5 2.625l-64 31.75c-7.5 3.75-12.62 11-13.75 19.38C77.61 127 82.11 136.1 90.24 141l136.5 84.13l-84 41.63L75.99 233.9c-7.25-3.625-15.63-3.625-22.88 0l-39 19.38c-7 3.375-12.12 9.875-13.62 17.5s.5 15.62 5.625 21.5L80.49 371.3zM64.61 263.9l78.25 38.5l149.9-74.25L118.5 121.3l49.38-24.5l224 82.13l105-52c21.88-10.75 43.63-16.25 64.63-16.25c16.25 0 39.38 3.625 44.25 13.25c3.375 6.75-.875 20.25-11.38 36.25C581.1 179 562.6 195.4 538.5 207.3L255.4 347.5c-5.625 2.875-11.88 4.375-18.25 4.375L110.1 352c-2.375 0-4.625-1-6.375-2.625L36.49 277.8L64.61 263.9z" />
+                                  </svg>
+                                </div>
+                              )}
+                              <span className="grow">{stattype}</span>
+                            </Fragment>
                           )}
-                          {stattype === "swim" && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 576 512"
-                              className="h-5 w-5 fill-current"
-                            >
-                              <path d="M176 336C184.8 336 192 328.8 192 320c0-28.06 8.625-54.94 24.92-77.77L238.6 211.9C245.1 202.8 252.9 195 261.3 187.9l160.7 128.6C424.1 318.9 428.5 320 431.1 320c4.703 0 9.344-2.062 12.52-6c5.516-6.906 4.391-16.97-2.5-22.5L289.2 169.3c6.895-3.346 14.07-6.143 21.48-8.262c38.11-10.86 78.86-13.14 117.1-6.688l32.72 5.453c8.734 1.5 16.97-4.438 18.41-13.16c1.453-8.719-4.438-16.95-13.16-18.41l-32.72-5.453c-43.73-7.25-89.39-4.703-131.1 7.469C266 140.5 234.3 162.9 212.6 193.3L190.9 223.6C170.7 251.9 160 285.2 160 320C160 328.8 167.2 336 176 336zM104 240c39.77 0 72-32.24 72-72C176 128.2 143.8 96 104 96C64.24 96 32 128.2 32 168C32 207.8 64.24 240 104 240zM104 128C126.1 128 144 145.9 144 168S126.1 208 104 208S64 190.1 64 168S81.94 128 104 128zM562 383.1c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.52 0-64.53-15.35-82.97-41.2c-6.031-8.438-20.03-8.438-26.06 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.51 0-64.53-15.35-82.97-41.2C106 338.5 101.2 336 96 336s-10.02 2.5-13.02 6.719c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94c1.125 8.75 9.029 15.06 17.92 13.81c29.98-3.875 57.48-17.47 77.94-38.09C120.6 401.6 155.3 416 192.1 416C228.9 416 263.4 401.6 288 376.8C312.6 401.6 347.3 416 384.1 416c36.78 0 71.28-14.41 95.9-39.25c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81C576.1 392.3 570.8 384.2 562 383.1z" />
-                            </svg>
-                          )}
-                          {stattype === "sprint" && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 640 512"
-                              className="h-5 w-5 fill-current"
-                            >
-                              <path d="M512 224c-8.875 0-16 7.125-16 16S503.1 256 512 256s16-7.125 16-16S520.9 224 512 224zM602.9 191.2c-.625-.5-58.5-36-58.5-36c-2.5-1.625-9.75-5.125-18.38-7.5c-1.249-7.5-2.874-14.75-4.874-22.13C515.3 103.8 492.5 32 446.6 32c-38 0-44.25 41.88-44.5 43.38c-32.13-17.25-55.5-13.25-69.75 1C323.8 85.12 311.9 104.8 328 139.8C297 123.4 266.5 112 240 112c-45.75 0-86.25 18.38-117.9 52.38C108.6 151.2 90.88 144 72 144c-19.25 0-37.38 7.5-51 21.12c-28 28-28 73.75 0 101.8C34.62 280.5 52.75 288 72 288c12.75 0 24.75-3.625 35.5-9.75c3.625 6.25 7.625 12.38 12.88 18l54 58.5l-25 13.5C136 377.1 128 392.1 128 408.2V432c0 17.25 8.875 32.75 23.88 41.5C159.4 477.9 167.7 480 175.9 480c8.125 0 16.46-2.125 23.83-6.375l55.25-31.5l25.5 27.63C286.5 476.2 295 480 304 480h160c17.62 0 32-14.38 32-32c0-35.25-28.75-64-64-64H384l70.38-32h97C600.3 352 640 312.2 640 263.4C640 234.8 626.1 207.8 602.9 191.2zM96.25 246.9C71.75 266.1 49.38 250 43.62 244.2c-15.62-15.62-15.62-40.87 0-56.5c15.62-15.63 41-15.63 56.62 0C101.5 189 102.5 190.5 103.5 192C95.75 209.4 93.12 228.5 96.25 246.9zM183.9 445.9C173.4 451.9 160 444.2 160 432v-23.75c0-5.375 2.625-10.37 5.75-12.62l31-16.62l36 39L183.9 445.9zM551.4 320l-103.4-.0018L384 346.6v-2.25c0-49.75-33.38-93.1-81.25-107.6L260.4 224.6c-20.5-5.875-29.13 25-8.75 30.75L293.1 267.5C328.1 277.2 352 308.9 352 344.4V416h80c17.62 0 31.98 14.38 31.98 32L304 448L143.9 274.5C121.5 250.2 121.1 213.1 143 188.5C163.1 165.8 194.3 144 239.9 144C297.2 144 392.8 219.2 448 256c0-31.12-.5-30.75 3.5-43c-15.25-3.5-37.75-17.88-59.13-39.25c-31-31-47.62-64.38-37.38-74.75c10.75-10.75 45.13 7.875 74.75 37.38C433 139.6 436 142.9 438.9 146.2C427.2 101.6 430.8 64 446.6 64c13.88 0 32.88 30 43.62 70c4 15.25 6.25 29.87 6.875 42.5c14.25-1 25.03 3.351 30.65 6.101l56.48 34.66C599.1 227.9 608 244.1 608 263.4C608 294.6 582.6 320 551.4 320z" />
-                            </svg>
-                          )}
-                          {stattype === "walk" && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 320 512"
-                              className="h-5 w-5 fill-current"
-                            >
-                              <path d="M200 112C230.9 112 256 86.88 256 56S230.9 0 200 0S144 25.12 144 56S169.1 112 200 112zM200 32C213.2 32 224 42.77 224 56S213.2 80 200 80S176 69.23 176 56S186.8 32 200 32zM312.9 274.7l-38.84-25.89c-2.969-1.969-5.188-4.922-6.312-8.281l-16.78-50.36c-9.094-27.16-32.16-47.52-60.22-53.13l-19.31-3.859C151.8 129.3 131.6 132.8 114.6 143L61.94 174.6C55.88 178.2 50.59 183.2 46.69 189.1l-28 42.02C13.78 238.5 15.78 248.4 23.13 253.3c7.312 4.859 17.25 2.922 22.19-4.438l28-42.02c1.312-1.953 3.062-3.641 5.062-4.844l45.43-27.23L106.1 245.8c-7.375 29.59 2.406 60.3 25.56 80.13l74.66 64.02c2.375 2.047 4.125 4.75 5 7.75l29.34 102.8C242.6 507.4 249 512 256 512c1.438 0 2.938-.2031 4.406-.6094c8.5-2.438 13.41-11.28 10.97-19.78l-29.34-102.8c-2.656-9.078-7.812-17.11-14.94-23.2L152.4 301.6C138.6 289.7 132.7 271.3 137.1 253.5l22.26-89.03c1.926 .1445 3.82-.3027 5.744 .0723l19.34 3.859C201.3 171.8 215.1 184 220.6 200.3l16.78 50.34c3.375 10.06 10.06 18.84 18.91 24.77l38.88 25.91C297.8 303.1 300.9 304 304 304c5.156 0 10.22-2.5 13.31-7.125C322.2 289.5 320.2 279.6 312.9 274.7zM119.2 353.7c-7.906-3.891-17.5-.7656-21.47 7.156L68 420.2c-.75 1.5-1.75 2.891-3 4.125l-60.31 60.33c-6.25 6.25-6.25 16.38 0 22.62C7.813 510.4 11.91 512 16 512s8.188-1.562 11.31-4.688l60.31-60.33c3.688-3.688 6.719-7.891 9-12.47l29.69-59.36C130.3 367.3 127.1 357.6 119.2 353.7z" />
-                            </svg>
-                          )}
-                          {stattype === "swimOrFly" && (
-                            <div className="inline-flex items-center space-x-1">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 576 512"
-                                className="h-5 w-5 fill-current"
-                              >
-                                <path d="M176 336C184.8 336 192 328.8 192 320c0-28.06 8.625-54.94 24.92-77.77L238.6 211.9C245.1 202.8 252.9 195 261.3 187.9l160.7 128.6C424.1 318.9 428.5 320 431.1 320c4.703 0 9.344-2.062 12.52-6c5.516-6.906 4.391-16.97-2.5-22.5L289.2 169.3c6.895-3.346 14.07-6.143 21.48-8.262c38.11-10.86 78.86-13.14 117.1-6.688l32.72 5.453c8.734 1.5 16.97-4.438 18.41-13.16c1.453-8.719-4.438-16.95-13.16-18.41l-32.72-5.453c-43.73-7.25-89.39-4.703-131.1 7.469C266 140.5 234.3 162.9 212.6 193.3L190.9 223.6C170.7 251.9 160 285.2 160 320C160 328.8 167.2 336 176 336zM104 240c39.77 0 72-32.24 72-72C176 128.2 143.8 96 104 96C64.24 96 32 128.2 32 168C32 207.8 64.24 240 104 240zM104 128C126.1 128 144 145.9 144 168S126.1 208 104 208S64 190.1 64 168S81.94 128 104 128zM562 383.1c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.52 0-64.53-15.35-82.97-41.2c-6.031-8.438-20.03-8.438-26.06 0c-18.44 25.84-49.45 41.2-82.97 41.2c-33.51 0-64.53-15.35-82.97-41.2C106 338.5 101.2 336 96 336s-10.02 2.5-13.02 6.719c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94c1.125 8.75 9.029 15.06 17.92 13.81c29.98-3.875 57.48-17.47 77.94-38.09C120.6 401.6 155.3 416 192.1 416C228.9 416 263.4 401.6 288 376.8C312.6 401.6 347.3 416 384.1 416c36.78 0 71.28-14.41 95.9-39.25c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81C576.1 392.3 570.8 384.2 562 383.1z" />
-                              </svg>
-                              <span className="font-light">/</span>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 640 512"
-                                className="h-5 w-5 fill-current"
-                              >
-                                <path d="M624 480H17.11c-8.836 0-16 7.162-16 16c0 8.836 7.164 16 16 16H624c8.801 0 16-7.201 16-16C640 487.2 632.8 480 624 480zM80.49 371.3C88.24 379.4 98.86 384 109.1 384l127.1-.125c11.25-.125 22.38-2.625 32.5-7.625l283-140.4c29.25-14.38 52.88-34.5 68.38-58.13c18-27.25 22.38-50.25 13.25-68.38c-11.62-22.88-42-30.75-72.75-30.75c-26 0-52.5 6.5-78.75 19.62l-92.75 46L181.2 67.63C177.2 65.25 172.7 64 167.1 64c-4 0-7.875 .875-11.5 2.625l-64 31.75c-7.5 3.75-12.62 11-13.75 19.38C77.61 127 82.11 136.1 90.24 141l136.5 84.13l-84 41.63L75.99 233.9c-7.25-3.625-15.63-3.625-22.88 0l-39 19.38c-7 3.375-12.12 9.875-13.62 17.5s.5 15.62 5.625 21.5L80.49 371.3zM64.61 263.9l78.25 38.5l149.9-74.25L118.5 121.3l49.38-24.5l224 82.13l105-52c21.88-10.75 43.63-16.25 64.63-16.25c16.25 0 39.38 3.625 44.25 13.25c3.375 6.75-.875 20.25-11.38 36.25C581.1 179 562.6 195.4 538.5 207.3L255.4 347.5c-5.625 2.875-11.88 4.375-18.25 4.375L110.1 352c-2.375 0-4.625-1-6.375-2.625L36.49 277.8L64.61 263.9z" />
-                              </svg>
-                            </div>
-                          )}
-                          <span className="grow">{stattype}</span>
-                        </legend>
-                        <div className="pt-3">
+                          titleProps={{
+                            className: "inline-flex items-center space-x-3 w-full capitalize !font-medium border-b pb-1"
+                          }}
+                        />
+                        <CardContent>
                           {typeof v2 === "object" ? (
                             Object.entries(v2).map(([k3, v3], i3) => (
                               <div key={`m-${i}-c-${i2}-s-${i3}`}>
@@ -1107,8 +1266,8 @@ const DinoForm = (props: DinoFormProps) => {
                               />
                             </div>
                           )}
-                        </div>
-                      </div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 </div>
@@ -1117,10 +1276,70 @@ const DinoForm = (props: DinoFormProps) => {
 
             <FieldError name="movement" className="rw-field-error" />
 
+            {props?.dino && (
+              <div className="mt-3 table table-auto rounded-lg max-w-2xl border border-zinc-500 border-opacity-70 p-2 text-left">
+                <div className="table-header-group w-full text-xs text-black dark:text-zinc-300">
+                  <div className="table-cell p-2">Item</div>
+                  <div className="table-cell w-1/5 p-2">Value</div>
+                  <div className="table-cell p-2">Type</div>
+                  <div className="table-cell p-2">Action</div>
+                </div>
+                {props?.dino?.DinoStat.map((dinoStat) => {
+                  return (
+                    <div className={`table-row-group w-full text-xs text-black dark:text-white`}>
+                      <div className="table-cell w-2/5 p-2">{dinoStat.Item.name}</div>
+                      <div className="table-cell p-2">
+                        {dinoStat.value}
+                      </div>
+                      <div className="table-cell truncate p-2">
+                        {dinoStat.type}
+                      </div>
+                      <div className="table-cell align-middle relative">
+                        <Button
+                          permission="gamedata_update"
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                          onClick={() => setOpenModal({ open: true, dino_stat: dinoStat })}
+                          startIcon={
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                              <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                            </svg>
+                          }
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                })}
+                <div className={`table-row-group w-full text-xs text-black dark:text-white`}>
+                  <div className="table-cell w-2/5 p-2">-</div>
+                  <div className="table-cell p-2">
+                    -
+                  </div>
+                  <div className="table-cell truncate p-2">
+                    -
+                  </div>
+                  <div className="table-cell align-middle relative">
+                    <Button
+                      permission="gamedata_update"
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setOpenModal({ open: true, dino_stat: null })}
+                    >
+                      New
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <Input
               label={"Base points"}
               name="base_points"
-              defaultValue={props.dino?.base_points || 0}
+              defaultValue={dino?.base_points || 0}
               InputProps={{
                 min: 0,
               }}
@@ -1136,7 +1355,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Default Damage"
                 name="default_dmg"
-                defaultValue={props.dino?.default_dmg || 0}
+                defaultValue={dino?.default_dmg || 0}
                 InputProps={{
                   min: 0,
                 }}
@@ -1149,7 +1368,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Default Swing Radius"
                 name="default_swing_radius"
-                defaultValue={props.dino?.default_swing_radius || 0}
+                defaultValue={dino?.default_swing_radius || 0}
                 InputProps={{
                   min: 0,
                 }}
@@ -1168,106 +1387,92 @@ const DinoForm = (props: DinoFormProps) => {
               Attacks
             </Label>
 
-            {attackFields.map((atk, index) => (
-              <div
-                className="rw-button-group !mt-0 justify-start"
-                role="group"
-                key={`attack-${index}`}
-              >
-                <input
+            {attackFields.map(({ id, name, dmg, radius, stamina, interval }, index) => (
+              <ButtonGroup key={`attack-${index}`} className="mt-2">
+                <Input
+                  label={`Name`}
                   {...register(`attack.${index}.name`, { required: true })}
-                  type="text"
-                  className="rw-input mt-0"
-                  defaultValue={atk.name}
-                  placeholder={"Name of attack"}
+                  defaultValue={name}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Damage`}
                   {...register(`attack.${index}.dmg`, { required: false })}
+                  defaultValue={dmg}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.dmg}
-                  placeholder={"Damage"}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Radius`}
                   {...register(`attack.${index}.radius`, { required: false })}
+                  defaultValue={radius}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.radius}
-                  placeholder={"Radius"}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Stamina`}
                   {...register(`attack.${index}.stamina`, { required: false })}
+                  defaultValue={stamina}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.stamina}
-                  placeholder={"Stamina drained per use"}
+                  margin="none"
                 />
-                <input
+                <Input
+                  label={`Interval`}
                   {...register(`attack.${index}.interval`, { required: false })}
+                  defaultValue={interval}
                   type="number"
-                  className="rw-input mt-0 max-w-[8rem]"
-                  defaultValue={atk.interval}
-                  placeholder={"Cooldown"}
+                  margin="none"
                 />
-                <button
-                  type="button"
-                  className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                <Button
+                  variant="contained"
+                  color="error"
                   onClick={() => removeAttack(index)}
+                  startIcon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                    >
+                      <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                    </svg>
+                  }
                 >
                   Remove
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                    className="rw-button-icon-end"
-                  >
-                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                  </svg>
-                </button>
-              </div>
+                </Button>
+              </ButtonGroup>
             ))}
-            <div className="rw-button-group justify-start">
-              <button
-                type="button"
-                className="rw-button rw-button-gray"
-                onClick={() =>
-                  appendAttack({
-                    name: "",
-                    dmg: null,
-                    radius: null,
-                    stamina: null,
-                    interval: null,
-                  })
-                }
-              >
-                Add Attack
-              </button>
-            </div>
-            {/*
-        <TextField
-          name="attack"
-          defaultValue={JSON.stringify(props.dino?.attack)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={"undefined"}
-          validation={{ valueAsJSON: true }}
-        /> */}
+            <Button
+              variant="contained"
+              color="success"
+              className="my-2"
+              onClick={() =>
+                appendAttack({
+                  name: "",
+                  dmg: null,
+                  radius: null,
+                  stamina: null,
+                  interval: null,
+                })
+              }
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              Add Attack
+            </Button>
 
             <FieldError name="attack" className="rw-field-error" />
-            {/* </Form> */}
           </Step>
 
           <Step title="Mating">
-            {/* <Form<FormDino> onSubmit={onSubmit} error={props.error}>
-              <FormError
-                error={props.error}
-                wrapperClassName="rw-form-error-wrapper"
-                titleClassName="rw-form-error-title"
-                listClassName="rw-form-error-list"
-              /> */}
             <Switch
               name="breedable"
               onLabel="Breedable"
-              defaultChecked={props.dino?.breedable}
+              defaultChecked={dino?.breedable}
               helperText="Is this dino breedable?"
             />
 
@@ -1278,7 +1483,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Egg minimum temperature"
                 name="egg_min"
-                defaultValue={props.dino?.egg_min || 0}
+                defaultValue={dino?.egg_min || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1297,7 +1502,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Egg maximum temperature"
                 name="egg_max"
-                defaultValue={props.dino?.egg_max || 0}
+                defaultValue={dino?.egg_max || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1318,7 +1523,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Mating cooldown minimum"
                 name="mating_cooldown_min"
-                defaultValue={props.dino?.mating_cooldown_min || 0}
+                defaultValue={dino?.mating_cooldown_min || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1337,7 +1542,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Mating cooldown maximum"
                 name="mating_cooldown_max"
-                defaultValue={props.dino?.mating_cooldown_max || 0}
+                defaultValue={dino?.mating_cooldown_max || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1357,7 +1562,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Incubation Time"
                 name="incubation_time"
-                defaultValue={props.dino?.incubation_time || 0}
+                defaultValue={dino?.incubation_time || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1375,7 +1580,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Maturation Time"
                 name="maturation_time"
-                defaultValue={props.dino?.maturation_time || 0}
+                defaultValue={dino?.maturation_time || 0}
                 InputProps={{
                   min: 0,
                   endAdornment: (
@@ -1393,7 +1598,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Gestation Time"
                 name="gestation_time"
-                defaultValue={props.dino?.gestation_time || 0}
+                defaultValue={dino?.gestation_time || 0}
                 InputProps={{
                   min: 0,
                 }}
@@ -1406,7 +1611,7 @@ const DinoForm = (props: DinoFormProps) => {
               <Input
                 label="Baby food consumption multiplier"
                 name="baby_food_consumption_mult"
-                defaultValue={props.dino?.baby_food_consumption_mult || 0}
+                defaultValue={dino?.baby_food_consumption_mult || 0}
                 InputProps={{
                   min: 0,
                 }}
@@ -1417,491 +1622,13 @@ const DinoForm = (props: DinoFormProps) => {
               />
 
             </div>
-            {/* </Form> */}
           </Step>
         </Stepper>
 
-        {/* <Disclosure className="mt-5" title="Other" text_size="text-lg">
-        <NewDinoStat dino_id={props?.dino?.id} />
-        <div>
-          <div>
-             TODO: convert this to DinoStat Form *
-            TODO: Find solution for this stuff
-            {/ Add for fits_through, gather_eff, weight_red, immobilized_by, drops and the other types *}
-            {/ <Label
-                name="immobilized_by"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Immobilized by
-              </Label>
 
-              <CheckboxGroup
-                name="immobilized_by"
-                defaultValue={props.dino?.DinoStat.filter(
-                  (d) => d.type === "immobilized_by"
-                ).map((d) => d.item_id.toString())}
-                options={[
-                  {
-                    value: "733",
-                    label: "Lasso",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/lasso.png",
-                  },
-                  {
-                    value: "1040",
-                    label: "Bola",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bola.png",
-                  },
-                  {
-                    value: "725",
-                    label: "Chain Bola",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chain-bola.png",
-                  },
-                  {
-                    value: "785",
-                    label: "Net Projectile",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/net-projectile.png",
-                  },
-                  {
-                    value: "1252",
-                    label: "Plant Species Y Trap",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/plant-species-y-trap.png",
-                  },
-                  {
-                    value: "383",
-                    label: "Bear Trap",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bear-trap.png",
-                  },
-                  {
-                    value: "384",
-                    label: "Large Bear Trap",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/large-bear-trap.png",
-                  },
-                ]}
-              />
-
-              <FieldError name="immobilized_by" className="rw-field-error" /> *}
-            {/* <Label
-                name="fits_through"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Fits through
-              </Label>
-
-              <CheckboxGroup
-                name="fits_through"
-                defaultValue={props.dino?.fits_through}
-                options={[
-                  {
-                    value: "322",
-                    label: "Doorframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
-                  },
-                  {
-                    value: "1066",
-                    label: "Double Doorframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-double-doorframe.png",
-                  },
-                  {
-                    value: "143",
-                    label: "Dinosaur Gateway",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-dinosaur-gateway.png",
-                  },
-                  {
-                    value: "381",
-                    label: "Behemoth Dino Gateway",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/behemoth-stone-dinosaur-gateway.png",
-                  },
-                  {
-                    value: "316",
-                    label: "Hatchframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
-                  },
-                  {
-                    value: "619",
-                    label: "Giant Hatchframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/giant-stone-hatchframe.png",
-                  },
-                ]}
-              />
-
-              <FieldError name="fits_through" className="rw-field-error" /> *}
-            <Label
-              name="DinoStat.create.0.item_id"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Gather Efficiency
-            </Label>
-
-            {statFields
-              // .filter((ge) => ge.type === "gather_efficiency")
-              .map((ge, index) => {
-                const g = ge as any;
-                return (
-                  g.type === "gather_efficiency" && (
-                    <div
-                      className="rw-button-group justify-start"
-                      role="group"
-                      key={`ge-${index}`}
-                    >
-                      <Lookup
-                        key={ge.id}
-                        {...register(
-                          `DinoStat.create.${index}.item_id` as const,
-                          {
-                            required: true,
-                          }
-                        )}
-                        className="!w-full !rounded-none !rounded-l-md border-r-transparent"
-                        options={data.itemsByCategory.items
-                          .filter((i) => i.category === "Resource")
-                          .map((item) => ({
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
-                          }))}
-                        // defaultValue={[ge.item_id]}
-                        closeOnSelect={true}
-                      />
-                      <NumberField
-                        {...register(
-                          `DinoStat.create.${index}.value` as const,
-                          {
-                            required: true,
-                            min: 0,
-                            max: 5,
-                            valueAsNumber: true,
-                          }
-                        )}
-                        className="rw-input mt-0 max-w-[7rem]"
-                        defaultValue={g.value}
-                      />
-                      <TextField
-                        {...register(`DinoStat.create.${index}.type`, {
-                          required: false,
-                        } as const)}
-                        className="rw-input mt-0 hidden max-w-[7rem]"
-                      // defaultValue={g.type}
-                      />
-                      <button
-                        type="button"
-                        className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                        onClick={() => removeStat(index)}
-                      >
-                        Remove
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                          className="rw-button-icon-end"
-                        >
-                          <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                        </svg>
-                      </button>
-                    </div>
-                  )
-                );
-              })}
-            <div className="rw-button-group justify-start">
-              <button
-                type="button"
-                className="rw-button rw-button-gray !ml-0"
-                onClick={() =>
-                  appendStat({
-                    item_id: 0,
-                    type: "gather_efficiency",
-                    value: 0,
-                  })
-                }
-              >
-                Add Gather Efficiency
-              </button>
-            </div>
-
-            <FieldError
-              name="DinoStat.create.0.item_id"
-              className="rw-field-error"
-            />
-          </div>
-          <div>
-            <Label
-              name="weight_reduction"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Weight reduction
-            </Label>
-
-            {statFields
-              // .filter((stat) => stat.type === "weight_reduction")
-              .map((wr, index) => {
-                const w = wr as any;
-                return (
-                  w.type === "weight_reduction" && (
-                    <div
-                      className="rw-button-group justify-start"
-                      role="group"
-                      key={`wr-${index}`}
-                    >
-                      <Lookup
-                        {...register(`DinoStat.create.${index}.item_id`)}
-                        className="!mt-0 !rounded-none !rounded-l-md"
-                        options={data.itemsByCategory.items
-                          .filter((i) => i.category === "Resource")
-                          .map((item) => ({
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
-                          }))}
-                        defaultValue={w.item_id}
-                      />
-                      <NumberField
-                        {...register(`DinoStat.create.${index}.value`, {
-                          required: true,
-                          min: 0,
-                          max: 100,
-                          valueAsNumber: true,
-                        })}
-                        className="rw-input mt-0 max-w-[7rem]"
-                        defaultValue={w.value}
-                      />
-                      <TextField
-                        {...register(`DinoStat.create.${index}.type`)}
-                        className="rw-input mt-0 hidden max-w-[7rem]"
-                        defaultValue={w.type}
-                      />
-                      <button
-                        type="button"
-                        className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                        onClick={() => removeStat(index)}
-                      >
-                        Remove
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                          className="rw-button-icon-end"
-                        >
-                          <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                        </svg>
-                      </button>
-                    </div>
-                  )
-                );
-              })}
-            <div className="rw-button-group justify-start">
-              <button
-                type="button"
-                className="rw-button rw-button-gray !ml-0"
-                onClick={() =>
-                  appendStat({
-                    item_id: 0,
-                    type: "weight_reduction",
-                    value: 0,
-                  })
-                }
-              >
-                Add Weight Reduction
-              </button>
-            </div>
-
-            <FieldError name="weight_reduction" className="rw-field-error" />
-
-            <Label
-              name="drops"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Drops
-            </Label>
-
-            {statFields
-              // .filter((ge) => ge.type === "drops")
-              .map((dr, index) => {
-                const d = dr as any;
-                return (
-                  d.type === "drops" && (
-                    <div
-                      className="rw-button-group !mt-0 justify-start"
-                      role="group"
-                      key={`drops-${index}`}
-                    >
-                      <Lookup
-                        {...register(`DinoStat.create.${index}.item_id`, {
-                          required: true,
-                        })}
-                        className="!mt-0 !rounded-none !rounded-l-md"
-                        options={
-                          data
-                            ? data.itemsByCategory.items
-                              .filter((i) => i.category === "Resource")
-                              .map((item) => ({
-                                type: item.type,
-                                label: item.name,
-                                value: item.id,
-                                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                              }))
-                            : []
-                        }
-                        defaultValue={d.item_id}
-                      />
-                      <TextField
-                        {...register(`DinoStat.create.${index}.value`, {
-                          required: false,
-                        })}
-                        emptyAs={null}
-                        className="rw-input mt-0 hidden max-w-[7rem]"
-                        defaultValue={d.value}
-                      />
-                      <TextField
-                        {...register(`DinoStat.create.${index}.type`, {
-                          required: false,
-                        } as const)}
-                        className="rw-input mt-0 hidden max-w-[7rem]"
-                        defaultValue={d.type}
-                      />
-                      <button
-                        type="button"
-                        title="Close"
-                        className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                        onClick={() => removeStat(index)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                          className="rw-button-icon-end"
-                        >
-                          <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                        </svg>
-                      </button>
-                    </div>
-                  )
-                );
-              })}
-            <div className="rw-button-group justify-start">
-              <button
-                type="button"
-                className="rw-button rw-button-gray !ml-0"
-                onClick={() =>
-                  appendStat({ item_id: 0, value: null, type: "drops" })
-                }
-              >
-                Add Drop
-              </button>
-            </div>
-
-            <FieldError name="drops" className="rw-field-error" />
-          </div>
-        </div>
-
-        <div>
-          <div>
-            {/* {props.dino?.ridable && (<> /}
-
-            <Label
-              name="saddle_id"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Saddle
-            </Label>
-
-            {statFields.map((sd, index) => {
-              const s = sd as any;
-              return (
-                s.type === "saddle" && (
-                  <div
-                    className="rw-button-group justify-start"
-                    role="group"
-                    key={`wr-${index}`}
-                  >
-                    <Lookup
-                      {...register(`DinoStat.create.${index}.item_id`)}
-                      className="!mt-0 !rounded-none !rounded-l-md"
-                      options={data.itemsByCategory.items
-                        .filter((i) => i.category === "Armor")
-                        .map((item) => ({
-                          type: item.type,
-                          label: item.name,
-                          value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        }))}
-                      defaultValue={s.item_id}
-                    />
-                    <NumberField
-                      {...register(`DinoStat.create.${index}.value`, {
-                        required: true,
-                        min: 0,
-                        max: 100,
-                        valueAsNumber: true,
-                      })}
-                      className="rw-input mt-0 max-w-[7rem]"
-                      defaultValue={s.value}
-                    />
-                    <TextField
-                      {...register(`DinoStat.create.${index}.type`)}
-                      className="rw-input mt-0 hidden max-w-[7rem]"
-                      defaultValue={s.type}
-                    />
-                    <button
-                      type="button"
-                      className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                      onClick={() => removeStat(index)}
-                    >
-                      Remove
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                        className="rw-button-icon-end"
-                      >
-                        <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                      </svg>
-                    </button>
-                  </div>
-                )
-              );
-            })}
-            <div className="rw-button-group justify-start">
-              <button
-                type="button"
-                className="rw-button rw-button-gray !ml-0"
-                onClick={() =>
-                  appendStat({
-                    item_id: 0,
-                    type: "saddle",
-                    value: 0,
-                  })
-                }
-              >
-                Add Saddle
-              </button>
-            </div>
-
-            <FieldError name="saddle_id" className="rw-field-error" />
-          </div>
-        </div>
-      </Disclosure> */}
-        {/* TODO: fix */}
-
-
-        <Button variant="contained" color="success" disabled={props.loading} type="submit">
+        {/* <Button variant="contained" color="success" disabled={props.loading} type="submit">
           Submit
-        </Button>
+        </Button> */}
       </Form>
     </div>
   );

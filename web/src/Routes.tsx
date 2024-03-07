@@ -154,6 +154,7 @@ const Routes = () => {
           <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
           <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
+
         <Set
           wrap={ScaffoldLayout}
           title="ItemRecipes"
@@ -166,24 +167,19 @@ const Routes = () => {
             roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
           >
             <Route
-              path="/item-recipes/new"
-              page={ItemRecipeNewItemRecipePage}
+              path="/item/item-recipes/new"
+              page={ItemItemRecipeNewItemRecipePage}
               name="newItemRecipe"
             />
             <Route
-              path="/item-recipes/{id:Int}/edit"
-              page={ItemRecipeEditItemRecipePage}
+              path="/item/item-recipes/{id:Int}/edit"
+              page={ItemItemRecipeEditItemRecipePage}
               name="editItemRecipe"
             />
           </Private>
           <Route
-            path="/item-recipes/{id:Int}"
-            page={ItemRecipeItemRecipePage}
-            name="itemRecipe"
-          />
-          <Route
-            path="/item-recipes"
-            page={ItemRecipeItemRecipesPage}
+            path="/item/item-recipes"
+            page={ItemItemRecipeItemRecipesPage}
             name="itemRecipes"
           />
         </Set>
@@ -243,72 +239,6 @@ const Routes = () => {
         </Set>
         <Set
           wrap={ScaffoldLayout}
-          title="MapRegions"
-          titleTo="mapRegions"
-          buttonLabel="New MapRegion"
-          buttonTo="newMapRegion"
-        >
-          <Private
-            unauthenticated="home"
-            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
-          >
-            <Route
-              path="/map-regions/new"
-              page={MapRegionNewMapRegionPage}
-              name="newMapRegion"
-            />
-            <Route
-              path="/map-regions/{id:Int}/edit"
-              page={MapRegionEditMapRegionPage}
-              name="editMapRegion"
-            />
-          </Private>
-          <Route
-            path="/map-regions/{id:Int}"
-            page={MapRegionMapRegionPage}
-            name="mapRegion"
-          />
-          <Route
-            path="/map-regions"
-            page={MapRegionMapRegionsPage}
-            name="mapRegions"
-          />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
-          title="MapResources"
-          titleTo="mapResources"
-          buttonLabel="New MapResource"
-          buttonTo="newMapResource"
-        >
-          <Private
-            unauthenticated="home"
-            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
-          >
-            <Route
-              path="/map-resources/new"
-              page={MapResourceNewMapResourcePage}
-              name="newMapResource"
-            />
-            <Route
-              path="/map-resources/{id:Int}/edit"
-              page={MapResourceEditMapResourcePage}
-              name="editMapResource"
-            />
-          </Private>
-          <Route
-            path="/map-resources/{id:Int}"
-            page={MapResourceMapResourcePage}
-            name="mapResource"
-          />
-          <Route
-            path="/map-resources"
-            page={MapResourceMapResourcesPage}
-            name="mapResources"
-          />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
           title="Dinos"
           titleTo="dinos"
           buttonLabel="New Dino"
@@ -328,34 +258,6 @@ const Routes = () => {
           <Route path="/dinos/{id}" page={DinoDinoPage} name="dino" />
           <Route path="/dinos" page={DinoDinosPage} name="dinos" />
         </Set>
-        {/* <Set
-          wrap={ScaffoldLayout}
-          title="DinoStats"
-          titleTo="dinoStats"
-          buttonLabel="New DinoStat"
-          buttonTo="newDinoStat"
-        >
-          <Route
-            path="/dino-stats/new"
-            page={DinoStatNewDinoStatPage}
-            name="newDinoStat"
-          />
-          <Route
-            path="/dino-stats/{id}/edit"
-            page={DinoStatEditDinoStatPage}
-            name="editDinoStat"
-          />
-          <Route
-            path="/dino-stats/{id}"
-            page={DinoStatDinoStatPage}
-            name="dinoStat"
-          />
-          <Route
-            path="/dino-stats"
-            page={DinoStatDinoStatsPage}
-            name="dinoStats"
-          />
-        </Set> */}
         <Set
           wrap={ScaffoldLayout}
           title="Profiles"

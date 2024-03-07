@@ -7,34 +7,34 @@ import type {
 import { db } from "src/lib/db";
 import { requireAuth } from "src/lib/auth";
 
-const POSTS_PER_PAGE = 6;
-export const basespotPage: QueryResolvers["basespotPage"] = ({
-  page,
-  map,
-  type,
-}) => {
-  const offset = (page - 1) * POSTS_PER_PAGE;
-  const types = type?.split(",").map((t) => t.trim());
-  const where = {
-    ...(map && { map_id: map }),
-    ...(type && {
-      type: {
-        in: types,
-      },
-    }),
-  };
-  return {
-    basespots: db.basespot.findMany({
-      take: POSTS_PER_PAGE,
-      skip: offset,
-      orderBy: { created_at: "desc" },
-      where: where,
-    }),
-    count: db.basespot.count({
-      where: where,
-    }),
-  };
-};
+// const POSTS_PER_PAGE = 6;
+// export const basespotPage: QueryResolvers["basespotPage"] = ({
+//   page,
+//   map,
+//   type,
+// }) => {
+//   const offset = (page - 1) * POSTS_PER_PAGE;
+//   const types = type?.split(",").map((t) => t.trim());
+//   const where = {
+//     ...(map && { map_id: map }),
+//     ...(type && {
+//       type: {
+//         in: types,
+//       },
+//     }),
+//   };
+//   return {
+//     basespots: db.basespot.findMany({
+//       take: POSTS_PER_PAGE,
+//       skip: offset,
+//       orderBy: { created_at: "desc" },
+//       where: where,
+//     }),
+//     count: db.basespot.count({
+//       where: where,
+//     }),
+//   };
+// };
 
 export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
   cursorId,
@@ -42,6 +42,7 @@ export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
   skip = 0,
   map,
   type,
+  search,
 }) => {
   const query: Record<string, any | never | unknown | null> = {
     cursor: null,
@@ -52,6 +53,7 @@ export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
   const types = type?.split(",").map((t) => t.trim());
   const where = {
     ...(map && { map_id: map }),
+    ...(search && { name: { contains: search } }),
     ...(type && {
       type: {
         in: types,
@@ -78,13 +80,18 @@ export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
 
 export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
   // return db.basespot.findMany();
-  // return db.$queryRaw`SELECT type FROM Basespot;`;
-  return db.basespot.groupBy({
-    by: ["type"],
-  });
-  // return db.basespot.findMany({
-  //   distinct: ["type"],
+  // const distinctTypes = db.$queryRaw`SELECT DISTINCT type FROM public.Basespot;`;
+  // console.log("distinctTypes");
+  // console.log(distinctTypes);
+  // return distinctTypes;
+  // return db.basespot.groupBy({
+  //   by: "type",
   // });
+  return db.$queryRaw`SELECT DISTINCT type FROM public."Basespot"`;
+  // return db.basespot.findMany({
+  //   distinct: "type",
+  // });
+  // .filter((value, index, array) => array.indexOf(value) === index);
 };
 
 export const basespots: QueryResolvers["basespots"] = () => {

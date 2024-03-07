@@ -1,7 +1,7 @@
-import NewDino from 'src/components/Dino/NewDino'
+import NewDinoCell from 'src/components/Dino/NewDinoCell'
 
 const NewDinoPage = () => {
-  return <NewDino />
+  return <NewDinoCell />
 }
 
 export default NewDinoPage

@@ -371,11 +371,11 @@ export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
       },
     };
     const colors = {
-      primary: `text-blue-400`,
-      secondary: `text-zinc-500`,
-      success: `text-green-500`,
-      error: `text-red-500`,
-      warning: `text-amber-400`,
+      primary: `text-primary-400`,
+      secondary: `text-secondary-500`,
+      success: `text-success-500`,
+      error: `text-error-500`,
+      warning: `text-warning-400`,
       disabled: `dark:text-white/50 text-black/50`,
       DEFAULT: `dark:text-white text-black`,
       DEFAULTNOFOCUS: `dark:text-white/70 text-black/70`,
@@ -766,6 +766,7 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
       multiline,
       size: fcs.size,
       variant: fcs.variant || variant,
+      required: fcs.required,
       startAdornment,
       type,
     };
@@ -789,11 +790,11 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
     };
 
     const borders = {
-      primary: `after:border-blue-400`,
-      secondary: `after:border-zinc-500`,
-      success: `after:border-pea-500`,
-      error: `after:border-red-500`,
-      warning: `after:border-amber-400`,
+      primary: `after:border-primary-400`,
+      secondary: `after:border-secondary-500`,
+      success: `after:border-success-500`,
+      error: `after:border-error-500`,
+      warning: `after:border-warning-400`,
       DEFAULT: `after:border-black after:dark:border-white`,
     };
 
@@ -899,22 +900,23 @@ export const InputBase = forwardRef<HTMLDivElement, InputBaseProps>(
               aria-invalid={fcs.error}
               aria-describedby={ariaDescribedby}
               autoComplete={autoComplete}
+              aria-multiline={multiline}
               autoFocus={autoFocus}
               defaultValue={defaultValue}
               disabled={fcs.disabled}
               id={id}
-              onAnimationStart={handleAutoFill}
               name={name}
               placeholder={placeholder}
               readOnly={readOnly}
               required={fcs.required}
               rows={rows}
               value={value}
-              onKeyDown={onKeyDown}
-              onKeyUp={onKeyUp}
               type={type}
               min={min}
               max={max}
+              onAnimationStart={handleAutoFill}
+              onKeyDown={onKeyDown}
+              onKeyUp={onKeyUp}
               ref={handleInputRef}
               {...inputProps}
               className={clsx(
@@ -1054,11 +1056,11 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
   }
 
   const borders = {
-    primary: `border-blue-400`,
-    secondary: `border-zinc-500`,
-    success: `border-pea-500`,
-    error: `border-red-500`,
-    warning: `border-amber-400`,
+    primary: `border-primary-400`,
+    secondary: `border-secondary-500`,
+    success: `border-success-500`,
+    error: `border-error-500`,
+    warning: `border-warning-400`,
     disabled: `dark:border-white/30 border-black/30`,
     DEFAULT: `border-black dark:border-white`,
     DEFAULTNOFOCUS: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`,
@@ -1082,7 +1084,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       error={error || Boolean(fieldState?.error)}
       fullWidth={fullWidth}
       ref={ref}
-      required={Boolean(validation?.required)}
+      required={Boolean(validation?.required) || other?.required}
       color={color}
       variant={variant}
       ownerState={ownerState}
@@ -1132,6 +1134,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         renderSuffix={(state) =>
           variant === "outlined" ? (
             <fieldset
+              form={null}
               {...SuffixProps}
               aria-hidden
               className={clsx(
@@ -1191,9 +1194,9 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
       {helperText && (
         <p
           id={helperTextId}
-          className={clsx("rw-helper-text", {
-            "!text-red-500": error || fieldState?.error || fieldState?.invalid,
-            "dark:!text-white/50 !text-black/50 text-opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
+          className={clsx("mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70", {
+            "!text-error-500": error || fieldState?.error || fieldState?.invalid,
+            "opacity-50": (disabled || field?.disabled) && !(error || fieldState?.error || fieldState?.invalid)
           })}
           {...FormHelperTextProps}
         >
@@ -1201,7 +1204,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>((props, ref) => {
         </p>
       )}
 
-      {field && (<FieldError name={name} className="rw-field-error" />)}
+      {field && (<FieldError name={name} className="mt-1 block text-xs font-semibold uppercase text-error-600" />)}
     </FormControl>
   );
 });

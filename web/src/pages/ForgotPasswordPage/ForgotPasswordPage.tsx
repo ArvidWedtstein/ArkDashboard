@@ -6,6 +6,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Button from "src/components/Util/Button/Button";
+import { Input } from "src/components/Util/Input/Input";
 
 type FormForgotPassword = NonNullable<{
   email: string;
@@ -47,13 +48,14 @@ const ForgotPasswordPage = () => {
 
           <Form<FormForgotPassword>
             onSubmit={onSubmit}
-            className="rw-form-wrapper rw-segment-main text-center"
+            className="rw-segment-main text-center"
           >
             <div className="relative">
-              <TextField
+              <Input
                 name="email"
-                className="rw-float-input peer w-60"
-                errorClassName="rw-float-input rw-input-error"
+                label="Email"
+                autoFocus
+                autoComplete="email"
                 validation={{
                   required: true,
                   pattern: {
@@ -61,19 +63,7 @@ const ForgotPasswordPage = () => {
                     message: "Please enter a valid email address",
                   },
                 }}
-                autoComplete="email"
-                autoFocus={true}
-                placeholder=" "
               />
-              <Label
-                name="email"
-                className="rw-float-label"
-                errorClassName="rw-float-label rw-label-error"
-              >
-                Enter your email
-              </Label>
-
-              <FieldError name="email" className="rw-field-error" />
             </div>
 
             <Button type="submit" variant="contained" color="success" className="my-3">

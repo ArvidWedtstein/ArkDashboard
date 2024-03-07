@@ -2,22 +2,23 @@ import { Link } from "@redwoodjs/router";
 import clsx from "clsx";
 import {
   AnchorHTMLAttributes,
-  CSSProperties,
+  DetailedHTMLProps,
+  ForwardedRef,
   HTMLAttributes,
   ImgHTMLAttributes,
-  LegacyRef,
   MouseEventHandler,
   ReactNode,
   Ref,
+  RefAttributes,
   forwardRef,
   useRef,
 } from "react";
 import Ripple from "../Ripple/Ripple";
-import { useRipple } from "src/components/useRipple";
+import { useRipple } from "src/hooks/useRipple";
 import { IntRange } from "src/lib/formatters";
+import Text from "../Text/Text";
 
 export type CardProps = {
-  sx?: CSSProperties;
   children?: ReactNode | ReactNode[];
   variant?: "standard" | "outlined" | "elevation" | "gradient";
   elevation?: IntRange<0, 7>;
@@ -25,16 +26,18 @@ export type CardProps = {
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 >;
-export const Card = ({
-  sx,
-  children,
-  className,
-  variant = "standard",
-  elevation = variant === "elevation" ? 1 : 0,
-  ...props
-}: CardProps) => {
+export const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
+  const {
+    style,
+    children,
+    className,
+    variant = "standard",
+    elevation = variant === "elevation" ? 1 : 0,
+    ...other
+  } = props;
   return (
     <div
+      ref={ref}
       className={clsx(
         "relative overflow-hidden rounded text-black dark:text-white",
         className,
@@ -51,72 +54,65 @@ export const Card = ({
         }
       )}
       style={{
-        ...sx,
+        ...style,
         ...(variant !== 'gradient' ? {
-          backgroundImage: !!sx?.backgroundImage
-            ? sx?.backgroundImage
+          backgroundImage: !!style?.backgroundImage
+            ? style?.backgroundImage
             : `linear-gradient(#ffffff0d, #ffffff0d)`
         } : {}),
       }}
-      {...props}
+      {...other}
     >
       {children}
     </div>
   );
-};
+});
 
 type CardHeaderProps = {
-  sx?: CSSProperties;
   avatar?: ReactNode;
   action?: ReactNode;
-  title?: ReactNode;
+  title?: ReactNode | string;
   subheader?: ReactNode;
-  className?: HTMLAttributes<HTMLDivElement>["className"];
   titleProps?: HTMLAttributes<HTMLSpanElement>;
   subheaderProps?: HTMLAttributes<HTMLSpanElement>;
-};
-export const CardHeader = ({
-  sx,
-  avatar,
-  title,
-  titleProps,
-  subheader,
-  subheaderProps,
-  action,
-  className,
-}: CardHeaderProps) => {
+} & Omit<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>, 'title'>;
+export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>((props, ref) => {
+  const {
+    avatar,
+    title,
+    titleProps,
+    subheader,
+    subheaderProps,
+    action,
+    className,
+    ...other
+  } = props;
   return (
     <div
       className={clsx(
         "relative flex items-center justify-start p-4",
         className
       )}
-      style={sx}
+      ref={ref}
+      {...other}
     >
       {avatar && <div className="mr-4 flex flex-[0_0_auto]">{avatar}</div>}
       {(title || subheader) && (
         <div className="flex-[1_1_auto]">
           {title && (
-            <span
-              {...titleProps}
-              className={clsx(
-                "font-montserrat m-0 block text-sm font-normal leading-[1.43]",
-                titleProps?.className
-              )}
-            >
+            <Text variant="body2" {...titleProps} className={clsx("block", titleProps?.className)}>
               {title}
-            </span>
+            </Text>
           )}
+
+
           {subheader && (
-            <span
-              {...subheaderProps}
-              className={clsx(
-                "font-montserrat m-0 block text-sm font-normal leading-[1.43] text-black/70 dark:text-white/70",
-                subheaderProps?.className
-              )}
-            >
+            <Text variant="body2" {...subheaderProps} className={clsx("block text-black/70 dark:text-white/70", subheaderProps?.className)}>
               {subheader}
-            </span>
+            </Text>
           )}
         </div>
       )}
@@ -125,7 +121,7 @@ export const CardHeader = ({
       )}
     </div>
   );
-};
+});
 
 type CardMediaImgProps = {
   alt: string;
@@ -136,7 +132,6 @@ type CardMediaBaseProps = {
   component?: "div" | "img";
   image: string;
   title?: string;
-  sx?: CSSProperties;
   className?: HTMLAttributes<HTMLDivElement>["className"];
 };
 
@@ -146,69 +141,77 @@ type CardMediaImg = CardMediaBaseProps &
 
 type CardMediaDiv = CardMediaBaseProps & {
   children?: ReactNode;
-};
+} & DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
 
 type CardMediaProps = CardMediaDiv | CardMediaImg;
-export const CardMedia = ({ component = "img", ...props }: CardMediaProps) => {
+export const CardMedia = forwardRef<HTMLImageElement | HTMLDivElement, CardMediaProps>((props, ref) => {
+  const { component = "img", ...other } = props;
   if (component === "img") {
-    const { alt, height, className, image, sx, ...imgprops } =
-      props as CardMediaImg;
+    const { alt, height, className, image, ...imgprops } =
+      other as CardMediaImg;
     return (
       <img
+        ref={ref as ForwardedRef<HTMLImageElement>}
         className={className}
         src={image}
-        style={sx}
-        title={props.title}
         alt={alt}
         height={height}
         {...imgprops}
       />
     );
   } else {
-    const { sx, image, title, className, children, ...divProps } = props;
+    const { style, image, className, children, ...divProps } = other;
     return (
       <div
+        ref={ref}
         className={clsx("block !bg-cover bg-center bg-no-repeat", className)}
         role="img"
         style={{
-          ...sx,
+          ...style,
           background: `url(${image})`,
         }}
-        title={title}
         {...divProps}
       >
         {children}
       </div>
     );
   }
-};
+});
 
 type CardContentProps = {
   children?: ReactNode | ReactNode[];
-  sx?: CSSProperties;
   className?: HTMLAttributes<HTMLDivElement>["className"];
-};
-export const CardContent = ({ children, sx, className }: CardContentProps) => {
+} & DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+export const CardContent = forwardRef<HTMLDivElement, CardContentProps>((props, ref) => {
+  const { children, className, ...other } = props;
   return (
-    <div className={clsx("p-4", className)} style={sx}>
+    <div ref={ref} className={clsx("p-4", className)} {...other}>
       {children}
     </div>
   );
-};
+});
 
 type CardActionsProps = {
   children?: ReactNode | ReactNode[];
-  className?: HTMLAttributes<HTMLDivElement>["className"];
-  sx?: CSSProperties;
-};
+} & DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
 
-export const CardActions = ({ children, className, sx }: CardActionsProps) => {
+export const CardActions = forwardRef<HTMLDivElement, CardActionsProps>((props, ref) => {
+  const { children, className, ...other } = props;
   return (
-    <div style={sx} className={clsx("flex items-center p-2", className)}>
+    <div ref={ref} className={clsx("flex items-center p-2", className)} {...other}>
       {children}
     </div>
   );
-};
+});
 
 type CardActionAreaBaseProps = CardActionsProps & {
   disabled?: boolean;
@@ -216,16 +219,21 @@ type CardActionAreaBaseProps = CardActionsProps & {
   component?: "link" | "button";
 };
 
-type ButtonProps = CardActionAreaBaseProps & HTMLAttributes<HTMLButtonElement>;
-type LinkProps = CardActionAreaBaseProps &
-  AnchorHTMLAttributes<HTMLAnchorElement> & {
-    to: string;
-    onClick?: MouseEventHandler<HTMLAnchorElement>;
-  };
+type ButtonProps = CardActionAreaBaseProps & DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>;
+type LinkProps = CardActionAreaBaseProps & {
+  to: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+} & DetailedHTMLProps<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  HTMLAnchorElement
+> & RefAttributes<HTMLAnchorElement>;
 
 type CardActionAreaProps = ButtonProps | LinkProps;
-export const CardActionArea = forwardRef((props: CardActionAreaProps, ref) => {
-  const { children, sx, className, component = "button", ...other } = props;
+export const CardActionArea = forwardRef<HTMLAnchorElement | HTMLButtonElement, CardActionAreaProps>((props, ref) => {
+  const { children, className, component = "button", ...other } = props;
   const rippleRef = useRef(null);
   const { enableRipple, getRippleHandlers } = useRipple({
     disabled: other.disabled,
@@ -245,8 +253,7 @@ export const CardActionArea = forwardRef((props: CardActionAreaProps, ref) => {
         )}
         tabIndex={0}
         type="button"
-        style={sx}
-        ref={ref as Ref<HTMLButtonElement>}
+        ref={ref as ForwardedRef<HTMLButtonElement>}
         {...getRippleHandlers(props)}
         {...(other as ButtonProps)}
       >
@@ -254,22 +261,21 @@ export const CardActionArea = forwardRef((props: CardActionAreaProps, ref) => {
         {enableRipple ? <Ripple ref={rippleRef} /> : null}
       </button>
     );
+  } else {
+    return (
+      <Link
+        className={clsx(
+          "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
+          className
+        )}
+        tabIndex={0}
+        ref={ref as ForwardedRef<HTMLAnchorElement>}
+        {...getRippleHandlers(props)}
+        {...(other as LinkProps)}
+      >
+        {children}
+        {enableRipple ? <Ripple ref={rippleRef} /> : null}
+      </Link>
+    )
   }
-
-  return (
-    <Link
-      className={clsx(
-        "relative m-0 box-border block w-full cursor-pointer select-none rounded-[inherit] bg-transparent text-inherit",
-        className
-      )}
-      tabIndex={0}
-      style={sx}
-      ref={ref as Ref<HTMLAnchorElement>}
-      {...getRippleHandlers(props)}
-      {...(other as LinkProps)}
-    >
-      {children}
-      {enableRipple ? <Ripple ref={rippleRef} /> : null}
-    </Link>
-  );
 });

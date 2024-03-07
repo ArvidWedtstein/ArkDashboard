@@ -1,0 +1,28 @@
+import clsx from "clsx";
+import { DetailedHTMLProps, HTMLAttributes, forwardRef } from "react";
+
+type ${pascalName}Props = {
+
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+
+/**
+ * @name ${pascalName}
+ * @description
+ *
+ * @example
+ * ```
+ *
+ * ```
+ */
+const ${pascalName} = forwardRef<HTMLDivElement, ${pascalName}Props>((props, ref) => {
+  const {} = props;
+
+  return (
+    <div ref={ref}>
+      <h2>{'${pascalName}'}</h2>
+      <p>{'Find me in ${outputPath}'}</p>
+    </div>
+  )
+});
+
+export default ${pascalName}

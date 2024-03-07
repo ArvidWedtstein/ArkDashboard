@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -7,7 +8,7 @@ import {
 } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { Lookup } from "../Lookup/Lookup";
-import Button from "../Button/Button";
+import Button, { ButtonGroup } from "../Button/Button";
 import clsx from "clsx";
 import { FindMapsForMapComp } from "types/graphql";
 
@@ -254,14 +255,13 @@ const Map = ({
 
   return (
     <div className={clsx("relative flex flex-col max-w-fit", className)}>
-      <div className="flex flex-row m-0 max-w-[500px]" role="menubar">
+      <ButtonGroup size="small" className="max-w-[1000px] [&>*]:rounded-b-none" role="menubar">
         <Button
           size="small"
           variant="contained"
           color="secondary"
           onClick={() => handleZoomButton("in")}
           disabled={zoom >= 5 || !interactive}
-          className="rounded-r-none first:!rounded-bl-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -278,7 +278,6 @@ const Map = ({
           color="secondary"
           onClick={() => handleZoomButton("out")}
           disabled={zoom == 1 || !interactive}
-          className="rounded-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -294,29 +293,23 @@ const Map = ({
           margin="none"
           disableClearable
           size="small"
-          SuffixProps={{
-            style: {
-              borderRadius: '0',
-              marginRight: '-0.5px'
-            }
-          }}
           // defaultValue={map}
           loading={loading}
-          value={data?.maps?.find((m) => m.id === map || 1) || { id: 2, name: 'The Island' }}
+          value={data?.maps?.find(({ id }) => id === (map || 1)) || { id: 2, name: 'The Island' }}
           disabled={disable_map}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(option) => option.name}
-          options={
-            (data?.maps.filter(
-              (m) =>
-                m.parent_map_id == null &&
-                (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
-            ) as { id: number; name: string }[]) || []
-          }
+          getOptionValue={(opt) => opt.id}
+          options={(data?.maps.filter(
+            (m) =>
+              m.parent_map_id == null &&
+              (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true)
+          ) as { id: number; name: string }[]) || []}
           onSelect={(e) => {
             if (!e) return;
-            onMapChange?.(parseInt(e.id.toString()));
-            setMap(parseInt(e.id.toString()));
+
+            onMapChange?.(e.id);
+            setMap(e.id);
           }}
         />
         {data &&
@@ -328,7 +321,7 @@ const Map = ({
               disableClearable
               size="small"
               loading={loading}
-              value={(data.maps?.find((m) => m.id === map || m.id === map_id)
+              value={(data?.maps?.find((m) => m.id === map || m.id === map_id)
                 .other_Map as { id: number; name: string }[]).find((s) => s?.id === subMap)}
               disabled={disable_sub_map}
               isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -387,7 +380,7 @@ const Map = ({
         >
           Reset
         </Button>
-      </div>
+      </ButtonGroup>
 
       <svg
         ref={svgRef}
@@ -471,7 +464,7 @@ const Map = ({
           {pos &&
             pos
               ?.filter((p) =>
-                p?.map_id ? p?.map_id === map || p.map_id === subMap : true
+                p?.map_id ? (p?.map_id === map || p.map_id === subMap) : true
               )
               ?.map((p, i) => (
                 <React.Fragment key={`map-pos-${i}`}>

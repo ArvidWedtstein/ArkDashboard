@@ -1,10 +1,11 @@
 import clsx from "clsx";
 import { useState } from "react";
 import Collapse from "../Collapse/Collapse";
+import { CheckmarkIcon } from "@redwoodjs/web/dist/toast";
 
-type WithoutChildren<T> = T extends { children?: any, kids?: any } ? Omit<T, 'kids'> : T;
+type WithoutChildren<T> = T extends { children?: any, kids?: any, checked?: boolean } ? Omit<T, 'kids'> : T;
 
-interface TreeViewProps<T extends { children?: any[] }> {
+interface TreeViewProps<T extends { children?: any[], checked?: boolean }> {
   options: T[],
   className?: string;
   getOptionLabel?: (option: WithoutChildren<T>, level: number) => string | null;
@@ -13,7 +14,7 @@ interface TreeViewProps<T extends { children?: any[] }> {
   onOptionSelect?: (option: WithoutChildren<T>, level: number, finalLevel: boolean) => void;
 }
 
-const TreeView = <T extends { children?: any[] }>(props: TreeViewProps<T>) => {
+const TreeView = <T extends { children?: any[], checked?: boolean }>(props: TreeViewProps<T>) => {
   const {
     options,
     getOptionLabel,
@@ -62,6 +63,11 @@ const TreeView = <T extends { children?: any[] }>(props: TreeViewProps<T>) => {
             ) : icon}
             <p className="m-0 flex-grow">{label}</p>
             <span className="m-0 text-inherit text-xs font-normal">{caption}</span>
+            {option?.checked && (
+              <div className="mr-2">
+                <CheckmarkIcon />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -93,6 +99,9 @@ const TreeView = <T extends { children?: any[] }>(props: TreeViewProps<T>) => {
 
   return (
     <ul className={clsx("flex-grow-1 overflow-y-auto list-none", className)}>
+      {!options.length && (
+        <p className="text-center w-full text-secondary-300">No items selected</p>
+      )}
       {options.map((option, optionIndex) => {
         const isExpanded = openItems.includes(`${optionIndex}`);
 

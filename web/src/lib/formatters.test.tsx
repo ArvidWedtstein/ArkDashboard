@@ -1,14 +1,11 @@
-import { render, waitFor, screen } from '@redwoodjs/testing/web'
+import { render, waitFor, screen, renderHook } from '@redwoodjs/testing/web'
 
 import {
   formatEnum,
   truncate,
   timeTag,
-  jsonDisplay,
-  checkboxInputTag,
   dynamicSort,
   combineBySummingKeys,
-  isObject,
   isDate,
   getDateDiff,
   groupBy,
@@ -101,105 +98,6 @@ describe('timeTag', () => {
   });
 })
 
-describe('jsonDisplay', () => {
-  it('produces the correct output', () => {
-    expect(
-      jsonDisplay({
-        title: 'TOML Example (but in JSON)',
-        database: {
-          data: [['delta', 'phi'], [3.14]],
-          enabled: true,
-          ports: [8000, 8001, 8002],
-          temp_targets: {
-            case: 72.0,
-            cpu: 79.5,
-          },
-        },
-        owner: {
-          dob: '1979-05-27T07:32:00-08:00',
-          name: 'Tom Preston-Werner',
-        },
-        servers: {
-          alpha: {
-            ip: '10.0.0.1',
-            role: 'frontend',
-          },
-          beta: {
-            ip: '10.0.0.2',
-            role: 'backend',
-          },
-        },
-      })
-    ).toMatchInlineSnapshot(`
-      <pre>
-        <code>
-          {
-        "title": "TOML Example (but in JSON)",
-        "database": {
-          "data": [
-            [
-              "delta",
-              "phi"
-            ],
-            [
-              3.14
-            ]
-          ],
-          "enabled": true,
-          "ports": [
-            8000,
-            8001,
-            8002
-          ],
-          "temp_targets": {
-            "case": 72,
-            "cpu": 79.5
-          }
-        },
-        "owner": {
-          "dob": "1979-05-27T07:32:00-08:00",
-          "name": "Tom Preston-Werner"
-        },
-        "servers": {
-          "alpha": {
-            "ip": "10.0.0.1",
-            "role": "frontend"
-          },
-          "beta": {
-            "ip": "10.0.0.2",
-            "role": "backend"
-          }
-        }
-      }
-        </code>
-      </pre>
-    `)
-  })
-})
-
-describe('checkboxInputTag', () => {
-  it('can be checked', () => {
-    render(checkboxInputTag(true))
-    expect(screen.getByRole('checkbox')).toBeChecked()
-  })
-
-  it('can be unchecked', () => {
-    render(checkboxInputTag(false))
-    expect(screen.getByRole('checkbox')).not.toBeChecked()
-  })
-
-  it('is disabled when checked', () => {
-    render(checkboxInputTag(true))
-    expect(screen.getByRole('checkbox')).toBeDisabled()
-  })
-
-  it('is disabled when unchecked', () => {
-    render(checkboxInputTag(false))
-    expect(screen.getByRole('checkbox')).toBeDisabled()
-  })
-})
-
-
 describe('dynamicSort', () => {
   it('sorts objects by property', () => {
     const objects = [
@@ -234,29 +132,6 @@ describe('combineBySummingKeys', () => {
       name: 'JohnMaryPeter',
       age: 60,
     })
-  })
-})
-
-
-describe('isObject', () => {
-  it('returns true for objects', () => {
-    expect(isObject({})).toBe(true)
-  })
-
-  it('returns false for arrays', () => {
-    expect(isObject([])).toBe(false)
-  })
-
-  it('returns false for strings', () => {
-    expect(isObject('')).toBe(false)
-  })
-
-  it('returns false for numbers', () => {
-    expect(isObject(0)).toBe(false)
-  })
-
-  it('returns false for booleans', () => {
-    expect(isObject(true)).toBe(false)
   })
 })
 

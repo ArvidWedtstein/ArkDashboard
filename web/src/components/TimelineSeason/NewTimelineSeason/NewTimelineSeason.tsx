@@ -39,7 +39,7 @@ const NewTimelineSeason = () => {
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">New TimelineSeason</h2>
+        <h2 className="rw-heading rw-heading-secondary">New Season</h2>
       </header>
       <div className="rw-segment-main">
         <TimelineSeasonForm onSave={onSave} loading={loading} error={error} />

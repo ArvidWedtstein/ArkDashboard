@@ -1,7 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import Button from "src/components/Util/Button/Button";
 import Map from "src/components/Util/Map/Map";
@@ -75,7 +75,7 @@ const Basespot = ({ basespot }: Props) => {
       />
     ));
   };
-  // TODO: add underwater stats
+  // TODO: add underwater stats?
 
   const getImage = useCallback(async () => {
     const baseURL = `M${basespot.map_id}-${basespot.id}`;
@@ -221,12 +221,15 @@ const Basespot = ({ basespot }: Props) => {
         }}
       >
         <div className="flex justify-between pb-5">
-          <Link
+          <Button
+            variant="text"
+            color="success"
+            size="small"
             to={routes.map({ id: basespot.map_id })}
-            className="rw-link text-xl font-bold uppercase tracking-[0.4rem] text-white opacity-90 transition ease-linear"
           >
             {basespot.Map.name}
-          </Link>
+          </Button>
+
           <div className="flex items-center text-sm opacity-50 transition ease-linear group-hover:opacity-90">
             <p className="text-right">{timeTag(basespot.created_at)}</p>
             <svg
@@ -259,19 +262,17 @@ const Basespot = ({ basespot }: Props) => {
         </div>
       </header>
 
-      <div className="flex flex-wrap py-12">
-        <div className="w-full overflow-hidden rounded-lg md:w-fit lg:mb-0">
-          <Map
-            className="h-full w-full object-cover object-center"
-            map_id={basespot.map_id}
-            interactive={true}
-            pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
-            disable_map={true}
-          />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 py-12">
+        <Map
+          className="h-full w-full object-cover object-center"
+          map_id={basespot.map_id}
+          interactive={true}
+          pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
+          disable_map={true}
+        />
         <div className="flex w-full flex-col flex-wrap space-y-10 py-6 text-center lg:w-1/2 lg:flex-grow lg:pl-12 lg:text-left">
           <div className="flex flex-col items-center space-y-3 lg:items-start">
-            <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
+            <div className="bg-success-50 text-success-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -287,14 +288,16 @@ const Basespot = ({ basespot }: Props) => {
             <h2 className="title-font text-lg font-medium text-gray-900 dark:text-stone-200">
               Coordinates
             </h2>
-            <p className="flex-grow select-none text-base leading-relaxed">
+            <div className="inline-flex items-center flex-grow select-none text-base leading-relaxed">
               <span>
                 This spot is located at <strong>{basespot.latitude}</strong>{" "}
                 Lat, <strong>{basespot.longitude}</strong> Lon
               </span>
-              {/* TODO: add copy command here */}
-              <button
-                className="ml-1 rw-button"
+
+              <Button
+                variant="icon"
+                color="DEFAULT"
+                className="ml-1"
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `cheat SetPlayerPos ${Math.round(
@@ -308,7 +311,7 @@ const Basespot = ({ basespot }: Props) => {
                   toast.success("Copied to clipboard");
                 }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="rw-button-icon" viewBox="0 0 384 512">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                   <path d="M112 128h160C280.8 128 288 120.8 288 112S280.8 96 272 96h-24.88C252.6 86.55 256 75.72 256 64c0-35.35-28.65-64-64-64S128 28.65 128 64c0 11.72 3.379 22.55 8.877 32H112C103.2 96 96 103.2 96 112S103.2 128 112 128zM192 32c17.64 0 32 14.36 32 32s-14.36 32-32 32S160 81.64 160 64S174.4 32 192 32zM320 64c-8.844 0-16 7.156-16 16S311.2 96 320 96c17.64 0 32 14.34 32 32v320c0 17.66-14.36 32-32 32H64c-17.64 0-32-14.34-32-32V128c0-17.66 14.36-32 32-32c8.844 0 16-7.156 16-16S72.84 64 64 64C28.7 64 0 92.72 0 128v320c0 35.28 28.7 64 64 64h256c35.3 0 64-28.72 64-64V128C384 92.72 355.3 64 320 64z" />
                   <path stroke="currentColor" strokeWidth="8" d="M123.3 319.4c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l53.34 53.33C157.2 398.4 161.3 400 165.3 400s8.188-1.562 11.31-4.688l106.7-106.7c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0l-95.34 95.36L123.3 319.4z">
                     <animate attributeName="stroke-dasharray" from="0 600" to="600 600" dur="0.5s" begin="0.5s" fill="remove" />
@@ -316,11 +319,11 @@ const Basespot = ({ basespot }: Props) => {
                   </path>
                 </svg>
                 <span className="sr-only">Copy</span>
-              </button>
-            </p>
+              </Button>
+            </div>
           </div>
           <div className="flex flex-col items-center space-y-3 lg:items-start">
-            <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
+            <div className="bg-success-50 text-success-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -334,7 +337,7 @@ const Basespot = ({ basespot }: Props) => {
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </div>
-            <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-stone-200">
+            <h2 className="title-font mb-3 text-lg font-medium text-neutral-900 dark:text-neutral-200">
               Players
             </h2>
             <p className="flex-grow text-base leading-relaxed">
@@ -346,35 +349,40 @@ const Basespot = ({ basespot }: Props) => {
       </div>
 
       {images && images.length > 0 && (
-        <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
-          <div className="container mx-auto py-24">
-            <div className="mb-20 flex w-full flex-col text-center">
-              <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
-                Basespot Defense Setup
-              </h2>
-              <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-stone-200 sm:text-3xl">
-                Basespot Images
-              </h1>
-            </div>
+        <Fragment>
+          <hr role="seperator" className="rw-divider my-3 w-full bg-secondary-500 h-px" />
+          <section className="body-font text-neutral-700 dark:text-neutral-200">
+            <div className="container mx-auto py-24">
+              <div className="mb-20 flex w-full flex-col text-center">
+                <h2 className="title-font text-success-500 mb-1 text-xs font-medium tracking-widest">
+                  Basespot Defense Setup
+                </h2>
+                <h1 className="title-font text-2xl font-medium text-neutral-900 dark:text-neutral-200 sm:text-3xl">
+                  Basespot Images
+                </h1>
+              </div>
 
-            <div className="grid gap-4">
-              <Slideshow
-                slides={images.map((img) => ({ url: img.url }))}
-                autoPlay={false}
-                imageTabs={true}
-              />
+              <div className="grid gap-4">
+                <Slideshow
+                  slides={images.map((img) => ({ url: img.url }))}
+                  autoPlay={false}
+                  imageTabs={true}
+                />
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </Fragment>
       )}
 
-      <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
+      <hr role="seperator" className="rw-divider my-3 w-full bg-secondary-500 h-px" />
+
+      <section className="body-font text-neutral-700 dark:text-neutral-200">
         <div className="container mx-auto py-24">
           <div className="mb-20 flex w-full flex-col text-center">
-            <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
+            <h2 className="title-font text-success-500 mb-1 text-xs font-medium tracking-widest">
               Tips & tricks
             </h2>
-            <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-stone-200 sm:text-3xl">
+            <h1 className="title-font text-2xl font-medium text-neutral-900 dark:text-neutral-200 sm:text-3xl">
               Tips for building basespots
             </h1>
           </div>
@@ -405,7 +413,7 @@ const Basespot = ({ basespot }: Props) => {
                           harder for raiders to find a blind spot.
                         </p>
 
-                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                        <span className="bg-success-500 mt-8 inline-block h-1 w-10 rounded" />
                       </div>
                     </div>
                   ),
@@ -428,7 +436,7 @@ const Basespot = ({ basespot }: Props) => {
                           Build multiple turret walls if possible
                         </p>
 
-                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                        <span className="bg-success-500 mt-8 inline-block h-1 w-10 rounded" />
                       </div>
                     </div>
                   ),

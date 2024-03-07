@@ -202,7 +202,7 @@ const DataGrid = (props: DataGridProps) => {
     const classes = {
       DataGridColumnHeaders: clsx("flex relative items-center box-border border-b border-zinc-500 rounded-t"),
       DataGridColumnHeadersInner: clsx("flex items-start flex-col"),
-      DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-pea-500"),
+      DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-success-500"),
       DataGridColumnCheckbox: clsx("!p-0 justify-center"),
       DataGridColumnHeaderTitle: clsx("overflow-hidden whitespace-nowrap text-ellipsis"),
       DataGridColumnHeaderTitleContainer: clsx("flex items-center min-w-0 relative overflow-hidden whitespace-nowrap flex-1", {
@@ -371,7 +371,7 @@ const DataGrid = (props: DataGridProps) => {
     DataGridFooter: clsx("flex justify-between min-h-[3rem]"),
     DataGridColumnHeaders: clsx("flex relative items-center box-border border-b border-zinc-500 rounded-t"),
     DataGridColumnHeadersInner: clsx("flex items-start flex-col"),
-    DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-pea-500"),
+    DataGridColumnHeader: clsx("relative flex items-center box-border px-2.5 font-medium focus:outline focus:outline-success-500"),
     DataGridColumnCheckbox: clsx("!p-0 justify-center"),
     DataGridColumnHeaderTitle: clsx("overflow-hidden whitespace-nowrap text-ellipsis"),
     DataGridColumnHeaderTitleContainer: clsx("flex items-center min-w-0 relative overflow-hidden whitespace-nowrap flex-1"),
@@ -398,7 +398,7 @@ const DataGrid = (props: DataGridProps) => {
                     <div className="flex w-full h-full" role="presentation" draggable={true}>
                       <div className={clsx(classes.DataGridColumnHeaderTitleContainer, classes.DataGridCellCenter)} role="presentation">
                         <div className={clsx(classes.DataGridColumnHeaderTitleContainerContent, classes.DataGridCellCenter)} role="presentation">
-                          <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
+                          <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-circle p-2">
                             <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox" />
                             <svg className="w-5 h-5 fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
                               <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
@@ -436,7 +436,7 @@ const DataGrid = (props: DataGridProps) => {
                     <div key={`row-${index}`} className="flex w-fit break-inside-avoid max-h-12" aria-selected={false} role="row" style={{ minHeight: 52, maxHeight: 52 }}>
                       {select && (
                         <div className={clsx(classes.DataGridCell, classes.DataGridColumnCheckbox)} style={{ minWidth: 48, maxWidth: 52, minHeight: 52, maxHeight: 52 }}>
-                          <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
+                          <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-circle p-2">
                             <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox"></input>
                             <svg className="w-5 h-5 fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CheckBoxIcon"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
                             </svg>
@@ -451,7 +451,7 @@ const DataGrid = (props: DataGridProps) => {
                               "justify-start": col.align === 'left',
                               "justify-center": col.align === 'center',
                               "justify-end": col.align === 'right',
-                              "outline outline-1 outline-pea-300 -outline-offset-1": focusedCells.some((c) => c.col === col && c.row === row)
+                              "outline outline-1 outline-success-300 -outline-offset-1": focusedCells.some((c) => c.col === col && c.row === row)
                             })}
                             role="gridcell"
                             style={{ width: col.width || 100 }}
@@ -489,7 +489,7 @@ const DataGrid = (props: DataGridProps) => {
 
                 {/* <div className="flex w-fit break-inside-avoid max-h-12" aria-selected={false} role="row" style={{ minHeight: 52, maxHeight: 52 }}>
                 <div className={clsx(classes.DataGridCell, classes.DataGridColumnCheckbox)} style={{ minWidth: 48, maxWidth: 52, minHeight: 48, maxHeight: 52 }}>
-                  <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-[50%] p-2">
+                  <span className="inline-flex items-center justify-center relative box-border bg-transparent appearance-none rounded-circle p-2">
                     <input className="absolute top-0 left-0 m-0 p-0 z-10 w-full h-full opacity-0" type="checkbox"></input>
                     <svg className="w-5 h-5 fill-current" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CheckBoxIcon"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
                     </svg>

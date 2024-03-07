@@ -1,6 +1,5 @@
-import { HTMLAttributes, forwardRef, useEffect, useId, useMemo, useRef } from "react";
+import { HTMLAttributes, forwardRef, useId, useMemo, useRef } from "react";
 import { Transition } from 'react-transition-group'
-import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
 import clsx from "clsx";
 import ReactDOM from "react-dom";
 
@@ -83,6 +82,8 @@ export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
     <div className="fixed inset-0 z-50" role="dialog" onClick={handleBackdropClick} {...other} ref={ref}>
       <div aria-label="backdrop" className="fixed flex items-center justify-center inset-0 bg-black/50 -z-10" />
       <Transition
+        mountOnEnter
+        unmountOnExit
         appear
         in={open}
         timeout={300}
@@ -115,7 +116,9 @@ export const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
               role="dialog"
               aria-labelledby={ariaLabelledby}
             >
-              <DialogContext.Provider value={dialogContextValue}>{children}</DialogContext.Provider>
+              <DialogContext.Provider value={dialogContextValue}>
+                {children}
+              </DialogContext.Provider>
             </div>
           </div>
         )}

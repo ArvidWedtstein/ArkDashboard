@@ -1,6 +1,6 @@
 import { FieldError, RegisterOptions } from "@redwoodjs/forms/dist";
 import clsx from "clsx";
-import { CSSProperties, Fragment, HTMLAttributes, useRef, useState } from "react";
+import { CSSProperties, Fragment, HTMLAttributes, useEffect, useRef, useState } from "react";
 
 import DateCalendar from "../DateCalendar/DateCalendar";
 import Popper from "../Popper/Popper";
@@ -32,308 +32,12 @@ type DatePickerProps = {
   defaultValue?: Date;
   onChange?: (date: Date) => void;
   firstDayOfWeek?: number;
-  variant?: 'filled' | 'outlined' | 'standard';
+  variant?: 'contained' | 'outlined' | 'standard';
   color?: "primary" | "secondary" | "success" | "warning" | "error" | "DEFAULT";
   margin?: "none" | "dense" | "normal";
   size?: "small" | "medium" | "large";
   // validation?: RegisterOptions;
 } & InputFieldProps;
-
-
-
-const DateField = ({ format = 'DD/YYYY/MM' }: any) => {
-  const [inputValue, setInputValue] = useState(format);
-  const [segment, setSegment] = useState({ start: 0, end: 0 });
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const order = format.split('/').map((f) => f.slice(0, 1))
-  const sectionRange: Record<string, {
-    start: number;
-    end: number;
-    order: number;
-  }> = {
-    day: { start: format.indexOf('D'), end: format.indexOf('D') + 2, order: order.indexOf('D') },
-    month: { start: format.indexOf('M'), end: format.indexOf('M') + 2, order: order.indexOf('M') },
-    year: { start: format.indexOf('Y'), end: format.indexOf('Y') + 4, order: order.indexOf('Y') }
-  }
-
-  const setCursorPosition = (start: number, end: number) => {
-    requestAnimationFrame(() => {
-      inputRef.current.setSelectionRange(start, end);
-    });
-  };
-
-  const handleInputChange = (event) => {
-    let value: string = event.target.value.toString();
-    const caretPosition = event.target.selectionStart;
-
-    const range = Object.values(sectionRange)?.find(
-      (data) =>
-        caretPosition >= data.start && caretPosition <= data.end
-    );
-
-    if (range) {
-      const sectionLength = range.end - range.start;
-      let sections = value.split('/');
-      let section = sections[range.order]?.padStart(sectionLength, '0');
-      if (caretPosition >= range.start && caretPosition <= range.end) {
-        sections[range.order] = `${section.slice(-sectionLength).padStart(sectionLength, '0')}`;
-        value = sections.join('/');
-      }
-
-      let newCaretPosition = range.start + section.slice(0, caretPosition - range.start).replace(/\D/g, '').length;
-
-      setCursorPosition(newCaretPosition, newCaretPosition);
-    }
-
-    let formattedValue = '';
-    let charIndex = 0;
-
-    for (let i = 0; i < format.length; i++) {
-      if ('DMY'.includes(format[i])) {
-        formattedValue += value.replace(/\D/g, '')[charIndex] || '';
-        // formattedValue += value.replace(/[^A-Za-z0-9]/g, '')[charIndex] || '';
-
-        charIndex += 1;
-      } else {
-        formattedValue += format[i];
-      }
-    }
-    setInputValue(formattedValue);
-
-  };
-
-  const handleClick = (event) => {
-    const clickPosition = event.nativeEvent.target.selectionStart;
-
-    const range = Object.values(sectionRange)?.find(
-      (data) =>
-        clickPosition >= data.start && clickPosition <= data.end
-    );
-
-    if (range) {
-      inputRef.current.focus();
-      inputRef.current.setSelectionRange(range.start, range.end);
-      setSegment({ start: range.start, end: range.end });
-    }
-  };
-
-  const handleSelectChange = (event) => {
-    console.log(event.target.selectionStart);
-  };
-
-  const handlePaste = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    console.log(event.clipboardData.getData('Text'));
-
-    // setInputValue()
-  };
-
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    // event.preventDefault();
-    event.stopPropagation();
-
-    const clickPosition = (event.nativeEvent.target as HTMLInputElement).selectionStart;
-
-    const range = Object.values(sectionRange)?.find((data) => {
-      if (clickPosition >= data.start && (clickPosition > format.length ? format.length : clickPosition) <= data.end) {
-        return data
-      }
-    })
-    switch (event.code) {
-      case 'ArrowLeft':
-        let newPos = Object.values(sectionRange)?.find((data) => data.order === (range.order === 0 ? 0 : range.order - 1));
-        inputRef.current.focus();
-        inputRef.current.setSelectionRange(newPos.start, newPos.end);
-        setSegment({ start: newPos.start, end: newPos.end })
-        break;
-      case 'ArrowRight':
-        const { start, end } = Object.values(sectionRange)?.find((data) => data.order === (range.order >= Object.values(sectionRange).length - 1 ? Object.values(sectionRange).length - 1 : range.order + 1));
-        inputRef.current.focus();
-        (event.nativeEvent.target as HTMLInputElement).setSelectionRange(start, end);
-        setSegment({ start, end })
-        break;
-      default:
-        // inputRef.current.focus();
-        // inputRef.current.setSelectionRange(range.start, range.end);
-        break;
-    }
-  }
-
-  return (
-    <div>
-
-      <label className="rw-label">Date</label>
-      <input
-        className="rw-input"
-        value={inputValue}
-        ref={inputRef}
-        onKeyUp={handleKeyUp}
-        onChange={handleInputChange}
-        onSelect={handleSelectChange}
-        onPaste={handlePaste}
-        placeholder={format}
-        onClick={handleClick}
-      />
-    </div>
-  );
-};
-const DateField2 = ({ format = 'DD/YYYY/MM' }: any) => {
-  const [inputValue, setInputValue] = useState(format);
-  const [segment, setSegment] = useState({ start: 0, end: 0 })
-  const inputRef = useRef<HTMLInputElement>(null);
-  const order = format.split('/').map((f) => f.slice(0, 1))
-  const sectionRange = {
-    day: { start: format.indexOf('D'), end: format.indexOf('D') + 2, order: order.indexOf('D') },
-    month: { start: format.indexOf('M'), end: format.indexOf('M') + 2, order: order.indexOf('M') },
-    year: { start: format.indexOf('Y'), end: format.indexOf('Y') + 4, order: order.indexOf('Y') }
-  }
-  const handleInputChange = (event) => {
-    console.log('CHANGE')
-    let value: string = event.target.value.toString();
-    // value = value.replace(/\D/g, ''); // Remove non-numeric characters
-
-    const caretPosition = event.target.selectionStart;
-
-    const range = Object.values(sectionRange)?.find((data) => {
-      if (caretPosition >= data.start && (caretPosition > format.length ? format.length : caretPosition) <= data.end) {
-        return data
-      }
-    })
-
-    const sectionLength = range.end - range.start;
-    let sections = value.split('/')
-    let section = sections[range.order].padStart(sectionLength, '0');
-    if (caretPosition >= range.start && caretPosition <= range.end) {
-      sections[range.order] = `${section.slice(-sectionLength).padStart(sectionLength, '0')}`
-      value = sections.join('/')
-    }
-
-
-    // Apply the format to the input value
-    let formattedValue = '';
-    let charIndex = 0;
-
-    for (let i = 0; i < format.length; i++) {
-      if ('MDY'.includes(format[i])) {
-        formattedValue += value.replace(/\D/g, '')[charIndex] || '';
-        charIndex += 1;
-      } else {
-        formattedValue += format[i];
-      }
-    }
-    // Auto-complete month and jump to the next section
-    // if (formattedValue.length === 2 && format.includes('M')) {
-    //   formattedValue = formattedValue.padStart(2, '0');
-    //   charIndex += 1; // Move to the next section
-    // }
-
-    console.log(inputRef.current.selectionStart, range.start, range.end)
-    // setInputValue(value);
-    setInputValue(formattedValue);
-
-
-    // inputRef.current.focus();
-    inputRef.current.setSelectionRange(segment.start, segment.end);
-
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    // inputRef.current.focus();
-    // inputRef.current.setSelectionRange(segment.start, segment.end);
-  }
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    // event.preventDefault();
-    // event.stopPropagation();
-
-    // const clickPosition = (event.nativeEvent.target as HTMLInputElement).selectionStart;
-
-    // const range = Object.values(sectionRange)?.find((data) => {
-    //   if (clickPosition >= data.start && (clickPosition > format.length ? format.length : clickPosition) <= data.end) {
-    //     return data
-    //   }
-    // })
-    // switch (event.code) {
-    //   case 'ArrowLeft':
-    //     let newPos = Object.values(sectionRange)?.find((data) => data.order === (range.order === 0 ? 0 : range.order - 1));
-    //     inputRef.current.focus();
-    //     inputRef.current.setSelectionRange(newPos.start, newPos.end);
-    //     setSegment({ start: newPos.start, end: newPos.end })
-    //     break;
-    //   case 'ArrowRight':
-    //     const { start, end } = Object.values(sectionRange)?.find((data) => data.order === (range.order >= Object.values(sectionRange).length - 1 ? Object.values(sectionRange).length - 1 : range.order + 1));
-    //     inputRef.current.focus();
-    //     (event.nativeEvent.target as HTMLInputElement).setSelectionRange(start, end);
-    //     setSegment({ start, end })
-    //     break;
-    //   default:
-    //     // inputRef.current.focus();
-    //     // inputRef.current.setSelectionRange(range.start, range.end);
-    //     break;
-    // }
-
-  }
-
-  const handleClick = (event) => {
-    // Logic to extract date sections based on the format
-    const dateSections = extractDateSections();
-    console.log('Date Sections:', dateSections);
-    const clickPosition = event.nativeEvent.target.selectionStart;
-
-    const range = Object.values(sectionRange)?.find((data) => {
-      if (clickPosition >= data.start && (clickPosition > format.length ? format.length : clickPosition) <= data.end) {
-        return data
-      }
-    })
-
-    // Move focus to the clicked section or the first section
-    inputRef.current.focus();
-    // inputRef.current.select()
-    inputRef.current.setSelectionRange(range.start, range.end);
-    setSegment({ start: range.start, end: range.end })
-  };
-
-  const extractDateSections = () => {
-    // Logic to extract date sections based on the format
-    let day = inputValue.substring(sectionRange.day.start, sectionRange.day.end);
-    let month = inputValue.substring(sectionRange.month.start, sectionRange.month.end);
-    let year = inputValue.substring(sectionRange.year.start, sectionRange.year.end);
-
-    return { day, month, year };
-  };
-
-  const handleSelectChange = (event) => {
-    console.log(event.target.selectionStart)
-  }
-
-  const handlePaste = (event) => {
-    // Stop data actually being pasted into div
-    event.stopPropagation();
-    event.preventDefault();
-    console.log('PASTE')
-    console.log(event.clipboardData, event.clipboardData.getData('Text'))
-  }
-
-  return (
-    <div>
-      <label className="rw-label">Date</label>
-      <input
-        className="rw-input"
-        value={inputValue}
-        ref={inputRef}
-        onKeyUp={handleKeyUp}
-        onKeyDown={handleKeyDown}
-        onChange={handleInputChange}
-        onSelect={handleSelectChange}
-        onPaste={handlePaste}
-        placeholder={format}
-        onClick={handleClick}
-      />
-      <button type="button" className="rw-button rw-button-gray-outline" onClick={handleClick}>Get Date Sections</button>
-    </div>
-  );
-};
 
 const DatePicker = ({
   views = ["day", "year"],
@@ -374,7 +78,7 @@ const DatePicker = ({
   const borders = {
     primary: `border-blue-400`,
     secondary: `border-zinc-500`,
-    success: `border-pea-500`,
+    success: `border-success-500`,
     error: `border-red-500`,
     warning: `border-amber-400`,
     disabled: `dark:border-white/30 border-black/30`,
@@ -424,6 +128,14 @@ const DatePicker = ({
     setOpen(false);
   };
 
+  useEffect(() => {
+    setInternalValue(defaultValue.toLocaleDateString(navigator && navigator.language, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }));
+  }, [defaultValue])
+
   return (
     <div
       className={"group relative flex w-fit min-w-[10rem] items-center text-black dark:text-white"}
@@ -437,6 +149,7 @@ const DatePicker = ({
         color={color}
         required={required}
         onClick={handleClick}
+        defaultValue={internalValue}
       >
         <InputLabel
           children={label ?? name}
@@ -454,8 +167,8 @@ const DatePicker = ({
             variant === 'outlined' ? (
               <fieldset aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-                  "max-w-full": state.focused || state.filled || open,
-                  "max-w-[0.01px]": !state.focused && !state.filled
+                  "max-w-full": open || state.focused || state.filled,
+                  "max-w-[0.01px]": !state.focused && !state.filled && !open
                 })}>
                   {label && label !== "" && (
                     <span className={"px-[5px] inline-block opacity-0 visible"}>
@@ -483,6 +196,7 @@ const DatePicker = ({
           }}
           endAdornment={(
             <Button
+              ignoreButtonGroupPosition
               variant="icon"
               color={"DEFAULT"}
               className="-mr-0.5 !p-2"
@@ -507,7 +221,7 @@ const DatePicker = ({
         />
         {/* TODO: add formerror */}
         {helperText && (
-          <p className="rw-helper-text" {...HelperTextProps}>
+          <p className="mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70" {...HelperTextProps}>
             {helperText}
           </p>
         )}

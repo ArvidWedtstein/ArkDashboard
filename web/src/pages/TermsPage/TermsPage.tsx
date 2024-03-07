@@ -1,5 +1,5 @@
-import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import Button from "src/components/Util/Button/Button";
 
 const TermsPage = () => {
   return (
@@ -47,10 +47,14 @@ const TermsPage = () => {
         </p>
 
         <p>
-          "I am done reading here"{" "}
-          <button className="rw-link" onClick={() => window.history.back()}>
+          "I am done reading here"
+          <Button
+            variant="text"
+            color="success"
+            onClick={() => window.history.back()}
+          >
             Take me back
-          </button>
+          </Button>
         </p>
       </div>
     </>

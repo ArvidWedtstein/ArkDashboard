@@ -45,35 +45,7 @@ export const beforeQuery = ({ page, search, category, type }) => {
 
 // TODO: fix
 export const Loading = () => (
-  <>
-    <Items loading={true} itemsPage={{ count: 0, items: [] }} />
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-    </div>
-  </>
+  <Items loading={true} itemsPage={{ count: 0, items: [] }} />
 );
 
 export const Empty = () => {

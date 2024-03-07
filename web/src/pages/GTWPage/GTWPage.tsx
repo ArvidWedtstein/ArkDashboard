@@ -2,12 +2,16 @@ import {
   Form,
   FormError,
   RWGqlError,
+  useFieldArray,
+  useForm,
 } from "@redwoodjs/forms";
 import { MetaTags } from "@redwoodjs/web";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { Input } from "src/components/Util/Input/Input";
+import Text from "src/components/Util/Text/Text";
+
 interface GTWPageProps {
   error: RWGqlError;
   loading: boolean;
@@ -239,6 +243,24 @@ const GtwPage = (props: GTWPageProps) => {
   //   return true;
   // }
 
+  const { register, control, handleSubmit } = useForm({
+    defaultValues: {
+      attack: [{ name: "test" }],
+    },
+  });
+
+  const {
+    fields: attackFields,
+    append: appendAttack,
+    remove: removeAttack,
+  } = useFieldArray({
+    control,
+    name: "attack", // the name of the field array in your form data
+  });
+
+  const onSubmit = data => {
+    console.log("data", data);
+  }
 
   return (
     <>
@@ -247,18 +269,15 @@ const GtwPage = (props: GTWPageProps) => {
         description="Type in random dino scabbled and get the solved word!"
       />
 
-      <div className="container-xl m-3 text-center">
-        {/* <FibonacciSphere
-          animate={true}
-          text={ArkDinos.filter((f) => hasLetters(f.toString(), word))}
-          className="h-1/3 w-1/3 text-white"
-        /> */}
+      <div className="container-xl flex flex-col m-3 text-center text-black dark:text-white">
         <div className="text-center">
-          <h1 className="rw-label p-3 text-center text-2xl text-black dark:text-white">
+          <h1 className="rw-label p-3 text-center text-2xl ">
             {getWord(word)}
           </h1>
         </div>
-        <Form error={props.error} className="m-6 p-3 flex justify-center">
+
+
+        <Form error={props.error} onSubmit={handleSubmit(onSubmit)} className="m-6 p-3 flex justify-center">
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"
@@ -281,6 +300,21 @@ const GtwPage = (props: GTWPageProps) => {
               }
             }}
           />
+
+          {attackFields.map((f, i) => (
+            <Fragment>
+              <input className="" {...register(`attack.${i}.name`, { required: true })} />
+            </Fragment>
+          ))}
+          <button type="button"
+            onClick={() =>
+              appendAttack({
+                name: "",
+              })
+            }
+          >add</button>
+
+
           <button type="submit">submit</button>
         </Form>
       </div>

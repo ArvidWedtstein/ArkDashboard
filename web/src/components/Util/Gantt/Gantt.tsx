@@ -32,10 +32,6 @@ const Gantt = <T extends Record<string, unknown>>({
   dateEndKey,
   labelKey,
 }: GanttProps<T>) => {
-  const dateFormatter = new Intl.DateTimeFormat(
-    navigator && navigator.language,
-  );
-
   const [viewType, setViewType] = useState<ViewType>("week");
 
   const [dateInfo, setDateInfo] = useState(() => ({
@@ -360,7 +356,7 @@ const Gantt = <T extends Record<string, unknown>>({
         <div
           aria-label="Calendar Header"
           className={
-            "sticky top-0 z-30 flex-none bg-zinc-300 text-black shadow-lg dark:bg-neutral-800 dark:text-white"
+            "sticky top-0 z-30 flex-none bg-zinc-300 text-black shadow-lg dark:bg-neutral-800 dark:text-white rounded-t"
           }
         >
           <div
@@ -381,7 +377,7 @@ const Gantt = <T extends Record<string, unknown>>({
                   y.year === dateInfo.year &&
                   (viewType !== "year" ? y.month === dateInfo.month : true)
               )
-              .map((month, monthIndex) => {
+              .map((month, _) => {
                 return month.weeks
                   .filter((week, i) =>
                     viewType === "week" || viewType === "day"
@@ -437,7 +433,7 @@ const Gantt = <T extends Record<string, unknown>>({
                                       className={clsx(
                                         "flex items-center justify-center",
                                         {
-                                          "bg-pea-500 h-8 w-12 rounded-full text-white":
+                                          "bg-success-500 h-8 w-12 rounded-full text-white":
                                             (toLocaleISODate(date) ===
                                               toLocaleISODate(new Date()) &&
                                               (viewType === "week" ||
@@ -445,7 +441,7 @@ const Gantt = <T extends Record<string, unknown>>({
                                             (toLocalPeriod(date) ===
                                               toLocalPeriod(new Date()) &&
                                               viewType === "year"),
-                                          "bg-pea-500 rounded-full px-1 text-white":
+                                          "bg-success-500 rounded-full px-1 text-white":
                                             viewType === "day" &&
                                             hour.toLocaleString(
                                               navigator && navigator.language,
@@ -504,13 +500,13 @@ const Gantt = <T extends Record<string, unknown>>({
 
         <div className="flex flex-auto text-xs leading-6">
           <div
-            className="sticky left-0 w-20 flex-none bg-zinc-300 dark:bg-neutral-800"
+            className="sticky left-0 w-20 flex-none bg-zinc-300 dark:bg-neutral-800 rounded-bl"
             aria-label="Left bar"
           />
           <div className="grid flex-auto grid-cols-1 grid-rows-1">
             <div
               aria-label="Grid Rows"
-              className="col-start-1 col-end-2 row-start-1 grid divide-y divide-black/20 text-black dark:divide-white/20 dark:text-white"
+              className="col-start-1 col-end-2 row-start-1 grid divide-y rounded-t divide-black/20 text-black dark:divide-white/20 dark:text-white"
               style={{
                 gridTemplateRows: `repeat(${Object.keys(ganttData).length * overlappingCount
                   }, minmax(3.5rem, 1fr))`,
@@ -521,7 +517,7 @@ const Gantt = <T extends Record<string, unknown>>({
               {Object.keys(ganttData).map((entry, index) => (
                 <Fragment key={`row-${index}`}>
                   <div className="flex items-center" role="row">
-                    <div className="sticky left-0 -ml-20 w-20 border border-transparent pr-2 text-right align-middle text-xs uppercase">
+                    <div className="sticky left-0 -ml-20 w-20 min-h-[3rem] border border-transparent pr-2 text-right align-middle text-xs uppercase">
                       {entry}
                     </div>
                   </div>
@@ -530,7 +526,7 @@ const Gantt = <T extends Record<string, unknown>>({
                       className="flex items-center"
                       role="row"
                       key={`row-sub-${index + i}`}
-                    ></div>
+                    />
                   ))}
                 </Fragment>
               ))}

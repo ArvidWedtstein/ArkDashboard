@@ -8,7 +8,7 @@ import {
 } from "@redwoodjs/router";
 import clsx from "clsx";
 import { Fragment, useState } from "react";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import {
   Card,
   CardActionArea,
@@ -20,6 +20,7 @@ import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
+import Text from "src/components/Util/Text/Text";
 import {
   ToggleButton,
   ToggleButtonGroup,
@@ -164,9 +165,9 @@ const ItemsList = ({
               <CheckboxField
                 name="category"
                 id={`category-${label}`}
-                className="rw-input"
+                className="rw-checkbox"
                 value={value}
-                errorClassName="rw-input rw-input-error"
+                errorClassName="rw-checkbox rw-input-error"
                 onChange={(e) => {
                   setSelectedTypes([]);
                   setSelectedCategories((prev) =>
@@ -175,7 +176,7 @@ const ItemsList = ({
                       : [{ label, value, types }]
                   );
                 }}
-                checked={selectedCategories.some((c) => c?.value === value)}
+                checked={selectedCategories?.some((c) => c?.value === value)}
               />
               <Label
                 name="category"
@@ -190,11 +191,11 @@ const ItemsList = ({
         </div>
       </Disclosure>
       <Disclosure title="Type">
-        {selectedCategories.length > 0 && (
+        {selectedCategories?.length > 0 && (
           <div className="flex flex-col space-y-5">
             {selectedCategories
-              .flatMap((c) => c.types)
-              .sort((a, b) => a.label.localeCompare(b.label))
+              ?.flatMap((c) => c?.types)
+              .sort((a, b) => a?.label.localeCompare(b?.label))
               .map(({ label, value }) => (
                 <div
                   className="flex items-center space-x-2"
@@ -203,9 +204,9 @@ const ItemsList = ({
                   <CheckboxField
                     name="type"
                     id={`type-${label}`}
-                    className="rw-input"
+                    className="rw-checkbox"
                     value={value}
-                    errorClassName="rw-input rw-input-error"
+                    errorClassName="rw-checkbox rw-input-error"
                     onChange={(e) => {
                       setSelectedTypes((prev) =>
                         prev.some((p) => p.value === value)
@@ -258,33 +259,46 @@ const ItemsList = ({
     >
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
-      <div className="mt-1 flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
-        <h1 className="mr-4 py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+      <header className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
+        <Text variant="h4">
           Items
-        </h1>
+        </Text>
 
-        <nav className="flex grow items-center justify-center space-x-2">
-          <div className="rw-button-group m-0 w-full !space-x-0">
+        <nav className="flex w-full items-center justify-end space-x-3">
+          <ButtonGroup>
+            <Button
+              to={routes.newItem()}
+              color="success"
+              variant="outlined"
+              permission="gamedata_create"
+              className="grow"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              New Item
+            </Button>
+
             <Lookup
               label="Category"
               name="category"
               margin="none"
               options={categories}
               isOptionEqualToValue={(option, value) =>
-                option.value === value.value
+                option?.value === value?.value
               }
-              getOptionValue={(opt) => opt.value}
-              getOptionLabel={(option) => option.label}
+              getOptionValue={(opt) => opt?.value}
+              getOptionLabel={(option) => option?.label}
               value={categories[0]}
               disabled={loading}
-              InputProps={{
-                style: {
-                  borderRadius: "0.25rem 0 0 0.25rem",
-                  marginRight: "-0.5px",
-                },
-              }}
               onChange={(_, e) => {
-                setSelectedCategories([e]);
+                console.log(e)
+                setSelectedCategories(!e ? [] : [e]);
                 setSelectedTypes([]);
               }}
             />
@@ -311,29 +325,26 @@ const ItemsList = ({
                   deps: ["category"],
                   required: false,
                 }}
-                InputProps={{
-                  style: {
-                    borderRadius: "0",
-                    marginRight: "-0.5px",
-                  },
-                }}
               />
             )}
 
-            <button
-              type="button"
+            <Button
               onClick={() => openModal()}
-              className="rw-button rw-button-gray-outline lg:!hidden"
+              color="secondary"
+              variant="outlined"
+              permission="gamedata_create"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
+                </svg>
+              }
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                className="rw-button-icon"
-              >
-                <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
-              </svg>
+
               <span className="sr-only">Filters</span>
-            </button>
+            </Button>
 
             <Input
               name="search"
@@ -342,15 +353,13 @@ const ItemsList = ({
               margin="none"
               defaultValue={search}
               disabled={loading}
-              SuffixProps={{
-                className: '-mx-px !rounded-l-none',
-              }}
               InputProps={{
                 endAdornment: (
                   <Button
                     type="submit"
                     variant="contained"
                     color="success"
+                    ignoreButtonGroupPosition
                     startIcon={(
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -366,7 +375,7 @@ const ItemsList = ({
                 )
               }}
             />
-          </div>
+          </ButtonGroup>
 
           <ToggleButtonGroup
             orientation="horizontal"
@@ -395,7 +404,7 @@ const ItemsList = ({
             </ToggleButton>
           </ToggleButtonGroup>
         </nav>
-      </div>
+      </header>
 
       <section className="grid grid-cols-1 gap-x-8 gap-y-10 pb-24 pt-6 lg:grid-cols-4">
         {/* Filters */}
@@ -411,23 +420,36 @@ const ItemsList = ({
             }
           )}
         >
-          {itemsPage.items.map((item, i) => (
+
+          {itemsPage.items.map(({ id, name, image, category, type }, i) => (
             <Fragment key={`item-${i}`}>
-              <Card className="hover:border-pea-500 border border-transparent transition-all duration-75 ease-in-out">
+              <Card className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
                 <CardActionArea
-                  onClick={() => navigate(routes.item({ id: item.id }))}
+                  onClick={() => navigate(routes.item({ id }))}
                   className="flex w-full justify-start text-left"
                 >
                   <CardHeader
-                    sx={{
+                    style={{
                       flexGrow: 1,
                     }}
-                    title={item.name}
-                    subheader={item.type}
+                    title={name}
+                    subheader={`${category}${type ? `, ${type}` : ''}`}
+                    avatar={
+                      <img
+                        src={
+                          image && image.length > 0
+                            ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
+                            : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
+                        }
+                        className="h-12 w-12 rounded-lg border border-zinc-500 bg-neutral-700 object-contain p-2.5"
+                        loading="lazy"
+                        alt={name}
+                      />
+                    }
                   />
                   <CardMedia
                     className="max-h-32 max-w-[128px] shrink p-4 pl-0"
-                    image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                    image={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                   />
                 </CardActionArea>
               </Card>
@@ -437,9 +459,13 @@ const ItemsList = ({
         {!loading && itemsPage.items.length === 0 && itemsPage.count === 0 && (
           <div className="w-full text-center text-black dark:text-white">
             {"No items yet. "}
-            <Link to={routes.newItem()} className="rw-link">
+            <Button
+              variant="text"
+              color="primary"
+              to={routes.newItem()}
+            >
               {"Create one?"}
-            </Link>
+            </Button>
           </div>
         )}
       </section>

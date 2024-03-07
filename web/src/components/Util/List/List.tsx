@@ -1,57 +1,78 @@
-import { ElementType, HTMLAttributes, useRef } from "react";
+import { DetailedHTMLProps, ElementType, HTMLAttributes, MouseEventHandler, ReactNode, Ref, forwardRef, useRef } from "react";
 import Ripple from "../Ripple/Ripple";
-import { useRipple } from "src/components/useRipple";
+import { useRipple } from "src/hooks/useRipple";
 import clsx from "clsx";
 
 type ListProps = {
-  children?: React.ReactNode;
-} & React.DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;;
-const List = (props: ListProps) => {
-  return <ul className={clsx("relative m-0 list-none py-2", props?.className)} {...props}>{props.children}</ul>;
-};
+  children?: ReactNode;
+  orientation?: 'horizontal' | 'vertical'
+} & DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;;
+const List = forwardRef<HTMLUListElement, ListProps>((props, ref) => {
+  const { className, orientation = "vertical" } = props;
+  return (
+    <ul
+      {...props}
+      className={clsx("relative m-0 list-none py-2", className, {
+        "inline-flex": orientation === 'horizontal'
+      })}
+      ref={ref}
+    >
+      {props.children}
+    </ul>
+  );
+});
 
-type ListItemProps = {
-  icon?: React.ReactNode;
+type ListItemProps<T extends ElementType = 'div'> = {
+  icon?: ReactNode;
   size?: 'small' | 'medium' | 'large'
   disabled?: boolean;
   disableRipple?: boolean;
-  secondaryAction?: React.ReactNode;
-  secondaryActionProps?: React.DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+  secondaryAction?: ReactNode;
+  secondaryActionProps?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
   to?: string;
   href?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement> | React.MouseEventHandler<HTMLLIElement>
-} & React.DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
+  linkProps?: Omit<HTMLAttributes<HTMLElement>, 'disabled' | 'color'>;
+  iconProps?: HTMLAttributes<HTMLDivElement>;
+  onClick?: T extends 'button' ? MouseEventHandler<HTMLButtonElement> : T extends 'a' ? MouseEventHandler<HTMLAnchorElement> : MouseEventHandler<HTMLDivElement>;
+} & DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
 
-export const ListItem = (props: ListItemProps) => {
-  const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, children, className, size = "medium", onClick, ...other } = props;
+export const ListItem = forwardRef(<T extends ElementType = 'div'>(props: ListItemProps<T>, ref: Ref<HTMLLIElement>) => {
+  const { disabled: disabled, disableRipple, icon, secondaryAction, secondaryActionProps, linkProps, iconProps, children, className, size = "medium", onClick, ...other } = props;
   const rippleRef = useRef(null);
   const { enableRipple, getRippleHandlers } = useRipple({
     disabled,
     disableRipple,
     rippleRef,
   });
-  const Root: ElementType = props.href || props.to ? "a" : props.onClick ? "button" : 'div';
+
+  const Root: ElementType = props.href || props.to ? "a" : props.onClick ? "button" : "div";
   return (
     <li
+      ref={ref}
       className={clsx("relative box-border flex w-full items-center justify-start text-left text-black dark:text-white", className)}
       {...other}
       {...getRippleHandlers()}
     >
-      <Root className={clsx("flex justify-start w-full items-center relative box-border", {
-        "px-4 py-1.5": size === 'small',
-        "py-2 px-4": size === "medium"
-      })} href={props?.to || props?.href} type="button" onClick={(e) => {
-        if (!(props.href || props.to)) {
-          onClick?.(e)
-        }
-      }}>
+      <Root
+        {...linkProps}
+        className={clsx("flex justify-start w-full items-center relative box-border", linkProps?.className, {
+          "px-4 py-1.5": size === 'small',
+          "py-2 px-4": size === "medium",
+          "py-2.5 px-5": size === 'large',
+          "text-zinc-500": disabled,
+          "dark:hover:bg-white/10 hover:bg-black/10": ((props.href || props.to) || props.onClick)
+        })}
+        disabled={disabled}
+        href={props?.to || props?.href}
+        {...(Root === 'button' ? { type: "button", onClick: (e) => onClick?.(e) } : {})}
+      >
         {icon && (
-          <div className="inline-flex shrink-0 min-w-[36px]">
+          <div {...iconProps} className={clsx("inline-flex shrink-0 min-w-[36px]", iconProps?.className)}>
             {icon}
           </div>
         )}
         <div
-          className={clsx("min-w-0 flex-auto", {
+          className={clsx("min-w-0 flex-auto text-left", {
             "my-1": size !== "small"
           })}
         >
@@ -64,7 +85,7 @@ export const ListItem = (props: ListItemProps) => {
       </Root>
     </li>
   );
-};
+});
 
 
 

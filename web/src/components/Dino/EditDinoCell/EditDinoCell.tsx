@@ -1,6 +1,5 @@
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 
-import { navigate, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
@@ -64,19 +63,33 @@ export const QUERY = gql`
       icon
       image
       DinoStat {
+        id
         item_id
+        dino_id
         Item {
-          name
           id
+          name
           image
         }
         value
-        rank
         type
       }
     }
+    itemsByCategory(category: "Resource,Consumable,Armor") {
+      items {
+        id
+        name
+        description
+        image
+        color
+        type
+        category
+      }
+      count
+    }
   }
 `;
+
 const UPDATE_DINO_MUTATION = gql`
   mutation UpdateDinoMutation($id: String!, $input: UpdateDinoInput!) {
     updateDino(id: $id, input: $input) {
@@ -137,7 +150,23 @@ const UPDATE_DINO_MUTATION = gql`
   }
 `;
 
-export const Loading = () => <div>Loading...</div>;
+export const Loading = () => (
+  <div role="status" className="flex animate-pulse flex-col space-y-8">
+    <div className="flex space-x-3">
+      <div aria-label="Input" className="h-12 w-72 rounded bg-zinc-200 dark:bg-zinc-700" />
+      <div aria-label="Input" className="h-12 w-72 rounded bg-zinc-200 dark:bg-zinc-700" />
+    </div>
+    <div className="flex space-x-3">
+      <div aria-label="Input" className="h-12 w-72 rounded bg-zinc-200 dark:bg-zinc-700" />
+      <div aria-label="Input" className="h-12 w-72 rounded bg-zinc-200 dark:bg-zinc-700" />
+    </div>
+    <div aria-label="Input" className="h-12 w-72 rounded bg-zinc-200 dark:bg-zinc-700" />
+    <div aria-label="Input" className="h-12 w-72 rounded bg-zinc-200 dark:bg-zinc-700" />
+    <div className="h-96 w-96 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+
+    <span className="sr-only">Loading...</span>
+  </div>
+);
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (
@@ -158,11 +187,10 @@ export const Failure = ({ error }: CellFailureProps) => {
     </div>
   );
 };
-export const Success = ({ dino }: CellSuccessProps<EditDinoById>) => {
+export const Success = ({ dino, itemsByCategory }: CellSuccessProps<EditDinoById>) => {
   const [updateDino, { loading, error }] = useMutation(UPDATE_DINO_MUTATION, {
     onCompleted: () => {
       toast.success("Dino updated");
-      navigate(routes.dinos());
     },
     onError: (error) => {
       toast.error(error.message);
@@ -185,7 +213,7 @@ export const Success = ({ dino }: CellSuccessProps<EditDinoById>) => {
         </h2>
       </header>
       <div className="rw-segment-main">
-        <DinoForm dino={dino} onSave={onSave} error={error} loading={loading} />
+        <DinoForm dino={dino} onSave={onSave} error={error} loading={loading} itemsByCategory={itemsByCategory} />
       </div>
     </div>
   );

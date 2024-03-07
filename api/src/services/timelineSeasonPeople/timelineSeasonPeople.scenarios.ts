@@ -3,52 +3,8 @@ import type { ScenarioData } from '@redwoodjs/testing/api'
 
 export const standard = defineScenario<Prisma.TimelineSeasonPersonCreateArgs>({
   timelineSeasonPerson: {
-    one: {
-      data: {
-        TimelineSeason: {
-          create: {
-            Timeline: {
-              create: {
-                Profile: {
-                  create: {
-                    id: 'String',
-                    role_profile_role_idTorole: {
-                      create: {
-                        name: 'String',
-                        permissions: 'basespot:delete',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    two: {
-      data: {
-        TimelineSeason: {
-          create: {
-            Timeline: {
-              create: {
-                Profile: {
-                  create: {
-                    id: 'String',
-                    role_profile_role_idTorole: {
-                      create: {
-                        name: 'String',
-                        permissions: 'basespot:delete',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
+    one: { data: { TimelineSeason: { create: {} } } },
+    two: { data: { TimelineSeason: { create: {} } } },
   },
 })
 

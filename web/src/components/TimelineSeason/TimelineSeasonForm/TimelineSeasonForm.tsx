@@ -15,7 +15,9 @@ import type {
   UpdateTimelineSeasonInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import { Input } from "src/components/Util/Input/Input";
+import DatePicker from "src/components/Util/DatePicker/DatePicker";
 
 type FormTimelineSeason = NonNullable<EditTimelineSeasonById["timelineSeason"]>;
 
@@ -35,140 +37,73 @@ const TimelineSeasonForm = (props: TimelineSeasonFormProps) => {
   };
 
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormTimelineSeason> onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+    <Form<FormTimelineSeason> onSubmit={onSubmit} error={props.error}>
+      <FormError
+        error={props.error}
+        wrapperClassName="rw-form-error-wrapper"
+        titleClassName="rw-form-error-title"
+        listClassName="rw-form-error-list"
+      />
 
-        <Label
-          name="server"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Server
-        </Label>
-
-        <TextField
+      <ButtonGroup>
+        <Input
+          label="Server"
           name="server"
           defaultValue={props.timelineSeason?.server}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
         />
 
-        <FieldError name="server" className="rw-field-error" />
-
-        <Label
-          name="season"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Season
-        </Label>
-
-        <TextField
-          name="season"
-          defaultValue={props.timelineSeason?.season}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="season" className="rw-field-error" />
-
-        <Label
-          name="cluster"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Cluster
-        </Label>
-
-        <TextField
+        <Input
+          label="Cluster"
           name="cluster"
           defaultValue={props.timelineSeason?.cluster}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+        />
+      </ButtonGroup>
+
+      <br />
+
+      <ButtonGroup>
+        <Input
+          label="Season"
+          name="season"
+          defaultValue={props.timelineSeason?.season}
         />
 
-        <FieldError name="cluster" className="rw-field-error" />
-
-        <Label
-          name="tribe_name"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Tribe name
-        </Label>
-
-        <TextField
-          name="tribe_name"
-          defaultValue={props.timelineSeason?.tribe_name}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="tribe_name" className="rw-field-error" />
-
-        <Label
+        <DatePicker
           name="season_start_date"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Season start date
-        </Label>
-
-        <DatetimeLocalField
-          name="season_start_date"
-          defaultValue={
-            props.timelineSeason?.season_start_date ??
-            new Date(new Date().toString().split("GMT")[0] + " UTC")
-              .toISOString()
-              .split(".")[0]
-              .toString()
-              .slice(0, -3)
-          }
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          label="Season Start"
+          defaultValue={new Date(props.timelineSeason?.season_start_date || new Date())}
         />
 
-        <FieldError name="season_start_date" className="rw-field-error" />
-
-        <Label
+        <DatePicker
           name="season_end_date"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Season end date
-        </Label>
-
-        <DatetimeLocalField
-          name="season_end_date"
-          defaultValue={props.timelineSeason?.season_end_date}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          label="Season End"
+          defaultValue={new Date(props.timelineSeason?.season_end_date || new Date())}
         />
+      </ButtonGroup>
 
-        <FieldError name="season_end_date" className="rw-field-error" />
+      <br />
 
-        <div className="rw-button-group">
-          <Button type="submit" variant="contained" color="success" disabled={props.loading} startIcon={(
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              className="w-5 pointer-events-none"
-              fill="currentColor"
-            >
-              <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
-            </svg>
-          )}>
-            Save
-          </Button>
-        </div>
-      </Form>
-    </div>
+      <Input
+        label="Tribe Name"
+        name="tribe_name"
+        defaultValue={props.timelineSeason?.tribe_name}
+      />
+
+      <br />
+
+      <Button type="submit" variant="contained" color="success" disabled={props.loading} startIcon={(
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 448 512"
+          className="w-5 pointer-events-none"
+          fill="currentColor"
+        >
+          <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
+        </svg>
+      )}>
+        Save
+      </Button>
+    </Form>
   );
 };
 

@@ -202,15 +202,15 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   className="inline-flex h-20 w-20 items-center justify-center text-center text-white"
                 >
                   <path
-                    className="stroke-pea-800 fill-none stroke-1"
+                    className="stroke-success-800 fill-none stroke-1"
                     d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"
-                  ></path>
+                  />
                   <path
                     className={clsx(
                       "animate-circle-progress fill-none stroke-2",
-                      "stroke-pea-500"
+                      "stroke-success-500"
                     )}
                     strokeLinecap="round"
                     strokeDasharray={`${formatNumber(
@@ -268,21 +268,42 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               subheaderProps={{ className: "text-xl !font-bold !text-white" }}
             />
             <CardContent>
-              <div className="relative w-auto flex-initial">
-                <svg
+              <div className="relative flex-initial">
+                <Chart
+                  type="pie"
+                  series={[
+                    {
+                      innerRadius: 90,
+                      paddingAngle: 0,
+                      arcLabel: true,
+                      // data: [
+                      //   { id: 0, value: 90, label: 'series A' },
+                      //   { id: 1, value: 90, label: 'series B' },
+                      //   { id: 2, value: 90, label: 'series C' },
+                      // ],
+                      data: Object.entries(groupBy(optimizedBasespots, "map_id"))
+                        .map(([k, v]) => ({
+                          id: k,
+                          label: v[0].Map.name,
+                          value: (v.slice(0, 20).length / 20) * 100,
+                        }))
+                    }
+                  ]}
+                />
+                {/* <svg
                   viewBox="0 0 36 36"
                   className="inline-flex h-20 w-20 items-center justify-center text-center text-white"
                 >
                   <path
-                    className="stroke-pea-800 fill-none stroke-1"
+                    className="stroke-success-800 fill-none stroke-1"
                     d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"
-                  ></path>
+                  />
                   <path
                     className={clsx(
                       "animate-circle-progress fill-none stroke-2",
-                      "stroke-pea-500"
+                      "stroke-success-500"
                     )}
                     strokeLinecap="round"
                     strokeDasharray={`${(
@@ -301,7 +322,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"
-                  ></path>
+                  />
                   <text
                     textAnchor="middle"
                     x="18"
@@ -325,7 +346,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     ).toPrecision(3)}
                     %
                   </text>
-                </svg>
+                </svg> */}
               </div>
             </CardContent>
           </Card>
@@ -370,6 +391,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               />
             </CardContent>
           </Card>
+        </div>
+
+        <div className="relative mt-12 mx-auto max-w-2xl rw-divide dark:text-white text-black">
+          <span className="text-base font-semibold">Basespots</span>
         </div>
 
         <Table
@@ -427,15 +452,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           ]}
         />
 
-        <div className="relative my-12 mx-auto max-w-2xl px-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-zinc-500" />
-          </div>
-          <div className="relative flex justify-center text-black dark:text-white">
-            <span className="bg-white px-3 text-base font-semibold dark:bg-zinc-900">
-              Users
-            </span>
-          </div>
+        <div className="relative my-12 mx-auto max-w-2xl rw-divide dark:text-white text-black">
+          <span className="text-base font-semibold">Users</span>
         </div>
 
         <Table
@@ -621,15 +639,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           ]}
         />
 
-        <div className="relative my-12 mx-auto max-w-2xl px-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-zinc-500" />
-          </div>
-          <div className="relative flex justify-center text-black dark:text-white">
-            <span className="bg-white px-3 text-base font-semibold dark:bg-zinc-900">
-              Commits
-            </span>
-          </div>
+        <div className="relative my-12 mx-auto max-w-2xl rw-divide dark:text-white text-black">
+          <span className="text-base font-semibold">Commits</span>
         </div>
 
         <Table
@@ -682,7 +693,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               render: ({ value }) => (
                 <div className="flex items-center gap-x-3">
                   {/* <div className={clsx("p-1 rounded-full flex-none", {
-                    "text-pea-500 bg-pea-500/20": value.verified,
+                    "text-success-500 bg-success-500/20": value.verified,
                     "text-red-500 bg-red-500/20": !value.verified
                   })}>
                     <div className="bg-current rounded-full w-1.5 h-1.5" />

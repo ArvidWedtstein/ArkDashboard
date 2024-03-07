@@ -14,14 +14,6 @@ export const formatEnum = (values: string | string[] | null | undefined) => {
   return output;
 };
 
-export const jsonDisplay = (obj: unknown) => {
-  return (
-    <pre>
-      <code>{JSON.stringify(obj, null, 2)}</code>
-    </pre>
-  );
-};
-
 export const isEmpty = (input: unknown): boolean => {
   if (input === null || input === undefined) {
     return true;
@@ -94,37 +86,6 @@ export const timeTag = (
     <time dateTime={dateTime.toString()} title={dateTime.toString()}>
       {formattedDateTime}
     </time>
-  );
-};
-
-export const checkboxInputTag = (checked: boolean) => {
-  return (
-    <input type="checkbox" className="rw-checkbox" checked={checked} disabled />
-  );
-};
-
-/**
- * Check if a value is an object (not a function, array, or date).
- * @param value - The value to check.
- * @returns A boolean indicating whether the value is an object.
- */
-export const isObject = (value) => {
-  return (
-    typeof value === "object" &&
-    !Array.isArray(value) &&
-    !(value instanceof Date)
-  );
-};
-
-/**
- * Check if a given string is a valid UUID (Universally Unique Identifier)
- *
- * @param {string} value - The string to check
- * @returns {boolean} - true if the string is a valid UUID, false otherwise
- */
-export const isUUID = (value: string): boolean => {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-    value
   );
 };
 
@@ -227,9 +188,15 @@ export const combineBySummingKeys = (...objects: object[]) => {
  *
  * @param {number} seconds - The number of seconds to format.
  * @param {boolean} [onlyLast=false] - Whether to display only the last non-zero unit.
- * @param {boolean} [useAbs=true] - Whether to use the absolute value of the input.
  *
  * @return {string} The formatted string representation.
+ *
+ * @example
+ * timeFormatL(42069)
+ * // 11h 41m 9s
+*
+ * timeFormatL(42069, true)
+ * // 11h
  */
 export const timeFormatL = (seconds, onlyLast = false) => {
   let time = "";
@@ -407,7 +374,6 @@ export const getISOWeek = (date: Date = new Date()): number => {
   return weekNumber;
 };
 
-
 /**
  *
  * @param date
@@ -475,24 +441,6 @@ export const getDateDiff = (date1: Date, date2: Date) => {
 };
 
 /**
- * Determines the type of a word based on regular expressions.
- * @param {string} word - The word to determine the type of.
- * @returns {string} The type of the word. Can be "noun", "verb", "adjective", or "unknown".
- */
-export const getWordType = (word: string) => {
-  // Define regular expressions for each word type
-  const nounRegex = /^[A-Z][a-z]*$/;
-  const verbRegex = /^[a-z]+(?:ed|ing)$/;
-  const adjRegex = /^[a-z]+(?:able|ible|ful|ic|ous|ish|ive|less)$/;
-
-  // Test the word against each regex
-  if (nounRegex.test(word)) return "noun";
-  if (verbRegex.test(word)) return "verb";
-  if (adjRegex.test(word)) return "adjective";
-  return "unknown";
-};
-
-/**
  * Returns a pluralized string based on the count and noun provided.
  *
  * @param {number} count - The number of items.
@@ -541,213 +489,6 @@ export const objectToSearchParams = (obj): URLSearchParams => {
   }
 
   return params;
-};
-
-/**
- * Generates a pdf from an array of your choice
- */
-export const generatePDF = (crafts) => {
-  const pages = [];
-  const tableSize = {
-    width: 612,
-    height: 792,
-  };
-
-  const content = [];
-  const columnWidths = [100, 20, 30];
-
-  // https://blog.idrsolutions.com/make-your-own-pdf-file-part-5-path-objects/
-
-  const newobj = (name, obj: string[]) => {
-    content.push(...[`${name} 0 obj`, obj.join("\n"), "endobj"]);
-  };
-
-  const newpage = (pageref, size, contentref) => {
-    pages.push(`${pageref} 0 R`);
-    newobj(pageref, [
-      `<< /Type /Page`,
-      `/Parent 2 0 R`,
-      `/Resources 4 0 R`,
-      `/Contents ${contentref}`,
-      `/MediaBox [0 0 ${size.width} ${size.height}]`,
-      `>>`,
-    ]);
-  };
-  /**
-   *
-   * @param x text from left
-   * @param y  text from top
-   * @param text text to write
-   * @param size font size
-   * @returns a string to write text
-   */
-  const text = (x, y, text, size) =>
-    [
-      `BT`,
-      `/F1 ${size} Tf`,
-      `${x} ${tableSize.height - y} Td`,
-      `(${text}) Tj`,
-      `ET`,
-    ].join("\n");
-
-  const rect = (
-    x,
-    y,
-    width,
-    height,
-    fill: boolean = true,
-    color: string = "0 0 0 "
-  ) =>
-    [
-      `${color} rg`,
-      `${x} ${tableSize.height - y} ${width} ${height} re ${fill ? "f" : ""} S`,
-      `0 0 0 rg`,
-    ].join("\n");
-
-  /**
-   * @param x x coordinate
-   * @param y y coordinate
-   * @param lines lines to draw
-   * @returns a string to draw lines
-   * @example
-   * lines(0, 0, [
-   * { x: 0, y: 0, c: [{ x: 0, y: 0 }] },
-   * { x: 0, y: 0, c: [{ x: 0, y: 0 }] },
-   * ])
-   *
-   */
-  const line = (x = 0, y = 0, lines = []) => {
-    const path = [`${x} ${tableSize.height - y} m`];
-    lines.forEach((line) => {
-      path.push(`${line.x} ${tableSize.height - line.y} l`);
-    });
-    path.push("h");
-    path.push("S");
-    return path.join("\n");
-  };
-
-  const tableX = 72;
-  const textcolor = "0.2 0.2 0.2 rg";
-  const cellPadding = 3;
-
-  content.push("%PDF-2.0");
-
-  newobj("1", [`<< /Type /Catalog /Pages 2 0 R >>`]);
-
-  // newpage("3", tableSize, "6 0 R");
-
-  newobj("4", [`<< /Font << /F1 5 0 R >> >>`]);
-
-  newobj("5", [`<< /Type /Font /Subtype /Type1 /BaseFont /Papyrus >>`]);
-  // const generateObjectNumber = () => Math.floor(content.length / 2 + 1);
-  // newobj("6", [
-  //   `<< /Length 105 >>`,
-  //   `stream`,
-  //   text(72, 30, "Hello World!", 24),
-  //   text(72, 50, "Hello woooorld!", 24),
-  //   `endstream`,
-  // ]);
-
-  newpage("8", tableSize, `9 0 R`);
-
-  newobj("9", [
-    `<< /Length 105>>`,
-    `stream`,
-    rect(
-      tableX - cellPadding * 2,
-      30 + crafts.length * 20,
-      tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
-      40 + (crafts.length - 1) * 20 + cellPadding,
-      true,
-      `0.9 0.9 0.9`
-    ),
-    Object.keys(crafts[0])
-      .map((key, col) => {
-        return [
-          text(
-            col === 0
-              ? tableX
-              : 0 + col * (tableSize.width / Object.keys(crafts[0]).length),
-            20,
-            key,
-            12
-          ),
-          ...crafts.map((item, i) => {
-            const t = [];
-            const cellX =
-              (col === 0 ? tableX : 0) +
-              col * (tableSize.width / Object.keys(crafts[0]).length);
-            // const cellX = (col === 0 ? tableX : 0) + columnWidths[col];
-            const cellY = 40 + i * 20;
-            // Line
-            col === 0 && t.push(`${textcolor}`);
-
-            // t.push(rect(cellX, cellY, tableSize.width / crafts.length, 12 + cellPadding * 2, false))
-            if (col === 0) {
-              t.push(
-                line(cellX, cellY + cellPadding, [
-                  {
-                    x:
-                      tableX +
-                      (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
-                      columnWidths[Object.keys(crafts[0]).length - 1],
-                    y: cellY + cellPadding,
-                  },
-                ])
-              );
-            }
-            // Text
-            const textX = cellX + cellPadding;
-            const textY = cellY - cellPadding;
-
-            t.push(text(textX, textY, `${item[key]}`, 12));
-
-            t.push("0 0 0 rg");
-
-            return t.join("\n");
-          }),
-        ].join("\n");
-      })
-      .join("\n"),
-    "endstream",
-  ]);
-
-  newobj("2", [
-    `<< /Type /Pages /Kids [${pages.join(" ")}] /Count ${pages.length} >>`,
-  ]);
-  const xrefOffset = content.join("\n").length;
-
-  content.push("xref");
-  content.push(`0 ${content.length}`);
-  content.push(`
-  0 7
-0000000000 65535 f
-0000000009 00000 n
-0000000056 00000 n
-0000000111 00000 n
-0000000212 00000 n
-0000000250 00000 n
-0000000317 00000 n
-`);
-  content.push("trailer");
-  content.push(`<< /Size ${content.length} /Root 1 0 R >>`);
-  content.push("startxref");
-  content.push(xrefOffset); // bytes from start of file to xref
-  content.push("%%EOF"); // end of file
-
-  const pdfContent = content.join("\n");
-  const dataURI = `data:application/pdf;base64,${btoa(pdfContent)}`;
-
-  const win = window.open();
-  win.document.write(
-    `<iframe src="${dataURI}" style="width:100%; height:100%;" frameborder="0"></iframe>`
-  );
-
-  return dataURI;
 };
 
 /**
@@ -1006,7 +747,11 @@ export type Colors =
   | "orange"
   | "amber"
   | "yellow"
-  | "pea";
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "error";
 export type Luminance =
   | 50
   | 100
@@ -1055,79 +800,3 @@ export type IntRange<F extends number, T extends number> = Exclude<
 export type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-
-type UseControlledOptions<T> = {
-  controlled?: T | undefined;
-  default?: T;
-  name?: string;
-  state?: string;
-};
-
-type UseControlledReturnValue<T> = [T, (newValue: T) => void];
-
-export const useControlled = <T extends unknown>({
-  controlled,
-  default: defaultProp,
-  name = "",
-  state = "value",
-}: UseControlledOptions<T>): UseControlledReturnValue<T> => {
-  const { current: isControlled } = React.useRef(controlled !== undefined);
-  const [valueState, setValue] = React.useState(defaultProp);
-  const value = isControlled ? (controlled as T) : valueState;
-
-  if (process.env.NODE_ENV !== "production") {
-    React.useEffect(() => {
-      if (isControlled !== (controlled !== undefined)) {
-        console.error(
-          [
-            `ArkDashboard: A component is changing the ${isControlled ? "" : "un"
-            }controlled ${state} state of ${name} to be ${isControlled ? "un" : ""
-            }controlled.`,
-            "Elements should not switch from uncontrolled to controlled (or vice versa).",
-            `Decide between using a controlled or uncontrolled ${name} ` +
-            "element for the lifetime of the component.",
-            "The nature of the state is determined during the first render. It's considered controlled if the value is not `undefined`.",
-            ,
-          ].join("\n")
-        );
-      }
-    }, [state, name, controlled]);
-
-    const { current: defaultValue } = React.useRef(defaultProp);
-    React.useEffect(() => {
-      if (!isControlled && defaultValue !== defaultProp) {
-        console.error(
-          [
-            `ArkDashboard: A component is changing the default ${state} state of an uncontrolled ${name} after being initialized. ` +
-            `To suppress this warning opt to use a controlled ${name}.`,
-          ].join("\n")
-        );
-      }
-    }, [JSON.stringify(defaultProp)]);
-  }
-
-  const setValueIfUncontrolled = React.useCallback((newValue: T) => {
-    if (!isControlled) {
-      setValue(newValue);
-    }
-  }, []);
-  return [value, setValueIfUncontrolled];
-};
-
-export function useEventCallback<
-  Fn extends (...args: any[]) => any = (...args: unknown[]) => unknown
->(fn: Fn): Fn;
-export function useEventCallback<Args extends unknown[], Return>(
-  fn: (...args: Args) => Return
-): (...args: Args) => Return;
-export function useEventCallback<Args extends unknown[], Return>(
-  fn: (...args: Args) => Return
-): (...args: Args) => Return {
-  const ref = React.useRef(fn);
-  ref.current = fn;
-  return React.useRef((...args: Args) =>
-    // @ts-expect-error hide `this`
-    // tslint:disable-next-line:ban-comma-operator
-    (0, ref.current!)(...args)
-  ).current;
-}

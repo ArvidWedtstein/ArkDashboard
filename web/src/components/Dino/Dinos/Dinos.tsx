@@ -1,13 +1,12 @@
 import {
-
   navigate,
   parseSearch,
   routes,
   useParams,
 } from "@redwoodjs/router";
-import { CheckboxField, Form, Label, Submit } from "@redwoodjs/forms/dist";
+import { CheckboxField, Form, Label } from "@redwoodjs/forms/dist";
 import type { FindDinos } from "types/graphql";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import clsx from "clsx";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
@@ -25,6 +24,7 @@ import {
   ToggleButtonGroup,
 } from "src/components/Util/ToggleButton/ToggleButton";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import Text from "src/components/Util/Text/Text";
 
 const DinosList = ({
   dinosPage,
@@ -77,7 +77,7 @@ const DinosList = ({
 
   const Filters = useMemo(
     () => (
-      <>
+      <Fragment>
         <h3 className="sr-only">Categories</h3>
         <Disclosure title="Type">
           <div className="flex flex-col space-y-5">
@@ -89,10 +89,10 @@ const DinosList = ({
                 <CheckboxField
                   name="type"
                   id={`type-${dinotype}`}
-                  className="rw-input"
+                  className="rw-checkbox"
                   value={dinotype}
                   defaultChecked={type && type.includes(dinotype)}
-                  errorClassName="rw-input rw-input-error"
+                  errorClassName="rw-checkbox rw-input-error"
                 />
                 <Label
                   name="type"
@@ -118,9 +118,9 @@ const DinosList = ({
                   <CheckboxField
                     name="diet"
                     id={`diet-${dinodiet}`}
-                    className="rw-input"
+                    className="rw-checkbox"
                     value={dinodiet}
-                    errorClassName="rw-input rw-input-error"
+                    errorClassName="rw-checkbox rw-input-error"
                     defaultChecked={(diet && diet.includes(dinodiet)) || false}
                   />
                   <Label
@@ -147,9 +147,9 @@ const DinosList = ({
                   <CheckboxField
                     id={`temperament-${dinotemperament}`}
                     name="temperament"
-                    className="rw-input"
+                    className="rw-checkbox"
+                    errorClassName="rw-checkbox rw-input-error"
                     value={dinotemperament}
-                    errorClassName="rw-input rw-input-error"
                     defaultChecked={
                       temperament && temperament.includes(dinotemperament)
                     }
@@ -166,7 +166,7 @@ const DinosList = ({
               ))}
           </div>
         </Disclosure>
-      </>
+      </Fragment>
     ),
     []
   );
@@ -174,13 +174,31 @@ const DinosList = ({
     <Form<FormFindDinos> className="rw-segment" onSubmit={onSubmit}>
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
-      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
-        <h1 className="py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
+        <Text variant="h4">
           Dinos
-        </h1>
+        </Text>
 
         <div className="flex items-center justify-center space-x-2">
           <ButtonGroup>
+            <Button
+              to={routes.newDino()}
+              color="success"
+              variant="outlined"
+              permission="basespot_create"
+              className="grow"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              New Dino
+            </Button>
+
             <Lookup
               label="Sort by"
               margin="none"
@@ -258,7 +276,7 @@ const DinosList = ({
                     color="success"
                     disabled={loading}
                     type="submit"
-                    className="!rounded"
+                    ignoreButtonGroupPosition
                     startIcon={(
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -339,7 +357,7 @@ const DinosList = ({
             }) => (
               <Card
                 key={`dino-${id}`}
-                className="hover:border-pea-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out"
+                className="hover:border-success-500 cursor-pointer border border-transparent transition-all duration-75 ease-in-out"
               >
                 <CardActionArea
                   to={routes.dino({ id })}

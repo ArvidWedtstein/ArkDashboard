@@ -11,6 +11,7 @@ import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
+import Text from "src/components/Util/Text/Text";
 import Toast from "src/components/Util/Toast/Toast";
 
 import {
@@ -133,25 +134,52 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   return (
     <article className="rw-segment">
       <Modal
+        title="Preview"
+        content={
+          <>
+            <Button
+              size="small"
+              color="secondary"
+              variant="outlined"
+              onClick={() => {
+                fetch(currentModalImage.url)
+                  .then(response => response.blob())
+                  .then(blob => {
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'Arkdashboard.jpg';
+                    link.click();
+                  })
+                  .catch(console.error);
+              }}
+            >
+              <span className="sr-only">Download</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" className="w-5" fill="currentColor">
+                <path d="M571.8 238.8C574.5 228.9 576 218.6 576 208C576 146.1 525.9 96 464 96c-16.75 0-32.88 3.625-48 10.75C384.4 61.75 331.8 32 272 32C177.6 32 100.2 106.4 96.2 200.1C39.2 220.1 0 274.3 0 336C0 415.6 64.38 480 144 480H512c70.75 0 128-57.25 128-128C640 305 614.3 261.3 571.8 238.8zM507.5 448H149.5c-58.31 0-110.9-42.16-116.9-100.2C26.79 291.2 63.27 241.9 114.3 227.1c8.367-2.291 13.78-10.26 13.73-18.94C128 208.7 128 208.4 128 208C127.1 147.3 165.1 91.38 222.7 72.19c71.47-23.82 139.2 6.727 172.3 60.89c5.984 9.803 18.35 11.99 28.22 6.111c16.88-10.06 37.78-14.07 59.94-8.988c26.85 6.154 49.45 27 57.26 53.41c5.799 19.61 4.307 38.74-2.508 55.16c-4.137 9.969 2.061 20.75 11.98 24.1c37.34 15.97 62.42 55.06 57.5 99.25C601.9 412.3 557.1 448 507.5 448zM388.7 292.7L336 345.4V176C336 167.2 328.8 160 320 160S304 167.2 304 176v169.4L251.3 292.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l80 80C311.8 398.4 315.9 400 320 400s8.188-1.562 11.31-4.688l80-80c6.25-6.25 6.25-16.38 0-22.62S394.9 286.4 388.7 292.7z" />
+              </svg>
+
+            </Button>
+          </>
+        }
         image={currentModalImage.url}
         mimetype={currentModalImage.mimetype}
       />
 
-      <div className="m-2 block rounded-md text-white">
-        <section className="body-font container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
-          <div className="mb-16 flex flex-col items-center space-y-2 text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
-            <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-zinc-200 sm:text-4xl">
+      <div className="m-2 block rounded-md dark:text-white text-black">
+        <section className="flex flex-col items-center px-5 py-12 md:flex-row w-full">
+          <div className="flex flex-col items-center md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
+            <Text variant="h4">
               {timelineSeasonBasespot.TimelineSeason.tribe_name}
-            </h1>
-            <p className="leading-relaxed">
+            </Text>
+            <Text variant="subtitle1" gutterBottom>
               This time we played on
               {` ${timelineSeasonBasespot?.TimelineSeason.server} ${timelineSeasonBasespot.TimelineSeason?.cluster} Season ${timelineSeasonBasespot.TimelineSeason.season}`}
-            </p>
+            </Text>
 
             <ButtonGroup>
               <Button
                 permission="timeline_update"
-                color="primary"
+                color="secondary"
                 variant="outlined"
                 to={routes.editTimelineSeasonBasespot({
                   id: timelineSeasonBasespot.id,
@@ -190,44 +218,40 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           )}
         </section>
 
-        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
-          <div className="container mx-auto flex flex-wrap px-5 py-12">
-            <div className="mb-10 w-full overflow-hidden text-base lg:mb-0 lg:w-1/2">
-              <p>
-                Started playing on {timeTag(timelineSeasonBasespot.start_date)}.
-                ({relativeDate(new Date(timelineSeasonBasespot.start_date))})
-              </p>
-              {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent &&
-                timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent
-                  .length > 0 && (
-                  <p>
-                    Base lasted{" "}
-                    {
-                      getDateDiff(
-                        new Date(timelineSeasonBasespot.start_date),
-                        new Date(timelineSeasonBasespot.end_date)
-                      ).dateString
-                    }
-                  </p>
-                )}
+        <section className="mx-4 border-t border-zinc-700 text-zinc-700 dark:border-white/20 dark:text-neutral-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full divide-x-0 md:divide-x divide-y md:divide-y-0 dark:divide-white/30 divide-black/30 text-center p-12">
+            <div className="relative flex flex-col justify-center items-center divide-y divide-current space-y-1">
+              <Text variant="h6">
+                Played
+              </Text>
+
+              <Text variant="h6" className="px-4">
+                {relativeDate(timelineSeasonBasespot.start_date)}
+              </Text>
             </div>
+
+            {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent &&
+              timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent
+                .length > 0 && (
+                <div className="relative flex flex-col justify-center items-center divide-y divide-current space-y-1">
+                  <Text variant="h6">
+                    Lasted
+                  </Text>
+
+                  <Text variant="h6" className="px-4">
+                    {getDateDiff(
+                      new Date(timelineSeasonBasespot.start_date),
+                      new Date(timelineSeasonBasespot.end_date)
+                    ).dateString}
+                  </Text>
+                </div>
+              )}
           </div>
         </section>
 
 
         <div className="rw-divide px-4 my-4">
-          <h1
-            id="event-heading"
-            className="title-font px-4 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
-          >
-            {pluralize(
-              timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent
-                .length,
-              "Event",
-              "s",
-              false
-            )}
-          </h1>
+          <Text variant="h6" className="mx-2">{pluralize(timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.length, "Event", "s", false)}</Text>
         </div>
 
         {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent?.length >
@@ -265,7 +289,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                                 ))}
                             </p>
 
-                            <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                            <span className="bg-success-500 mt-8 inline-block h-1 w-10 rounded" />
                             <h2 className="title-font my-4 text-lg font-medium tracking-wider text-zinc-600 dark:text-gray-200">
                               {title}
                             </h2>
@@ -310,7 +334,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
             </div>
             <div className="flex flex-col flex-wrap border-l border-black/20 text-center dark:border-white/20 lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
               <div className="mb-10 flex flex-col items-center lg:items-start">
-                <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
+                <div className="dark:bg-success-50 text-success-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 576 512"
@@ -351,7 +375,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               </div>
               {timelineSeasonBasespot.Basespot && (
                 <div className="mb-10 flex flex-col items-center lg:items-start">
-                  <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
+                  <div className="dark:bg-success-50 text-success-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 288 512"
@@ -385,7 +409,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               )}
               <div className="mb-10 flex flex-col items-center justify-start lg:items-start">
                 <div className="flex flex-col">
-                  <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
+                  <div className="dark:bg-success-50 text-success-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                     <svg
                       fill="none"
                       stroke="currentColor"
@@ -403,30 +427,48 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                     Players
                   </h2>
                 </div>
-                <div className="-mx-8">
-                  <TimelineSeasonPeopleCell
-                    timeline_season_id={
-                      timelineSeasonBasespot.TimelineSeason.id
-                    }
-                  />
+                <div className="flex">
+                  {timelineSeasonBasespot.TimelineSeason.TimelineSeasonPerson?.map(({ id, ingame_name, permission, Profile, user_id }) => (
+                    <div className="relative flex-none py-6 px-3" key={id}>
+                      <div className="flex flex-col items-center justify-center gap-3">
+                        <img
+                          className="relative h-16 w-16 rounded-full transition duration-150 ease-in-out"
+                          src={
+                            Profile?.avatar_url
+                              ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${Profile.avatar_url}`
+                              : `https://ui-avatars.com/api/?name=${ingame_name}`
+                          }
+                        />
+                        <div className="inline-flex gap-x-1 items-center justify-center">
+                          <strong className="text-xs font-medium text-slate-900 dark:text-slate-200" title={`Role: ${permission}`}>
+                            {Profile ? (
+                              <Link to={routes.profile({ id: user_id })}>
+                                {Profile.username || ingame_name}
+                              </Link>
+                            ) : (
+                              ingame_name
+                            )}
+                          </strong>
+                          {permission == 'guest' && <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-3 h-3" fill="currentColor"><path d="M315.1 271l-70.56-112.1C232.8 139.3 212.5 128 190.3 128H129.7c-22.22 0-42.53 11.25-54.28 30.09L4.873 271c-9.375 14.98-4.812 34.72 10.16 44.09c15 9.375 34.75 4.812 44.09-10.19l28.88-46.18L87.1 480c0 17.67 14.33 32 32 32c17.67 0 31.1-14.33 31.1-32l0-144h16V480c0 17.67 14.33 32 32 32c17.67 0 32-14.33 32-32V258.8l28.88 46.2C266.9 314.7 277.4 320 288 320c5.781 0 11.66-1.562 16.94-4.859C319.9 305.8 324.5 286 315.1 271zM160 96c26.5 0 48-21.5 48-48S186.5 0 160 0C133.5 0 112 21.5 112 48S133.5 96 160 96z" /></svg>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
+        <div className="rw-divide px-4 my-4">
+          <div className="flex flex-col px-4 border-x dark:border-white/20 border-black/20">
+            <Text variant="h6">{pluralize(images.length, 'Image', 's', false)}</Text>
+            <Text variant="caption" className="text-success-500">Images & Screenshots taken during this base</Text>
+          </div>
+        </div>
         {images.length > 0 && (
-          <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-white/20 dark:text-neutral-200">
+          <section className="body-font mx-4 text-gray-700 dark:text-neutral-200">
             <div className="container mx-auto px-5 py-24">
-              <div className="mb-20 flex w-full flex-col text-center">
-                <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
-                  Images & Screenshots taken during this base
-                </h2>
-                <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl">
-                  Images
-                </h1>
-              </div>
-
               <div className="flex flex-wrap gap-3">
                 {images.map((img, i) => (
                   <div
@@ -496,16 +538,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                                 </p>
                               )}
                             </div>
-                            {/* TODO: add logic for not opening modal */}
-                            {/* <a
-                              className="rw-button rw-button-small rw-button-gray-outline"
-                              download
-                              target="_blank"
-                              href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`}
-                            >
-                              <span className="sr-only">Download</span>
-                              Download icon
-                            </a> */}
                           </div>
                         </div>
                         <div className="absolute right-3 top-3">

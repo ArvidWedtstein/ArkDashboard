@@ -8,7 +8,7 @@ import {
 import clsx from "clsx";
 import { Fragment, useMemo, useState } from "react";
 import Badge from "src/components/Util/Badge/Badge";
-import Button from "src/components/Util/Button/Button";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import {
   Card,
   CardActionArea,
@@ -19,6 +19,7 @@ import {
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Input } from "src/components/Util/Input/Input";
 import { Modal, useModal } from "src/components/Util/Modal/Modal";
+import Text from "src/components/Util/Text/Text";
 import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
 import { objectToSearchParams, removeDuplicates } from "src/lib/formatters";
 
@@ -75,9 +76,9 @@ const LootcratesList = ({
                 <CheckboxField
                   name="type"
                   id={`type-${type}`}
-                  className="rw-input"
                   value={ltype}
-                  errorClassName="rw-input rw-input-error"
+                  className="rw-checkbox"
+                  errorClassName="rw-checkbox rw-input-error"
                   defaultChecked={type && type.includes(ltype)}
                 />
                 <Label
@@ -101,8 +102,8 @@ const LootcratesList = ({
                   name="map"
                   value={id}
                   defaultChecked={map && map.includes(id.toString())}
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
+                  className="rw-checkbox"
+                  errorClassName="rw-checkbox rw-input-error"
                 />
                 <Label
                   name="map"
@@ -127,8 +128,8 @@ const LootcratesList = ({
               >
                 <CheckboxField
                   name="color"
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
+                  className="rw-checkbox"
+                  errorClassName="rw-checkbox rw-input-error"
                   id={`color-${HexColor}`}
                   value={HexColor}
                   defaultChecked={color && color.includes(HexColor)}
@@ -158,14 +159,32 @@ const LootcratesList = ({
     <Form<FormFindLootcrates> className="rw-segment" config={{ shouldUnregister: true }} onSubmit={onSubmit}>
       <Modal content={Filters} />
 
-      <div className="mt-1 flex flex-col items-center justify-between border-b border-zinc-500 pb-6 text-gray-900 dark:text-white sm:flex-row">
-        <h1 className="mr-4 py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
+        <Text variant="h4">
           Lootcrates
-        </h1>
+        </Text>
 
-        <nav className="flex grow items-center justify-center space-x-2">
-          <div className="rw-button-group grow m-0 w-full !space-x-0">
-            <Button onClick={() => openModal()} variant="outlined" className="rounded-r-none -mr-px lg:hidden" color="secondary">
+        <nav className="flex w-full items-center justify-end space-x-3">
+          <ButtonGroup>
+            <Button
+              to={routes.newLootcrate()}
+              color="success"
+              variant="outlined"
+              permission="gamedata_create"
+              className="whitespace-pre"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              New Lootcrate
+            </Button>
+
+            <Button onClick={() => openModal()} variant="outlined" className="lg:hidden" color="secondary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -185,37 +204,22 @@ const LootcratesList = ({
               fullWidth
               defaultValue={search}
               disabled={loading}
-              SuffixProps={{
-                className: "rounded-l-none lg:rounded-l"
-              }}
               InputProps={{
                 endAdornment: (
-                  <>
-                    <Button type="submit" color="success" variant="contained" disabled={loading} startIcon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                      >
-                        <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-                      </svg>
-                    }>
-                      <span className="hidden md:block">Search</span>
-                    </Button>
-                    <Button color="success" permission="gamedata_create" to={routes.newLootcrate()} className="ml-1 hidden sm:inline-flex" variant="contained" disabled={loading} startIcon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                      >
-                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-                      </svg>
-                    }>
-                      <span className="hidden md:block">New</span>
-                    </Button>
-                  </>
+                  <Button type="submit" ignoreButtonGroupPosition color="success" variant="contained" disabled={loading} startIcon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+                    </svg>
+                  }>
+                    <span className="hidden md:block">Search</span>
+                  </Button>
                 ),
               }}
             />
-          </div>
+          </ButtonGroup>
 
           <ToggleButtonGroup
             orientation="horizontal"
@@ -264,7 +268,7 @@ const LootcratesList = ({
           {lootcratesByMap.map(({ id, name, required_level, image }) => (
             <Card
               key={`lootcrate-${id}`}
-              className="hover:border-pea-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
+              className="hover:border-success-500 flex flex-col justify-between border border-transparent transition-all duration-75 ease-in-out"
             >
               <CardActionArea
                 component="link"

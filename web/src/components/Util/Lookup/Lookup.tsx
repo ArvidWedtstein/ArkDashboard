@@ -17,13 +17,11 @@ import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import clsx from "clsx";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
-import {
-  useControlled,
-  useEventCallback,
-} from "src/lib/formatters";
 import { FormControl, InputBase, InputBaseProps, InputLabel } from "../Input/Input";
 import Button from "../Button/Button";
 import ImageContainer from "../ImageContainer/ImageContainer";
+import { useControlled } from "src/hooks/useControlled";
+import { useEventCallback } from "src/hooks/useEventCallback";
 
 function stripDiacritics(string) {
   return typeof string.normalize !== "undefined"
@@ -1520,11 +1518,11 @@ export const Lookup = (<
   };
 
   const borders = {
-    primary: `border-blue-400`,
-    secondary: `border-zinc-500`,
-    success: `border-pea-500`,
-    error: `border-red-500`,
-    warning: `border-amber-400`,
+    primary: `border-primary-400`,
+    secondary: `border-secondary-500`,
+    success: `border-success-500`,
+    warning: `border-warning-400`,
+    error: `border-error-500`,
     disabled: `dark:border-white/30 border-black/30`,
     DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
   }
@@ -1566,7 +1564,7 @@ export const Lookup = (<
       >
         {image && (
           <ImageContainer
-            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+            src={image}
             defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-craftable-resource.webp"
             alt={getOptionLabel(option) as string}
             className="mr-2 h-6 w-6"
@@ -1669,7 +1667,6 @@ export const Lookup = (<
             variant === 'outlined' ? (
               <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
                 "border-2": state.focused,
-                "ring-8 ring-red-500": !state.required
               }, SuffixProps?.className)}>
                 <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
                   "max-w-full": state.focused || state.filled || (multiple && (Array.isArray(value) && value.length > 0)),
@@ -1696,7 +1693,7 @@ export const Lookup = (<
           value={inputValue}
           placeholder={placeholder}
           className={className}
-          required
+          required={required}
           inputProps={{
             role: "combobox",
             spellCheck: false,
@@ -1757,7 +1754,7 @@ export const Lookup = (<
         />
 
         {helperText && (
-          <p id={helperText && id ? `${id}-helper-text` : undefined} className="rw-helper-text" {...HelperTextProps}>
+          <p id={helperText && id ? `${id}-helper-text` : undefined} className={clsx("mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70", HelperTextProps?.className)} {...HelperTextProps}>
             {helperText}
           </p>
         )}

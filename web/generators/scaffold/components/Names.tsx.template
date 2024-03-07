@@ -1,9 +1,15 @@
+import { Fragment, useState } from "react";
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
-import { useAuth } from "src/auth";
 import { QUERY } from '${importComponentNamesCell}'
 import { ${listFormattersImports} } from 'src/lib/formatters'
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+} from "src/components/Util/ToggleButton/ToggleButton";
+import Button, { ButtonGroup } from "src/components/Util/Button/Button";
+import Text from "src/components/Util/Text/Text";
 import Toast from "src/components/Util/Toast/Toast";
 
 import type { Delete${singularPascalName}MutationVariables, Find${pluralPascalName} } from 'types/graphql'
@@ -17,7 +23,6 @@ const DELETE_${singularConstantName}_MUTATION = gql`
 `
 
 const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}) => {
-  const { currentUser } = useAuth();
   const [delete${singularPascalName}] = useMutation(DELETE_${singularConstantName}_MUTATION, {
     onCompleted: () => {
       toast.success('${singularPascalName} deleted')
@@ -44,69 +49,131 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
     ), { position: 'top-center' });
   }
 
-  return (
-    <div className="rw-segment rw-table-wrapper-responsive">
+  const [view, setView] = useState<"grid" | "list">("grid");
 
-      <table className="rw-table">
+  return (
+    <article className="rw-segment">
+      <div className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
+        <Text variant="h4">
+          ${pluralPascalName}
+        </Text>
+
+        <div className="flex items-center justify-center space-x-2">
+          <ButtonGroup>
+            <Button
+              to={routes.new${singularPascalName}()}
+              color="success"
+              variant="outlined"
+              permission="gamedata_create"
+              className="grow"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              }
+            >
+              New ${singularPascalName}
+            </Button>
+          </ButtonGroup>
+
+          <ToggleButtonGroup
+            orientation="horizontal"
+            value={view}
+            exclusive
+            enforce
+            onChange={(_, value) => setView(value)}
+          >
+            <ToggleButton value="list">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="h-5 w-5 fill-current"
+              >
+                <path d="M64 48H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 62.33 81.67 48 64 48zM64 112H32v-32h32V112zM64 368H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 382.3 81.67 368 64 368zM64 432H32v-32h32V432zM176 112h320c8.801 0 16-7.201 16-15.1C512 87.2 504.8 80 496 80h-320C167.2 80 160 87.2 160 95.1C160 104.8 167.2 112 176 112zM496 240h-320C167.2 240 160 247.2 160 256c0 8.799 7.201 16 16 16h320C504.8 272 512 264.8 512 256C512 247.2 504.8 240 496 240zM496 400h-320C167.2 400 160 407.2 160 416c0 8.799 7.201 16 16 16h320c8.801 0 16-7.201 16-16C512 407.2 504.8 400 496 400zM64 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32C96 222.3 81.67 208 64 208zM64 272H32v-32h32V272z" />
+              </svg>
+            </ToggleButton>
+            <ToggleButton value="grid">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="h-5 w-5 fill-current"
+              >
+                <path d="M160 0H64C28.65 0 0 28.65 0 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C224 28.65 195.3 0 160 0zM192 160c0 17.64-14.36 32-32 32H64C46.36 192 32 177.6 32 160V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM160 288H64c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C224 316.7 195.3 288 160 288zM192 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448zM448 0h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64V64C512 28.65 483.3 0 448 0zM480 160c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32V64c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V160zM448 288h-96c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h96c35.35 0 64-28.65 64-64v-96C512 316.7 483.3 288 448 288zM480 448c0 17.64-14.36 32-32 32h-96c-17.64 0-32-14.36-32-32v-96c0-17.64 14.36-32 32-32h96c17.64 0 32 14.36 32 32V448z" />
+              </svg>
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      </div>
+      {/*<Table
+        columns={[
+          <% columns.forEach(column => { %>
+            {field: ${column.label} }<% }) %>
+        ]}
+        rows={[
+          {${pluralCamelName}.map((${singularCamelName}) => (
+            { id: singularCamelName.id }
+              <% columns.forEach(column => { %>
+              <td>{${column.listDisplayFunction}(${singularCamelName}.${column.name})}</td><% }) %>
+            </tr>
+          ))}
+        ]}
+      />*/}
+      <table className="w-full min-w-max table-auto text-sm min-w-[48rem]">
         <thead>
-          <tr><% columns.forEach(column => { %>
-            <th>${column.label}</th><% }) %>
-            <th>&nbsp;</th>
+          <tr className="bg-gray-200 text-sm uppercase leading-normal text-gray-600"><% columns.forEach(column => { %>
+            <th className="whitespace-nowrap py-3 px-6 text-left">${column.label}</th><% }) %>
+            <th className="whitespace-nowrap py-3 px-6 text-left">&nbsp;</th>
           </tr>
         </thead>
         <tbody>
           {${pluralCamelName}.map((${singularCamelName}) => (
-            <tr key={${singularCamelName}.id}><% columns.forEach(column => { %>
-              <td>{${column.listDisplayFunction}(${singularCamelName}.${column.name})}</td><% }) %>
-              <td>
-                <nav className="rw-table-actions">
-                  <Link
+            <tr className="border-b border-gray-200 text-black hover:bg-gray-100/10 dark:text-white" key={${singularCamelName}.id}><% columns.forEach(column => { %>
+              <td className="whitespace-nowrap py-3 px-6 text-left">{${column.listDisplayFunction}(${singularCamelName}.${column.name})}</td><% }) %>
+              <td className="whitespace-nowrap py-3 px-6 text-left">
+                <ButtonGroup size="small" variant="outlined">
+                  <Button
+                    color="primary"
                     to={routes.${singularRouteName}({ id: ${singularCamelName}.id })}
                     title={'Show ${singularCamelName} ' + ${singularCamelName}.id + ' detail'}
-                    className="rw-button rw-button-small"
                   >
                     Show
-                  </Link>
-                   {currentUser?.permissions.some(
-          (p: permission) => p === "gamedata_update"
-        ) && (
-                  <Link
+                  </Button>
+                  <Button
+                    permission="gamedata_update"
+                    color="secondary"
                     to={routes.${editRouteName}({ id: ${singularCamelName}.id })}
                     title={'Edit ${singularCamelName} ' + ${singularCamelName}.id}
-                    className="rw-button rw-button-small rw-button-blue"
+                    startIcon={
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                      </svg>
+                    }
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon-start">
-                      <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-                    </svg>
                     Edit
-                  </Link>
-        )}
-                   {currentUser?.permissions.some(
-          (p: permission) => p === "gamedata_delete"
-        ) && (
-                  <button
-                    type="button"
-                    title={'Delete ${singularCamelName} ' + ${singularCamelName}.id}
-                    className="rw-button rw-button-small rw-button-red"
+                  </Button>
+                  <Button
+                    permission="gamedata_delete"
+                    color="error"
                     onClick={() => onDeleteClick(${singularCamelName}.id)}
+                    title={'Delete ${singularCamelName} ' + ${singularCamelName}.id}
+                    startIcon={
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                      </svg>
+                    }
                   >
-                    <svg
-                     xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 448 512"
-                      className="rw-button-icon-start"
-                    >
-                      <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
-                    </svg>
                     Delete
-                  </button>
-        )}
-                </nav>
+                  </Button>
+                </ButtonGroup>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </article>
   )
 }
 

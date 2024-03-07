@@ -5,8 +5,8 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String
     ingame_name: String
-    permission: String
     timeline_season_id: String!
+    permission: String
     TimelineSeason: TimelineSeason!
     Profile: Profile
   }
@@ -22,8 +22,8 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String
     ingame_name: String
-    permission: String
     timeline_season_id: String!
+    permission: String
   }
 
   input UpdateTimelineSeasonPersonInput {
@@ -31,8 +31,8 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String
     ingame_name: String
-    permission: String
     timeline_season_id: String
+    permission: String
   }
 
   type Mutation {
