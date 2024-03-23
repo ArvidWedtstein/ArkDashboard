@@ -2,7 +2,7 @@ import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { QUERY } from 'src/components/ItemRecipe/ItemRecipesCell'
+import { QUERY } from 'src/components/Item/ItemRecipe/ItemRecipesCell'
 import Button, { ButtonGroup } from 'src/components/Util/Button/Button'
 import { Card, CardActions, CardContent, CardHeader } from 'src/components/Util/Card/Card'
 import { timeTag, truncate } from 'src/lib/formatters'
