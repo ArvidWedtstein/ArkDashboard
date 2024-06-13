@@ -1,23 +1,31 @@
-import {
-  Form,
-  FormError,
-  Label,
-} from "@redwoodjs/forms";
+import { Form, FormError, Label } from "@redwoodjs/forms";
 
-import type { CreateItemRecipeItemInput, DeleteItemRecipeItemMutationVariables, EditItemRecipeById, NewItemRecipe, UpdateItemRecipeInput, UpdateItemRecipeItemInput } from "types/graphql";
+import type {
+  CreateItemRecipeItemInput,
+  DeleteItemRecipeItemMutationVariables,
+  EditItemRecipeById,
+  NewItemRecipe,
+  UpdateItemRecipeInput,
+  UpdateItemRecipeItemInput,
+} from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { Input } from "src/components/Util/Input/Input";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
 import { useRef, useState } from "react";
-import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "src/components/Util/Dialog/Dialog";
 import { ArrayElement } from "src/lib/formatters";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Toast from "src/components/Util/Toast/Toast";
 import { QUERY } from "../EditItemRecipeCell";
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import Badge from "src/components/Util/Badge/Badge";
 
 const REFRESHQUERY = gql`
@@ -39,14 +47,14 @@ const REFRESHQUERY = gql`
       }
     }
   }
-`
+`;
 const CREATE_ITEM_RECIPE_ITEM_MUTATION = gql`
   mutation CreateItemRecipeItemMutation($input: CreateItemRecipeItemInput!) {
     createItemRecipeItem(input: $input) {
       id
     }
   }
-`
+`;
 const UPDATE_ITEM_RECIPE_ITEM_MUTATION = gql`
   mutation UpdateItemRecipeItemMutation(
     $id: BigInt!
@@ -59,14 +67,14 @@ const UPDATE_ITEM_RECIPE_ITEM_MUTATION = gql`
       amount
     }
   }
-`
+`;
 const DELETE_ITEM_RECIPE_ITEM_MUTATION = gql`
   mutation DeleteItemRecipeItemMutation($id: BigInt!) {
     deleteItemRecipeItem(id: $id) {
       id
     }
   }
-`
+`;
 
 type FormItemRecipe = NonNullable<EditItemRecipeById["itemRecipe"]>;
 
@@ -75,80 +83,111 @@ interface ItemRecipeFormProps {
   onSave: (data: UpdateItemRecipeInput, id?: FormItemRecipe["id"]) => void;
   error: RWGqlError;
   loading: boolean;
-  items: NewItemRecipe["items"]
+  items: NewItemRecipe["items"];
 }
 
 const ItemRecipeForm = (props: ItemRecipeFormProps) => {
   const onSubmit = (data: FormItemRecipe) => {
-    console.log(data)
-    props.onSave({
-      ...data,
-      crafting_time: parseFloat(data?.crafting_time.toString()) || 0,
-      skill_quality_multiplier_min: parseFloat(data?.skill_quality_multiplier_min.toString()) || 0,
-      skill_quality_multiplier_max: parseFloat(data?.skill_quality_multiplier_max.toString()) || 0,
-      xp: parseFloat(data?.xp.toString()) || 0,
-    }, props?.itemRecipe?.id);
+    console.log(data);
+    props.onSave(
+      {
+        ...data,
+        crafting_time: parseFloat(data?.crafting_time.toString()) || 0,
+        skill_quality_multiplier_min:
+          parseFloat(data?.skill_quality_multiplier_min.toString()) || 0,
+        skill_quality_multiplier_max:
+          parseFloat(data?.skill_quality_multiplier_max.toString()) || 0,
+        xp: parseFloat(data?.xp.toString()) || 0,
+      },
+      props?.itemRecipe?.id
+    );
   };
 
-  const [createItemRecipeItem, { loading: createLoading, error: createError }] = useMutation(
-    CREATE_ITEM_RECIPE_ITEM_MUTATION,
-    {
-      refetchQueries: [{ query: REFRESHQUERY, variables: { id: props?.itemRecipe?.id }, partialRefetch: true, }],
+  const [createItemRecipeItem, { loading: createLoading, error: createError }] =
+    useMutation(CREATE_ITEM_RECIPE_ITEM_MUTATION, {
+      refetchQueries: [
+        {
+          query: REFRESHQUERY,
+          variables: { id: props?.itemRecipe?.id },
+          partialRefetch: true,
+        },
+      ],
       awaitRefetchQueries: true,
       onCompleted: () => {
         setOpenModal({ open: false, item_recipe_item: null, edit: null });
       },
       onError: (error) => {
         if (process.env.NODE_ENV !== "production") {
-          console.error(error)
+          console.error(error);
         }
-        toast.error(error.message)
+        toast.error(error.message);
       },
-    }
-  )
+    });
 
-  const [updateItemRecipeItem, { loading: updateLoading, error: updateError }] = useMutation(
-    UPDATE_ITEM_RECIPE_ITEM_MUTATION,
-    {
+  const [updateItemRecipeItem, { loading: updateLoading, error: updateError }] =
+    useMutation(UPDATE_ITEM_RECIPE_ITEM_MUTATION, {
       onCompleted: () => {
         setOpenModal({ open: false, item_recipe_item: null, edit: null });
       },
       onError: (error) => {
         if (process.env.NODE_ENV !== "production") {
-          console.error(error)
+          console.error(error);
         }
-        toast.error(error.message)
+        toast.error(error.message);
       },
-    }
-  )
+    });
 
-  const onSave = (input: CreateItemRecipeItemInput | UpdateItemRecipeItemInput, id?: FormItemRecipe["id"]) => {
+  const onSave = (
+    input: CreateItemRecipeItemInput | UpdateItemRecipeItemInput,
+    id?: FormItemRecipe["id"]
+  ) => {
     toast.promise(
       openModal.edit
         ? updateItemRecipeItem({ variables: { id, input } })
         : createItemRecipeItem({ variables: { input } }),
       {
-        loading: openModal.edit ? 'Updating ItemRecipeItem...' : 'Creating new ItemRecipeItem...',
-        success: `ItemRecipeItem successfully ${openModal.edit ? 'updated' : 'created'}`,
-        error: <b>Failed to {openModal.edit ? 'update' : 'create new'} ItemRecipeItem.</b>,
-      })
-  }
+        loading: openModal.edit
+          ? "Updating ItemRecipeItem..."
+          : "Creating new ItemRecipeItem...",
+        success: `ItemRecipeItem successfully ${
+          openModal.edit ? "updated" : "created"
+        }`,
+        error: (
+          <b>
+            Failed to {openModal.edit ? "update" : "create new"} ItemRecipeItem.
+          </b>
+        ),
+      }
+    );
+  };
 
   const [deleteItemRecipeItem] = useMutation(DELETE_ITEM_RECIPE_ITEM_MUTATION, {
     onCompleted: () => {
-      toast.success('ItemRecipeItem deleted')
+      toast.success("ItemRecipeItem deleted");
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-    refetchQueries: [{ query: QUERY, variables: { id: props?.itemRecipe?.id }, partialRefetch: true, }],
-    awaitRefetchQueries: true
-  })
+    refetchQueries: [
+      {
+        query: QUERY,
+        variables: { id: props?.itemRecipe?.id },
+        partialRefetch: true,
+      },
+    ],
+    awaitRefetchQueries: true,
+  });
 
-  const [openModal, setOpenModal] = useState<{ open: boolean; edit?: boolean, item_recipe_item?: ArrayElement<EditItemRecipeById["itemRecipe"]["ItemRecipeItem"]> }>({
+  const [openModal, setOpenModal] = useState<{
+    open: boolean;
+    edit?: boolean;
+    item_recipe_item?: ArrayElement<
+      EditItemRecipeById["itemRecipe"]["ItemRecipeItem"]
+    >;
+  }>({
     open: false,
     edit: false,
-    item_recipe_item: null
+    item_recipe_item: null,
   });
 
   const modalRef = useRef<HTMLDivElement>();
@@ -157,24 +196,36 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
     __typename?: "ItemRecipeItem";
     id: string;
     amount: number;
-    item_id: number;
+    resource_item_id: number;
     item_recipe_id: string;
-  }>
+  }>;
 
   const onSubmitItemRecipeItem = (data: FormItemRecipeItem) => {
-    onSave({
-      ...data,
-      amount: parseInt(data.amount.toString()),
-      item_recipe_id: props?.itemRecipe?.id
-    }, openModal?.item_recipe_item?.id);
-  }
+    onSave(
+      {
+        ...data,
+        amount: parseInt(data.amount.toString()),
+        item_recipe_id: props?.itemRecipe?.id,
+      },
+      openModal?.item_recipe_item?.id
+    );
+  };
 
   return (
     <div className="-mt-4 text-sm">
-      <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, edit: false, item_recipe_item: null })}>
-        <DialogTitle>{openModal.edit ? 'Edit' : 'Add'} Item</DialogTitle>
+      <Dialog
+        ref={modalRef}
+        open={openModal.open}
+        onClose={() =>
+          setOpenModal({ open: false, edit: false, item_recipe_item: null })
+        }
+      >
+        <DialogTitle>{openModal.edit ? "Edit" : "Add"} Item</DialogTitle>
         <DialogContent dividers>
-          <Form<FormItemRecipeItem> onSubmit={onSubmitItemRecipeItem} error={createError || updateError}>
+          <Form<FormItemRecipeItem>
+            onSubmit={onSubmitItemRecipeItem}
+            error={createError || updateError}
+          >
             <FormError
               error={createError || updateError}
               wrapperClassName="rw-form-error-wrapper"
@@ -198,7 +249,11 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
               label="Amount"
               name="amount"
               defaultValue={openModal.item_recipe_item?.amount}
-              validation={{ valueAsNumber: true, required: true, setValueAs: (v) => parseInt(v) }}
+              validation={{
+                valueAsNumber: true,
+                required: true,
+                setValueAs: (v) => parseInt(v),
+              }}
               type="number"
             />
           </Form>
@@ -208,7 +263,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             type="button"
             color="success"
             variant="contained"
-            permission={openModal.edit ? 'gamedata_update' : 'gamedata_create'}
+            permission={openModal.edit ? "gamedata_update" : "gamedata_create"}
             onClick={() => {
               if (modalRef?.current) {
                 modalRef.current.querySelector("form")?.requestSubmit();
@@ -225,7 +280,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
               </svg>
             }
           >
-            {openModal.edit ? 'Save' : 'Add'}
+            {openModal.edit ? "Save" : "Add"}
           </Button>
           {openModal.edit && (
             <Button
@@ -240,13 +295,17 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
                       title={`You are about to delete itemRecipeItem`}
                       message={`Are you sure you want to delete itemRecipeItem?`}
                       actionType="YesNo"
-                      primaryAction={() => deleteItemRecipeItem({ variables: { id: openModal.item_recipe_item.id } })}
+                      primaryAction={() =>
+                        deleteItemRecipeItem({
+                          variables: { id: openModal.item_recipe_item.id },
+                        })
+                      }
                     />
                   ),
-                  { position: 'top-center' }
-                )
+                  { position: "top-center" }
+                );
 
-                setOpenModal({ open: false, item_recipe_item: null })
+                setOpenModal({ open: false, item_recipe_item: null });
               }}
               startIcon={
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -260,7 +319,9 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           <Button
             type="reset"
             color="error"
-            onClick={() => setOpenModal({ open: false, item_recipe_item: null, edit: false })}
+            onClick={() =>
+              setOpenModal({ open: false, item_recipe_item: null, edit: false })
+            }
           >
             Cancel
           </Button>
@@ -407,10 +468,18 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             validation={{ valueAsNumber: true }}
             InputProps={{
               endAdornment: (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" shapeRendering="auto" className="w-4 fill-current">
-                  <path shapeRendering={"auto"} d="M256 16C247.2 16 240 23.16 240 32v80C240 120.8 247.2 128 256 128s16-7.156 16-16V48.59C379.3 56.81 464 146.7 464 256c0 114.7-93.31 208-208 208S48 370.7 48 256c0-48.84 17.28-96.34 48.66-133.7c5.688-6.75 4.812-16.84-1.969-22.53S77.84 94.94 72.16 101.7C35.94 144.8 16 199.6 16 256c0 132.3 107.7 240 239.1 240S496 388.3 496 256S388.3 16 256 16zM244.7 267.3C247.8 270.4 251.9 272 256 272s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62l-80-80c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L244.7 267.3z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  shapeRendering="auto"
+                  className="w-4 fill-current"
+                >
+                  <path
+                    shapeRendering={"auto"}
+                    d="M256 16C247.2 16 240 23.16 240 32v80C240 120.8 247.2 128 256 128s16-7.156 16-16V48.59C379.3 56.81 464 146.7 464 256c0 114.7-93.31 208-208 208S48 370.7 48 256c0-48.84 17.28-96.34 48.66-133.7c5.688-6.75 4.812-16.84-1.969-22.53S77.84 94.94 72.16 101.7C35.94 144.8 16 199.6 16 256c0 132.3 107.7 240 239.1 240S496 388.3 496 256S388.3 16 256 16zM244.7 267.3C247.8 270.4 251.9 272 256 272s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62l-80-80c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L244.7 267.3z"
+                  />
                 </svg>
-              )
+              ),
             }}
           />
           <Input
@@ -433,7 +502,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             defaultValue={props.itemRecipe?.required_level || 0}
             validation={{ valueAsNumber: true }}
             InputProps={{
-              endAdornment: 'lvl'
+              endAdornment: "lvl",
             }}
           />
           <Input
@@ -446,9 +515,9 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             defaultValue={props.itemRecipe?.xp || 0}
             InputProps={{
               inputProps: {
-                inputMode: "decimal"
+                inputMode: "decimal",
               },
-              endAdornment: 'xp'
+              endAdornment: "xp",
             }}
           />
         </ButtonGroup>
@@ -476,10 +545,12 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           />
         </ButtonGroup>
 
-        <div className="flex flex-row flex-wrap gap-3 mt-6">
+        <div className="mt-6 flex flex-row flex-wrap gap-3">
           <TransitionGroup component={null}>
             {props.itemRecipe?.ItemRecipeItem?.map((itemrecipeitem) => {
-              const item = props.items.find((item) => item.id === itemrecipeitem.resource_item_id)
+              const item = props.items.find(
+                (item) => item.id === itemrecipeitem.resource_item_id
+              );
               return (
                 <CSSTransition
                   key={`recipe-${itemrecipeitem.resource_item_id}`}
@@ -490,9 +561,15 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
                     className="fadetransition aspect-square"
                     variant="outlined"
                     color="DEFAULT"
-                    onClick={() => setOpenModal({ open: true, edit: true, item_recipe_item: itemrecipeitem })}
+                    onClick={() =>
+                      setOpenModal({
+                        open: true,
+                        edit: true,
+                        item_recipe_item: itemrecipeitem,
+                      })
+                    }
                   >
-                    <div className="flex flex-col items-center justify-center w-12 p-1">
+                    <div className="flex w-12 flex-col items-center justify-center p-1">
                       <img
                         className="h-10 w-10"
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
@@ -500,10 +577,17 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
                       />
                       <span className="text-xs">{item.name}</span>
                     </div>
-                    <Badge color="DEFAULT" variant="standard" size="small" className="absolute top-0 right-2.5" max={10000000} content={itemrecipeitem.amount} />
+                    <Badge
+                      color="DEFAULT"
+                      variant="standard"
+                      size="small"
+                      className="absolute top-0 right-2.5"
+                      max={10000000}
+                      content={itemrecipeitem.amount}
+                    />
                   </Button>
                 </CSSTransition>
-              )
+              );
             })}
           </TransitionGroup>
 
@@ -514,10 +598,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
               color="success"
               onClick={() => setOpenModal({ open: true })}
               startIcon={
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
                 </svg>
               }
@@ -534,7 +615,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           disabled={props.loading}
           permission="gamedata_create"
           className="my-3"
-          startIcon={(
+          startIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512"
@@ -543,7 +624,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             >
               <path d="M350.1 55.44C334.9 40.33 314.9 32 293.5 32H80C35.88 32 0 67.89 0 112v288C0 444.1 35.88 480 80 480h288c44.13 0 80-35.89 80-80V186.5c0-21.38-8.312-41.47-23.44-56.58L350.1 55.44zM96 64h192v96H96V64zM416 400c0 26.47-21.53 48-48 48h-288C53.53 448 32 426.5 32 400v-288c0-20.83 13.42-38.43 32-45.05V160c0 17.67 14.33 32 32 32h192c17.67 0 32-14.33 32-32V72.02c2.664 1.758 5.166 3.771 7.438 6.043l74.5 74.5C411 161.6 416 173.7 416 186.5V400zM224 240c-44.13 0-80 35.89-80 80s35.88 80 80 80s80-35.89 80-80S268.1 240 224 240zM224 368c-26.47 0-48-21.53-48-48S197.5 272 224 272s48 21.53 48 48S250.5 368 224 368z" />
             </svg>
-          )}
+          }
         >
           Save
         </Button>

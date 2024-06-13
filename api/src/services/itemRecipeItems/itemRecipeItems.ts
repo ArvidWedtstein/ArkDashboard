@@ -9,6 +9,7 @@ import { db } from "src/lib/db";
 export const itemRecipeItems: QueryResolvers["itemRecipeItems"] = () => {
   return db.itemRecipeItem.findMany();
 };
+
 export const itemRecipeItemsByIds: QueryResolvers["itemRecipeItemsByIds"] = ({
   ids,
 }) => {
