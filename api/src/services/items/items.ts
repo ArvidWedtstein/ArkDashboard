@@ -7,9 +7,9 @@ import type {
 import { db } from "src/lib/db";
 import { validate, validateWithSync } from "@redwoodjs/api";
 
-// TODO: Outsource old, unused queries
 export const craftingItems: QueryResolvers["craftingItems"] = () => {
   // Returns the items that are either used in a recipe or have a recipe or are a crafting station.
+
   return db.item.findMany({
     // include: {
     //   ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
@@ -92,8 +92,6 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment      <-- Necessary for my ESLint setup
-// @ts-ignore: Unreachable code error
 export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
   category,
   type,

@@ -1,4 +1,4 @@
-import type { ItemRecipeItem } from '@prisma/client'
+import type { ItemRecipeItem } from "@prisma/client";
 
 import {
   itemRecipeItems,
@@ -6,8 +6,8 @@ import {
   createItemRecipeItem,
   updateItemRecipeItem,
   deleteItemRecipeItem,
-} from './itemRecipeItems'
-import type { StandardScenario } from './itemRecipeItems.scenarios'
+} from "./itemRecipeItems";
+import type { StandardScenario } from "./itemRecipeItems.scenarios";
 
 // Generated boilerplate tests do not account for all circumstances
 // and can fail without adjustments, e.g. Float.
@@ -15,63 +15,65 @@ import type { StandardScenario } from './itemRecipeItems.scenarios'
 //       https://redwoodjs.com/docs/testing#testing-services
 // https://redwoodjs.com/docs/testing#jest-expect-type-considerations
 
-describe('itemRecipeItems', () => {
+describe("itemRecipeItems", () => {
   scenario(
-    'returns all itemRecipeItems',
+    "returns all itemRecipeItems",
     async (scenario: StandardScenario) => {
-      const result = await itemRecipeItems()
+      const result = await itemRecipeItems();
 
-      expect(result.length).toEqual(Object.keys(scenario.itemRecipeItem).length)
+      expect(result.length).toEqual(
+        Object.keys(scenario.itemRecipeItem).length
+      );
     }
-  )
+  );
 
   scenario(
-    'returns a single itemRecipeItem',
+    "returns a single itemRecipeItem",
     async (scenario: StandardScenario) => {
       const result = await itemRecipeItem({
         id: scenario.itemRecipeItem.one.id,
-      })
+      });
 
-      expect(result).toEqual(scenario.itemRecipeItem.one)
+      expect(result).toEqual(scenario.itemRecipeItem.one);
     }
-  )
+  );
 
-  scenario('creates a itemRecipeItem', async (scenario: StandardScenario) => {
+  scenario("creates a itemRecipeItem", async (scenario: StandardScenario) => {
     const result = await createItemRecipeItem({
       input: {
         item_recipe_id: scenario.itemRecipeItem.two.item_recipe_id,
         resource_item_id: scenario.itemRecipeItem.two.resource_item_id,
-        amount: 3072002.6313558836,
+        amount: 5404457.031262178,
       },
-    })
+    });
 
     expect(result.item_recipe_id).toEqual(
       scenario.itemRecipeItem.two.item_recipe_id
-    )
+    );
     expect(result.resource_item_id).toEqual(
       scenario.itemRecipeItem.two.resource_item_id
-    )
-    expect(result.amount).toEqual(3072002.6313558836)
-  })
+    );
+    expect(result.amount).toEqual(5404457.031262178);
+  });
 
-  scenario('updates a itemRecipeItem', async (scenario: StandardScenario) => {
+  scenario("updates a itemRecipeItem", async (scenario: StandardScenario) => {
     const original = (await itemRecipeItem({
       id: scenario.itemRecipeItem.one.id,
-    })) as ItemRecipeItem
+    })) as ItemRecipeItem;
     const result = await updateItemRecipeItem({
       id: original.id,
-      input: { amount: 590286.1599876164 },
-    })
+      input: { amount: 5497578.2839460205 },
+    });
 
-    expect(result.amount).toEqual(590286.1599876164)
-  })
+    expect(result.amount).toEqual(5497578.2839460205);
+  });
 
-  scenario('deletes a itemRecipeItem', async (scenario: StandardScenario) => {
+  scenario("deletes a itemRecipeItem", async (scenario: StandardScenario) => {
     const original = (await deleteItemRecipeItem({
       id: scenario.itemRecipeItem.one.id,
-    })) as ItemRecipeItem
-    const result = await itemRecipeItem({ id: original.id })
+    })) as ItemRecipeItem;
+    const result = await itemRecipeItem({ id: original.id });
 
-    expect(result).toEqual(null)
-  })
-})
+    expect(result).toEqual(null);
+  });
+});
