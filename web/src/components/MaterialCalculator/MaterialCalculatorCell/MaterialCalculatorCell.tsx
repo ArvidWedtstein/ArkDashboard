@@ -38,7 +38,7 @@ export const Loading = () => {
         This may take some time, please wait...
       </p>
     </div>
-  )
+  );
 };
 
 export const Empty = () => <div>Empty</div>;
@@ -57,11 +57,15 @@ export const Failure = ({ error }: CellFailureProps) => (
       <p className="text-lg font-bold leading-snug">
         Some unexpected shit happend
       </p>
+
+      <p className="text-sm">{JSON.stringify(error)}</p>
       <p className="text-sm">{error?.message}</p>
     </div>
   </div>
 );
 
-export const Success = ({ craftingItems }: CellSuccessProps<FindItemsMaterials>) => {
+export const Success = ({
+  craftingItems,
+}: CellSuccessProps<FindItemsMaterials>) => {
   return <MaterialGrid craftingItems={craftingItems} />;
 };

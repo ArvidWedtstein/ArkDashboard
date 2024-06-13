@@ -18,6 +18,7 @@ export const craftingItems: QueryResolvers["craftingItems"] = () => {
     where: {
       OR: [
         {
+          Item
           ItemRecipe_ItemRecipe_crafted_item_idToItem: {
             some: {},
           },
