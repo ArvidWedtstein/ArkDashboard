@@ -1,4 +1,5 @@
 import {
+  ReactNode,
   CSSProperties,
   ChangeEvent,
   Fragment,
@@ -12,12 +13,19 @@ import {
   useId,
   useRef,
   useState,
+  FocusEvent,
+  ForwardedRef,
 } from "react";
 import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import clsx from "clsx";
 import Popper from "../Popper/Popper";
 import ClickAwayListener from "../ClickAwayListener/ClickAwayListener";
-import { FormControl, InputBase, InputBaseProps, InputLabel } from "../Input/Input";
+import {
+  FormControl,
+  InputBase,
+  InputBaseProps,
+  InputLabel,
+} from "../Input/Input";
 import Button from "../Button/Button";
 import ImageContainer from "../ImageContainer/ImageContainer";
 import { useControlled } from "src/hooks/useControlled";
@@ -68,25 +76,24 @@ function createFilterOptions<Value>(
     const filteredOptions = !input
       ? options
       : options.filter((option) => {
-        let candidate = (stringify || getOptionLabel)(option);
-        if (ignoreCase) {
-          candidate = candidate.toLowerCase();
-        }
-        if (ignoreAccents) {
-          candidate = stripDiacritics(candidate);
-        }
+          let candidate = (stringify || getOptionLabel)(option);
+          if (ignoreCase) {
+            candidate = candidate.toLowerCase();
+          }
+          if (ignoreAccents) {
+            candidate = stripDiacritics(candidate);
+          }
 
-        return matchFrom === "start"
-          ? candidate.indexOf(input) === 0
-          : candidate.indexOf(input) > -1;
-      });
+          return matchFrom === "start"
+            ? candidate.indexOf(input) === 0
+            : candidate.indexOf(input) > -1;
+        });
 
     return typeof limit === "number"
       ? filteredOptions.slice(0, limit)
       : filteredOptions;
   };
 }
-
 
 export type LookupChangeReason =
   | "createOption"
@@ -111,13 +118,11 @@ interface FilterOptionsState<Value> {
 
 type LookupInputChangeReason = "input" | "reset" | "clear";
 
-type LookupValue<Value, Multiple, DisableClearable> =
-  Multiple extends true
+type LookupValue<Value, Multiple, DisableClearable> = Multiple extends true
   ? Array<Value | never>
   : DisableClearable extends true
   ? NonNullable<Value | never>
   : Value | null | never;
-
 
 type SelectProps<
   Value,
@@ -146,15 +151,15 @@ type SelectProps<
    *
    * @default 'Loading…'
    */
-  loadingText?: React.ReactNode;
+  loadingText?: ReactNode;
   /**
    * Text to display when empty.
    *
    * @default 'No options'
    */
-  noOptionsText?: React.ReactNode;
+  noOptionsText?: ReactNode;
   helperText?: string;
-  HelperTextProps?: Partial<HTMLAttributes<HTMLParagraphElement>>
+  HelperTextProps?: Partial<HTMLAttributes<HTMLParagraphElement>>;
   disableClearable?: DisableClearable;
   readOnly?: boolean;
   open?: boolean;
@@ -181,22 +186,18 @@ type SelectProps<
   margin?: "none" | "dense" | "normal";
   size?: "small" | "medium" | "large";
   color?: "primary" | "secondary" | "success" | "warning" | "error";
-  variant?: 'contained' | 'outlined' | 'standard'
+  variant?: "contained" | "outlined" | "standard";
   SuffixProps?: HTMLAttributes<HTMLFieldSetElement>;
   InputProps?: {
     style?: CSSProperties;
-  } & Partial<InputBaseProps>
+  } & Partial<InputBaseProps>;
   placeholder?: string;
   /**
    * @default -1
    */
   limitTags?: number;
-  onBlur?: (
-    event?: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  onFocus?: (
-    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
+  onBlur?: (event?: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onFocus?: (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   /**
    * Callback fired when the value changes.
    *
@@ -206,7 +207,7 @@ type SelectProps<
    * @param {string} [details]
    */
   onChange?: (
-    event: React.SyntheticEvent,
+    event: SyntheticEvent,
     value: LookupValue<Value, Multiple, DisableClearable>,
     reason: LookupChangeReason,
     details?: LookupChangeDetails<Value>
@@ -220,11 +221,11 @@ type SelectProps<
       disabled: boolean;
       "data-tag-index"?: number;
       tabIndex?: number;
-      onClick?: React.MouseEventHandler<HTMLButtonElement>;
+      onClick?: MouseEventHandler<HTMLButtonElement>;
     }
-  ) => React.ReactNode;
+  ) => ReactNode;
   onInputChange?: (
-    event: ChangeEvent<HTMLInputElement> | React.SyntheticEvent,
+    event: ChangeEvent<HTMLInputElement> | SyntheticEvent,
     value: string,
     reason: LookupInputChangeReason
   ) => void;
@@ -237,13 +238,13 @@ type SelectProps<
   getOptionImage?: (option: Value) => string;
   isOptionEqualToValue?: (option: Value, value: Value) => boolean;
   getOptionDisabled?: (option: Value) => boolean;
-  onOpen?: (event: React.SyntheticEvent) => void;
-  onClose?: (event: React.SyntheticEvent, reason: LookupCloseReason) => void;
-  ref?: React.ForwardedRef<HTMLInputElement>
+  onOpen?: (event: SyntheticEvent) => void;
+  onClose?: (event: SyntheticEvent, reason: LookupCloseReason) => void;
+  ref?: ForwardedRef<HTMLInputElement>;
 };
 
 // TODO: improve lookup when loading hundreds of items
-export const Lookup = (<
+export const Lookup = <
   Value,
   Multiple extends boolean | undefined = false,
   DisableClearable extends boolean | undefined = false
@@ -310,7 +311,11 @@ export const Lookup = (<
       if (!option) return option;
       if (typeof option === "object" && option !== null && "value" in option) {
         return option.value;
-      } else if (typeof option === "object" && option !== null && "id" in option) {
+      } else if (
+        typeof option === "object" &&
+        option !== null &&
+        "id" in option
+      ) {
         return option.id;
       }
       return option;
@@ -358,24 +363,17 @@ export const Lookup = (<
     default:
       multiple && Array.isArray(defaultValue)
         ? options.filter((option) =>
-          defaultValue.some(
-            (value) =>
-              value ===
-              getOptionValue(option)
+            defaultValue.some((value) => value === getOptionValue(option))
           )
-        )
-        : options.find(
-          (option) =>
-            getOptionValue(option) ===
-            defaultValue
-        ) || null,
-    name: 'Lookup',
+        : options.find((option) => getOptionValue(option) === defaultValue) ||
+          null,
+    name: "Lookup",
   });
 
   const [inputValue, setInputValueState] = useControlled({
     controlled: inputValueProp,
     default: "",
-    name: 'Lookup',
+    name: "Lookup",
     state: "inputValue",
   });
 
@@ -437,25 +435,25 @@ export const Lookup = (<
 
   const filteredOptions: Value[] = open
     ? filterOptions(
-      options.filter((option) => {
-        if (
-          filterSelectedOptions &&
-          (multiple && Array.isArray(value) ? value : [value as Value]).some(
-            (value2) =>
-              value2 !== null && isOptionEqualToValue(option, value2)
-          )
-        ) {
-          return false;
-        }
-        return true;
-      }),
+        options.filter((option) => {
+          if (
+            filterSelectedOptions &&
+            (multiple && Array.isArray(value) ? value : [value as Value]).some(
+              (value2) =>
+                value2 !== null && isOptionEqualToValue(option, value2)
+            )
+          ) {
+            return false;
+          }
+          return true;
+        }),
 
-      {
-        inputValue:
-          inputValueIsSelectedValue && inputPristine ? "" : inputValue,
-        getOptionLabel,
-      }
-    )
+        {
+          inputValue:
+            inputValueIsSelectedValue && inputPristine ? "" : inputValue,
+          getOptionLabel,
+        }
+      )
     : [];
 
   const previousProps = usePreviousProps({
@@ -491,9 +489,10 @@ export const Lookup = (<
         console.warn(
           [
             `ArkDashboard: The value provided to Lookup is invalid.`,
-            `None of the options match with \`${missingValue.length > 1
-              ? JSON.stringify(missingValue)
-              : JSON.stringify(missingValue[0])
+            `None of the options match with \`${
+              missingValue.length > 1
+                ? JSON.stringify(missingValue)
+                : JSON.stringify(missingValue[0])
             }\`.`,
             "You can use the `isOptionEqualToValue` prop to customize the equality test.",
           ].join("\n")
@@ -537,8 +536,8 @@ export const Lookup = (<
       const nextFocusDisabled = disabledItemsFocusable
         ? false
         : !option ||
-        option.disabled ||
-        option.getAttribute("aria-disabled") === "true";
+          option.disabled ||
+          option.getAttribute("aria-disabled") === "true";
 
       if (option && option.hasAttribute("tabindex") && !nextFocusDisabled) {
         // The next option is available
@@ -650,9 +649,8 @@ export const Lookup = (<
           }
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-
     }
   );
 
@@ -760,9 +758,9 @@ export const Lookup = (<
       previousProps.inputValue === inputValue &&
       (multiple && Array.isArray(value) && Array.isArray(previousProps.value)
         ? value.length === previousProps.value.length &&
-        previousProps.value.every(
-          (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
-        )
+          previousProps.value.every(
+            (val, i) => getOptionLabel(value[i]) === getOptionLabel(val)
+          )
         : isSameValue(previousProps.value, value))
     ) {
       const previousHighlightedOption =
@@ -814,7 +812,7 @@ export const Lookup = (<
         Array.isArray(value) &&
         currentOption &&
         value.findIndex((val) => isOptionEqualToValue(currentOption, val)) !==
-        -1
+          -1
       ) {
         return;
       }
@@ -888,7 +886,7 @@ export const Lookup = (<
   }, [syncHighlightedIndex]);
 
   const handleOpen = (
-    event: React.MouseEvent<Document, MouseEvent> | React.SyntheticEvent
+    event: MouseEvent<Document, MouseEvent> | SyntheticEvent
   ) => {
     if (open) {
       return;
@@ -897,12 +895,12 @@ export const Lookup = (<
     setInputPristine(true);
 
     if (onOpen) {
-      onOpen(event as React.SyntheticEvent);
+      onOpen(event as SyntheticEvent);
     }
   };
 
   const handleClose = (
-    event: React.MouseEvent<unknown> | React.SyntheticEvent,
+    event: MouseEvent<unknown> | SyntheticEvent,
     reason: LookupCloseReason
   ) => {
     if (!open) {
@@ -912,17 +910,17 @@ export const Lookup = (<
     setOpenState(false);
 
     if (onClose) {
-      onClose(event as React.SyntheticEvent, reason);
+      onClose(event as SyntheticEvent, reason);
     }
   };
 
   const handleValue = (
-    event: React.SyntheticEvent,
-    newValue,
+    event: SyntheticEvent,
+    newValue: Value | Value[],
     reason: LookupChangeReason = "clear",
     details = {}
   ) => {
-    if (multiple && Array.isArray(value)) {
+    if (multiple && Array.isArray(value) && Array.isArray(newValue)) {
       if (
         value.length === newValue.length &&
         value.every((val, i) => val === newValue[i])
@@ -932,24 +930,25 @@ export const Lookup = (<
     } else if (value === newValue) {
       return;
     }
+
     if (!!name) {
       field.onChange(
         multiple
           ? Array.isArray(newValue)
             ? newValue.map((nv) => getOptionValue(nv))
             : getOptionValue(newValue)
-          : getOptionValue(newValue)
+          : getOptionValue(newValue as Value)
       );
     }
 
     if (onSelect) {
-      onSelect(newValue);
+      onSelect(newValue as Value);
     }
 
     if (onChange) {
       onChange?.(
         event,
-        newValue,
+        newValue as LookupValue<Value, Multiple, DisableClearable>,
         reason,
         details as LookupChangeDetails<Value>
       );
@@ -962,11 +961,11 @@ export const Lookup = (<
 
   const selectNewValue = (
     event,
-    option,
+    option: Value,
     reasonProp: LookupCloseReason = "selectOption"
   ) => {
     let reason = reasonProp;
-    let newValue = option;
+    let newValue: Value | Value[] = option;
 
     if (multiple) {
       newValue = Array.isArray(value) ? value.slice() : [];
@@ -1214,7 +1213,7 @@ export const Lookup = (<
           event.preventDefault();
           // Avoid the Modal to handle the event.
           event.stopPropagation();
-          handleClear(event as React.SyntheticEvent);
+          handleClear(event as SyntheticEvent);
         }
         break;
       case "Backspace":
@@ -1254,7 +1253,7 @@ export const Lookup = (<
     }
   };
 
-  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
     setFocused(true);
     onFocus?.(event);
 
@@ -1311,7 +1310,7 @@ export const Lookup = (<
     }
   };
 
-  const handleOptionMouseMove = (event: React.MouseEvent<HTMLLIElement>) => {
+  const handleOptionMouseMove = (event: MouseEvent<HTMLLIElement>) => {
     const index = Number(event.currentTarget.getAttribute("data-option-index"));
     if (highlightedIndexRef.current !== index) {
       setHighlightedIndex({
@@ -1331,7 +1330,7 @@ export const Lookup = (<
     isTouch.current = true;
   };
 
-  const handleOptionClick = (event: React.MouseEvent<HTMLLIElement>) => {
+  const handleOptionClick = (event: MouseEvent<HTMLLIElement>) => {
     const index = Number(event.currentTarget.getAttribute("data-option-index"));
     selectNewValue(event, filteredOptions[index], "selectOption");
 
@@ -1399,11 +1398,11 @@ export const Lookup = (<
   let groupedOptions:
     | Value[]
     | {
-      key: number;
-      index: number;
-      group: string;
-      options: Value[];
-    }[] = filteredOptions;
+        key: number;
+        index: number;
+        group: string;
+        options: Value[];
+      }[] = filteredOptions;
   if (groupBy) {
     const indexBy = new Map();
     let warn = false;
@@ -1524,14 +1523,14 @@ export const Lookup = (<
     warning: `border-warning-400`,
     error: `border-error-500`,
     disabled: `dark:border-white/30 border-black/30`,
-    DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`
-  }
+    DEFAULT: `group-hover:border-black group-hover:dark:border-white border-black/20 dark:border-white/20`,
+  };
 
   const renderOption = (
     option: Value,
     index: number,
     group: boolean = false
-  ): React.JSX.Element => {
+  ): JSX.Element => {
     const selected = (multiple && Array.isArray(value) ? value : [value]).some(
       (value2) =>
         value2 != null && isOptionEqualToValue(option, value2 as Value)
@@ -1641,7 +1640,7 @@ export const Lookup = (<
           handleClick(event);
         }
         if (event.currentTarget === event.target && handleInputMouseDown) {
-          handleInputMouseDown(event as React.SyntheticEvent);
+          handleInputMouseDown(event as SyntheticEvent);
         }
       }}
     >
@@ -1656,28 +1655,57 @@ export const Lookup = (<
       >
         <InputLabel
           children={label}
-          shrink={popupOpen ||
+          shrink={
+            popupOpen ||
             inputValue.length > 0 ||
-            (Array.isArray(value) && value.length > 0)}
+            (Array.isArray(value) && value.length > 0)
+          }
         />
         <InputBase
           {...InputProps}
           renderTags={renderChips()}
-          renderSuffix={(state) => (
-            variant === 'outlined' ? (
-              <fieldset {...SuffixProps} aria-hidden className={clsx(`border transition-colors ease-in duration-75 absolute text-left ${borders[disabled || state.disabled ? 'disabled' : state.focused ? color : 'DEFAULT']} bottom-0 left-0 right-0 -top-[5px] m-0 px-2 rounded-[inherit] min-w-0 overflow-hidden pointer-events-none`, {
-                "border-2": state.focused,
-              }, SuffixProps?.className)}>
-                <legend className={clsx("w-auto overflow-hidden block invisible text-xs p-0 h-[11px] whitespace-nowrap transition-all", {
-                  "max-w-full": state.focused || state.filled || (multiple && (Array.isArray(value) && value.length > 0)),
-                  "max-w-[0.001px]": !state.focused && !state.filled && !(multiple && (Array.isArray(value) && value.length > 0)),
-                })}>
+          renderSuffix={(state) =>
+            variant === "outlined" ? (
+              <fieldset
+                {...SuffixProps}
+                aria-hidden
+                className={clsx(
+                  `absolute border text-left transition-colors duration-75 ease-in ${
+                    borders[
+                      disabled || state.disabled
+                        ? "disabled"
+                        : state.focused
+                        ? color
+                        : "DEFAULT"
+                    ]
+                  } pointer-events-none bottom-0 left-0 right-0 -top-[5px] m-0 min-w-0 overflow-hidden rounded-[inherit] px-2`,
+                  {
+                    "border-2": state.focused,
+                  },
+                  SuffixProps?.className
+                )}
+              >
+                <legend
+                  className={clsx(
+                    "invisible block h-[11px] w-auto overflow-hidden whitespace-nowrap p-0 text-xs transition-all",
+                    {
+                      "max-w-full":
+                        state.focused ||
+                        state.filled ||
+                        (multiple && Array.isArray(value) && value.length > 0),
+                      "max-w-[0.001px]":
+                        !state.focused &&
+                        !state.filled &&
+                        !(multiple && Array.isArray(value) && value.length > 0),
+                    }
+                  )}
+                >
                   {label && label !== "" && (
-                    <span className={"px-1 inline-block opacity-0 visible"}>
+                    <span className={"visible inline-block px-1 opacity-0"}>
                       {state.required ? (
                         <React.Fragment>
                           {label}
-                          &thinsp;{'*'}
+                          &thinsp;{"*"}
                         </React.Fragment>
                       ) : (
                         label
@@ -1687,7 +1715,7 @@ export const Lookup = (<
                 </legend>
               </fieldset>
             ) : null
-          )}
+          }
           inputRef={inputRef}
           ref={ref}
           value={inputValue}
@@ -1698,7 +1726,7 @@ export const Lookup = (<
             role: "combobox",
             spellCheck: false,
             "aria-activedescendant": popupOpen ? `${id}-listbox` : null,
-            "aria-autocomplete": autoComplete ? 'both' : 'list',
+            "aria-autocomplete": autoComplete ? "both" : "list",
             "aria-controls": listboxAvailable ? `${id}-listbox` : undefined,
             "aria-expanded": listboxAvailable,
             onMouseDown: handleInputMouseDown,
@@ -1707,15 +1735,25 @@ export const Lookup = (<
             onBlur: handleBlur,
           }}
           endAdornmentProps={{
-            className: multiple ? "absolute top-[calc(50%-0px)] right-2" : null
+            className: multiple ? "absolute top-[calc(50%-0px)] right-2" : null,
           }}
-          endAdornment={(
+          endAdornment={
             <Fragment>
-              {(!disableClearable && !readOnly) && (
-                <Button variant="icon" color="DEFAULT" ignoreButtonGroupPosition className={clsx("-mr-0.5 !p-1", {
-                  [`${focused ? 'opacity-100 visible' : 'opacity-0 invisible'} group-hover:opacity-100 group-hover:visible`]: !disabled && dirty,
-                  "opacity-0 invisible": disabled || !dirty || readOnly,
-                })} onClick={handleClear} size={size}>
+              {!disableClearable && !readOnly && (
+                <Button
+                  variant="icon"
+                  color="DEFAULT"
+                  ignoreButtonGroupPosition
+                  className={clsx("-mr-0.5 !p-1", {
+                    [`${
+                      focused ? "visible opacity-100" : "invisible opacity-0"
+                    } group-hover:visible group-hover:opacity-100`]:
+                      !disabled && dirty,
+                    "invisible opacity-0": disabled || !dirty || readOnly,
+                  })}
+                  onClick={handleClear}
+                  size={size}
+                >
                   <svg
                     className="h-4 w-4 shrink-0 select-none !fill-white"
                     viewBox="0 0 24 24"
@@ -1726,10 +1764,17 @@ export const Lookup = (<
                   </svg>
                 </Button>
               )}
-              <Button variant="icon" ignoreButtonGroupPosition color="DEFAULT" className="-mr-0.5 !p-1" onClick={handlePopupIndicator} size={size}>
+              <Button
+                variant="icon"
+                ignoreButtonGroupPosition
+                color="DEFAULT"
+                className="-mr-0.5 !p-1"
+                onClick={handlePopupIndicator}
+                size={size}
+              >
                 <svg
                   className={clsx(
-                    "h-4 w-4 stroke-white !fill-none transition-transform duration-75 will-change-transform",
+                    "h-4 w-4 !fill-none stroke-white transition-transform duration-75 will-change-transform",
                     {
                       "shrink-0": !popupOpen,
                       "shrink-0 rotate-180": popupOpen,
@@ -1750,20 +1795,32 @@ export const Lookup = (<
                 </svg>
               </Button>
             </Fragment>
-          )}
+          }
         />
 
         {helperText && (
-          <p id={helperText && id ? `${id}-helper-text` : undefined} className={clsx("mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70", HelperTextProps?.className)} {...HelperTextProps}>
+          <p
+            id={helperText && id ? `${id}-helper-text` : undefined}
+            className={clsx(
+              "mt-0.5 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70",
+              HelperTextProps?.className
+            )}
+            {...HelperTextProps}
+          >
             {helperText}
           </p>
         )}
 
-        {field && (<FieldError name={name} className="rw-field-error" />)}
+        {field && <FieldError name={name} className="rw-field-error" />}
       </FormControl>
 
       {/* Dropdown Menu */}
-      <Popper disablePortal={disablePortal} anchorEl={anchorEl.current} open={popupOpen} paddingToAnchor={4}>
+      <Popper
+        disablePortal={disablePortal}
+        anchorEl={anchorEl.current}
+        open={popupOpen}
+        paddingToAnchor={4}
+      >
         <ClickAwayListener
           onClickAway={(e) => {
             if (
@@ -1801,4 +1858,4 @@ export const Lookup = (<
       </Popper>
     </div>
   );
-});
+};
