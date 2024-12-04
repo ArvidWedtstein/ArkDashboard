@@ -64,9 +64,9 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
       orderBy: { name: "asc" },
       where: {
         AND: [
-          { name: { startsWith: search, mode: "insensitive" } },
-          category ? { category: { in: category.split(",") } } : {},
-          type ? { type: { contains: type, mode: "insensitive" } } : {},
+          // { name: { startsWith: search, mode: "insensitive" } },
+          // category ? { category: { in: category.split(",") } } : {},
+          // type ? { type: { contains: type, mode: "insensitive" } } : {},
           { visible: true },
         ],
       },
@@ -78,17 +78,18 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
     //     visible: true,
     //   },
     // }),
-    count: db.item.count({
-      where: {
-        AND: [
-          { name: { startsWith: search, mode: "insensitive" } },
-          category
-            ? { category: { contains: category, mode: "insensitive" } }
-            : {},
-          type ? { type: { contains: type, mode: "insensitive" } } : {},
-        ],
-      },
-    }),
+    count: 100,
+    // count: db.item.count({
+    //   where: {
+    //     AND: [
+    //       { name: { startsWith: search, mode: "insensitive" } },
+    //       category
+    //         ? { category: { contains: category, mode: "insensitive" } }
+    //         : {},
+    //       type ? { type: { contains: type, mode: "insensitive" } } : {},
+    //     ],
+    //   },
+    // }),
   };
 };
 
