@@ -14,16 +14,30 @@ import Button from "src/components/Util/Button/Button";
 import Badge from "src/components/Util/Badge/Badge";
 import Tooltip from "src/components/Util/Tooltip/Tooltip";
 import { useAuth } from "src/auth";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { ToggleButton, ToggleButtonGroup } from "src/components/Util/ToggleButton/ToggleButton";
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+} from "src/components/Util/ToggleButton/ToggleButton";
 import { Input } from "src/components/Util/Input/Input";
 import Skeleton from "src/components/Util/Skeleton/Skeleton";
 
-
 const QUERY = gql`
-  query FindMoreBasespots($cursorId: String, $take: Int, $skip: Int, $map: Int, $type: String) {
-    basespotPagination(cursorId: $cursorId, take: $take, skip: $skip, map: $map, type: $type) {
+  query FindMoreBasespots(
+    $cursorId: String
+    $take: Int
+    $skip: Int
+    $map: Int
+    $type: String
+  ) {
+    basespotPagination(
+      cursorId: $cursorId
+      take: $take
+      skip: $skip
+      map: $map
+      type: $type
+    ) {
       __typename
       basespots {
         id
@@ -44,9 +58,9 @@ const QUERY = gql`
         }
       }
       has_more_basespots
-    },
+    }
   }
-`
+`;
 
 const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
   let { map, type } = useParams();
@@ -84,23 +98,34 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
     map: number;
     type: string;
     search?: string;
-  }
+  };
 
   const [params, setParams] = useState<Params>({
     map: map ? parseInt(map) : null,
-    type: type || null
+    type: type || null,
   });
   const [basespots, setBasespots] = useState(basespotPagination.basespots);
   const [loading, setLoading] = useState<boolean>(false);
-  const [hasMoreBasespots, setHasMoreBasespots] = useState<boolean>(basespotPagination.has_more_basespots || true);
+  const [hasMoreBasespots, setHasMoreBasespots] = useState<boolean>(
+    basespotPagination.has_more_basespots || true,
+  );
 
-
-  const getThumbnailUrls = async (basespotsToProcess: FindNewBasespots["basespotPagination"]["basespots"]) => {
+  const getThumbnailUrls = async (
+    basespotsToProcess: FindNewBasespots["basespotPagination"]["basespots"],
+  ) => {
     const thumbnailIds = basespotsToProcess
-      .filter((b) => b?.thumbnail && b?.thumbnail !== "" && b.thumbnail.length > 0 && !b.thumbnail.includes(b.id))
+      .filter(
+        (b) =>
+          b?.thumbnail &&
+          b?.thumbnail !== "" &&
+          b.thumbnail.length > 0 &&
+          !b.thumbnail.includes(b.id),
+      )
       .map((b) => `M${b.map_id}-${b.id}/${b.thumbnail}`);
 
-    const { data, error } = await supabase.storage.from('basespotimages').createSignedUrls(thumbnailIds, 60);
+    const { data, error } = await supabase.storage
+      .from("basespotimages")
+      .createSignedUrls(thumbnailIds, 60);
 
     if (error) {
       console.error(error);
@@ -111,22 +136,29 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
     return data;
   };
 
-  const updateBasespots = (basespotsToProcess: FindNewBasespots["basespotPagination"]["basespots"], thumbnailUrls: {
-    error: string;
-    path: string;
-    signedUrl: string;
-  }[] = []) => {
+  const updateBasespots = (
+    basespotsToProcess: FindNewBasespots["basespotPagination"]["basespots"],
+    thumbnailUrls: {
+      error: string;
+      path: string;
+      signedUrl: string;
+    }[] = [],
+  ) => {
     setBasespots(
       basespotsToProcess.map((f) => {
-        const matchingThumbnail = thumbnailUrls.find((d) => d.signedUrl?.includes(f.id));
+        const matchingThumbnail = thumbnailUrls.find((d) =>
+          d.signedUrl?.includes(f.id),
+        );
         return {
           ...f,
-          thumbnail: matchingThumbnail?.signedUrl || mapImages[f.Map.name.replace(" ", "")],
+          thumbnail:
+            matchingThumbnail?.signedUrl ||
+            mapImages[f.Map.name.replace(" ", "")],
         };
-      })
+      }),
     );
 
-    toast.dismiss('loading');
+    toast.dismiss("loading");
   };
 
   useEffect(() => {
@@ -134,9 +166,11 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
 
     const fetchThumbnailUrls = async () => {
       try {
-        const thumbnailUrls = await getThumbnailUrls(basespotPagination.basespots)
+        const thumbnailUrls = await getThumbnailUrls(
+          basespotPagination.basespots,
+        );
 
-        updateBasespots(basespots, thumbnailUrls)
+        updateBasespots(basespots, thumbnailUrls);
       } catch (error) {
         console.error(error);
       }
@@ -145,7 +179,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
     if (basespotPagination.basespots.some((b) => b?.thumbnail)) {
       fetchThumbnailUrls();
     }
-  }, [basespotPagination])
+  }, [basespotPagination]);
 
   const loadMore = async () => {
     const oldBasespots = [...basespots];
@@ -159,7 +193,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
         cursorId: oldBasespots[oldBasespots.length - 1]?.id,
         ...(map && { map }),
         ...(type && { type }),
-      }
+      },
     });
 
     if (response.error) {
@@ -168,18 +202,25 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
     }
 
     if (!response.data) {
-      handleLoadError(response.loading, response.error, 'No data in response.');
+      handleLoadError(response.loading, response.error, "No data in response.");
       return;
     }
 
     setHasMoreBasespots((prev) => {
-      if (!prev && (response.data.basespotPagination.has_more_basespots || response.data.basespotPagination.basespots.length > 0)) {
-        return true
+      if (
+        !prev &&
+        (response.data.basespotPagination.has_more_basespots ||
+          response.data.basespotPagination.basespots.length > 0)
+      ) {
+        return true;
       }
-      return response.data.basespotPagination.has_more_basespots
+      return response.data.basespotPagination.has_more_basespots;
     });
 
-    const basespotsToProcess = [...oldBasespots, ...response.data.basespotPagination.basespots];
+    const basespotsToProcess = [
+      ...oldBasespots,
+      ...response.data.basespotPagination.basespots,
+    ];
 
     if (basespotsToProcess.some((basespot) => basespot?.thumbnail)) {
       const thumbnailUrls = await getThumbnailUrls(basespotsToProcess);
@@ -189,11 +230,15 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
     }
 
     setLoading(response.loading);
-  }
+  };
 
-  const handleLoadError = (loading: boolean, error: Record<string, any>, message = "Error fetching basespots") => {
+  const handleLoadError = (
+    loading: boolean,
+    error: Record<string, any>,
+    message = "Error fetching basespots",
+  ) => {
     setLoading(loading);
-    toast.dismiss('loading');
+    toast.dismiss("loading");
     console.error(JSON.stringify(error));
     toast.error(`Error fetching images: ${error?.message || message}`);
   };
@@ -207,31 +252,36 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
         routes.basespots({
           ...parseSearch(
             Object.fromEntries(
-              Object.entries(parameters).filter(([_, v]) => v != "" && v != null)
-            ) as Record<string, string>
+              Object.entries(parameters).filter(
+                ([_, v]) => v != "" && v != null,
+              ),
+            ) as Record<string, string>,
           ),
         }),
-        { replace: false }
+        { replace: false },
       );
     } catch (error) {
-      console.error('Refresh went wrong.', error)
+      console.error("Refresh went wrong.", error);
     }
-  }
+  };
 
   const handleScroll = (e) => {
-    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading) {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+        document.documentElement.offsetHeight ||
+      loading
+    ) {
       return;
     }
-    toast.loading('Loading data', { id: 'loading' })
+    toast.loading("Loading data", { id: "loading" });
     setLoading(true);
     loadMore();
-  }
+  };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loading])
-
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading]);
 
   const [view, setView] = useState<"grid" | "list">("grid");
 
@@ -259,10 +309,7 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
               color="success"
               variant="outlined"
               startIcon={
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
                 </svg>
               }
@@ -325,19 +372,21 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
               onChange={(e) => {
                 setParams((prev) => ({
                   ...prev,
-                  search: e.target.value
-                }))
+                  search: e.target.value,
+                }));
               }}
               InputProps={{
                 onKeyDown: (event) => {
-                  if (event.key !== 'Enter') return
-                  console.log(params)
+                  if (event.key !== "Enter") return;
+                  console.log(params);
                   refreshData({
-                    ...(params.search ? { search: params.search } : { search: (event.target as HTMLInputElement).value }),
+                    ...(params.search
+                      ? { search: params.search }
+                      : { search: (event.target as HTMLInputElement).value }),
                     ...(params.type && { type: params.type }),
                     ...(params.map && { map: params.map }),
                   });
-                }
+                },
               }}
             />
           </div>
@@ -369,11 +418,12 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
           </ToggleButtonGroup>
         </div>
 
-        <div className={clsx("mb-5 grid gap-4", {
-          "grid-cols-1": view === "list",
-          "grid-cols-1 md:grid-cols-2 xl:grid-cols-3":
-            view === "grid",
-        })}>
+        <div
+          className={clsx("mb-5 grid gap-4", {
+            "grid-cols-1": view === "list",
+            "grid-cols-1 md:grid-cols-2 xl:grid-cols-3": view === "grid",
+          })}
+        >
           {basespots.map((basespot, i) => (
             <Card key={`${basespot.id}-${i}`} className="flex flex-col">
               <CardHeader
@@ -391,7 +441,9 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
               />
               <CardMedia
                 image={
-                  basespot.thumbnail === "" ? mapImages[basespot.Map.name.replace(" ", "")] : basespot.thumbnail
+                  basespot.thumbnail === ""
+                    ? mapImages[basespot.Map.name.replace(" ", "")]
+                    : basespot.thumbnail
                 }
                 loading="lazy"
                 className="grow max-h-72"
@@ -402,7 +454,10 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
                   color="success"
                   to={routes.basespot({ id: basespot.id })}
                   endIcon={
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
                       <path d="M400 288C391.2 288 384 295.2 384 304V448c0 17.67-14.33 32-32 32H64c-17.67 0-32-14.33-32-32V160c0-17.67 14.33-32 32-32h112C184.8 128 192 120.8 192 112S184.8 96 176 96L64 96c-35.35 0-64 28.65-64 64V448c0 35.35 28.65 64 64 64h288c35.35 0 64-28.65 64-64V304C416 295.2 408.8 288 400 288zM496 0h-160C327.2 0 320 7.156 320 16S327.2 32 336 32h121.4L180.7 308.7c-6.25 6.25-6.25 16.38 0 22.62C183.8 334.4 187.9 336 192 336s8.188-1.562 11.31-4.688L480 54.63V176C480 184.8 487.2 192 496 192S512 184.8 512 176v-160C512 7.156 504.8 0 496 0z" />
                     </svg>
                   }
@@ -410,15 +465,19 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
                   Learn More
                 </Button>
                 <div className="shrink justify-end inline-flex items-center py-0.5">
-                  {basespot?.type?.toLowerCase().includes('underwater') && (
-                    <Tooltip content={'This Basespot is located underwater'}>
+                  {basespot?.type?.toLowerCase().includes("underwater") && (
+                    <Tooltip content={"This Basespot is located underwater"}>
                       <div className="inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent text-center align-middle text-xs font-medium">
                         <Badge
                           variant="outlined"
                           color="info"
                           standalone
                           content={
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 fill-current">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 576 512"
+                              className="w-4 fill-current"
+                            >
                               <path d="M562 479.1c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0C448.5 464.6 417.5 480 383.1 480c-33.52 0-64.53-15.44-82.97-41.28c-6.031-8.438-20.03-8.438-26.06 0C256.5 464.6 225.5 480 192 480c-33.51 0-64.53-15.44-82.97-41.28C106 434.5 101.2 432 96 432s-10.02 2.5-13.02 6.719c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94c1.125 8.75 9.029 15.06 17.92 13.81c29.98-3.875 57.48-17.47 77.94-38.09c24.62 24.84 59.28 39.25 96.06 39.25c36.77 0 71.33-14.41 95.95-39.25C312.6 497.6 347.3 512 384.1 512c36.78 0 71.33-14.41 95.95-39.25c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81C576.1 488.3 570.8 480.2 562 479.1zM18.05 382.8c29.98-3.875 57.48-17.47 77.94-38.09c24.62 24.84 59.28 39.16 96.06 39.16c36.77 0 71.33-14.32 95.95-39.16c24.62 24.84 59.28 39.16 96.05 39.16c36.78 0 71.34-14.32 95.96-39.16c20.45 20.62 47.95 34.22 77.94 38.09c8.951 1.375 16.79-5.062 17.92-13.81c1.125-8.781-5.062-16.81-13.83-17.94c-28.14-3.625-53.29-18.34-69.03-40.38c-6-8.438-20.04-8.438-26.04 0C448.5 336.6 417.5 352 383.1 352c-33.52 0-64.53-15.44-82.97-41.28c-6.031-8.438-20.03-8.438-26.06 0C256.5 336.6 225.5 352 192 352c-33.51 0-64.53-15.44-82.97-41.28C106 306.5 101.2 304 96 304S85.99 306.5 82.99 310.7c-15.73 22.03-40.89 36.75-69.03 40.38c-8.766 1.125-14.95 9.156-13.83 17.94C1.258 377.8 9.162 384.1 18.05 382.8zM276.7 235.3C279.8 238.4 283.9 240 288 240s8.188-1.562 11.31-4.688l96-96c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 185.4V16c0-8.844-7.157-16-16-16S272 7.156 272 16v169.4L203.3 116.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L276.7 235.3z" />
                             </svg>
                           }
@@ -426,33 +485,51 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
                       </div>
                     </Tooltip>
                   )}
-                  {(basespot?.type?.toLowerCase().includes('underwater') && basespot?.type?.toLowerCase().includes('cave')) && <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />}
-                  {basespot?.type?.toLowerCase().includes('cave') && (
-                    <Tooltip content={'This Basespot is located inside a cave'}>
+                  {basespot?.type?.toLowerCase().includes("underwater") &&
+                    basespot?.type?.toLowerCase().includes("cave") && (
+                      <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />
+                    )}
+                  {basespot?.type?.toLowerCase().includes("cave") && (
+                    <Tooltip content={"This Basespot is located inside a cave"}>
                       <div className="inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent text-center align-middle text-xs font-medium">
                         <Badge
                           variant="outlined"
                           color="secondary"
                           standalone
                           content={
-                            <svg fillRule="evenodd" xmlns="http://www.w3.org/2000/svg" viewBox="0, 0, 400,400" className="h-4 fill-current">
-                              <path id="path0" d="M178.628 14.217 C 173.142 22.290,163.841 43.690,157.959 61.772 L 147.264 94.649 135.940 83.324 C 114.307 61.692,96.611 72.813,73.827 122.359 C 50.372 173.365,7.851 323.977,1.371 379.000 L -1.101 400.000 71.131 400.000 L 143.364 400.000 146.179 387.000 C 167.231 289.748,226.097 292.919,257.549 393.000 C 259.534 399.317,266.593 400.000,329.874 400.000 L 400.000 400.000 400.000 388.440 C 400.000 346.420,353.648 175.499,334.578 147.202 C 319.647 125.046,301.278 128.040,288.178 154.765 C 275.010 181.631,274.738 181.510,266.290 145.000 C 237.242 19.455,206.368 -26.606,178.628 14.217 M227.664 83.120 C 233.907 102.304,244.860 142.846,252.006 173.213 C 267.465 238.916,274.234 244.065,289.843 202.000 C 302.001 169.233,308.623 156.000,312.862 156.000 C 322.718 156.000,351.544 244.560,367.667 324.372 C 372.292 347.267,376.994 370.050,378.114 375.000 C 380.146 383.972,379.995 384.000,328.708 384.000 L 277.264 384.000 266.640 356.921 C 229.895 263.263,161.270 273.102,126.588 377.000 C 122.441 389.422,19.105 387.450,21.786 375.000 C 51.283 238.021,92.033 114.231,113.488 96.425 C 118.743 92.063,121.239 94.268,130.814 111.725 C 147.996 143.053,153.990 139.219,171.672 85.584 C 179.725 61.155,189.643 36.089,193.710 29.881 L 201.105 18.595 208.710 33.417 C 212.892 41.570,221.422 63.936,227.664 83.120" />
+                            <svg
+                              fillRule="evenodd"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0, 0, 400,400"
+                              className="h-4 fill-current"
+                            >
+                              <path
+                                id="path0"
+                                d="M178.628 14.217 C 173.142 22.290,163.841 43.690,157.959 61.772 L 147.264 94.649 135.940 83.324 C 114.307 61.692,96.611 72.813,73.827 122.359 C 50.372 173.365,7.851 323.977,1.371 379.000 L -1.101 400.000 71.131 400.000 L 143.364 400.000 146.179 387.000 C 167.231 289.748,226.097 292.919,257.549 393.000 C 259.534 399.317,266.593 400.000,329.874 400.000 L 400.000 400.000 400.000 388.440 C 400.000 346.420,353.648 175.499,334.578 147.202 C 319.647 125.046,301.278 128.040,288.178 154.765 C 275.010 181.631,274.738 181.510,266.290 145.000 C 237.242 19.455,206.368 -26.606,178.628 14.217 M227.664 83.120 C 233.907 102.304,244.860 142.846,252.006 173.213 C 267.465 238.916,274.234 244.065,289.843 202.000 C 302.001 169.233,308.623 156.000,312.862 156.000 C 322.718 156.000,351.544 244.560,367.667 324.372 C 372.292 347.267,376.994 370.050,378.114 375.000 C 380.146 383.972,379.995 384.000,328.708 384.000 L 277.264 384.000 266.640 356.921 C 229.895 263.263,161.270 273.102,126.588 377.000 C 122.441 389.422,19.105 387.450,21.786 375.000 C 51.283 238.021,92.033 114.231,113.488 96.425 C 118.743 92.063,121.239 94.268,130.814 111.725 C 147.996 143.053,153.990 139.219,171.672 85.584 C 179.725 61.155,189.643 36.089,193.710 29.881 L 201.105 18.595 208.710 33.417 C 212.892 41.570,221.422 63.936,227.664 83.120"
+                              />
                             </svg>
                           }
                         />
                       </div>
                     </Tooltip>
                   )}
-                  {(basespot.has_air && basespot?.type?.toLowerCase().includes('underwater')) && <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />}
+                  {basespot.has_air &&
+                    basespot?.type?.toLowerCase().includes("underwater") && (
+                      <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />
+                    )}
                   {basespot.has_air && (
-                    <Tooltip content={'This Basespot has air'}>
+                    <Tooltip content={"This Basespot has air"}>
                       <div className="inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent text-center align-middle text-xs font-medium">
                         <Badge
                           variant="outlined"
                           color="DEFAULT"
                           standalone
                           content={
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 fill-current">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 576 512"
+                              className="w-4 fill-current"
+                            >
                               <path d="M224 416c0 35.3-28.7 64-64 64c-26.47 0-48-21.53-48-48S133.5 384 160 384c8.836 0 16-7.164 16-16S168.8 352 160 352c-44.11 0-80 35.89-80 79.1S115.9 512 160 512c52.94 0 96-43.06 96-96V288H224V416zM416 320c-8.836 0-16 7.164-16 15.1S407.2 352 416 352c26.47 0 48 21.53 48 48S442.5 448 416 448c-35.3 0-64-28.7-64-64V288h-32v96c0 52.94 43.06 96 96 96c44.11 0 80-35.89 80-80S460.1 320 416 320zM512 .0002H64c-35.2 0-64 28.8-64 64V192c0 35.2 28.8 64 64 64h448c35.2 0 64-28.8 64-64V64C576 28.8 547.2 .0002 512 .0002zM544 192c0 17.67-14.33 32-32 32H64C46.33 224 32 209.7 32 192V64c0-17.67 14.33-32 32-32h448c17.67 0 32 14.33 32 32V192zM464 128h-352C103.2 128 96 135.2 96 144S103.2 160 112 160h352C472.8 160 480 152.8 480 144S472.8 128 464 128z" />
                             </svg>
                           }
@@ -466,18 +543,55 @@ const BasespotsList = ({ basespotPagination, maps }: FindNewBasespots) => {
           ))}
           {loading && (
             <Fragment>
-              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
-              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
-              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
-              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
-              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
-              <Skeleton variant="rounded" animation="wave" width={"100%"} height={"24rem"} />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                width={"100%"}
+                height={"24rem"}
+              />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                width={"100%"}
+                height={"24rem"}
+              />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                width={"100%"}
+                height={"24rem"}
+              />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                width={"100%"}
+                height={"24rem"}
+              />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                width={"100%"}
+                height={"24rem"}
+              />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                width={"100%"}
+                height={"24rem"}
+              />
             </Fragment>
           )}
         </div>
       </div>
       {!hasMoreBasespots && (
-        <Button variant="text" color="DEFAULT" className="mx-auto" onClick={loadMore}>Sorry, that was all the basespots</Button>
+        <Button
+          variant="text"
+          color="DEFAULT"
+          className="mx-auto"
+          onClick={loadMore}
+        >
+          Sorry, that was all the basespots
+        </Button>
       )}
     </article>
   );

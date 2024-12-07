@@ -1,4 +1,4 @@
-import { Toast as iToast, toast } from "@redwoodjs/web/dist/toast";
+import { Toast as iToast, toast } from "@redwoodjs/web/toast";
 import Button from "../Button/Button";
 import clsx from "clsx";
 
@@ -20,20 +20,22 @@ const Toast = ({
   primaryAction,
   secondaryAction,
 }: ToastProps) => {
-
   const variants = {
     info: `border-primary-400 text-primary-800 dark:border-primary-800 dark:text-primary-400`,
     success: `text-success-800 border-success-300 dark:text-success-400 dark:border-success-600`,
     warning: `border-warning-300 text-warning-800 dark:border-warning-800 dark:text-warning-400`,
     error: `border-error-300 dark:border-error-600 text-black dark:text-white`,
-  }
+  };
   return (
     <div
-      className={clsx(`rounded border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-800 dark:text-white`, {
-        [variants[variant]]: variant,
-        "animate-fly-in": t.visible,
-        "animate-fade-out": !t.visible
-      })}
+      className={clsx(
+        `rounded border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-800 dark:text-white`,
+        {
+          [variants[variant]]: variant,
+          "animate-fly-in": t.visible,
+          "animate-fade-out": !t.visible,
+        },
+      )}
       role="alert"
     >
       <div className="flex items-center">
@@ -54,7 +56,7 @@ const Toast = ({
         <Button
           size="small"
           variant="outlined"
-          color={variant === 'info' ? 'primary' : variant}
+          color={variant === "info" ? "primary" : variant}
           onClick={async () => {
             toast.dismiss(t.id);
             primaryAction?.(t);

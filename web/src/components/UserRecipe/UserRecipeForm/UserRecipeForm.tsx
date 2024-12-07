@@ -15,26 +15,32 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useMutation } from "@apollo/client";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import { formatNumber } from "src/lib/formatters";
 import { useRef, useState } from "react";
 import { Input } from "src/components/Util/Input/Input";
 import Button from "src/components/Util/Button/Button";
 import Badge from "src/components/Util/Badge/Badge";
-import { Dialog, DialogActions, DialogContent, DialogTitle } from "src/components/Util/Dialog/Dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "src/components/Util/Dialog/Dialog";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Toast from "src/components/Util/Toast/Toast";
 import { useAuth } from "src/auth";
 import Switch from "src/components/Util/Switch/Switch";
 
-
 const CREATE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
-  mutation CreateUserRecipeItemRecipeMutation($input: CreateUserRecipeItemRecipeInput!) {
+  mutation CreateUserRecipeItemRecipeMutation(
+    $input: CreateUserRecipeItemRecipeInput!
+  ) {
     createUserRecipeItemRecipe(input: $input) {
       id
     }
   }
-`
+`;
 
 const UPDATE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
   mutation UpdateUserRecipeItemRecipeMutation(
@@ -50,7 +56,6 @@ const UPDATE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
     }
   }
 `;
-
 
 const DELETE_USER_RECIPE_ITEM_RECIPE_MUTATION = gql`
   mutation DeleteUserRecipeItemRecipeMutation($id: BigInt!) {
@@ -84,10 +89,9 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
   // });
 
   const onSubmit = (data: FormUserRecipe) => {
-    console.log(data)
+    console.log(data);
     props.onSave(data, props?.userRecipe?.id);
   };
-
 
   const categoriesIcons = {
     Armor: "cloth-shirt",
@@ -100,11 +104,14 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
     Consumable: "any-berry-seed",
   };
 
-
-  const [openModal, setOpenModal] = useState<{ open: boolean; edit?: boolean, itemRecipe?: UpdateUserRecipeItemRecipeInput & { id?: number } }>({
+  const [openModal, setOpenModal] = useState<{
+    open: boolean;
+    edit?: boolean;
+    itemRecipe?: UpdateUserRecipeItemRecipeInput & { id?: number };
+  }>({
     open: false,
     edit: false,
-    itemRecipe: null
+    itemRecipe: null,
   });
 
   const modalRef = useRef<HTMLDivElement>();
@@ -117,12 +124,12 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
       },
       onError: (error) => {
         if (process.env.NODE_ENV !== "production") {
-          console.error(error)
+          console.error(error);
         }
-        toast.error(error.message)
+        toast.error(error.message);
       },
-    }
-  )
+    },
+  );
 
   const [updateUserRecipeItemRecipe, { error: updateError }] = useMutation(
     UPDATE_USER_RECIPE_ITEM_RECIPE_MUTATION,
@@ -132,11 +139,11 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
       },
       onError: (error) => {
         if (process.env.NODE_ENV !== "production") {
-          console.error(error)
+          console.error(error);
         }
-        toast.error(error.message)
+        toast.error(error.message);
       },
-    }
+    },
   );
 
   const [deleteUserRecipeItemRecipe] = useMutation(
@@ -149,11 +156,11 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
       onError: (error) => {
         toast.error(error.message);
       },
-    }
+    },
   );
 
   const onDeleteClick = (
-    id: DeleteUserRecipeItemRecipeMutationVariables["id"]
+    id: DeleteUserRecipeItemRecipeMutationVariables["id"],
   ) => {
     // TODO: add refresh after deleting
     toast.custom(
@@ -163,13 +170,14 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
           title={`Confirm deletion`}
           message={`Are you sure you want to delete recipe?`}
           actionType="YesNo"
-          primaryAction={() => deleteUserRecipeItemRecipe({ variables: { id } })}
+          primaryAction={() =>
+            deleteUserRecipeItemRecipe({ variables: { id } })
+          }
         />
       ),
-      { position: 'top-center' }
-    )
+      { position: "top-center" },
+    );
   };
-
 
   const onSubmitUserRecipeItemRecipe = (data: UserRecipeItemRecipe) => {
     const input: UserRecipeItemRecipe = {
@@ -179,21 +187,39 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
     };
     toast.promise(
       openModal.edit
-        ? updateUserRecipeItemRecipe({ variables: { id: openModal.itemRecipe?.id, input } })
+        ? updateUserRecipeItemRecipe({
+            variables: { id: openModal.itemRecipe?.id, input },
+          })
         : createUserRecipeItemRecipe({ variables: { input } }),
       {
-        loading: openModal.edit ? 'Updating ItemRecipeItem...' : 'Creating new ItemRecipeItem...',
-        success: `ItemRecipeItem successfully ${openModal.edit ? 'updated' : 'created'}`,
-        error: <b>Failed to {openModal.edit ? 'update' : 'create new'} ItemRecipeItem.</b>,
-      });
+        loading: openModal.edit
+          ? "Updating ItemRecipeItem..."
+          : "Creating new ItemRecipeItem...",
+        success: `ItemRecipeItem successfully ${openModal.edit ? "updated" : "created"}`,
+        error: (
+          <b>
+            Failed to {openModal.edit ? "update" : "create new"} ItemRecipeItem.
+          </b>
+        ),
+      },
+    );
   };
 
   return (
     <div className="-mt-4 text-sm">
-      <Dialog ref={modalRef} open={openModal.open} onClose={() => setOpenModal({ open: false, edit: false, itemRecipe: null })}>
-        <DialogTitle>{openModal.edit ? 'Edit' : 'Add'} Recipe</DialogTitle>
+      <Dialog
+        ref={modalRef}
+        open={openModal.open}
+        onClose={() =>
+          setOpenModal({ open: false, edit: false, itemRecipe: null })
+        }
+      >
+        <DialogTitle>{openModal.edit ? "Edit" : "Add"} Recipe</DialogTitle>
         <DialogContent dividers>
-          <Form onSubmit={onSubmitUserRecipeItemRecipe} error={createError || updateError}>
+          <Form
+            onSubmit={onSubmitUserRecipeItemRecipe}
+            error={createError || updateError}
+          >
             <FormError
               error={createError || updateError}
               wrapperClassName="rw-form-error-wrapper"
@@ -225,7 +251,11 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               label="Amount"
               name="amount"
               defaultValue={openModal.itemRecipe?.amount}
-              validation={{ valueAsNumber: true, required: true, setValueAs: (v) => parseInt(v) }}
+              validation={{
+                valueAsNumber: true,
+                required: true,
+                setValueAs: (v) => parseInt(v),
+              }}
               type="number"
             />
           </Form>
@@ -235,7 +265,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
             type="button"
             color="success"
             variant="contained"
-            permission={openModal.edit ? 'gamedata_update' : 'gamedata_create'}
+            permission={openModal.edit ? "gamedata_update" : "gamedata_create"}
             onClick={() => {
               if (modalRef?.current) {
                 modalRef.current.querySelector("form")?.requestSubmit();
@@ -252,7 +282,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               </svg>
             }
           >
-            {openModal.edit ? 'Save' : 'Add'}
+            {openModal.edit ? "Save" : "Add"}
           </Button>
           {openModal.edit && (
             <Button
@@ -287,20 +317,19 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
           listClassName="rw-form-error-list"
         />
         <Input
-          label={'User'}
+          label={"User"}
           name="created_by"
           validation={{ required: true }}
           defaultValue={props.userRecipe?.created_by || currentUser?.id}
           className="hidden invisible"
         />
         <Input
-          label={'Name'}
+          label={"Name"}
           name="name"
           defaultValue={props.userRecipe?.name}
         />
 
         <br />
-
 
         <Switch
           name="public_access"
@@ -312,43 +341,65 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
         <FieldError name="public_access" className="rw-field-error" />
 
         <div className="my-3">
-
           <div className="col-span-5 flex flex-row flex-wrap gap-3 text-black dark:text-white">
-            {props.userRecipe?.UserRecipeItemRecipe.map(({ id, amount, ItemRecipe, ...other }) => {
-              return (
-                <Button
-                  key={`recipe-${id}`}
-                  className="aspect-square"
-                  variant="outlined"
-                  color="DEFAULT"
-                  title={`${ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.name} - ${amount}`}
-                  onClick={() => {
-                    setOpenModal({ open: true, edit: true, itemRecipe: { id, user_recipe_id: props.userRecipe.id, amount, ...other } })
-                  }}
-                >
-                  <div className="flex flex-col items-center justify-center w-16 p-1">
-                    <img
-                      className="h-10 w-10"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.image}`}
+            {props.userRecipe?.UserRecipeItemRecipe.map(
+              ({ id, amount, ItemRecipe, ...other }) => {
+                return (
+                  <Button
+                    key={`recipe-${id}`}
+                    className="aspect-square"
+                    variant="outlined"
+                    color="DEFAULT"
+                    title={`${ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.name} - ${amount}`}
+                    onClick={() => {
+                      setOpenModal({
+                        open: true,
+                        edit: true,
+                        itemRecipe: {
+                          id,
+                          user_recipe_id: props.userRecipe.id,
+                          amount,
+                          ...other,
+                        },
+                      });
+                    }}
+                  >
+                    <div className="flex flex-col items-center justify-center w-16 p-1">
+                      <img
+                        className="h-10 w-10"
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.image}`}
+                      />
+                      <span className="text-xs">
+                        {ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.name}
+                      </span>
+                    </div>
+                    <Badge
+                      color="DEFAULT"
+                      variant="standard"
+                      size="small"
+                      className="absolute top-0 right-2.5"
+                      max={1000000}
+                      content={formatNumber(amount, { notation: "compact" })}
                     />
-                    <span className="text-xs">{ItemRecipe.Item_ItemRecipe_crafted_item_idToItem.name}</span>
-                  </div>
-                  <Badge color="DEFAULT" variant="standard" size="small" className="absolute top-0 right-2.5" max={1000000} content={formatNumber(amount, { notation: "compact" })} />
-                </Button>
-              )
-            })}
+                  </Button>
+                );
+              },
+            )}
 
             {props?.userRecipe?.id && (
               <Button
                 className="aspect-square"
                 variant="contained"
                 color="success"
-                onClick={() => setOpenModal({ open: true, edit: false, itemRecipe: { user_recipe_id: props.userRecipe.id } })}
+                onClick={() =>
+                  setOpenModal({
+                    open: true,
+                    edit: false,
+                    itemRecipe: { user_recipe_id: props.userRecipe.id },
+                  })
+                }
                 startIcon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                     <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
                   </svg>
                 }

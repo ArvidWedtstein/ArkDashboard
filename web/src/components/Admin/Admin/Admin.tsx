@@ -100,7 +100,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
   // Fetch Github data
   useEffect(() => {
     fetch(
-      "https://api.github.com/repos/arvidwedtstein/ArkDashboard/commits?sha=1bc1c549eb8573f1719432e7e66ce34dca8b35bc"
+      "https://api.github.com/repos/arvidwedtstein/ArkDashboard/commits?sha=1bc1c549eb8573f1719432e7e66ce34dca8b35bc",
     )
       .then((response) => response.json())
       .then((data) => setGithubCommits(data));
@@ -190,8 +190,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               subheader={`${formatNumber(
                 (optimizedBasespots.filter((b) => b.progress == 100).length /
                   optimizedBasespots.length) *
-                100,
-                { maximumSignificantDigits: 3 }
+                  100,
+                { maximumSignificantDigits: 3 },
               ).toString()} / 100`}
               subheaderProps={{ className: "text-xl !font-bold !text-white" }}
             />
@@ -210,15 +210,15 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   <path
                     className={clsx(
                       "animate-circle-progress fill-none stroke-2",
-                      "stroke-success-500"
+                      "stroke-success-500",
                     )}
                     strokeLinecap="round"
                     strokeDasharray={`${formatNumber(
                       (optimizedBasespots.filter((b) => b.progress == 100)
                         .length /
                         optimizedBasespots.length) *
-                      100,
-                      { maximumSignificantDigits: 3 }
+                        100,
+                      { maximumSignificantDigits: 3 },
                     )}, 100`}
                     d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
@@ -236,8 +236,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       (optimizedBasespots.filter((b) => b.progress == 100)
                         .length /
                         optimizedBasespots.length) *
-                      100,
-                      { maximumSignificantDigits: 3 }
+                        100,
+                      { maximumSignificantDigits: 3 },
                     )}
                     %
                   </text>
@@ -281,13 +281,14 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       //   { id: 1, value: 90, label: 'series B' },
                       //   { id: 2, value: 90, label: 'series C' },
                       // ],
-                      data: Object.entries(groupBy(optimizedBasespots, "map_id"))
-                        .map(([k, v]) => ({
-                          id: k,
-                          label: v[0].Map.name,
-                          value: (v.slice(0, 20).length / 20) * 100,
-                        }))
-                    }
+                      data: Object.entries(
+                        groupBy(optimizedBasespots, "map_id"),
+                      ).map(([k, v]) => ({
+                        id: k,
+                        label: v[0].Map.name,
+                        value: (v.slice(0, 20).length / 20) * 100,
+                      })),
+                    },
                   ]}
                 />
                 {/* <svg
@@ -365,8 +366,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   groupDatesByMonth(
                     profiles
                       .map((p) => new Date(p.created_at))
-                      .sort((a, b) => a.getTime() - b.getTime())
-                  )
+                      .sort((a, b) => a.getTime() - b.getTime()),
+                  ),
                 ).map(([k, v]: [k: string, v: unknown[]]) => ({
                   month: new Date(k).toLocaleDateString("en-GB", {
                     month: "short",
@@ -387,7 +388,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     label: "New Users in the last months",
                   },
                 ]}
-              // title={"New Users in the last months"}
+                // title={"New Users in the last months"}
               />
             </CardContent>
           </Card>
@@ -438,7 +439,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       <div
                         className={`h-2 rounded`}
                         style={{
-                          width: `${value}%`, backgroundColor: getHexCodeFromPercentage(value)
+                          width: `${value}%`,
+                          backgroundColor: getHexCodeFromPercentage(value),
                         }}
                       />
                     </div>
@@ -496,19 +498,25 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               sortable: true,
               datatype: "date",
               render: ({ value }) => (
-                <Badge standalone content={
-                  <>
-                    <svg
-                      className="mr-1.5 h-2.5 w-2.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-                    </svg>
-                    {relativeDate(new Date(value))}
-                  </>} variant="outlined" color="secondary" />
+                <Badge
+                  standalone
+                  content={
+                    <>
+                      <svg
+                        className="mr-1.5 h-2.5 w-2.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
+                      </svg>
+                      {relativeDate(new Date(value))}
+                    </>
+                  }
+                  variant="outlined"
+                  color="secondary"
+                />
               ),
             },
             {
@@ -536,7 +544,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   input: {
                                     banned_until: new Date(
                                       new Date().getTime() +
-                                      1000 * 60 * 60 * 24 * 7
+                                        1000 * 60 * 60 * 24 * 7,
                                     ),
                                   },
                                 },
@@ -547,7 +555,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   `Successfully banned ${data.updateProfile.username}`,
                                 error: ({ data }) =>
                                   `Failed to ban ${data.updateProfile.username}`,
-                              }
+                              },
                             );
                           }}
                         />
@@ -573,19 +581,25 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               datatype: "date",
               render: ({ value }) =>
                 value && (
-                  <Badge standalone content={
-                    <>
-                      <svg
-                        className="mr-1.5 h-2.5 w-2.5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-                      </svg>
-                      {relativeDate(new Date(value))}
-                    </>} variant="outlined" color="secondary" />
+                  <Badge
+                    standalone
+                    content={
+                      <>
+                        <svg
+                          className="mr-1.5 h-2.5 w-2.5"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
+                        </svg>
+                        {relativeDate(new Date(value))}
+                      </>
+                    }
+                    variant="outlined"
+                    color="secondary"
+                  />
                 ),
             },
             {
@@ -608,9 +622,11 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${row.username
-                          }'s role from ${roles.find((r) => r.id == value)?.name
-                          } to ${val?.name}?`}
+                        message={`Are you sure you want to change ${
+                          row.username
+                        }'s role from ${
+                          roles.find((r) => r.id == value)?.name
+                        } to ${val?.name}?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(
@@ -626,7 +642,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                 `Successfully Updated ${data.updateProfile.username}`,
                               error: ({ data }) =>
                                 `Failed to update ${data.updateProfile.username}`,
-                            }
+                            },
                           );
                         }}
                       />
@@ -682,7 +698,12 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   >
                     {value.tree.sha.slice(0, 7)}
                   </a>
-                  <Badge standalone content={"dev"} variant="outlined" color="secondary" />
+                  <Badge
+                    standalone
+                    content={"dev"}
+                    variant="outlined"
+                    color="secondary"
+                  />
                 </div>
               ),
             },

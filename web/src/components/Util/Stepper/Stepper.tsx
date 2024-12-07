@@ -1,5 +1,5 @@
 import { Form, FormProps, Submit, useForm } from "@redwoodjs/forms";
-import { CheckmarkIcon } from "@redwoodjs/web/dist/toast";
+import { CheckmarkIcon } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useState } from "react";
 import Button from "../Button/Button";
@@ -16,18 +16,27 @@ interface IStepperProps<FieldValues> {
   children?: React.ReactNode;
   completion?: boolean;
   currentStep?: number;
-  onStepChange?: (step: number, direction: 'prev' | 'next') => void;
+  onStepChange?: (step: number, direction: "prev" | "next") => void;
   onStepComplete?: (step: number, finalStep: boolean) => void;
-
 }
 
-export const Step = ({ title, description, optional, children, className }: Step) => {
-  return <div className={className}>
-    {children}
-  </div>;
+export const Step = ({
+  title,
+  description,
+  optional,
+  children,
+  className,
+}: Step) => {
+  return <div className={className}>{children}</div>;
 };
 
-const Stepper = <TFieldValues extends Record<string, any>>({ children, completion = false, onStepChange, onStepComplete, currentStep: currentStepProp = 0 }: IStepperProps<TFieldValues>) => {
+const Stepper = <TFieldValues extends Record<string, any>>({
+  children,
+  completion = false,
+  onStepChange,
+  onStepComplete,
+  currentStep: currentStepProp = 0,
+}: IStepperProps<TFieldValues>) => {
   const [currentStep, setCurrentStep] = useState(currentStepProp);
   const [completedSteps, setCompletedSteps] = useState([]);
 
@@ -42,12 +51,12 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
       completedSteps.includes(currentStep != 0 ? currentStep - 1 : currentStep)
     ) {
       setCompletedSteps((prev) =>
-        prev.filter((step) => step != currentStep - 1)
+        prev.filter((step) => step != currentStep - 1),
       );
     }
     setCurrentStep((prev) => (prev != 0 ? prev - 1 : prev));
 
-    onStepChange?.(currentStep != 0 ? currentStep - 1 : currentStep, 'prev')
+    onStepChange?.(currentStep != 0 ? currentStep - 1 : currentStep, "prev");
   };
 
   const nextStep = () => {
@@ -55,21 +64,25 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
       currentStep <
       (Array.isArray(children) ? children : [children]).length - 1
     ) {
-      onStepChange?.(currentStep + 1, 'next')
+      onStepChange?.(currentStep + 1, "next");
       return setCurrentStep((prev) => prev + 1);
     }
 
-    onStepChange?.(completedSteps.findIndex((step) => step == currentStep) !== -1
-      ? completedSteps.findIndex((step) => step == currentStep)
-      : currentStep == (Array.isArray(children) ? children : [children]).length - 1
-        ? Math.max(...completedSteps) + 1
-        : currentStep, 'next')
+    onStepChange?.(
+      completedSteps.findIndex((step) => step == currentStep) !== -1
+        ? completedSteps.findIndex((step) => step == currentStep)
+        : currentStep ==
+            (Array.isArray(children) ? children : [children]).length - 1
+          ? Math.max(...completedSteps) + 1
+          : currentStep,
+      "next",
+    );
     return setCurrentStep((prev) =>
       completedSteps.findIndex((step) => step == prev) !== -1
         ? completedSteps.findIndex((step) => step == prev)
         : prev == (Array.isArray(children) ? children : [children]).length - 1
           ? Math.max(...completedSteps) + 1
-          : prev
+          : prev,
     );
   };
 
@@ -84,11 +97,14 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
                   type="button"
                   disabled={
                     (Array.isArray(children) ? children : [children]).length ===
-                    completedSteps.length || !completion
+                      completedSteps.length || !completion
                   }
                   className="font-montserrat flex items-center space-x-2"
                   onClick={() => {
-                    onStepChange?.(index, index < currentStep ? 'prev' : 'next');
+                    onStepChange?.(
+                      index,
+                      index < currentStep ? "prev" : "next",
+                    );
                     setCurrentStep(index);
                   }}
                 >
@@ -99,7 +115,7 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
                         "ring-success-500":
                           index === currentStep ||
                           completedSteps.includes(index),
-                      }
+                      },
                     )}
                   >
                     {completedSteps.includes(index) ? (
@@ -121,21 +137,21 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
                 </button>
                 {index !==
                   (Array.isArray(children) ? children : [children]).length -
-                  1 && (
-                    <div className="relative h-px w-full grow overflow-hidden bg-zinc-500">
-                      <span
-                        className={clsx(
-                          "bg-success-500 absolute left-0 bottom-0 top-0 w-full -translate-x-full transition-transform duration-300 ease-in-out",
-                          {
-                            "translate-x-0": index < currentStep,
-                          }
-                        )}
-                      />
-                    </div>
-                  )}
+                    1 && (
+                  <div className="relative h-px w-full grow overflow-hidden bg-zinc-500">
+                    <span
+                      className={clsx(
+                        "bg-success-500 absolute left-0 bottom-0 top-0 w-full -translate-x-full transition-transform duration-300 ease-in-out",
+                        {
+                          "translate-x-0": index < currentStep,
+                        },
+                      )}
+                    />
+                  </div>
+                )}
               </React.Fragment>
             );
-          }
+          },
         )}
       </div>
 
@@ -143,30 +159,35 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
         {(Array.isArray(children) ? children : [children]).map(
           ({ props: step }, index) => {
             return (
-              <Step {...step} key={`Stepper-step-child-${index}`} className={clsx(step.className, {
-                "block": index === currentStep,
-                "hidden": index !== currentStep
-              })}>
+              <Step
+                {...step}
+                key={`Stepper-step-child-${index}`}
+                className={clsx(step.className, {
+                  block: index === currentStep,
+                  hidden: index !== currentStep,
+                })}
+              >
                 {step.children}
               </Step>
             );
-          }
+          },
         )}
         <div className="flex items-center justify-between">
           {completedSteps.length !==
             (Array.isArray(children) ? children : [children]).length && (
-              <Button
-                disabled={currentStep == 0}
-                onClick={() => prevStep()}
-                color="DEFAULT"
-                variant="outlined"
-              >
-                Back
-              </Button>
-            )}
+            <Button
+              disabled={currentStep == 0}
+              onClick={() => prevStep()}
+              color="DEFAULT"
+              variant="outlined"
+            >
+              Back
+            </Button>
+          )}
           <div className="inline-flex items-center space-x-3">
-            {(completion && completedSteps.length !==
-              (Array.isArray(children) ? children : [children]).length) && (
+            {completion &&
+              completedSteps.length !==
+                (Array.isArray(children) ? children : [children]).length && (
                 <Button
                   onClick={() => nextStep()}
                   color="DEFAULT"
@@ -176,15 +197,26 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
                 </Button>
               )}
             <Button
-              disabled={completedSteps.includes(currentStep) && completion && !(completedSteps.length >=
-                (Array.isArray(children) ? children : [children]).length)}
-              onClick={() => completeStep(currentStep, completedSteps.length >=
-                (Array.isArray(children) ? children : [children]).length)}
+              disabled={
+                completedSteps.includes(currentStep) &&
+                completion &&
+                !(
+                  completedSteps.length >=
+                  (Array.isArray(children) ? children : [children]).length
+                )
+              }
+              onClick={() =>
+                completeStep(
+                  currentStep,
+                  completedSteps.length >=
+                    (Array.isArray(children) ? children : [children]).length,
+                )
+              }
               color="DEFAULT"
               variant="outlined"
             >
               {completedSteps.length >=
-                (Array.isArray(children) ? children : [children]).length
+              (Array.isArray(children) ? children : [children]).length
                 ? "Finish"
                 : completion
                   ? "Complete"
@@ -193,7 +225,7 @@ const Stepper = <TFieldValues extends Record<string, any>>({ children, completio
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

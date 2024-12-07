@@ -22,7 +22,7 @@ import {
 } from "src/components/Util/Dialog/Dialog";
 import { ArrayElement } from "src/lib/formatters";
 import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import Toast from "src/components/Util/Toast/Toast";
 import { QUERY } from "../EditItemRecipeCell";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
@@ -99,7 +99,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           parseFloat(data?.skill_quality_multiplier_max.toString()) || 0,
         xp: parseFloat(data?.xp.toString()) || 0,
       },
-      props?.itemRecipe?.id
+      props?.itemRecipe?.id,
     );
   };
 
@@ -139,7 +139,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
 
   const onSave = (
     input: CreateItemRecipeItemInput | UpdateItemRecipeItemInput,
-    id?: FormItemRecipe["id"]
+    id?: FormItemRecipe["id"],
   ) => {
     toast.promise(
       openModal.edit
@@ -157,7 +157,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
             Failed to {openModal.edit ? "update" : "create new"} ItemRecipeItem.
           </b>
         ),
-      }
+      },
     );
   };
 
@@ -207,7 +207,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
         amount: parseInt(data.amount.toString()),
         item_recipe_id: props?.itemRecipe?.id,
       },
-      openModal?.item_recipe_item?.id
+      openModal?.item_recipe_item?.id,
     );
   };
 
@@ -302,7 +302,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
                       }
                     />
                   ),
-                  { position: "top-center" }
+                  { position: "top-center" },
                 );
 
                 setOpenModal({ open: false, item_recipe_item: null });
@@ -549,7 +549,7 @@ const ItemRecipeForm = (props: ItemRecipeFormProps) => {
           <TransitionGroup component={null}>
             {props.itemRecipe?.ItemRecipeItem?.map((itemrecipeitem) => {
               const item = props.items.find(
-                (item) => item.id === itemrecipeitem.resource_item_id
+                (item) => item.id === itemrecipeitem.resource_item_id,
               );
               return (
                 <CSSTransition

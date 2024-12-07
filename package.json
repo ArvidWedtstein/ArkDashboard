@@ -13,8 +13,8 @@
     ]
   },
   "devDependencies": {
-    "@redwoodjs/auth-supabase-setup": "6.3.3",
-    "@redwoodjs/core": "6.3.3",
+    "@redwoodjs/auth-supabase-setup": "8.0.0",
+    "@redwoodjs/core": "8.0.0",
     "prettier-plugin-tailwindcss": "^0.2.1"
   },
   "eslintConfig": {

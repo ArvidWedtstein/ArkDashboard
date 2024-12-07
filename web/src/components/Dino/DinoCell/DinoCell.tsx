@@ -106,7 +106,7 @@ export const Loading = () => (
   <div role="status" className="flex animate-pulse flex-col space-y-8">
     <div className="flex">
       <div className="aspect-square h-96 rounded-lg bg-zinc-200 dark:bg-zinc-600" />
-      <div className="flex w-full flex-col flex-wrap py-6 text-center lg:flex-grow lg:w-1/2 lg:pl-12 lg:text-left">
+      <div className="flex w-full flex-col flex-wrap py-6 text-center lg:w-1/2 lg:flex-grow lg:pl-12 lg:text-left">
         <div className="flex flex-col space-y-2.5">
           <div className="flex w-full items-center space-x-2">
             <div className="h-2.5 w-64 rounded-full bg-zinc-200 dark:bg-zinc-700" />
@@ -147,23 +147,13 @@ export const Loading = () => (
       </div>
     </div>
     <div className="flex flex-col gap-y-2">
-      <div className="flex flex-row gap-x-3 w-full">
+      <div className="flex w-full flex-row gap-x-3">
         <div className="h-5 w-24 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-5 w-24 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-5 w-24 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
       </div>
-      <div className="h-2.5 w-36 rounded-full bg-zinc-200 dark:bg-zinc-700 mt-5" />
-      <div className="flex flex-row gap-x-3 w-full">
-        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      </div>
-      <div className="h-2.5 w-36 rounded-full bg-zinc-200 dark:bg-zinc-700 mt-5" />
-      <div className="flex flex-row gap-x-3 w-full">
+      <div className="mt-5 h-2.5 w-36 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+      <div className="flex w-full flex-row gap-x-3">
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
@@ -172,8 +162,18 @@ export const Loading = () => (
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
       </div>
-      <div className="h-2.5 w-52 rounded-full bg-zinc-200 dark:bg-zinc-700 mt-5" />
-      <div className="flex flex-row gap-x-3 w-full">
+      <div className="mt-5 h-2.5 w-36 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+      <div className="flex w-full flex-row gap-x-3">
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="mt-5 h-2.5 w-52 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+      <div className="flex w-full flex-row gap-x-3">
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
@@ -190,6 +190,7 @@ export const Loading = () => (
 export const Empty = () => <div>Dino not found</div>;
 
 export const Failure = ({ error }: CellFailureProps) => {
+  console.error(error);
   return (
     <div className="rw-cell-error flex items-center space-x-3">
       <svg

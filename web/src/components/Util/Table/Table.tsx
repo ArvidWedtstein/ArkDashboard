@@ -1,13 +1,33 @@
-import { ElementType, Fragment, HTMLAttributes, ReactNode, forwardRef, useCallback, useMemo, useRef, useState } from "react";
-import { IntRange, debounce, formatNumber, pluralize } from "src/lib/formatters";
+import {
+  ElementType,
+  Fragment,
+  HTMLAttributes,
+  ReactNode,
+  forwardRef,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  IntRange,
+  debounce,
+  formatNumber,
+  pluralize,
+} from "src/lib/formatters";
 import clsx from "clsx";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import Button, { ButtonGroup } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { Lookup } from "../Lookup/Lookup";
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import Collapse from "../Collapse/Collapse";
-import { Dialog, DialogActions, DialogContent, DialogTitle } from "../Dialog/Dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "../Dialog/Dialog";
 
 type Filter<Row extends Record<string, any>> = {
   /**
@@ -49,15 +69,15 @@ type TableColumn<Row extends TableDataRow> = {
    * Indicates type of column
    */
   datatype?:
-  | "number"
-  | "boolean"
-  | "date"
-  | "symbol"
-  | "function"
-  | "string"
-  | "bigint"
-  | "undefined"
-  | "object";
+    | "number"
+    | "boolean"
+    | "date"
+    | "symbol"
+    | "function"
+    | "string"
+    | "bigint"
+    | "undefined"
+    | "object";
   /**
    * The CSS class name for the column.
    */
@@ -180,18 +200,18 @@ type TableProps<Row extends Record<string, any>> = {
    */
   className?: string;
   /**
- * Size of table.
- * @default medium
- */
-  size?: 'small' | 'medium' | 'large';
+   * Size of table.
+   * @default medium
+   */
+  size?: "small" | "medium" | "large";
   /**
    * variant
    * @default outlined
    */
-  variant?: 'standard' | 'outlined'
+  variant?: "standard" | "outlined";
   /**
- * Indicates whether the select feature is enabled.
- */
+   * Indicates whether the select feature is enabled.
+   */
   checkSelect?: boolean;
   /**
    * The settings for the table.
@@ -201,7 +221,7 @@ type TableProps<Row extends Record<string, any>> = {
    * The additional components to display in the toolbar.
    */
   toolbar?: React.ReactNode[];
-}
+};
 const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   let {
     columns,
@@ -237,17 +257,17 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<TableDataRow["row_id"][]>(
-    []
+    [],
   );
 
   // TODO: bug bug where row stays open after removed
   const [collapsedRows, setCollapsedRows] = useState<TableDataRow["row_id"][]>(
-    []
+    [],
   );
 
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-    mergedSettings.pagination.pageSizeOptions[0]
+      mergedSettings.pagination.pageSizeOptions[0],
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -268,26 +288,28 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     data: Row[],
     column: TableColumn<Row>["field"],
     columnDataType: TableColumn<Row>["datatype"],
-    direction: "asc" | "desc"
+    direction: "asc" | "desc",
   ) => {
     if (column) {
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
       const { valueFormatter } = columns.find((c) => c.field === column);
 
       data.sort((a, b) => {
-        let c = valueFormatter ? valueFormatter({ value: a[sortKey], row: data[data.indexOf(a)] }) : a[sortKey]
-        let d = valueFormatter ? valueFormatter({ value: b[sortKey], row: data[data.indexOf(b)] }) : b[sortKey]
+        let c = valueFormatter
+          ? valueFormatter({ value: a[sortKey], row: data[data.indexOf(a)] })
+          : a[sortKey];
+        let d = valueFormatter
+          ? valueFormatter({ value: b[sortKey], row: data[data.indexOf(b)] })
+          : b[sortKey];
 
         // Compare based on data type
         if (!columnDataType) {
           columnDataType = typeof c;
         }
         if (columnDataType === "number") {
-          return (
-            (parseInt(c.toString()) - parseInt(d.toString()))
-          );
+          return parseInt(c.toString()) - parseInt(d.toString());
         } else if (columnDataType === "boolean") {
-          return (c === d ? 0 : c ? 1 : -1);
+          return c === d ? 0 : c ? 1 : -1;
         } else if (columnDataType === "string") {
           return c.toString().localeCompare(d.toString());
         } else if (columnDataType === "date") {
@@ -345,13 +367,15 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     }
 
     const filterLookup = {};
-    filters.filter(({ saved }) => saved).forEach((filter) => {
-      const { column } = filter;
-      if (!filterLookup[column as any]) {
-        filterLookup[column as any] = [];
-      }
-      filterLookup[column as any].push(filter);
-    });
+    filters
+      .filter(({ saved }) => saved)
+      .forEach((filter) => {
+        const { column } = filter;
+        if (!filterLookup[column as any]) {
+          filterLookup[column as any] = [];
+        }
+        filterLookup[column as any].push(filter);
+      });
 
     return data.filter((row) => {
       for (const column in filterLookup) {
@@ -394,13 +418,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         filteredData,
         sort.column,
         sort.columnDataType,
-        sort.direction
+        sort.direction,
       );
     }
 
     return filteredData;
   }, [sort, searchTerm, dataRows, mergedSettings.pagination, filters]);
-
 
   const PaginatedData = useMemo(() => {
     if (!mergedSettings.pagination.enabled) return SortedFilteredData;
@@ -411,7 +434,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     return SortedFilteredData.slice(startIndex, endIndex);
   }, [SortedFilteredData, currentPage, selectedPageSizeOption]);
 
-
   const handleRowSelect = (event, id?) => {
     const {
       target: { id: targetId, checked },
@@ -419,7 +441,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
     if (targetId === "checkbox-all-select") {
       setSelectedRows(
-        checked ? PaginatedData.map((row) => row.row_id.toString()) : []
+        checked ? PaginatedData.map((row) => row.row_id.toString()) : [],
       );
       return;
     }
@@ -455,23 +477,28 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     collapsedRows.indexOf(id) !== -1;
 
   const classes = {
-    table: "table w-full border-collapse border-spacing-0 text-left text-sm text-zinc-700 dark:text-zinc-300",
+    table:
+      "table w-full border-collapse border-spacing-0 text-left text-sm text-zinc-700 dark:text-zinc-300",
     tableHead: "table-header-group text-sm uppercase",
     tableBody: clsx("table-row-group", {
-      "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-500": mergedSettings.borders.horizontal
+      "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-500":
+        mergedSettings.borders.horizontal,
     }),
-  }
-  const [columnSizes, setColumnSizes] = useState(columnSettings
-    .filter((col) => !col.hidden).map((e, i) => {
-      return {
-        ...e,
-        width: e.width || 300,
-        columnIndex: i
-      }
-    }));
+  };
+  const [columnSizes, setColumnSizes] = useState(
+    columnSettings
+      .filter((col) => !col.hidden)
+      .map((e, i) => {
+        return {
+          ...e,
+          width: e.width || 300,
+          columnIndex: i,
+        };
+      }),
+  );
   const handleResize = (event, field) => {
     // console.log('resize', field, event)
-  }
+  };
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
@@ -483,15 +510,17 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         aria-sort="none"
         scope="col"
         className={clsx(other.className, {
-          "cursor-pointer": other.sortable
+          "cursor-pointer": other.sortable,
         })}
-        columnWidth={columnSizes.find((d) => d.columnIndex === columnIndex)?.width}
+        columnWidth={
+          columnSizes.find((d) => d.columnIndex === columnIndex)?.width
+        }
         field={other.field}
         variant={variant}
         size={size}
         handleResize={handleResize}
         onClick={() => {
-          if (!other.sortable) return
+          if (!other.sortable) return;
           setSort((prev) => ({
             column: other.field,
             columnDataType: other.datatype,
@@ -550,23 +579,23 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-        value: cellData,
-        row: rowData,
-        columnIndex,
-      })
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
       : isNaN(cellData)
         ? cellData?.amount || cellData
         : cellData;
 
     const content = render
       ? render({
-        columnIndex,
-        rowIndex,
-        value: valueFormatted,
-        field: field,
-        header,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatted,
+          field: field,
+          header,
+          row: rowData,
+        })
       : valueFormatted;
 
     return (
@@ -576,7 +605,9 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         variant={variant}
         headers={`headcell-${field}`}
         selected={isSelected(rowData.row_id)}
-        columnWidth={columnSizes?.find((d) => d.columnIndex === columnIndex)?.width}
+        columnWidth={
+          columnSizes?.find((d) => d.columnIndex === columnIndex)?.width
+        }
         className={className}
       >
         {content}
@@ -588,13 +619,13 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     header?: boolean;
     datarow?: TableDataRow;
     rowIndex?: number;
-    type: 'Select' | 'Collapse'
-  }
+    type: "Select" | "Collapse";
+  };
   const tableExtraColumn = ({
     header = false,
     datarow,
     rowIndex,
-    type = 'Select'
+    type = "Select",
   }: TableExtraColumn) => {
     return (
       <TableCell
@@ -604,20 +635,20 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         scope="col"
         columnWidth={50}
         style={{
-          width: type === 'Collapse' || type === 'Select' ? '1%' : 'auto'
+          width: type === "Collapse" || type === "Select" ? "1%" : "auto",
         }}
         selected={isSelected(datarow?.row_id || "")}
         aria-rowindex={rowIndex}
       >
-        {type === 'Select' ? (
+        {type === "Select" ? (
           <div className="flex items-center">
             <input
               id={header ? "checkbox-all-select" : datarow.row_id}
               checked={
                 header
                   ? PaginatedData.every((row) =>
-                    selectedRows.includes(row.row_id.toString())
-                  ) && PaginatedData.length > 0
+                      selectedRows.includes(row.row_id.toString()),
+                    ) && PaginatedData.length > 0
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -633,8 +664,13 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           </div>
         ) : (
           !header &&
-          type === 'Collapse' && (
-            <Button color="secondary" onClick={() => handleRowCollapse(datarow.row_id)} variant="icon" size="small">
+          type === "Collapse" && (
+            <Button
+              color="secondary"
+              onClick={() => handleRowCollapse(datarow.row_id)}
+              variant="icon"
+              size="small"
+            >
               {isRowOpen(datarow.row_id) ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -671,7 +707,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     valueFormatter: TableColumn<Row>["valueFormatter"];
   }) => {
     const filteredData = PaginatedData.filter(
-      (r) => !selectedRows.length || selectedRows.includes(r.row_id.toString())
+      (r) => !selectedRows.length || selectedRows.includes(r.row_id.toString()),
     );
 
     switch (aggregationType) {
@@ -683,7 +719,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             : cellData;
 
           const value = parseInt(
-            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted,
           );
           return sum + value;
         }, 0);
@@ -695,7 +731,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             : cellData;
 
           const value = parseInt(
-            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted,
           );
           return sum + value;
         }, 0);
@@ -710,7 +746,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             : cellData;
 
           const value = parseInt(
-            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted,
           );
           return Math.min(min, value);
         }, Infinity);
@@ -722,7 +758,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
             : cellData;
 
           const value = parseInt(
-            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted,
           );
           return Math.max(max, value);
         }, -Infinity);
@@ -736,23 +772,36 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       <TableRow className="font-semibold text-gray-900 dark:text-white border-t">
         {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
-          <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
+          <TableCell
+            size={size}
+            variant={variant}
+            className="first:rounded-bl-lg"
+          />
         )}
         {checkSelect && (
-          <TableCell size={size} variant={variant} className="first:rounded-bl-lg" />
+          <TableCell
+            size={size}
+            variant={variant}
+            className="first:rounded-bl-lg"
+          />
         )}
         {columnSettings
           .filter((col) => !col.hidden)
           .map(
             (
               { header, field, datatype, aggregate, className, valueFormatter },
-              index
+              index,
             ) => {
               const key = `${field}-${header}`; // Use a unique identifier for the key
 
               if (!aggregate) {
                 return (
-                  <TableCell key={key} size={size} variant={variant} className="first:rounded-bl-lg" />
+                  <TableCell
+                    key={key}
+                    size={size}
+                    variant={variant}
+                    className="first:rounded-bl-lg"
+                  />
                 );
               }
 
@@ -763,7 +812,15 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               });
 
               return (
-                <TableCell size={size} variant={variant} key={key} className={clsx("first:rounded-bl-lg last:rounded-br-lg", className)}>
+                <TableCell
+                  size={size}
+                  variant={variant}
+                  key={key}
+                  className={clsx(
+                    "first:rounded-bl-lg last:rounded-br-lg",
+                    className,
+                  )}
+                >
                   {datatype === "number"
                     ? formatNumber(aggregatedValue)
                     : index === 0
@@ -771,7 +828,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                       : null}
                 </TableCell>
               );
-            }
+            },
           )}
       </TableRow>
     </tfoot>
@@ -795,7 +852,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
     const rightSiblingIndex = Math.min(
       currentPage + siblingCount,
-      totalPageCount
+      totalPageCount,
     );
 
     const shouldShowLeftDots = leftSiblingIndex > 2;
@@ -831,34 +888,34 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       } else if (
         dir === "next" &&
         currentPage <
-        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
     },
-    [currentPage, SortedFilteredData]
+    [currentPage, SortedFilteredData],
   );
 
   const tablePagination = () => {
     const totalPageCount = Math.ceil(
-      SortedFilteredData.length / selectedPageSizeOption
+      SortedFilteredData.length / selectedPageSizeOption,
     );
     const startRowIndex =
       currentPage * selectedPageSizeOption - selectedPageSizeOption + 1;
     const endRowIndex = Math.min(
       currentPage * selectedPageSizeOption,
-      SortedFilteredData.length
+      SortedFilteredData.length,
     );
     const range = useMemo(
       () => paginationRange(currentPage, totalPageCount),
-      [currentPage, totalPageCount]
+      [currentPage, totalPageCount],
     );
 
     const paginationButtons = range.map((page, index) => (
       <Button
         key={`page-${index}`}
-        variant={currentPage === page ? 'contained' : 'outlined'}
-        color={currentPage === page ? 'success' : 'secondary'}
+        variant={currentPage === page ? "contained" : "outlined"}
+        color={currentPage === page ? "success" : "secondary"}
         disabled={isNaN(page)}
         onClick={() => setCurrentPage(isNaN(page) ? 1 : page)}
       >
@@ -881,19 +938,36 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         />
 
         <ButtonGroup>
-          <Button variant="outlined" color="secondary" disabled={currentPage === 1}
-            onClick={() => changePage("prev")}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            disabled={currentPage === 1}
+            onClick={() => changePage("prev")}
+          >
             <span className="sr-only">Previous</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="p-0.5 w-4 fill-current"
-              aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+              className="p-0.5 w-4 fill-current"
+              aria-hidden="true"
+            >
               <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
             </svg>
           </Button>
           {paginationButtons}
-          <Button variant="outlined" color="secondary" disabled={currentPage === totalPageCount}
-            onClick={() => changePage("next")}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            disabled={currentPage === totalPageCount}
+            onClick={() => changePage("next")}
+          >
             <span className="sr-only">Next</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="p-0.5 w-4 fill-current" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+              className="p-0.5 w-4 fill-current"
+              aria-hidden="true"
+            >
               <path d="M85.14 475.8c-3.438-3.141-5.156-7.438-5.156-11.75c0-3.891 1.406-7.781 4.25-10.86l181.1-197.1L84.23 58.86c-6-6.5-5.625-16.64 .9062-22.61c6.5-6 16.59-5.594 22.59 .8906l192 208c5.688 6.156 5.688 15.56 0 21.72l-192 208C101.7 481.3 91.64 481.8 85.14 475.8z" />
             </svg>
           </Button>
@@ -914,7 +988,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
   const copyToClipboard = () => {
     const textToCopy = SortedFilteredData.filter((row) =>
-      selectedRows.includes(row.row_id.toString())
+      selectedRows.includes(row.row_id.toString()),
     )
       .map((row) => {
         return Object.entries(row)
@@ -938,38 +1012,47 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   const filterDialogRef = useRef<HTMLDivElement>();
 
   const addFilter = (data: Filter<Row>) => {
-    setFilters((prev) => [
-      ...prev,
-      data,
-    ]);
+    setFilters((prev) => [...prev, data]);
   };
 
   const handleFilterClose = (confirmSave: boolean = false) => {
     // Filter empty filters
-    setFilters((prevFilters) => prevFilters.map(({ saved, column, operator, value }) => {
-      return {
-        column,
-        operator,
-        value,
-        saved: !saved ? confirmSave : saved
-      };
-    }).filter(({ saved }) => saved));
+    setFilters((prevFilters) =>
+      prevFilters
+        .map(({ saved, column, operator, value }) => {
+          return {
+            column,
+            operator,
+            value,
+            saved: !saved ? confirmSave : saved,
+          };
+        })
+        .filter(({ saved }) => saved),
+    );
 
     setOpen(false);
-  }
-
+  };
 
   return (
     <div
       className={clsx("relative !overflow-x-hidden overflow-y-auto", className)}
     >
-      {(checkSelect || mergedSettings.export || mergedSettings.filter || mergedSettings.search || toolbar.length > 0) && (
+      {(checkSelect ||
+        mergedSettings.export ||
+        mergedSettings.filter ||
+        mergedSettings.search ||
+        toolbar.length > 0) && (
         <ButtonGroup className="my-2">
           {mergedSettings.filter && (
             <>
               {/* Filter Button */}
 
-              <Button size="small" variant="outlined" color="secondary" onClick={() => setOpen(!open)}>
+              <Button
+                size="small"
+                variant="outlined"
+                color="secondary"
+                onClick={() => setOpen(!open)}
+              >
                 <span className="sr-only">Filter</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -986,13 +1069,14 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                 </svg>
               </Button>
 
-              <Dialog ref={filterDialogRef} open={open} onClose={() => handleFilterClose()}>
-                <DialogTitle>{pluralize(
-                  filters.length,
-                  "Filter",
-                  "s",
-                  false
-                )}</DialogTitle>
+              <Dialog
+                ref={filterDialogRef}
+                open={open}
+                onClose={() => handleFilterClose()}
+              >
+                <DialogTitle>
+                  {pluralize(filters.length, "Filter", "s", false)}
+                </DialogTitle>
                 <DialogContent>
                   {!filters.length && (
                     <Fragment>
@@ -1010,43 +1094,75 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                         timeout={500}
                         classNames="item"
                       >
-                        <ButtonGroup size="small" className="fadetransition" key={`columnfilter-${index}`}>
+                        <ButtonGroup
+                          size="small"
+                          className="fadetransition"
+                          key={`columnfilter-${index}`}
+                        >
                           <Lookup
                             size="small"
                             margin="none"
-                            options={columnSettings.filter((col) => !col.hidden).map(c => c.field)}
+                            options={columnSettings
+                              .filter((col) => !col.hidden)
+                              .map((c) => c.field)}
                             value={column}
-                            onSelect={(v) => setFilters((prev) => prev.map((s, i) => ({
-                              ...s,
-                              column: i === index ? v : s.column
-                            })))}
+                            onSelect={(v) =>
+                              setFilters((prev) =>
+                                prev.map((s, i) => ({
+                                  ...s,
+                                  column: i === index ? v : s.column,
+                                })),
+                              )
+                            }
                           />
                           <Lookup
                             size="small"
                             margin="none"
                             defaultValue={operator}
-                            options={["=", "!=", ">", ">=", "<", "<=", "like", "ilike", "in", "not", "regex"]}
-                            onSelect={(v) => setFilters((prev) => prev.map((s, i) => ({
-                              ...s,
-                              operator: i === index ? v : s.operator
-                            })))}
+                            options={[
+                              "=",
+                              "!=",
+                              ">",
+                              ">=",
+                              "<",
+                              "<=",
+                              "like",
+                              "ilike",
+                              "in",
+                              "not",
+                              "regex",
+                            ]}
+                            onSelect={(v) =>
+                              setFilters((prev) =>
+                                prev.map((s, i) => ({
+                                  ...s,
+                                  operator: i === index ? v : s.operator,
+                                })),
+                              )
+                            }
                           />
                           <Input
                             size="small"
                             margin="none"
                             defaultValue={value}
-                            onChange={(e) => setFilters((prev) => prev.map((s, i) => ({
-                              ...s,
-                              value: i === index ? e.target.value : s.value
-                            })))}
+                            onChange={(e) =>
+                              setFilters((prev) =>
+                                prev.map((s, i) => ({
+                                  ...s,
+                                  value: i === index ? e.target.value : s.value,
+                                })),
+                              )
+                            }
                           />
                           <Button
                             color="error"
                             variant="contained"
                             size="small"
-                            onClick={() => setFilters((prev) =>
-                              prev.filter((_, idx) => idx !== index)
-                            )}
+                            onClick={() =>
+                              setFilters((prev) =>
+                                prev.filter((_, idx) => idx !== index),
+                              )
+                            }
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -1069,15 +1185,25 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                     size="small"
                     ignoreButtonGroupPosition
                     className="float-left mr-auto"
-                    startIcon={(
+                    startIcon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 448 512"
                       >
                         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
                       </svg>
-                    )}
-                    onClick={() => addFilter({ column: columnSettings.length > 0 ? columnSettings[0].field : '', operator: "=", value: "", saved: false })}
+                    }
+                    onClick={() =>
+                      addFilter({
+                        column:
+                          columnSettings.length > 0
+                            ? columnSettings[0].field
+                            : "",
+                        operator: "=",
+                        value: "",
+                        saved: false,
+                      })
+                    }
                   >
                     Add Filter
                   </Button>
@@ -1104,7 +1230,6 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   </ButtonGroup>
                 </DialogActions>
               </Dialog>
-
             </>
           )}
           {checkSelect && mergedSettings.export && (
@@ -1139,8 +1264,8 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
               onChange={handleSearch}
               SuffixProps={{
                 style: {
-                  borderRadius: '0'
-                }
+                  borderRadius: "0",
+                },
               }}
               InputProps={{
                 startAdornment: (
@@ -1164,22 +1289,27 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           {toolbar.map((item, index) => (
             <Fragment key={`toolbar-${index}`}>{item}</Fragment>
           ))}
-
         </ButtonGroup>
       )}
 
-      <div
-        className={"w-full overflow-x-auto rounded border border-zinc-500"}
-      >
+      <div className={"w-full overflow-x-auto rounded border border-zinc-500"}>
         <table className={classes.table}>
           {mergedSettings.header && (
             <thead className={classes.tableHead}>
               <TableRow borders={mergedSettings.borders}>
                 {dataRows.some((row) => row.collapseContent) &&
-                  tableExtraColumn({ header: true, rowIndex: -1, type: 'Collapse' })}
+                  tableExtraColumn({
+                    header: true,
+                    rowIndex: -1,
+                    type: "Collapse",
+                  })}
 
                 {checkSelect &&
-                  tableExtraColumn({ header: true, rowIndex: -1, type: 'Select' })}
+                  tableExtraColumn({
+                    header: true,
+                    rowIndex: -1,
+                    type: "Select",
+                  })}
 
                 {columnSettings
                   ?.filter((col) => !col.hidden)
@@ -1202,15 +1332,22 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                   key={datarow.row_id.toString()}
                 >
                   <Fragment>
-                    <TableRow className="fadetransition" borders={mergedSettings.borders}>
+                    <TableRow
+                      className="fadetransition"
+                      borders={mergedSettings.borders}
+                    >
                       {dataRows.some((row) => row.collapseContent) &&
                         tableExtraColumn({
                           datarow,
                           rowIndex: i,
-                          type: 'Collapse'
+                          type: "Collapse",
                         })}
                       {checkSelect &&
-                        tableExtraColumn({ datarow, rowIndex: i, type: 'Select' })}
+                        tableExtraColumn({
+                          datarow,
+                          rowIndex: i,
+                          type: "Select",
+                        })}
                       {columnSettings &&
                         columnSettings.map(
                           (
@@ -1223,7 +1360,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                               header,
                               ...other
                             },
-                            index
+                            index,
                           ) =>
                             cellRenderer({
                               rowData: datarow,
@@ -1237,7 +1374,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                               className,
                               datatype,
                               ...other,
-                            })
+                            }),
                         )}
                     </TableRow>
 
@@ -1245,11 +1382,12 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                       <TableRow
                         className={clsx({
                           "table-row": isRowOpen(datarow.row_id.toString()),
-                          "h-0 [&>td]:p-0": !isRowOpen(datarow.row_id.toString())
+                          "h-0 [&>td]:p-0": !isRowOpen(
+                            datarow.row_id.toString(),
+                          ),
                         })}
                         borders={mergedSettings.borders}
                       >
-
                         <TableCell size={size} variant={variant} colSpan={100}>
                           <Collapse in={isRowOpen(datarow.row_id.toString())}>
                             {datarow.collapseContent}
@@ -1261,12 +1399,20 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                 </CSSTransition>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <CSSTransition
-                timeout={500}
-                classNames={"item"}
-              >
-                <TableRow className="fadetransition" borders={mergedSettings.borders}>
-                  <TableCell size={size} variant={variant} colSpan={100} headers="" className={"text-center"}>No data found</TableCell>
+              <CSSTransition timeout={500} classNames={"item"}>
+                <TableRow
+                  className="fadetransition"
+                  borders={mergedSettings.borders}
+                >
+                  <TableCell
+                    size={size}
+                    variant={variant}
+                    colSpan={100}
+                    headers=""
+                    className={"text-center"}
+                  >
+                    No data found
+                  </TableCell>
                 </TableRow>
               </CSSTransition>
             )}
@@ -1281,60 +1427,107 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
 type TableCellProps = {
   children?: React.ReactNode;
-  size?: TableProps<any>["size"]
-  variant?: TableProps<any>["variant"]
+  size?: TableProps<any>["size"];
+  variant?: TableProps<any>["variant"];
   header?: boolean;
   selected?: boolean;
   columnWidth?: number;
   field?: string;
-  handleResize?: (event, field: string) => void
-} & React.DetailedHTMLProps<React.TdHTMLAttributes<HTMLTableCellElement>, HTMLTableCellElement>
-const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) => {
-  const { children, header = false, selected = false, variant = "outlined", size = "medium", className, field, columnWidth = 500, handleResize, ...other } = props;
-  const variantClasses = {
-    outlined: clsx({
-      "bg-zinc-300 dark:bg-zinc-800": header,
-    }, !header && !selected ? 'dark:bg-zinc-600/80 bg-zinc-100' : ''),
-    standard: clsx()
-  }
-  const classes = clsx("table-cell relative truncate", {
-    "py-1 px-3": size === 'small' && !header,
-    "p-4": size === 'medium' && !header,
-    "px-6 py-5": size === 'large' && !header,
-    "py-0.5 px-3": size === 'small' && header,
-    "p-3 px-4": size === 'medium' && header,
-    "py-4 px-6": size === 'large' && header,
-    "bg-zinc-300 dark:bg-zinc-600": selected && !header,
-  }, header ? `sticky z-10 align-middle leading-6 min-w-[20px] line-clamp-1` : `align-middle`, className, variantClasses[variant])
+  handleResize?: (event, field: string) => void;
+} & React.DetailedHTMLProps<
+  React.TdHTMLAttributes<HTMLTableCellElement>,
+  HTMLTableCellElement
+>;
+const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
+  (props, ref) => {
+    const {
+      children,
+      header = false,
+      selected = false,
+      variant = "outlined",
+      size = "medium",
+      className,
+      field,
+      columnWidth = 500,
+      handleResize,
+      ...other
+    } = props;
+    const variantClasses = {
+      outlined: clsx(
+        {
+          "bg-zinc-300 dark:bg-zinc-800": header,
+        },
+        !header && !selected ? "dark:bg-zinc-600/80 bg-zinc-100" : "",
+      ),
+      standard: clsx(),
+    };
+    const classes = clsx(
+      "table-cell relative truncate",
+      {
+        "py-1 px-3": size === "small" && !header,
+        "p-4": size === "medium" && !header,
+        "px-6 py-5": size === "large" && !header,
+        "py-0.5 px-3": size === "small" && header,
+        "p-3 px-4": size === "medium" && header,
+        "py-4 px-6": size === "large" && header,
+        "bg-zinc-300 dark:bg-zinc-600": selected && !header,
+      },
+      header
+        ? `sticky z-10 align-middle leading-6 min-w-[20px] line-clamp-1`
+        : `align-middle`,
+      className,
+      variantClasses[variant],
+    );
 
-  const Component: ElementType = header ? 'th' : 'td';
+    const Component: ElementType = header ? "th" : "td";
 
-  return (
-    <Component className={classes} ref={ref} style={{ width: columnWidth, maxWidth: columnWidth }} {...other}>
-      {children}
-    </Component>
-  )
-})
+    return (
+      <Component
+        className={classes}
+        ref={ref}
+        style={{ width: columnWidth, maxWidth: columnWidth }}
+        {...other}
+      >
+        {children}
+      </Component>
+    );
+  },
+);
 
 type TableRowProps = {
-  header?: boolean
-  children?: React.ReactNode
+  header?: boolean;
+  children?: React.ReactNode;
   borders?: {
     vertical?: boolean;
     horizontal?: boolean;
-  }
-} & React.DetailedHTMLProps<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>
-const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>((props, ref) => {
-  const { header = false, children, borders = { vertical: false, horizontal: false }, className, ...other } = props;
-  const tableRow = clsx(`table-row text-inherit outline-none align-middle`, className, {
-    "divide-x divide-gray-400 dark:divide-zinc-800": borders.vertical,
-    "divide-opacity-30": borders.vertical && !header,
-  })
-  return (
-    <tr ref={ref} role="rowgroup" className={tableRow} {...other}>
-      {children}
-    </tr>
-  )
-})
+  };
+} & React.DetailedHTMLProps<
+  HTMLAttributes<HTMLTableRowElement>,
+  HTMLTableRowElement
+>;
+const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
+  (props, ref) => {
+    const {
+      header = false,
+      children,
+      borders = { vertical: false, horizontal: false },
+      className,
+      ...other
+    } = props;
+    const tableRow = clsx(
+      `table-row text-inherit outline-none align-middle`,
+      className,
+      {
+        "divide-x divide-gray-400 dark:divide-zinc-800": borders.vertical,
+        "divide-opacity-30": borders.vertical && !header,
+      },
+    );
+    return (
+      <tr ref={ref} role="rowgroup" className={tableRow} {...other}>
+        {children}
+      </tr>
+    );
+  },
+);
 
 export default Table;

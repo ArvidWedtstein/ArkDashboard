@@ -61,7 +61,7 @@ export const deleteMapResource: MutationResolvers["deleteMapResource"] = ({
 
 export const MapResource: MapResourceRelationResolvers = {
   Item: (_obj, { root }) => {
-    return db.mapResource.findUnique({ where: { id: root?.id } }).Item();
+    return db.mapResource.findUnique({ where: { id: root?.id } })?.Item();
   },
   Map: (_obj, { root }) => {
     return db.mapResource.findUnique({ where: { id: root?.id } }).Map();

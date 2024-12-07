@@ -17,7 +17,7 @@ import {
 import Table from "src/components/Util/Table/Table";
 import { FindItemsMaterials } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import UserRecipesCell, {
   QUERY as USERRECIPEQUERY,
@@ -70,7 +70,7 @@ const TreeBranch = memo(
     } = item;
 
     const craftingStation = items.find(
-      (i) => i.id === itemRecipes?.[0]?.crafting_station_id
+      (i) => i.id === itemRecipes?.[0]?.crafting_station_id,
     );
 
     return (
@@ -151,7 +151,7 @@ const TreeBranch = memo(
         )}
       </li>
     );
-  }
+  },
 );
 
 interface MaterialGridProps {
@@ -270,7 +270,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                           ((item.amount + amountToAdd) %
                             payload.item?.itemRecipes[0]?.yields)),
                 }
-              : item
+              : item,
           );
         }
 
@@ -298,23 +298,23 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
           if (rowIndex != index) return item;
 
           let crafting_station = craftingItems.find(
-            ({ id }) => id === item.itemRecipes[0]?.crafting_station_id
+            ({ id }) => id === item.itemRecipes[0]?.crafting_station_id,
           );
 
           for (const stationGroup in craftingStations) {
             const station = craftingStations[stationGroup].find(
-              (s) => s.id === item.itemRecipes[0]?.crafting_station_id
+              (s) => s.id === item.itemRecipes[0]?.crafting_station_id,
             );
 
             if (station) {
               // Replace the crafting station only if the opposite one is active
               const activeStation = craftingStations[stationGroup].find(
-                (s) => s.active
+                (s) => s.active,
               );
 
               if (activeStation) {
                 crafting_station = craftingItems.find(
-                  ({ id }) => id === activeStation.id
+                  ({ id }) => id === activeStation.id,
                 );
               }
             }
@@ -366,7 +366,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
 
   // Item recipe is selected from menu
   const onAdd = (
-    item_id: ArrayElement<MaterialGridProps["craftingItems"]>["id"]
+    item_id: ArrayElement<MaterialGridProps["craftingItems"]>["id"],
   ) => {
     if (!item_id) return;
 
@@ -420,7 +420,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
 
     const calculateItemRecipe = (
       item: ArrayElement<MaterialGridProps["craftingItems"]>,
-      amount: number = 0
+      amount: number = 0,
     ): RecipeState => {
       if (!item?.itemRecipes.length || !item.itemRecipes[0]) {
         console.warn(`${item.name} has no recipe`);
@@ -435,7 +435,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
       } = item.itemRecipes[0];
 
       let crafting_station = craftingItems.find(
-        ({ id }) => id === crafting_station_id
+        ({ id }) => id === crafting_station_id,
       );
 
       for (const [_, stations] of Object.entries(craftingStations)) {
@@ -446,7 +446,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
 
           if (activeStation) {
             crafting_station = craftingItems.find(
-              ({ id }) => id === activeStation.id
+              ({ id }) => id === activeStation.id,
             );
           }
         }
@@ -461,7 +461,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
       // Loop through child Items.
       const children = ItemRecipeItem.map((itemRecipeItem) => {
         const resourceItem = craftingItems.find(
-          (ir) => ir.id === itemRecipeItem.resource_item_id
+          (ir) => ir.id === itemRecipeItem.resource_item_id,
         );
         const resourceItemRecipe = resourceItem?.itemRecipes?.[0];
 
@@ -524,7 +524,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
   }, [craftingStations, recipes]);
 
   const getUniqueCraftingStationIds = (
-    items: RecipeState[]
+    items: RecipeState[],
   ): ArrayElement<RecipeState["itemRecipes"]>["crafting_station_id"][] => {
     const craftingStationIds: Set<
       ArrayElement<RecipeState["itemRecipes"]>["crafting_station_id"]
@@ -559,13 +559,13 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                 ...s,
                 active: !s.active,
               };
-            }
+            },
           );
         }
       });
       return Object.entries(prevCraftingStations).reduce(
         (r, [k, v]) => ({ ...r, [k]: v }),
-        {}
+        {},
       ) as typeof prevCraftingStations;
     });
   };
@@ -626,7 +626,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
       let itemfound = craftingItems
         .filter(({ itemRecipes }) => itemRecipes.length > 0)
         .find((item) =>
-          item.itemRecipes.find((ir) => ir.id === item_recipe_id)
+          item.itemRecipes.find((ir) => ir.id === item_recipe_id),
         );
 
       if (!itemfound) {
@@ -744,10 +744,10 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                         .toLowerCase()
                         .includes(deferredQuery.toLowerCase()) &&
                       item.visible &&
-                      item.itemRecipes.length > 0
+                      item.itemRecipes.length > 0,
                   ),
-                  "category"
-                )
+                  "category",
+                ),
               )
                 .sort()
                 .map(([category, categoryRecipes]) => {
@@ -761,7 +761,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                             .filter((item) =>
                               item?.name
                                 .toLowerCase()
-                                .includes(deferredQuery.toLowerCase())
+                                .includes(deferredQuery.toLowerCase()),
                             )
                             .map(({ id, name, image }) => ({
                               label: name,
@@ -776,7 +776,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                                 .filter((item) =>
                                   item?.name
                                     .toLowerCase()
-                                    .includes(deferredQuery.toLowerCase())
+                                    .includes(deferredQuery.toLowerCase()),
                                 )
                                 .map(({ id, name, image }) => ({
                                   label: name,
@@ -815,13 +815,13 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                   onChange={handleCraftingStationChange}
                   disabled={
                     !getUniqueCraftingStationIds(calculatedRecipes).some((c) =>
-                      stations.some((cr) => cr.id === c)
+                      stations.some((cr) => cr.id === c),
                     )
                   }
                 >
                   {stations.map((station) => {
                     const stationItem = craftingItems.find(
-                      ({ id }) => id === station.id
+                      ({ id }) => id === station.id,
                     );
                     return (
                       <ToggleButton
@@ -1003,11 +1003,11 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                   calculatedRecipes.flatMap(
                     (c) =>
                       c[viewBaseMaterials ? "base_materials" : "children"]?.map(
-                        (d) => ({ ...d, parent_item_id: c.id })
-                      ) || []
+                        (d) => ({ ...d, parent_item_id: c.id }),
+                      ) || [],
                   ),
-                  "id"
-                )
+                  "id",
+                ),
               ).flatMap(([_, v]) => {
                 return {
                   field: v[0].id.toString(),
@@ -1017,7 +1017,7 @@ export const MaterialGrid = ({ craftingItems, error }: MaterialGridProps) => {
                   className: "text-center",
                   valueFormatter: ({ row }) => {
                     let itemIsInCurrentRow = v.find(
-                      (c) => c.id === v[0].id && row.id === c.parent_item_id
+                      (c) => c.id === v[0].id && row.id === c.parent_item_id,
                     );
                     return itemIsInCurrentRow ? itemIsInCurrentRow.amount : 0;
                   },

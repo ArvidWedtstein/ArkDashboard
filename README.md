@@ -163,6 +163,11 @@ yarn rw g secret
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+To run:
+
+```sh
+yarn rw dev
+```
 
 To deploy:
 
