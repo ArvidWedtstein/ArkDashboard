@@ -9,8 +9,6 @@
 
 import { Link, routes } from "@redwoodjs/router";
 
-// Ensures that production builds do not include the error page
-import { DevFatalErrorPage } from "@redwoodjs/web/dist/components/DevFatalErrorPage";
 type ErrorWithRequestMeta = Error & {
   mostRecentRequest?: {
     query: string;
@@ -21,7 +19,7 @@ type ErrorWithRequestMeta = Error & {
   mostRecentResponse?: any;
 };
 
-export default (({ error }: { error: ErrorWithRequestMeta }) => {
+export default ({ error }: { error: ErrorWithRequestMeta }) => {
   const syntaxHighlight = (string) => {
     // Regular expression to match {, }, (, and = outside of strings
     const regex = /([\{\}\(\)=]|String|Number|Int|Boolean|Float)/g;
@@ -69,7 +67,11 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
       </span>
     );
   };
-  const query = error?.mostRecentRequest ? syntaxHighlight(error?.mostRecentRequest?.query) : error?.stack ? syntaxHighlight(error.stack) : '';
+  const query = error?.mostRecentRequest
+    ? syntaxHighlight(error?.mostRecentRequest?.query)
+    : error?.stack
+      ? syntaxHighlight(error.stack)
+      : "";
   return (
     <div className="flex items-center text-center">
       <section className="mx-auto max-w-3xl bg-white dark:bg-[#252636] my-8 ">
@@ -93,9 +95,7 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
                   <p className="ml-4 text-base font-semibold">Query</p>
                 </div>
                 <div className="p-4 text-base text-white">
-                  <code className="font-light">
-                    {query}
-                  </code>
+                  <code className="font-light">{query}</code>
                 </div>
               </pre>
             </div>
@@ -118,4 +118,4 @@ export default (({ error }: { error: ErrorWithRequestMeta }) => {
       </section>
     </div>
   );
-}) || DevFatalErrorPage;
+};
