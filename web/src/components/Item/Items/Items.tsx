@@ -1,4 +1,4 @@
-import { CheckboxField, Form, Label, Submit, set } from "@redwoodjs/forms/dist";
+import { CheckboxField, Form, Label } from "@redwoodjs/forms";
 import {
   Link,
   routes,
@@ -144,13 +144,13 @@ const ItemsList = ({
   ];
 
   const [selectedCategories, setSelectedCategories] = useState<Category[]>(
-    categories.filter((c) => c.value === category)
+    categories.filter((c) => c.value === category),
   );
   const [selectedTypes, setSelectedTypes] = useState<LookupOption[]>(
     categories
       .filter((c) => c.value === category)
       .flatMap((c) => c.types)
-      .filter((t) => t.value === type)
+      .filter((t) => t.value === type),
   );
   const Filters = (
     <>
@@ -173,7 +173,7 @@ const ItemsList = ({
                   setSelectedCategories((prev) =>
                     prev.includes({ label, value, types }) && e.target.checked
                       ? []
-                      : [{ label, value, types }]
+                      : [{ label, value, types }],
                   );
                 }}
                 checked={selectedCategories?.some((c) => c?.value === value)}
@@ -211,7 +211,7 @@ const ItemsList = ({
                       setSelectedTypes((prev) =>
                         prev.some((p) => p.value === value)
                           ? prev.filter((p) => p.value != value)
-                          : [...prev, { label, value }]
+                          : [...prev, { label, value }],
                       );
                     }}
                     checked={selectedTypes.some((t) => t.value === value)}
@@ -242,11 +242,11 @@ const ItemsList = ({
       routes.items({
         ...parseSearch(
           Object.fromEntries(
-            Object.entries(data).filter(([_, v]) => v != "")
-          ) as FormFindItems
+            Object.entries(data).filter(([_, v]) => v != ""),
+          ) as FormFindItems,
         ),
         page: 1,
-      })
+      }),
     );
   };
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -260,9 +260,7 @@ const ItemsList = ({
       {window.innerWidth < 1024 && <Modal content={Filters} />}
 
       <header className="flex flex-col items-center justify-between border-b border-zinc-500 pb-6 pt-1 text-gray-900 dark:text-white sm:flex-row">
-        <Text variant="h4">
-          Items
-        </Text>
+        <Text variant="h4">Items</Text>
 
         <nav className="flex w-full items-center justify-end space-x-3">
           <ButtonGroup>
@@ -273,10 +271,7 @@ const ItemsList = ({
               permission="gamedata_create"
               className="grow"
               startIcon={
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
                 </svg>
               }
@@ -297,7 +292,7 @@ const ItemsList = ({
               value={categories[0]}
               disabled={loading}
               onChange={(_, e) => {
-                console.log(e)
+                console.log(e);
                 setSelectedCategories(!e ? [] : [e]);
                 setSelectedTypes([]);
               }}
@@ -334,15 +329,11 @@ const ItemsList = ({
               variant="outlined"
               permission="gamedata_create"
               startIcon={
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                   <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
                 </svg>
               }
             >
-
               <span className="sr-only">Filters</span>
             </Button>
 
@@ -360,7 +351,7 @@ const ItemsList = ({
                     variant="contained"
                     color="success"
                     ignoreButtonGroupPosition
-                    startIcon={(
+                    startIcon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 512 512"
@@ -368,11 +359,11 @@ const ItemsList = ({
                       >
                         <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
                       </svg>
-                    )}
+                    }
                   >
                     <span className="hidden md:block">Search</span>
                   </Button>
-                )
+                ),
               }}
             />
           </ButtonGroup>
@@ -417,10 +408,9 @@ const ItemsList = ({
               "grid-cols-1": view === "list",
               "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4":
                 view === "grid",
-            }
+            },
           )}
         >
-
           {itemsPage.items.map(({ id, name, image, category, type }, i) => (
             <Fragment key={`item-${i}`}>
               <Card className="hover:border-success-500 border border-transparent transition-all duration-75 ease-in-out">
@@ -433,7 +423,7 @@ const ItemsList = ({
                       flexGrow: 1,
                     }}
                     title={name}
-                    subheader={`${category}${type ? `, ${type}` : ''}`}
+                    subheader={`${category}${type ? `, ${type}` : ""}`}
                     avatar={
                       <img
                         src={
@@ -459,11 +449,7 @@ const ItemsList = ({
         {!loading && itemsPage.items.length === 0 && itemsPage.count === 0 && (
           <div className="w-full text-center text-black dark:text-white">
             {"No items yet. "}
-            <Button
-              variant="text"
-              color="primary"
-              to={routes.newItem()}
-            >
+            <Button variant="text" color="primary" to={routes.newItem()}>
               {"Create one?"}
             </Button>
           </div>

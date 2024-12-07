@@ -13,11 +13,11 @@
     ]
   },
   "dependencies": {
-    "@redwoodjs/auth": "6.3.3",
-    "@redwoodjs/auth-supabase-web": "6.3.3",
-    "@redwoodjs/forms": "6.3.3",
-    "@redwoodjs/router": "6.3.3",
-    "@redwoodjs/web": "6.3.3",
+    "@redwoodjs/auth": "8.0.0",
+    "@redwoodjs/auth-supabase-web": "8.0.0",
+    "@redwoodjs/forms": "8.0.0",
+    "@redwoodjs/router": "8.0.0",
+    "@redwoodjs/web": "8.0.0",
     "@supabase/supabase-js": "^2",
     "humanize-string": "2.1.0",
     "prop-types": "15.8.1",
@@ -25,7 +25,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@redwoodjs/vite": "6.3.3",
+    "@redwoodjs/vite": "8.0.0",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.20",
     "postcss-loader": "^7.0.2",

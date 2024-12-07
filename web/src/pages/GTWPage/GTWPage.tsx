@@ -8,7 +8,7 @@ import {
 import { MetaTags } from "@redwoodjs/web";
 import { Fragment, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import { Input } from "src/components/Util/Input/Input";
 import Text from "src/components/Util/Text/Text";
 
@@ -258,9 +258,9 @@ const GtwPage = (props: GTWPageProps) => {
     name: "attack", // the name of the field array in your form data
   });
 
-  const onSubmit = data => {
+  const onSubmit = (data) => {
     console.log("data", data);
-  }
+  };
 
   return (
     <>
@@ -276,8 +276,11 @@ const GtwPage = (props: GTWPageProps) => {
           </h1>
         </div>
 
-
-        <Form error={props.error} onSubmit={handleSubmit(onSubmit)} className="m-6 p-3 flex justify-center">
+        <Form
+          error={props.error}
+          onSubmit={handleSubmit(onSubmit)}
+          className="m-6 p-3 flex justify-center"
+        >
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"
@@ -292,28 +295,33 @@ const GtwPage = (props: GTWPageProps) => {
             placeholder="Scrambled Word:"
             color="success"
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             InputProps={{
               inputProps: {
-                onInput: (event) => debouncedChangeHandler(event)
-              }
+                onInput: (event) => debouncedChangeHandler(event),
+              },
             }}
           />
 
           {attackFields.map((f, i) => (
             <Fragment>
-              <input className="" {...register(`attack.${i}.name`, { required: true })} />
+              <input
+                className=""
+                {...register(`attack.${i}.name`, { required: true })}
+              />
             </Fragment>
           ))}
-          <button type="button"
+          <button
+            type="button"
             onClick={() =>
               appendAttack({
                 name: "",
               })
             }
-          >add</button>
-
+          >
+            add
+          </button>
 
           <button type="submit">submit</button>
         </Form>

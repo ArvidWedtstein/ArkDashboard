@@ -1,7 +1,7 @@
 import type { FindAdminData, FindAdminDataVariables } from "types/graphql";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Admin from "../Admin/Admin";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 
 export const QUERY = gql`
   query FindAdminData {

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import { formatBytes } from "src/lib/formatters";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import Toast from "../Toast/Toast";
 import { useController } from "@redwoodjs/forms";
 import Popper from "../Popper/Popper";
@@ -11,7 +11,7 @@ import Button from "../Button/Button";
 import { standard } from "src/components/Admin/AdminCell/AdminCell.mock";
 
 type FileUploadProps = {
-  variant?: 'standard' | 'outlined' | 'contained';
+  variant?: "standard" | "outlined" | "contained";
   color?: "default" | "primary" | "secondary" | "success" | "warning" | "error";
   onUpload?: (url: string) => void;
   onFileAdded?: (file: File) => void;
@@ -48,7 +48,7 @@ type FileUploadProps = {
    * Max size in bytes
    */
   maxSize?: number;
-}
+};
 
 type iFile = {
   file: {
@@ -66,7 +66,7 @@ type iFile = {
     type: "oversized" | "invalidType" | "uploadError";
     message: string;
   };
-}
+};
 // TODO: add support for array of names, and defaultValues
 const FileUpload = ({
   storagePath,
@@ -95,7 +95,9 @@ const FileUpload = ({
   }>({ element: null, file: null, open: false });
   // TODO: add support for mulitple file uploads
   const { field } = !!name && useController({ name: name });
-  const { field: secondaryField } = !!secondaryName ? useController({ name: secondaryName }) : { field: null };
+  const { field: secondaryField } = !!secondaryName
+    ? useController({ name: secondaryName })
+    : { field: null };
 
   const imageUrlToFile = async (imageUrl: string, fileName: string) => {
     try {
@@ -112,24 +114,23 @@ const FileUpload = ({
 
   useEffect(() => {
     const fetchImages = async () => {
-      if (!defaultValue && (secondaryName && !defaultSecondaryValue)) return;
+      if (!defaultValue && secondaryName && !defaultSecondaryValue) return;
 
       try {
         let paths = defaultValue?.split(",").map((img) => img.trim()) || [];
         if (defaultSecondaryValue) {
-          paths.push(...defaultSecondaryValue?.split(",").map((img) => img.trim()))
+          paths.push(
+            ...defaultSecondaryValue?.split(",").map((img) => img.trim()),
+          );
         }
 
         if (paths.length == 0) return;
         const { data, error } = await supabase.storage
           .from(storagePath)
-          .createSignedUrls(
-            paths,
-            60 * 60 * 24 * 365 * 10
-          );
+          .createSignedUrls(paths, 60 * 60 * 24 * 365 * 10);
 
         if (error) {
-          console.error(error)
+          console.error(error);
           toast.error(error.message);
           return;
         }
@@ -140,15 +141,15 @@ const FileUpload = ({
           const error =
             maxSize && file.size > maxSize
               ? {
-                type: "oversized",
-                message: `File is too large. Max size is ${formatBytes(
-                  maxSize
-                )}.`,
-              }
+                  type: "oversized",
+                  message: `File is too large. Max size is ${formatBytes(
+                    maxSize,
+                  )}.`,
+                }
               : !accept
-                .split(",")
-                .map((a) => a.trim().toUpperCase())
-                .includes(file.type.toUpperCase())
+                    .split(",")
+                    .map((a) => a.trim().toUpperCase())
+                    .includes(file.type.toUpperCase())
                 ? { type: "invalidType", message: "Invalid file type." }
                 : null;
 
@@ -159,7 +160,12 @@ const FileUpload = ({
             url: signedUrl,
             state: "uploaded",
             preview: false,
-            ...(secondaryName && { [secondaryName]: defaultSecondaryValue.split(",").map((img) => img.trim()).some((f) => f.includes(file.name)) }),
+            ...(secondaryName && {
+              [secondaryName]: defaultSecondaryValue
+                .split(",")
+                .map((img) => img.trim())
+                .some((f) => f.includes(file.name)),
+            }),
             error,
           };
         });
@@ -167,12 +173,12 @@ const FileUpload = ({
         const newFiles = (await Promise.all(promises)) as iFile[];
         setFiles((prev) => [
           ...prev.filter(
-            (f) => !newFiles.some((nf) => nf.file.name == f.file.name)
+            (f) => !newFiles.some((nf) => nf.file.name == f.file.name),
           ),
           ...newFiles,
         ]);
       } catch (err) {
-        console.error(err)
+        console.error(err);
         toast.error("Error fetching images: ", err);
       }
     };
@@ -182,7 +188,11 @@ const FileUpload = ({
     }
 
     if (!!secondaryName) {
-      secondaryField.onChange(defaultSecondaryValue ? valueFormatter(defaultSecondaryValue, false) : null)
+      secondaryField.onChange(
+        defaultSecondaryValue
+          ? valueFormatter(defaultSecondaryValue, false)
+          : null,
+      );
     }
 
     fetchImages();
@@ -205,23 +215,26 @@ const FileUpload = ({
             url: fileloader.target.result.toString(),
             state: "newfile",
             preview: false, // TODO: remove
-            [secondaryName]: defaultSecondaryValue.split(",").map((img) => img.trim()).some((f) => f.includes(file.name)),
+            [secondaryName]: defaultSecondaryValue
+              .split(",")
+              .map((img) => img.trim())
+              .some((f) => f.includes(file.name)),
             error:
               maxSize && file.size > maxSize
                 ? {
-                  type: "oversized",
-                  message: `File is too large.${` Max size is ${formatBytes(
-                    maxSize
-                  )}.`}`,
-                }
-                : !accept
-                  .split(",")
-                  .map((a) => a.trim().toUpperCase())
-                  .includes(file.type.toUpperCase())
-                  ? {
-                    type: "invalidType",
-                    message: `Invalid file type.`,
+                    type: "oversized",
+                    message: `File is too large.${` Max size is ${formatBytes(
+                      maxSize,
+                    )}.`}`,
                   }
+                : !accept
+                      .split(",")
+                      .map((a) => a.trim().toUpperCase())
+                      .includes(file.type.toUpperCase())
+                  ? {
+                      type: "invalidType",
+                      message: `Invalid file type.`,
+                    }
                   : null,
           },
         ]);
@@ -254,11 +267,18 @@ const FileUpload = ({
 
   const handleUpload = () => {
     if (name) {
-      field.onChange(files.map((f) => valueFormatter(f.file.name, false)).join(","))
+      field.onChange(
+        files.map((f) => valueFormatter(f.file.name, false)).join(","),
+      );
     }
 
     if (secondaryName) {
-      secondaryField.onChange(files.filter((f) => f[secondaryName] === true).map((f) => valueFormatter(f.file.name, false)).join(','))
+      secondaryField.onChange(
+        files
+          .filter((f) => f[secondaryName] === true)
+          .map((f) => valueFormatter(f.file.name, false))
+          .join(","),
+      );
     }
 
     files
@@ -268,11 +288,11 @@ const FileUpload = ({
           prev.map((f) =>
             f.file.name === file.name
               ? {
-                ...f,
-                state: "uploading",
-              }
-              : f
-          )
+                  ...f,
+                  state: "uploading",
+                }
+              : f,
+          ),
         );
 
         let { error } = await supabase.storage
@@ -283,11 +303,11 @@ const FileUpload = ({
               prev.map((f) =>
                 f.file.name === file.name
                   ? {
-                    ...f,
-                    state: "newuploaded",
-                  }
-                  : f
-              )
+                      ...f,
+                      state: "newuploaded",
+                    }
+                  : f,
+              ),
             );
           });
 
@@ -296,14 +316,14 @@ const FileUpload = ({
             prev.map((f) =>
               f.file.name === file.name
                 ? {
-                  ...f,
-                  error: {
-                    type: "uploadError",
-                    message: error.message,
-                  },
-                }
-                : f
-            )
+                    ...f,
+                    error: {
+                      type: "uploadError",
+                      message: error.message,
+                    },
+                  }
+                : f,
+            ),
           );
           toast.error(error.message);
         }
@@ -328,7 +348,7 @@ const FileUpload = ({
         files
           .filter((f) => f.url !== file.url)
           .map((f) => f.file.name)
-          .join(",")
+          .join(","),
       );
     }
   };
@@ -352,7 +372,8 @@ const FileUpload = ({
       success: "border-b border-success-500 border-opacity-50",
       warning: "border-b border-warning-400 border-opacity-50",
       error: "border-b border-error-500 border-opacity-50",
-      default: "border-b dark:border-white border-black dark:border-opacity-50 border-opacity-50"
+      default:
+        "border-b dark:border-white border-black dark:border-opacity-50 border-opacity-50",
     },
     outlined: {
       primary: "border border-primary-400 border-opacity-50",
@@ -360,7 +381,8 @@ const FileUpload = ({
       success: "border border-success-500 border-opacity-50",
       warning: "border border-warning-400 border-opacity-50",
       error: "border border-error-500 border-opacity-50",
-      default: "border dark:border-white border-black dark:border-opacity-50 border-opacity-50"
+      default:
+        "border dark:border-white border-black dark:border-opacity-50 border-opacity-50",
     },
     contained: {
       primary: "",
@@ -368,13 +390,17 @@ const FileUpload = ({
       success: "",
       warning: "",
       error: "",
-      default: ""
+      default: "",
     },
-  }
+  };
 
   return (
     <div
-      className={clsx(`group relative flex w-[calc(100%-3rem)] max-w-2xl flex-col gap-2 overflow-hidden rounded p-3 text-gray-900 transition-colors dark:text-stone-200`, classes[variant][color], className)}
+      className={clsx(
+        `group relative flex w-[calc(100%-3rem)] max-w-2xl flex-col gap-2 overflow-hidden rounded p-3 text-gray-900 transition-colors dark:text-stone-200`,
+        classes[variant][color],
+        className,
+      )}
     >
       {!!name && (
         <input
@@ -384,7 +410,6 @@ const FileUpload = ({
           hidden
         />
       )}
-
 
       {/* {secondaryName && (
                 <input
@@ -408,7 +433,10 @@ const FileUpload = ({
           htmlFor="dropzone-files"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
-          className={clsx("flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed bg-zinc-200/60 transition-colors dark:bg-zinc-700/60 dark:hover:bg-zinc-700 hover:border-opacity-100", classes[variant][color])}
+          className={clsx(
+            "flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed bg-zinc-200/60 transition-colors dark:bg-zinc-700/60 dark:hover:bg-zinc-700 hover:border-opacity-100",
+            classes[variant][color],
+          )}
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6 will-change-contents">
             <svg
@@ -438,7 +466,7 @@ const FileUpload = ({
                 }).format(
                   accept
                     .split(",")
-                    .map((type) => type.trim().split("/")[1].toUpperCase())
+                    .map((type) => type.trim().split("/")[1].toUpperCase()),
                 )}{" "}
               {maxSize && `(MAX. ${formatBytes(maxSize)})`}
             </p>
@@ -477,15 +505,16 @@ const FileUpload = ({
                 `table-row-group w-full text-xs text-black dark:text-white`,
                 {
                   "!text-error-500": file.error,
-                }
+                },
               )}
               key={`file-${index}`}
               title={file.error ? file.error.message : ""}
             >
               <div className="table-cell">
                 <span
-                  className={`truncate rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${file.error ? "bg-error-500" : "bg-zinc-500"
-                    }`}
+                  className={`truncate rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${
+                    file.error ? "bg-error-500" : "bg-zinc-500"
+                  }`}
                 >
                   {file.error ? (
                     <svg
@@ -532,10 +561,11 @@ const FileUpload = ({
                   type="button"
                   onClick={(e) => {
                     setAnchorRef((prev) => ({
-                      element: e.currentTarget || e.target as HTMLButtonElement,
+                      element:
+                        e.currentTarget || (e.target as HTMLButtonElement),
                       open: !prev.open,
                       file: file,
-                    }))
+                    }));
                   }}
                 >
                   <svg
@@ -566,7 +596,7 @@ const FileUpload = ({
                 prev.map((f) => ({
                   ...f,
                   preview: false,
-                }))
+                })),
               );
             }}
           >
@@ -588,16 +618,19 @@ const FileUpload = ({
         </div>
       )}
 
-      <Button color="success" variant={variant === 'standard' ? 'text' : variant} onClick={handleUpload} disabled={files.filter((f) => f.state == "newfile").length < 1}>
+      <Button
+        color="success"
+        variant={variant === "standard" ? "text" : variant}
+        onClick={handleUpload}
+        disabled={files.filter((f) => f.state == "newfile").length < 1}
+      >
         Upload
       </Button>
 
       <Popper anchorEl={anchorRef?.element} open={anchorRef.open}>
         <ClickAwayListener onClickAway={handleClose}>
           {/* TODO: update to list component */}
-          <div
-            className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white"
-          >
+          <div className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white">
             <ul className="relative m-0 list-none py-2">
               {secondaryName && (
                 <li>
@@ -608,11 +641,19 @@ const FileUpload = ({
                       setFiles((prev) =>
                         prev.map((f) => ({
                           ...f,
-                          [secondaryName]: f.file.name === anchorRef.file.file.name
-                        }))
+                          [secondaryName]:
+                            f.file.name === anchorRef.file.file.name,
+                        })),
                       );
-                      secondaryField.onChange(files.filter((f) => f.file.name === anchorRef.file.file.name).map((f) => valueFormatter(f?.file?.name, false)).join(','))
-                      setAnchorRef({ element: null, open: false, file: null })
+                      secondaryField.onChange(
+                        files
+                          .filter(
+                            (f) => f.file.name === anchorRef.file.file.name,
+                          )
+                          .map((f) => valueFormatter(f?.file?.name, false))
+                          .join(","),
+                      );
+                      setAnchorRef({ element: null, open: false, file: null });
                     }}
                   >
                     <div className="inline-flex min-w-[36px] shrink-0">
@@ -638,9 +679,9 @@ const FileUpload = ({
                       prev.map((f) => ({
                         ...f,
                         preview: f.file.name === anchorRef?.file?.file?.name,
-                      }))
+                      })),
                     );
-                    setAnchorRef({ element: null, open: false, file: null })
+                    setAnchorRef({ element: null, open: false, file: null });
                   }}
                 >
                   <div className="inline-flex min-w-[36px] shrink-0">
@@ -671,7 +712,7 @@ const FileUpload = ({
                           primaryAction={() => handleFileDelete(anchorRef.file)}
                         />
                       ),
-                      { position: "top-center" }
+                      { position: "top-center" },
                     );
                   }}
                 >

@@ -20,7 +20,7 @@ import ClickAwayListener from "src/components/Util/ClickAwayListener/ClickAwayLi
 import List, { ListItem } from "src/components/Util/List/List";
 import { useAuth } from "src/auth";
 import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import Toast from "src/components/Util/Toast/Toast";
 import {
   Dialog,
@@ -148,7 +148,7 @@ const MapResourcesList = ({
         setOffset((prevOffset) => addPoints(prevOffset, mouseDiff));
       }
     },
-    [context]
+    [context],
   );
 
   const mouseUp = useCallback(() => {
@@ -162,7 +162,7 @@ const MapResourcesList = ({
       document.addEventListener("mouseup", mouseUp);
       lastMousePosRef.current = { x: event.pageX, y: event.pageY };
     },
-    [mouseMove, mouseUp]
+    [mouseMove, mouseUp],
   );
 
   useLayoutEffect(() => {
@@ -181,7 +181,7 @@ const MapResourcesList = ({
     if (context && lastOffsetRef.current) {
       const offsetDiff = scalePoint(
         diffPoints(offset, lastOffsetRef.current),
-        scale
+        scale,
       );
       context.translate(offsetDiff.x, offsetDiff.y);
       setViewportTopLeft((prevVal) => diffPoints(prevVal, offsetDiff));
@@ -207,7 +207,7 @@ const MapResourcesList = ({
           posToMap(mapResource.latitude),
           Math.min(Math.max(scale, 1), 5),
           0,
-          2 * Math.PI
+          2 * Math.PI,
         );
         context.fill();
         context.stroke();
@@ -262,7 +262,7 @@ const MapResourcesList = ({
         };
         const newViewportTopLeft = addPoints(
           viewportTopLeft,
-          viewportTopLeftDelta
+          viewportTopLeftDelta,
         );
 
         context.translate(viewportTopLeft.x, viewportTopLeft.y);
@@ -346,7 +346,7 @@ const MapResourcesList = ({
         posToMap(mapResource.latitude),
         4,
         0,
-        2 * Math.PI
+        2 * Math.PI,
       );
       ctx.fill();
       ctx.stroke();
@@ -416,7 +416,7 @@ const MapResourcesList = ({
 
   const onSave = (
     input: UpdateMapResourceInput,
-    id: UpdateMapResourceMutation["updateMapResource"]["id"]
+    id: UpdateMapResourceMutation["updateMapResource"]["id"],
   ) => {
     setAnchorRef({
       open: false,
@@ -433,7 +433,7 @@ const MapResourcesList = ({
         loading: `${id ? "Updating" : "Creating new"} Map Resource...`,
         success: `Map Resource successfully ${id ? "updated" : "created"}`,
         error: `Failed to ${id ? "update" : "create"} Map Resource.`,
-      }
+      },
     );
   };
 
@@ -586,7 +586,7 @@ const MapResourcesList = ({
                   />
                 </div>
               ),
-            })
+            }),
           )}
           toolbar={[
             <Button
@@ -626,7 +626,7 @@ const MapResourcesList = ({
           <div className="min-h-[16px] min-w-[16px] rounded bg-white text-black drop-shadow-xl dark:bg-neutral-900 dark:text-white">
             <List>
               {currentUser?.permissions?.some(
-                (p: permission) => p === "gamedata_update"
+                (p: permission) => p === "gamedata_update",
               ) && (
                 <ListItem
                   size="small"
@@ -654,7 +654,7 @@ const MapResourcesList = ({
                 </ListItem>
               )}
               {currentUser?.permissions?.some(
-                (p: permission) => p === "gamedata_delete"
+                (p: permission) => p === "gamedata_delete",
               ) && (
                 <ListItem
                   size="small"
@@ -674,7 +674,7 @@ const MapResourcesList = ({
                           }
                         />
                       ),
-                      { position: "top-center" }
+                      { position: "top-center" },
                     )
                   }
                   icon={

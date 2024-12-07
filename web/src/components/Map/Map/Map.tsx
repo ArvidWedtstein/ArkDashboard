@@ -1,9 +1,14 @@
 import { navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/dist/toast";
+import { toast } from "@redwoodjs/web/toast";
 import { ReactNode, useMemo, useState } from "react";
 import Button, { ButtonGroup } from "src/components/Util/Button/Button";
-import { Card, CardActionArea, CardHeader, CardMedia } from "src/components/Util/Card/Card";
+import {
+  Card,
+  CardActionArea,
+  CardHeader,
+  CardMedia,
+} from "src/components/Util/Card/Card";
 import Chart from "src/components/Util/Chart/Chart";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
@@ -47,7 +52,7 @@ const Map = ({ map }: Props) => {
           primaryAction={() => deleteMap({ variables: { id } })}
         />
       ),
-      { position: "top-center" }
+      { position: "top-center" },
     );
   };
 
@@ -55,7 +60,7 @@ const Map = ({ map }: Props) => {
   const [realm, setRealm] = useState<number>(
     map.other_Map && map.other_Map.length > 0
       ? map.other_Map.findIndex((m) => m.id == 16)
-      : null
+      : null,
   );
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
@@ -63,7 +68,7 @@ const Map = ({ map }: Props) => {
   const [noterun, setNoterun] = useState<number[]>(
     map.id === 2
       ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
-      : []
+      : [],
   );
 
   const categories = {
@@ -283,18 +288,20 @@ const Map = ({ map }: Props) => {
 
   const types = useMemo(() => {
     const mapData =
-      map.other_Map && map.other_Map.length > 0 ? map.other_Map.find((f) => f.id === realm) : map;
+      map.other_Map && map.other_Map.length > 0
+        ? map.other_Map.find((f) => f.id === realm)
+        : map;
     if (!mapData) return [];
     const resourceData = mapData?.MapResource ?? [];
     const groupedByType = groupBy(
       resourceData.filter((d) => d.type !== null && d.item_id == null),
-      "type"
+      "type",
     );
     const groupedByItem = groupBy(
       resourceData.filter((d) => d.item_id !== null),
-      "item_id"
+      "item_id",
     );
-    const notes = mapData?.MapResource?.filter(r => r.type === 'note') ?? [];
+    const notes = mapData?.MapResource?.filter((r) => r.type === "note") ?? [];
     //  TODO: redo
     const categorizedTypes = Object.entries({
       notes: notes.map((f) => ({
@@ -318,7 +325,7 @@ const Map = ({ map }: Props) => {
         value: key.toString(),
         color:
           value[0].__typename == "MapResource" ||
-            value.every((f) => f.item_id == null)
+          value.every((f) => f.item_id == null)
             ? categories[key]?.color
             : value[0].Item.color,
       }));
@@ -369,8 +376,11 @@ const Map = ({ map }: Props) => {
                 </p>
                 <p className="-mt-0.5 whitespace-nowrap text-sm font-medium leading-none">
                   {map.other_Map && map.other_Map.length > 0
-                    ? map.other_Map[realm]?.MapResource.filter(r => r.type === 'note').length ?? 0
-                    : map?.MapResource.filter(r => r.type === 'note').length ?? 0}{" "}
+                    ? (map.other_Map[realm]?.MapResource.filter(
+                        (r) => r.type === "note",
+                      ).length ?? 0)
+                    : (map?.MapResource.filter((r) => r.type === "note")
+                        .length ?? 0)}{" "}
                   {map.id == 11 || map?.parent_map_id == 11 ? "Runes" : "Notes"}
                 </p>
               </div>
@@ -410,13 +420,17 @@ const Map = ({ map }: Props) => {
                 disable_sub_map={!(map?.other_Map && map.other_Map.length > 0)}
                 className="col-span-1 w-fit"
                 map_id={map.parent_map_id ? map.parent_map_id : map.id}
-                submap_id={map?.other_Map ? map.other_Map.find(({ id }) => id === realm)?.id : null}
+                submap_id={
+                  map?.other_Map
+                    ? map.other_Map.find(({ id }) => id === realm)?.id
+                    : null
+                }
                 disable_map={true}
                 size={{ width: 500, height: 500 }}
                 pos={Object.values(
                   types
                     .filter((f) =>
-                      selectedTypes.find((v) => v === f.value || v === f.label)
+                      selectedTypes.find((v) => v === f.value || v === f.label),
                     )
                     .flatMap((f) => {
                       return f.items.map((entry) => ({
@@ -424,22 +438,22 @@ const Map = ({ map }: Props) => {
                         lat: entry.latitude,
                         lon: entry.longitude,
                         // color: `${f.color || "#ff0000"}`,
-                        color: `${f.color}${checkedItems.includes(
-                          `${entry.type}|${entry.latitude}-${entry.longitude}`
-                        )
-                          ? "1A"
-                          : "FF"
-                          }`, // checkedItems has no use since images are used instead
+                        color: `${f.color}${
+                          checkedItems.includes(
+                            `${entry.type}|${entry.latitude}-${entry.longitude}`,
+                          )
+                            ? "1A"
+                            : "FF"
+                        }`, // checkedItems has no use since images are used instead
                         image: entry.item_id !== null ? f.image : null,
-                      }))
-                    }
-                    )
+                      }));
+                    }),
                 )}
                 onSubMapChange={(id) => {
                   setRealm(
                     map.other_Map
                       ? map.other_Map.findIndex((m) => m.id == id)
-                      : null
+                      : null,
                   );
                   setSelectedTypes([]);
                 }}
@@ -455,11 +469,17 @@ const Map = ({ map }: Props) => {
                   color: "#0000ff",
                   coords: noterun
                     .map((b) => {
-                      const mapData = map.other_Map ? map.other_Map[realm] : map;
-                      if (mapData?.MapResource.filter(r => r.type === 'note') && mapData?.MapResource.filter(r => r.type === 'note').length > 0) {
-                        let note = (mapData?.MapResource.filter(r => r.type === 'note')).find(
-                          (j) => j.note_index === b
-                        );
+                      const mapData = map.other_Map
+                        ? map.other_Map[realm]
+                        : map;
+                      if (
+                        mapData?.MapResource.filter((r) => r.type === "note") &&
+                        mapData?.MapResource.filter((r) => r.type === "note")
+                          .length > 0
+                      ) {
+                        let note = mapData?.MapResource.filter(
+                          (r) => r.type === "note",
+                        ).find((j) => j.note_index === b);
 
                         if (note) {
                           return {
@@ -477,14 +497,20 @@ const Map = ({ map }: Props) => {
                     ?.filter((c) => c?.lat !== -1 && c?.lon !== -1),
                 }}
               />
-              <Card variant="outlined" className="relative p-2 w-full !overflow-y-scroll min-h-full max-h-full h-96">
+              <Card
+                variant="outlined"
+                className="relative p-2 w-full !overflow-y-scroll min-h-full max-h-full h-96"
+              >
                 <TreeView
                   className="relative"
                   onOptionSelect={(opt) => {
                     let c: SVGCircleElement = document.getElementById(
-                      `map-pos-${opt["lat"]}-${opt["lon"]}`
+                      `map-pos-${opt["lat"]}-${opt["lon"]}`,
                     ) as unknown as SVGCircleElement;
-                    if (c != null && !checkedItems.includes(opt["id"].toString())) {
+                    if (
+                      c != null &&
+                      !checkedItems.includes(opt["id"].toString())
+                    ) {
                       const classNames = [
                         "outline",
                         "outline-offset-4",
@@ -493,11 +519,11 @@ const Map = ({ map }: Props) => {
                       ];
 
                       classNames.forEach((className) =>
-                        c.classList.toggle(className)
+                        c.classList.toggle(className),
                       );
                       setTimeout(() => {
                         classNames.forEach((className) =>
-                          c.classList.toggle(className)
+                          c.classList.toggle(className),
                         );
                       }, 3000);
                     }
@@ -513,13 +539,15 @@ const Map = ({ map }: Props) => {
                     groupBy(
                       types
                         .filter((f) =>
-                          selectedTypes.find((v) => v === f.value || v === f.label)
+                          selectedTypes.find(
+                            (v) => v === f.value || v === f.label,
+                          )
                             ? true
-                            : false
+                            : false,
                         )
                         .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
-                      "label"
-                    )
+                      "label",
+                    ),
                   ).map(([k, v]) => ({
                     label: k,
                     children: v.map((i) => ({
@@ -542,7 +570,9 @@ const Map = ({ map }: Props) => {
                 options={types}
                 onChange={(val, values) => {
                   setSelectedTypes(
-                    values.filter((v) => values.some((h) => h.toString() === v.toString())) as string[]
+                    values.filter((v) =>
+                      values.some((h) => h.toString() === v.toString()),
+                    ) as string[],
                   );
                 }}
               />
@@ -582,7 +612,9 @@ const Map = ({ map }: Props) => {
                         zIndex: 0,
                       }}
                       component="div"
-                      image={"https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg"}
+                      image={
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg"
+                      }
                     />
                   </CardActionArea>
                 </Card>
@@ -620,7 +652,9 @@ const Map = ({ map }: Props) => {
                         zIndex: 0,
                       }}
                       component="div"
-                      image={"https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/aberration_lootcrate.webp"}
+                      image={
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/aberration_lootcrate.webp"
+                      }
                     />
                   </CardActionArea>
                 </Card>

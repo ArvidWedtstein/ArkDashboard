@@ -39,7 +39,7 @@ export const beforeQuery = ({ page, search, category, type }) => {
   // to prevent caching: { variables: { page, search, category, type }, fetchPolicy: 'no-cache', pollInterval: 2500 }
   return {
     variables: { page, search, category, type },
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "no-cache",
   };
 };
 

@@ -11,29 +11,25 @@ export const craftingItems: QueryResolvers["craftingItems"] = () => {
   // Returns the items that are either used in a recipe or have a recipe or are a crafting station.
 
   return db.item.findMany({
-    // include: {
-    //   ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
-    //   ItemRecipe_ItemRecipe_crafting_station_idToItem: true,
+    // where: {
+    //   OR: [
+    //     {
+    //       ItemRecipe_ItemRecipe_crafted_item_idToItem: {
+    //         some: { },
+    //       },
+    //     },
+    //     {
+    //       ItemRecipeItem: {
+    //         some: {},
+    //       },
+    //     },
+    //     {
+    //       ItemRecipe_ItemRecipe_crafting_station_idToItem: {
+    //         some: {},
+    //       },
+    //     },
+    //   ],
     // },
-    where: {
-      OR: [
-        {
-          ItemRecipe_ItemRecipe_crafted_item_idToItem: {
-            some: {},
-          },
-        },
-        {
-          ItemRecipeItem: {
-            some: {},
-          },
-        },
-        {
-          ItemRecipe_ItemRecipe_crafting_station_idToItem: {
-            some: {},
-          },
-        },
-      ],
-    },
   });
 };
 
@@ -58,39 +54,42 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
   //   }
   // });
   return {
-    items: db.item.findMany({
-      take: 36,
-      skip: offset,
-      orderBy: { name: "asc" },
-      where: {
-        AND: [
-          // { name: { startsWith: search, mode: "insensitive" } },
-          // category ? { category: { in: category.split(",") } } : {},
-          // type ? { type: { contains: type, mode: "insensitive" } } : {},
-          { visible: true },
-        ],
-      },
-    }),
-    // categories: db.item.findMany({
-    //   select: { category: true },
-    //   distinct: ["category"],
-    //   where: {
-    //     visible: true,
-    //   },
-    // }),
+    items: db.item.findMany(),
     count: 100,
-    // count: db.item.count({
-    //   where: {
-    //     AND: [
-    //       { name: { startsWith: search, mode: "insensitive" } },
-    //       category
-    //         ? { category: { contains: category, mode: "insensitive" } }
-    //         : {},
-    //       type ? { type: { contains: type, mode: "insensitive" } } : {},
-    //     ],
-    //   },
-    // }),
   };
+  // return {
+  //   items: db.item.findMany({
+  //     take: 36,
+  //     skip: offset,
+  //     orderBy: { name: "asc" },
+  //     where: {
+  //       AND: [
+  //         // { name: { startsWith: search, mode: "insensitive" } },
+  //         // category ? { category: { in: category.split(",") } } : {},
+  //         // type ? { type: { contains: type, mode: "insensitive" } } : {},
+  //         { visible: true },
+  //       ],
+  //     },
+  //   }),
+  //   categories: db.item.findMany({
+  //     select: { category: true },
+  //     distinct: ["category"],
+  //     where: {
+  //       visible: true,
+  //     },
+  //   }),
+  //   count: db.item.count({
+  //     where: {
+  //       AND: [
+  //         { name: { startsWith: search, mode: "insensitive" } },
+  //         category
+  //           ? { category: { contains: category, mode: "insensitive" } }
+  //           : {},
+  //         type ? { type: { contains: type, mode: "insensitive" } } : {},
+  //       ],
+  //     },
+  //   }),
+  // };
 };
 
 export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
@@ -102,13 +101,15 @@ export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
 }) => {
   const categories = category.split(",");
   return {
-    items: db.item.findMany({
-      where: { category: { in: categories, mode: "insensitive" } },
-      orderBy: { created_at: "desc" },
-    }),
-    count: db.item.count({
-      where: { category: { in: categories, mode: "insensitive" } },
-    }),
+    items: db.item.findMany(),
+    count: 100,
+    // items: db.item.findMany({
+    //   where: { category: { in: categories, mode: "insensitive" } },
+    //   orderBy: { created_at: "desc" },
+    // }),
+    // count: db.item.count({
+    //   where: { category: { in: categories, mode: "insensitive" } },
+    // }),
   };
 };
 export const itemsByIds: QueryResolvers["itemsByIds"] = ({
